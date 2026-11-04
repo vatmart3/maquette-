@@ -1,7 +1,8 @@
 /*
  * Multiservice Thau — script commun.
- * Génère l'en-tête, le pied de page et les infos de contact à partir de config.js,
- * gère le menu mobile, le mini bon de l'accueil et le bon d'intervention (contact).
+ * Génère l'en-tête, le pied de page, les icônes, la carte de la zone et les
+ * infos de contact à partir de config.js ; gère le menu mobile, le mini bon
+ * de l'accueil et le bon d'intervention (contact).
  */
 (function () {
   "use strict";
@@ -39,13 +40,96 @@
   var telHref = "tel:" + tel;
   var mailHref = "mailto:" + S.email;
 
-  function villesHTML() {
-    return S.villes
-      .map(function (v, i) {
-        var fin = i === S.villes.length - 1 ? "." : ",";
-        return "<span>" + esc(v) + fin + "</span>";
-      })
-      .join(" ");
+  /* ---------- Icônes maison (trait 1,75 px) ---------- */
+
+  var ICONES = {
+    tel: "M6.6 3.5h2.6l1.6 4.2-2.1 1.5a11.5 11.5 0 0 0 6.1 6.1l1.5-2.1 4.2 1.6v2.6a2 2 0 0 1-2.1 2A16.6 16.6 0 0 1 4.6 5.6a2 2 0 0 1 2-2.1z",
+    devis: "M7 3h7l4.5 4.5V19a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z M14 3v4.5h4.5 M8.5 12.5h7 M8.5 16h5",
+    horloge: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z M12 7.5V12l3 2",
+    cle: "M15.5 3.5a4.5 4.5 0 0 0-4.2 6.1L4.6 16.3a2 2 0 0 0 2.8 2.8l6.7-6.7a4.5 4.5 0 0 0 6.1-4.2l-2.8 2.8-2.6-.4-.4-2.6 2.8-2.8a4.5 4.5 0 0 0-1.7-.3z",
+    calendrier: "M5 6h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1z M8 3.5V8 M16 3.5V8 M4 10.5h16 M9 15.2l2 2 4-4",
+    rouleau: "M5 4h11a1.5 1.5 0 0 1 1.5 1.5v2A1.5 1.5 0 0 1 16 9H5a1.5 1.5 0 0 1-1.5-1.5v-2A1.5 1.5 0 0 1 5 4z M17.5 6.5h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H11v3 M10 14.5h2a.5.5 0 0 1 .5.5v5.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5V15a.5.5 0 0 1 .5-.5z",
+    equerre: "M4 4v16h16z M8 12.5V16h3.5z M4 8h2 M4 12h2.5 M12 20v-2.5 M16 20v-2",
+    propre: "M12 3.5l1.6 4.9 4.9 1.6-4.9 1.6L12 16.5l-1.6-4.9L5.5 10l4.9-1.6z M18.5 15.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z",
+    pin: "M12 21s-6.5-5.8-6.5-11a6.5 6.5 0 0 1 13 0c0 5.2-6.5 11-6.5 11z M12 12.3a2.3 2.3 0 1 0 0-4.6 2.3 2.3 0 0 0 0 4.6z",
+    mail: "M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z M3.5 7l8.5 6 8.5-6",
+    check: "M5 12.5l4.5 4.5L19 7.5",
+    photo: "M4.5 7.5h3l1.5-2.5h6l1.5 2.5h3a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18V9a1.5 1.5 0 0 1 1.5-1.5z M12 16.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z",
+    info: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z M12 11v5.5 M12 7.7v.1",
+    menu: "M4 7h16 M4 12h16 M4 17h16",
+    fermer: "M6 6l12 12 M18 6L6 18",
+  };
+
+  var ETOILE = "M12 2.8l2.8 5.8 6.3.8-4.6 4.4 1.2 6.3L12 17.1l-5.7 3 1.2-6.3L2.9 9.4l6.3-.8z";
+
+  function ico(nom, classe) {
+    return (
+      '<svg class="ico' + (classe ? " " + classe : "") + '" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="' +
+      ICONES[nom] +
+      '"/></svg>'
+    );
+  }
+
+  function logo() {
+    return (
+      '<svg class="logo__marque" viewBox="0 0 44 44" aria-hidden="true" focusable="false">' +
+      '<rect width="44" height="44" rx="11" fill="#2347A0"/>' +
+      '<path d="M10.5 21.5 22 12l11.5 9.5" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<path d="M14.5 19.5v9.5h15v-9.5" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<path d="M10 34.6c6.5-.8 16.5.6 24-.4" fill="none" stroke="#F2C230" stroke-width="3.2" stroke-linecap="round"/>' +
+      "</svg>"
+    );
+  }
+
+  function nomLogo() {
+    return '<span class="logo__nom">' + esc(S.nom) + "<small>" + esc(S.accroche) + "</small></span>";
+  }
+
+  /* ---------- Carte schématique de la zone ---------- */
+
+  // Positions calculées depuis les coordonnées GPS des communes (projection simple).
+  var POSITIONS = {
+    sete: [368, 272, 10, 5, "start"],
+    frontignan: [464, 172, 10, -8, "start"],
+    balaruclesbains: [336, 187, 10, 6, "start"],
+    balaruclevieux: [347, 140, 10, 4, "start"],
+    meze: [219, 221, -10, 4, "end"],
+    marseillan: [94, 377, -10, 4, "end"],
+    bouzigues: [303, 172, -8, -8, "end"],
+    poussan: [324, 80, -10, 4, "end"],
+    gigean: [391, 58, 10, 4, "start"],
+    viclagardiole: [530, 82, 0, 24, "middle"],
+  };
+
+  function carteZone() {
+    var points = "";
+    var noms = "";
+    S.villes.forEach(function (v) {
+      var p = POSITIONS[normaliser(v)];
+      if (!p) return;
+      points += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="7"/>';
+      noms +=
+        '<text x="' + (p[0] + p[2]) + '" y="' + (p[1] + p[3]) + '" text-anchor="' + p[4] + '">' + esc(v) + "</text>";
+    });
+    var grille = "";
+    for (var x = 60; x < 600; x += 60) grille += "M" + x + " 30V470";
+    for (var y = 60; y < 470; y += 60) grille += "M0 " + y + "H600";
+    return (
+      '<svg viewBox="0 30 600 440" role="img" aria-labelledby="carte-titre">' +
+      '<title id="carte-titre">Schéma de la zone d\'intervention autour de l\'étang de Thau : ' + esc(S.villes.join(", ")) + "</title>" +
+      '<rect x="0" y="30" width="600" height="440" fill="#F6F8FC"/>' +
+      '<path d="' + grille + '" stroke="#E7ECF4" stroke-width="1" fill="none"/>' +
+      '<path d="M-16.2 510.6C-0.0 500.9 51.4 472.0 81.1 452.6C110.8 433.3 135.1 413.2 162.2 394.7C189.2 376.1 217.6 356.8 243.2 341.1C268.9 325.5 297.3 308.1 316.2 301.0C335.1 294.0 344.1 300.3 356.8 298.8C369.5 297.3 380.3 299.2 392.4 292.1C404.6 285.0 414.1 270.5 429.7 256.4C445.4 242.3 466.2 224.1 486.5 207.4C506.8 190.6 529.7 171.7 551.4 156.1C573.0 140.5 605.4 120.8 616.2 113.7L640 500L-20 520Z" fill="#DCE5F6" stroke="#A9BBE0" stroke-width="1.5"/>' +
+      '<path d="M105.4 390.2C110.3 377.9 131.1 354.9 145.9 336.7C160.8 318.5 179.7 296.9 194.6 280.9C209.5 265.0 221.6 253.8 235.1 240.8C248.6 227.8 263.5 211.8 275.7 202.9C287.8 194.0 298.4 188.0 308.1 187.3C317.8 186.6 325.9 194.4 334.1 198.4C342.2 202.5 351.9 205.9 356.8 211.8C361.6 217.8 365.9 227.1 363.2 234.1C360.5 241.2 351.1 246.8 340.5 254.2C330.0 261.6 315.7 267.6 300.0 278.7C284.3 289.9 264.1 307.0 246.5 321.1C228.9 335.2 211.4 350.4 194.6 363.4C177.8 376.5 158.9 391.3 145.9 399.1C133.0 406.9 123.5 411.8 116.8 410.3C110.0 408.8 100.5 402.5 105.4 390.2Z" fill="#DCE5F6" stroke="#A9BBE0" stroke-width="1.5"/>' +
+      '<g font-family="Barlow, sans-serif" font-weight="500" font-size="14" fill="#4D66A6" letter-spacing=".02em">' +
+      '<text transform="translate(206 330) rotate(-38)">Étang de Thau</text>' +
+      '<text transform="translate(410 392) rotate(-33)">Mer Méditerranée</text>' +
+      "</g>" +
+      '<g fill="#2347A0" stroke="#fff" stroke-width="2.5">' + points + "</g>" +
+      '<g font-family="Barlow Semi Condensed, Barlow, sans-serif" font-weight="700" font-size="17" fill="#14213D" stroke="#F6F8FC" stroke-width="4.5" paint-order="stroke" stroke-linejoin="round">' +
+      noms +
+      "</g></svg>"
+    );
   }
 
   var pages = [
@@ -64,19 +148,35 @@
       .join("");
   }
 
+  function villesHTML() {
+    return S.villes
+      .map(function (v, i) {
+        return "<span>" + esc(v) + (i === S.villes.length - 1 ? "." : ",") + "</span>";
+      })
+      .join(" ");
+  }
+
   /* ---------- En-tête ---------- */
 
   var entete = document.querySelector("[data-slot='entete']");
   if (entete) {
+    var barre = document.createElement("div");
+    barre.className = "barre-contact";
+    barre.innerHTML =
+      '<div class="conteneur barre-contact__ligne">' +
+      "<p>" + esc(S.accroche) + " autour de l'étang de Thau</p>" +
+      '<div class="barre-contact__liens">' +
+      '<a href="' + telHref + '">' + ico("tel") + esc(S.telephone) + "</a>" +
+      "<span>" + esc(S.horaires.texte) + "</span>" +
+      "</div></div>";
+    entete.parentNode.insertBefore(barre, entete);
+
     entete.innerHTML =
       '<div class="conteneur entete__ligne">' +
-      '<a class="marque" href="./">' + esc(S.nom) + "</a>" +
+      '<a class="logo" href="./" aria-label="' + esc(S.nom) + ', accueil">' + logo() + nomLogo() + "</a>" +
       '<nav class="nav" aria-label="Navigation principale"><ul>' + liensPages() + "</ul></nav>" +
-      '<a class="entete__tel" href="' + telHref + '">' +
-      '<span class="entete__tel-libelle">Appelez-nous</span>' +
-      '<span class="entete__tel-numero">' + esc(S.telephone) + "</span></a>" +
-      '<a class="bouton entete__appeler" href="' + telHref + '" aria-label="Appeler le ' + esc(S.telephone) + '">Appeler</a>' +
-      '<button class="entete__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>' +
+      '<a class="bouton bouton--action entete__devis" href="contact">' + ico("devis") + "Demander un devis</a>" +
+      '<button class="entete__menu" type="button" aria-expanded="false" aria-controls="menu">' + ico("menu") + "<span>Menu</span></button>" +
       "</div>" +
       '<div class="menu" id="menu" hidden><div class="conteneur">' +
       '<nav aria-label="Navigation mobile"><ul>' + liensPages() + "</ul></nav>" +
@@ -86,11 +186,15 @@
     var boutonMenu = entete.querySelector(".entete__menu");
     var menu = entete.querySelector("#menu");
 
+    function majBoutonMenu(ouvert) {
+      boutonMenu.setAttribute("aria-expanded", ouvert ? "true" : "false");
+      boutonMenu.innerHTML = ico(ouvert ? "fermer" : "menu") + "<span>" + (ouvert ? "Fermer" : "Menu") + "</span>";
+    }
+
     function fermerMenu(rendreFocus) {
       menu.hidden = true;
       menu.classList.remove("est-ouvert");
-      boutonMenu.setAttribute("aria-expanded", "false");
-      boutonMenu.textContent = "Menu";
+      majBoutonMenu(false);
       if (rendreFocus) boutonMenu.focus();
     }
 
@@ -98,8 +202,7 @@
       if (menu.hidden) {
         menu.hidden = false;
         menu.classList.add("est-ouvert");
-        boutonMenu.setAttribute("aria-expanded", "true");
-        boutonMenu.textContent = "Fermer";
+        majBoutonMenu(true);
       } else {
         fermerMenu(false);
       }
@@ -109,7 +212,7 @@
       if (e.key === "Escape" && !menu.hidden) fermerMenu(true);
     });
 
-    window.matchMedia("(min-width: 1000px)").addEventListener("change", function (e) {
+    window.matchMedia("(min-width: 1024px)").addEventListener("change", function (e) {
       if (e.matches) fermerMenu(false);
     });
   }
@@ -122,8 +225,8 @@
       '<div class="conteneur">' +
       '<div class="pied__grille">' +
       "<div>" +
-      '<p class="pied__marque">' + esc(S.nom) + "</p>" +
-      "<p>Réparer, entretenir, rénover, aménager.<br>Pour la maison, autour de l'étang de Thau.</p>" +
+      '<a class="logo" href="./">' + logo() + nomLogo() + "</a>" +
+      "<p>Réparer, entretenir, rénover, aménager.<br>Un seul interlocuteur pour toute la maison.</p>" +
       "</div>" +
       "<div>" +
       "<h2>Nous joindre</h2>" +
@@ -135,7 +238,7 @@
       "</div>" +
       "<div>" +
       "<h2>Où on intervient</h2>" +
-      "<p class=\"pied__villes\">" + villesHTML() + "</p>" +
+      '<p class="pied__villes">' + villesHTML() + "</p>" +
       "</div>" +
       "<div>" +
       "<h2>Pages</h2>" +
@@ -149,26 +252,22 @@
       "</div>";
   }
 
-  /* ---------- Badge maquette & bouton d'appel flottant ---------- */
+  /* ---------- Barre d'actions mobile & badge maquette ---------- */
+
+  var barreMobile = document.createElement("div");
+  barreMobile.className = "barre-mobile";
+  barreMobile.innerHTML =
+    '<a class="bouton bouton--bleu" href="' + telHref + '" aria-label="Appeler le ' + esc(S.telephone) + '">' + ico("tel") +
+    (page === "contact" ? "Appeler le " + esc(S.telephone) : "Appeler") + "</a>" +
+    (page === "contact" ? "" : '<a class="bouton bouton--action" href="contact">' + ico("devis") + "Devis gratuit</a>");
+  if (page === "contact") barreMobile.classList.add("barre-mobile--seule");
+  document.body.appendChild(barreMobile);
 
   if (S.maquette) {
     var badge = document.createElement("div");
     badge.className = "badge-maquette";
     badge.textContent = "Maquette réalisée par " + S.agence.nom;
     document.body.appendChild(badge);
-  }
-
-  var flottant = document.createElement("a");
-  flottant.className = "bouton appel-flottant";
-  flottant.href = telHref;
-  flottant.textContent = "Appeler";
-  flottant.setAttribute("aria-label", "Appeler le " + S.telephone);
-  document.body.appendChild(flottant);
-
-  if (entete && "IntersectionObserver" in window) {
-    new IntersectionObserver(function (entrees) {
-      flottant.classList.toggle("est-visible", !entrees[0].isIntersecting);
-    }).observe(entete);
   }
 
   /* ---------- Valeurs de la config dans les pages ---------- */
@@ -193,8 +292,31 @@
     if (type === "avis-google") el.href = S.liens.avisGoogle;
   });
 
+  document.querySelectorAll("[data-ico]").forEach(function (el) {
+    var nom = el.getAttribute("data-ico");
+    if (ICONES[nom]) el.outerHTML = ico(nom, el.getAttribute("class") === "ico" ? "" : el.getAttribute("class"));
+  });
+
+  document.querySelectorAll("[data-etoiles]").forEach(function (el) {
+    var html = "";
+    for (var i = 0; i < 5; i++) html += '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="' + ETOILE + '"/></svg>';
+    el.innerHTML = html;
+  });
+
   document.querySelectorAll("[data-villes]").forEach(function (el) {
     el.innerHTML = villesHTML();
+  });
+
+  document.querySelectorAll("[data-villes-pastilles]").forEach(function (el) {
+    el.innerHTML = S.villes
+      .map(function (v) {
+        return "<li>" + ico("pin") + esc(v) + "</li>";
+      })
+      .join("");
+  });
+
+  document.querySelectorAll("[data-carte]").forEach(function (el) {
+    el.innerHTML = carteZone();
   });
 
   document.querySelectorAll("[data-villes-options]").forEach(function (el) {
@@ -213,10 +335,6 @@
   });
   document.querySelectorAll("[data-date]").forEach(function (el) {
     el.textContent = aujourdhui;
-  });
-
-  document.querySelectorAll("[data-annee]").forEach(function (el) {
-    el.textContent = new Date().getFullYear();
   });
 
   /* ---------- Données structurées ---------- */
@@ -253,7 +371,7 @@
   var form = bon.querySelector("form");
   var champs = bon.querySelector(".bon__champs");
   var selectVille = form.elements.ville;
-  var ligneAutre = bon.querySelector(".ligne--autre");
+  var ligneAutre = bon.querySelector(".champ--autre");
   var confirmation = bon.querySelector(".bon__confirmation");
   var essaye = false;
 
@@ -299,7 +417,7 @@
       return f.name;
     });
     listeFichiers.textContent = noms.length
-      ? (noms.length === 1 ? "1 photo jointe\u00a0: " : noms.length + " photos jointes\u00a0: ") + noms.join(", ")
+      ? (noms.length === 1 ? "1 photo jointe : " : noms.length + " photos jointes : ") + noms.join(", ")
       : "";
   });
 
@@ -369,7 +487,7 @@
       test: function () {
         return form.querySelectorAll("input[name='besoin']:checked").length
           ? ""
-          : "Cochez au moins une case, même «\u202fAutre\u202f».";
+          : "Cochez au moins une case, même « Autre ».";
       },
     },
     {
@@ -388,21 +506,19 @@
   ];
 
   function verifier(regle) {
-    var valeur = regle.groupe ? "" : regle.el.value;
-    var message = regle.test(valeur);
+    var message = regle.test(regle.groupe ? "" : regle.el.value);
     if (message) poserErreur(regle.el, message);
     else effacerErreur(regle.el);
     return message;
   }
 
   regles.forEach(function (regle) {
-    var cible = regle.el;
     var evt = regle.groupe || regle.el.tagName === "SELECT" ? "change" : "input";
-    cible.addEventListener(evt, function () {
+    regle.el.addEventListener(evt, function () {
       if (essaye) verifier(regle);
     });
     if (!regle.groupe) {
-      cible.addEventListener("blur", function () {
+      regle.el.addEventListener("blur", function () {
         if (essaye) verifier(regle);
       });
     }
@@ -426,11 +542,10 @@
     var prenom = form.elements.nom.value.trim().split(/\s+/)[0];
     bon.classList.add("est-envoye");
     champs.inert = true;
-    champs.setAttribute("aria-disabled", "true");
     confirmation.innerHTML =
       "<strong>Votre demande est bien envoyée" + (prenom ? ", " + esc(prenom) : "") + ".</strong>" +
       "<p>On vous rappelle dans la journée au " + esc(form.elements.telephone.value.trim()) + ". " +
-      'C\'est urgent\u202f? Appelez-nous au <a href="' + telHref + '">' + esc(S.telephone) + "</a>.</p>";
+      "C'est urgent ? Appelez-nous au <a href=\"" + telHref + '">' + esc(S.telephone) + "</a>.</p>";
     confirmation.setAttribute("tabindex", "-1");
     confirmation.focus({ preventScroll: true });
     confirmation.scrollIntoView({ behavior: reduit ? "auto" : "smooth", block: "center" });

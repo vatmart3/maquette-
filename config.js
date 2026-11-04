@@ -7,6 +7,9 @@
 window.SITE = {
   nom: "Multiservice Thau",
 
+  // Petite ligne sous le nom (logo) et dans la barre de contact.
+  accroche: "Travaux et bricolage",
+
   // Numéro affiché (format français) — le lien tel: est calculé automatiquement.
   telephone: "06 39 98 00 00",
 

@@ -4,11 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Contact et devis gratuit | Multiservice Thau, Sète</title>
-  <meta name="description" content="Demandez votre devis gratuit à Multiservice Thau&nbsp;: remplissez le bon d'intervention, on vous rappelle dans la journée. Sète, Frontignan, Balaruc, Mèze et alentours.">
+  <meta name="description" content="Demandez votre devis gratuit à Multiservice Thau : remplissez le bon d'intervention, on vous rappelle dans la journée. Sète, Frontignan, Balaruc, Mèze et alentours.">
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#2347A0">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="preload" href="fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/barlow-sc-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/barlow-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles.css">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="fr_FR">
@@ -27,19 +28,19 @@
   <a class="evitement" href="#contenu">Aller au contenu</a>
 
   <header class="entete" data-slot="entete">
-    <noscript><div class="conteneur entete__ligne"><a class="marque" href="./">Multiservice Thau</a> <a href="tel:+33639980000">06 39 98 00 00</a></div></noscript>
+    <noscript><div class="conteneur entete__ligne"><a class="logo" href="./">Multiservice Thau</a> <a href="tel:+33639980000">06 39 98 00 00</a></div></noscript>
   </header>
 
   <main id="contenu">
 
-    <section class="titre-page" aria-labelledby="titre-page">
+    <section class="sur-bleu tete-page tete-page--contact" aria-labelledby="titre-page">
       <div class="conteneur">
         <h1 id="titre-page">Demandez votre devis.</h1>
-        <p class="intro">Remplissez le bon ci-dessous. On vous rappelle dans la journée pour en parler et fixer un passage. C'est gratuit et sans engagement.</p>
+        <p class="chapeau">Remplissez le bon ci-dessous. On vous rappelle dans la journée pour en parler et fixer un passage. C'est gratuit et sans engagement.</p>
       </div>
     </section>
 
-    <section class="section section--colle" aria-label="Bon d'intervention et coordonnées">
+    <section class="contact" aria-label="Bon d'intervention et coordonnées">
       <div class="conteneur contact__grille">
 
         <div class="bon bon--complet" data-bon>
@@ -56,41 +57,41 @@
               </div>
               <p class="bon__ref">
                 <span class="bon__numero">N° <span data-cfg="numeroBon">0412</span></span>
-                Date&nbsp;: <span data-date>—</span>
+                <span>Date&nbsp;: <span data-date>—</span></span>
               </p>
             </div>
 
-            <p class="bon__prerempli" hidden>On a repris ce que vous avez noté sur l'accueil. Il reste quelques lignes à compléter.</p>
+            <div class="bon__prerempli" hidden><svg class="ico" data-ico="info"></svg><p>On a repris ce que vous avez noté sur l'accueil. Il reste quelques lignes à compléter.</p></div>
 
             <div class="bon__champs">
               <fieldset>
                 <legend>Vos coordonnées</legend>
                 <div class="colonnes">
-                  <div class="ligne">
-                    <label for="nom">Nom&nbsp;:</label>
-                    <input id="nom" name="nom" type="text" autocomplete="name" required aria-describedby="nom-erreur">
+                  <div class="champ">
+                    <label for="nom">Nom</label>
+                    <input class="saisie" id="nom" name="nom" type="text" autocomplete="name" required aria-describedby="nom-erreur">
                     <p class="erreur" id="nom-erreur"></p>
                   </div>
-                  <div class="ligne">
-                    <label for="telephone">Téléphone&nbsp;:</label>
-                    <input id="telephone" name="telephone" type="tel" inputmode="tel" autocomplete="tel" required aria-describedby="telephone-erreur">
+                  <div class="champ">
+                    <label for="telephone">Téléphone</label>
+                    <input class="saisie" id="telephone" name="telephone" type="tel" inputmode="tel" autocomplete="tel" required aria-describedby="telephone-erreur" placeholder="06 12 34 56 78">
                     <p class="erreur" id="telephone-erreur"></p>
                   </div>
-                  <div class="ligne">
-                    <label for="email">E-mail<span class="sr"> (facultatif)</span>&nbsp;:</label>
-                    <input id="email" name="email" type="email" autocomplete="email" placeholder="facultatif" aria-describedby="email-erreur">
+                  <div class="champ">
+                    <label for="email">E-mail <span class="facultatif">(facultatif)</span></label>
+                    <input class="saisie" id="email" name="email" type="email" autocomplete="email" aria-describedby="email-erreur">
                     <p class="erreur" id="email-erreur"></p>
                   </div>
-                  <div class="ligne">
-                    <label for="ville">Ville&nbsp;:</label>
-                    <select id="ville" name="ville" required aria-describedby="ville-erreur" data-villes-options>
+                  <div class="champ">
+                    <label for="ville">Ville</label>
+                    <select class="saisie" id="ville" name="ville" required aria-describedby="ville-erreur" data-villes-options>
                       <option value="">Choisir dans la liste</option>
                     </select>
                     <p class="erreur" id="ville-erreur"></p>
                   </div>
-                  <div class="ligne ligne--autre" hidden>
-                    <label for="villeAutre">Votre ville&nbsp;:</label>
-                    <input id="villeAutre" name="villeAutre" type="text" autocomplete="address-level2" aria-describedby="villeAutre-erreur">
+                  <div class="champ champ--autre" hidden>
+                    <label for="villeAutre">Votre ville</label>
+                    <input class="saisie" id="villeAutre" name="villeAutre" type="text" autocomplete="address-level2" aria-describedby="villeAutre-erreur">
                     <p class="erreur" id="villeAutre-erreur"></p>
                   </div>
                 </div>
@@ -101,23 +102,23 @@
                 <div class="cases">
                   <div class="case">
                     <input id="b-reparation" type="checkbox" name="besoin" value="Réparation">
-                    <label for="b-reparation"><span class="case__boite" aria-hidden="true"><svg viewBox="0 0 36 36"><path pathLength="1" d="M8.5 9.5C14 15 20.5 21.5 27.5 27.2"/><path pathLength="1" d="M27.2 8.6C21 14.6 15 20.8 8.8 27.6"/></svg></span>Réparation</label>
+                    <label for="b-reparation"><span class="case__boite" aria-hidden="true"><svg viewBox="0 0 16 16"><path pathLength="1" d="M3.5 8.5l3 3 6-7"/></svg></span>Réparation</label>
                   </div>
                   <div class="case">
                     <input id="b-entretien" type="checkbox" name="besoin" value="Entretien">
-                    <label for="b-entretien"><span class="case__boite" aria-hidden="true"><svg viewBox="0 0 36 36"><path pathLength="1" d="M8.5 9.5C14 15 20.5 21.5 27.5 27.2"/><path pathLength="1" d="M27.2 8.6C21 14.6 15 20.8 8.8 27.6"/></svg></span>Entretien</label>
+                    <label for="b-entretien"><span class="case__boite" aria-hidden="true"><svg viewBox="0 0 16 16"><path pathLength="1" d="M3.5 8.5l3 3 6-7"/></svg></span>Entretien</label>
                   </div>
                   <div class="case">
                     <input id="b-renovation" type="checkbox" name="besoin" value="Rénovation">
-                    <label for="b-renovation"><span class="case__boite" aria-hidden="true"><svg viewBox="0 0 36 36"><path pathLength="1" d="M8.5 9.5C14 15 20.5 21.5 27.5 27.2"/><path pathLength="1" d="M27.2 8.6C21 14.6 15 20.8 8.8 27.6"/></svg></span>Rénovation</label>
+                    <label for="b-renovation"><span class="case__boite" aria-hidden="true"><svg viewBox="0 0 16 16"><path pathLength="1" d="M3.5 8.5l3 3 6-7"/></svg></span>Rénovation</label>
                   </div>
                   <div class="case">
                     <input id="b-amenagement" type="checkbox" name="besoin" value="Aménagement">
-                    <label for="b-amenagement"><span class="case__boite" aria-hidden="true"><svg viewBox="0 0 36 36"><path pathLength="1" d="M8.5 9.5C14 15 20.5 21.5 27.5 27.2"/><path pathLength="1" d="M27.2 8.6C21 14.6 15 20.8 8.8 27.6"/></svg></span>Aménagement</label>
+                    <label for="b-amenagement"><span class="case__boite" aria-hidden="true"><svg viewBox="0 0 16 16"><path pathLength="1" d="M3.5 8.5l3 3 6-7"/></svg></span>Aménagement</label>
                   </div>
                   <div class="case">
                     <input id="b-autre" type="checkbox" name="besoin" value="Autre">
-                    <label for="b-autre"><span class="case__boite" aria-hidden="true"><svg viewBox="0 0 36 36"><path pathLength="1" d="M8.5 9.5C14 15 20.5 21.5 27.5 27.2"/><path pathLength="1" d="M27.2 8.6C21 14.6 15 20.8 8.8 27.6"/></svg></span>Autre</label>
+                    <label for="b-autre"><span class="case__boite" aria-hidden="true"><svg viewBox="0 0 16 16"><path pathLength="1" d="M3.5 8.5l3 3 6-7"/></svg></span>Autre</label>
                   </div>
                 </div>
                 <p class="erreur" id="besoin-erreur"></p>
@@ -125,7 +126,7 @@
 
               <fieldset>
                 <legend><label for="description">Description du besoin</label></legend>
-                <textarea id="description" name="description" rows="5" required aria-describedby="description-aide description-erreur" placeholder="Ce qu'il faut faire, où, depuis quand…"></textarea>
+                <textarea class="saisie" id="description" name="description" rows="5" required aria-describedby="description-aide description-erreur" placeholder="Ce qu'il faut faire, où, depuis quand…"></textarea>
                 <p class="discret" id="description-aide">Quelques mots suffisent, on vous posera les questions au téléphone.</p>
                 <p class="erreur" id="description-erreur"></p>
               </fieldset>
@@ -135,19 +136,19 @@
                 <div class="delais">
                   <div class="delai">
                     <input id="d-vite" type="radio" name="delai" value="Dès que possible">
-                    <label for="d-vite">Dès que possible<svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M12 27C3 14 38 4 70 4.5C97 5 101 27 76 34C50 40 9 38 4 23C2 15 16 7 36 5.5"/></svg></label>
+                    <label for="d-vite">Dès que possible</label>
                   </div>
                   <div class="delai">
                     <input id="d-semaine" type="radio" name="delai" value="Cette semaine">
-                    <label for="d-semaine">Cette semaine<svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M88 9C70 2 20 3 7 15C-2 27 30 37 62 36C92 35 101 22 90 12C82 6 64 4 48 5"/></svg></label>
+                    <label for="d-semaine">Cette semaine</label>
                   </div>
                   <div class="delai">
                     <input id="d-mois" type="radio" name="delai" value="Ce mois-ci">
-                    <label for="d-mois">Ce mois-ci<svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M14 30C1 20 22 5 56 4C90 3 102 20 84 31C66 40 24 39 9 28C4 23 9 12 26 8"/></svg></label>
+                    <label for="d-mois">Ce mois-ci</label>
                   </div>
                   <div class="delai">
                     <input id="d-pas-presse" type="radio" name="delai" value="Pas pressé">
-                    <label for="d-pas-presse">Pas pressé<svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M80 6C56 1 12 5 5 19C0 32 36 38 66 36C94 34 100 18 86 10C76 5 60 4 46 5"/></svg></label>
+                    <label for="d-pas-presse">Pas pressé</label>
                   </div>
                 </div>
                 <p class="erreur" id="delai-erreur"></p>
@@ -156,13 +157,16 @@
               <fieldset class="fichier">
                 <legend>Photos <span class="facultatif">(facultatif)</span></legend>
                 <input id="photos" name="photos" type="file" accept="image/*" multiple>
-                <label for="photos"><span class="fichier__action">Ajouter des photos</span><span class="discret">Une photo de ce qui ne va pas nous aide à préparer le devis.</span></label>
+                <label for="photos">
+                  <span class="pastille"><svg class="ico" data-ico="photo"></svg></span>
+                  <span class="fichier__texte"><span class="fichier__action">Ajouter des photos</span><span class="discret">Une photo de ce qui ne va pas nous aide à préparer le devis.</span></span>
+                </label>
                 <p class="fichier__liste" aria-live="polite"></p>
               </fieldset>
             </div>
 
             <div class="bon__envoi">
-              <button class="bouton" type="submit">Envoyer ma demande</button>
+              <button class="bouton bouton--action bouton--grand" type="submit">Envoyer ma demande</button>
               <p>On vous rappelle dans la journée.</p>
               <div class="bon__confirmation" role="status" aria-live="polite"></div>
             </div>
@@ -172,20 +176,18 @@
         </div>
 
         <aside class="coordonnees" aria-label="Nos coordonnées">
-          <div>
+          <div class="carte">
             <h2>Vous préférez appeler&#8239;?</h2>
             <a class="coordonnees__tel" data-href="tel" href="tel:+33639980000" data-cfg="telephone">06 39 98 00 00</a>
-            <p><span data-cfg="horaires">Du lundi au samedi, de 8 h à 19 h</span>.</p>
-            <h3>Par e-mail</h3>
-            <p><a data-href="mail" href="mailto:contact@multiservice-thau.fr" data-cfg="email">contact@multiservice-thau.fr</a></p>
+            <ul class="infos">
+              <li><svg class="ico" data-ico="horloge"></svg><span><span data-cfg="horaires">Du lundi au samedi, de 8 h à 19 h</span>.</span></li>
+              <li><svg class="ico" data-ico="mail"></svg><a data-href="mail" href="mailto:contact@multiservice-thau.fr" data-cfg="email">contact@multiservice-thau.fr</a></li>
+              <li><svg class="ico" data-ico="pin"></svg><span data-villes>Sète, Frontignan, Balaruc-les-Bains, Balaruc-le-Vieux, Mèze, Marseillan, Bouzigues, Poussan, Gigean, Vic-la-Gardiole.</span></li>
+            </ul>
           </div>
-          <div>
-            <h3>Où on intervient</h3>
-            <p data-villes>Sète, Frontignan, Balaruc-les-Bains, Balaruc-le-Vieux, Mèze, Marseillan, Bouzigues, Poussan, Gigean, Vic-la-Gardiole.</p>
-          </div>
-          <figure class="photo photo--carte">
-            <img src="img/platre.svg" alt="Emplacement réservé à la carte de la zone d'intervention autour de l'étang de Thau" width="1600" height="900">
-            <figcaption>Carte de la zone d'intervention</figcaption>
+          <figure class="carte-zone">
+            <div data-carte></div>
+            <figcaption>Carte de la zone d'intervention (schéma, non à l'échelle).</figcaption>
           </figure>
         </aside>
 
