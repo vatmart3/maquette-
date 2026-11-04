@@ -271,7 +271,7 @@ const P = (pos, cible, ox, oy) => ({ pos: new THREE.Vector3(...pos), cible: new 
 const PLANS = mobile
   ? {
       intro: P([0, 2.6, 82], [0, 2.6, 0], 0, -0.26),
-      hero: P([-30, 25, 58], [0.5, 3, 0], 0, -0.3),
+      hero: P([-29, 23, 58], [0.8, 3.2, 0], 0, -0.31),
       zones: [
         P([-10, 9, 34], [0, 3.4, 0], 0, -0.12),
         P([-26, 11, 26], [-7, 1.5, 2], 0, -0.12),
@@ -324,7 +324,7 @@ if (!racine) {
 
 function demarrer() {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "low-power" });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 1 : 1.5));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 2 : 1.5));
   renderer.setClearColor(0x000000, 0);
   renderer.domElement.setAttribute("aria-hidden", "true");
   racine.appendChild(renderer.domElement);
@@ -350,7 +350,7 @@ function demarrer() {
   geo.setColors(couleurs);
   const mat = new LineMaterial({
     vertexColors: true,
-    linewidth: 1.5,
+    linewidth: mobile ? 1.15 : 1.5,
     transparent: true,
     worldUnits: false,
   });
@@ -405,8 +405,14 @@ function demarrer() {
   let enCours = false;
   let visible = !document.hidden;
 
-  function redimensionner() {
-    const w = window.innerWidth, h = window.innerHeight;
+  // Sur téléphone, la barre d'adresse qui apparaît et disparaît change la hauteur
+  // à chaque défilement : on ne redimensionne que si la largeur change.
+  let largeurConnue = 0;
+  function redimensionner(e) {
+    const w = window.innerWidth;
+    const h = mobile ? Math.max(racine.clientHeight, window.innerHeight) : window.innerHeight;
+    if (mobile && e && e.type === "resize" && w === largeurConnue) return;
+    largeurConnue = w;
     etat.largeur = w;
     etat.hauteur = h;
     renderer.setSize(w, h, false);
@@ -448,7 +454,7 @@ function demarrer() {
     if (page !== "accueil" || !visite) {
       const max = Math.max(1, document.documentElement.scrollHeight - vh);
       melanger(PAGE_A, PAGE_B, lisse(clamp01(y / max)), out);
-      out.opacite = 0.3;
+      out.opacite = mobile ? 0.22 : 0.3;
       return out;
     }
 
@@ -458,7 +464,12 @@ function demarrer() {
 
     if (y <= haut) {
       melanger(PLANS.hero, PLANS.zones[0], lisse(clamp01(y / Math.max(1, haut))), out);
-      out.opacite = 1;
+      if (mobile) {
+        // sur téléphone : la maison dans le haut de l'accueil, puis dans la visite, et rien entre les deux
+        const sortie = clamp01((y - vh * 0.2) / (vh * 0.3));
+        const entree = clamp01((y - (haut - vh * 0.45)) / (vh * 0.4));
+        out.opacite = Math.max(1 - sortie, entree);
+      } else out.opacite = 1;
     } else if (y <= fin) {
       const p = clamp01((y - haut) / course) * 4;
       const i = Math.min(3, Math.floor(p));
@@ -469,7 +480,7 @@ function demarrer() {
     } else {
       const t = lisse(clamp01((y - fin) / (vh * 1.6)));
       melanger(PLANS.zones[3], PLANS.large, t, out);
-      out.opacite = 1 - 0.7 * t;
+      out.opacite = mobile ? 1 - clamp01((y - fin) / (vh * 0.4)) : 1 - 0.7 * t;
     }
     return out;
   }
@@ -674,6 +685,7 @@ function demarrer() {
 
   /* --- Événements --- */
   window.addEventListener("resize", redimensionner);
+  window.addEventListener("orientationchange", () => setTimeout(() => redimensionner(), 250));
   window.addEventListener("scroll", relancer, { passive: true });
   if (!mobile && !reduit) {
     window.addEventListener("pointermove", (e) => {

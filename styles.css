@@ -1607,133 +1607,263 @@ main { position: relative; z-index: 1; }
 [data-colle] { padding-top: 0; }
 
 /* ==========================================================================
-   Finitions téléphone
+   Téléphone : version allégée (desktop inchangé)
    ========================================================================== */
 
 .accroche__whatsapp a { display: inline-flex; align-items: center; gap: 8px; }
 .accroche__whatsapp .ico { display: none; }
 .coordonnees__appeler { display: none; }
 
+/* la scène garde la grande hauteur d'écran : pas de saut quand la barre d'adresse bouge */
+.scene { bottom: auto; height: 100vh; height: 100lvh; }
+
 @media (max-width: 999px) {
-  :root { --barre: 76px; }
+  :root { --barre: 64px; }
+
+  .entete { background: rgb(233 236 232 / 0.97); }
+  .entete.est-defile { box-shadow: 0 1px 0 rgb(20 33 61 / 0.1); }
+  .marque { max-width: none; font-size: 1rem; font-weight: 800; letter-spacing: -0.005em; }
+
+  .entete__menu {
+    min-height: 38px;
+    padding: 4px 14px;
+    border-width: 1.5px;
+    font-size: 0.9rem;
+    font-weight: 650;
+  }
 
   .barre-actions {
-    grid-template-columns: 1.35fr 1fr 1fr;
-    gap: 8px;
-    padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
-    background: rgb(255 255 255 / 0.97);
-    border-top: 1px solid var(--trait);
-    box-shadow: 0 -10px 28px -14px rgb(20 33 61 / 0.4);
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 6px;
+    padding: 7px 8px calc(7px + env(safe-area-inset-bottom));
+    background: #fff;
+    border-top: 1px solid rgb(20 33 61 / 0.1);
+    box-shadow: none;
   }
 
   .barre-actions a {
-    min-height: 58px;
+    min-height: 50px;
+    gap: 3px;
     border-radius: 4px;
-    font-size: 0.78rem;
-    letter-spacing: 0;
+    background: #fff;
+    color: var(--nuit);
+    box-shadow: inset 0 0 0 1px rgb(20 33 61 / 0.2);
+    font-size: 0.72rem;
+    font-weight: 600;
   }
 
   .barre-actions a:first-child {
     flex-direction: row;
-    gap: 10px;
-    font-stretch: 125%;
-    font-size: 1.0625rem;
+    gap: 8px;
+    background: var(--bleu);
+    color: #fff;
+    box-shadow: none;
+    font-size: 1rem;
+    font-weight: 700;
   }
 
-  .barre-actions a:first-child .ico { width: 22px; height: 22px; }
+  .barre-actions .ico { width: 19px; height: 19px; stroke-width: 1.7; }
+  .barre-actions a:first-child .ico { width: 20px; height: 20px; }
 
-  .entete__menu { min-height: 42px; padding: 6px 14px; font-size: var(--t--1); }
+  .badge-maquette {
+    left: 6px;
+    bottom: calc(var(--barre) + 6px);
+    padding: 2px 6px;
+    font-size: 0.625rem;
+    font-weight: 500;
+    background: rgb(20 33 61 / 0.75);
+  }
 }
 
 @media (max-width: 859px) {
-  /* Accueil */
-  .accroche { padding-bottom: 40px; }
-  .accroche p.chapeau { margin: 18px 0 22px; font-size: 1.1875rem; }
-  .accroche__bouton { min-height: 60px; font-size: 1.0625rem; }
+  :root {
+    --titre-1: 2.2rem;
+    --titre-2: 1.6rem;
+    --titre-3: 1.12rem;
+    --entete: 56px;
+  }
 
-  .accroche__whatsapp { margin: 12px 0 0; text-shadow: none; }
+  body { font-size: 1rem; line-height: 1.55; }
+  h1, h2 { font-weight: 760; line-height: 1.06; letter-spacing: -0.015em; }
+  h3 { font-weight: 720; }
+
+  .section { padding-block: 56px; }
+  .entete-section { margin-bottom: 28px; }
+  .entete-section p { margin-top: 10px; font-size: 0.95rem; }
+
+  /* fonds nets : plus de voile gris au-dessus de la maison */
+  .section--voile { background: var(--platre); }
+  [data-page="accueil"] main > .section--voile:nth-child(odd) { background: var(--papier); }
+  .titre-page.section--voile { background: transparent; }
+  .titre-page { padding-block: 40px 28px; }
+  .intro-texte { font-size: 1.0625rem; }
+
+  .bouton { min-height: 52px; padding: 10px 18px; font-size: 1rem; }
+  .bouton--papier { box-shadow: inset 0 0 0 1px rgb(20 33 61 / 0.3); }
+
+  /* --- Accueil : la maison en haut, le texte en dessous --- */
+  .accroche { min-height: 0; padding: 0 0 36px; }
+  .accroche__texte { padding-top: max(33vh, 230px); text-shadow: none; }
+  .intro .accroche h1 { opacity: 1; }
+  .intro-finie .accroche h1 { animation: none; }
+  .accroche p.chapeau { margin: 14px 0 22px; font-size: 1.0625rem; line-height: 1.5; color: var(--nuit); }
+  .accroche__bouton { width: 100%; min-height: 54px; }
+
+  .accroche__whatsapp { margin: 10px 0 0; }
   .accroche__whatsapp a {
     display: flex;
     justify-content: center;
     width: 100%;
-    min-height: 54px;
-    padding: 10px 16px;
+    min-height: 50px;
+    padding: 10px 14px;
     border-radius: 3px;
-    background: var(--papier);
+    background: #fff;
     color: var(--nuit);
-    box-shadow: inset 0 0 0 2px var(--nuit);
-    font-weight: 700;
+    box-shadow: inset 0 0 0 1px rgb(20 33 61 / 0.25);
+    font-size: 0.95rem;
+    font-weight: 600;
     text-decoration: none;
   }
-  .accroche__whatsapp .ico { display: block; width: 20px; height: 20px; }
+  .accroche__whatsapp .ico { display: block; width: 19px; height: 19px; color: var(--bleu); }
   .accroche__whatsapp span::first-letter { text-transform: uppercase; }
 
-  .coches { display: grid; gap: 8px; margin-top: 20px; font-size: 0.95rem; }
+  .coches { display: grid; gap: 6px; margin-top: 18px; font-size: 0.875rem; font-weight: 500; }
+  .coches .ico { width: 16px; height: 16px; }
 
-  .accroche__bon { margin-top: 12px; }
-  .bon--mini { transform: rotate(-0.6deg); }
-  .bon--mini .bouton { min-height: 54px; }
+  .accroche__bon { margin-top: 32px; }
+  .bon--mini { transform: none; }
+  .bon__titre { font-size: 1.35rem; }
+  .bon__numero { font-size: 1.1rem; }
+  .bon--mini .bouton { min-height: 50px; }
   .bon--mini .bon__aide { text-align: center; }
+
+  /* --- Visite : bandeau de titre net, maison au milieu, fiche en bas --- */
+  .visite__tete {
+    padding: 12px var(--gouttiere) 6px;
+    background: var(--platre);
+  }
+  .visite__tete h2 { font-size: 1.3rem; }
+  .visite__tete p { margin-top: 2px; font-size: 0.82rem; }
+  .visite__reperes {
+    padding-bottom: 8px;
+    background: var(--platre);
+    box-shadow: 0 1px 0 rgb(20 33 61 / 0.1);
+  }
+  .visite__reperes button { padding: 2px 0 4px; gap: 5px; font-size: 0.68rem; }
+  .visite__reperes button::before { height: 3px; }
+
+  .visite__fiches { bottom: calc(var(--barre) + 24px); }
+  .fiche { padding: 16px 16px 16px 18px; transform: rotate(-0.6deg); }
+  .fiche h3 { font-size: 1.3rem; margin-bottom: 6px; }
+  .fiche p { margin-bottom: 12px; font-size: 0.94rem; line-height: 1.45; }
+  .fiche .bouton { min-height: 48px; font-size: 0.95rem; }
+  .fiche__oeillet { width: 12px; height: 12px; top: 14px; right: 14px; box-shadow: 0 0 0 2.5px var(--bleu); }
+  .visite__fil line { stroke-width: 1.5; }
+  .visite__fil circle { r: 4; }
+
+  /* --- Mètre ruban --- */
+  .metre { --ruban: 52px; }
+  .etape { padding: 0 0 30px calc(var(--ruban) + 18px); min-height: 0; }
+  .etape__num { font-size: 1.35rem; top: 8px; }
+  .etape h3 { font-size: 1.08rem; margin-bottom: 6px; }
+  .etape p { font-size: 0.95rem; }
 
   .apres-etapes .lien-action,
   .zone__note .lien-action {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 54px;
+    min-height: 50px;
     margin-top: 12px;
     padding: 10px 16px;
     border-radius: 3px;
-    background: var(--papier);
+    background: #fff;
     color: var(--nuit);
-    box-shadow: inset 0 0 0 2px var(--nuit);
+    box-shadow: inset 0 0 0 1px rgb(20 33 61 / 0.25);
+    font-size: 0.95rem;
     text-align: center;
     text-decoration: none;
   }
 
-  .faq summary { font-size: 1.15rem; padding-block: 18px; }
-  .faq__reponse .lien-action { display: inline-block; padding: 6px 0; }
+  /* --- Avis --- */
+  .avis-vedette blockquote p { font-size: 1.2rem; font-weight: 600; line-height: 1.3; }
+  .mots { gap: 28px; }
+  .mot { padding: 22px 20px 18px; }
+  .mot blockquote p { font-size: 0.95rem; }
+  .mot--large blockquote p { font-size: 1rem; }
+  .exemple { font-size: 0.75rem; }
+  .tableau { gap: 30px; }
 
-  .appel__suite { display: grid; gap: 14px; }
-  .appel__suite .bouton { width: 100%; min-height: 58px; }
+  /* --- FAQ --- */
+  .faq summary { padding-block: 16px; padding-right: 44px; font-size: 1.02rem; font-weight: 700; }
+  .faq summary::before, .faq summary::after { width: 16px; height: 2px; }
+  .faq__reponse { padding-right: 0; font-size: 0.95rem; }
+
+  /* --- Zone --- */
+  .villes { font-size: min(1.45rem, 6.2vw); font-weight: 720; line-height: 1.2; }
+
+  /* --- Bandeau d'appel --- */
+  .appel { padding-block: 48px; }
+  .appel h2 { font-size: 1.5rem; }
+  .appel__numero { margin-top: 16px; }
+  .appel__suite { display: grid; gap: 14px; margin-top: 20px; }
+  .appel__suite .bouton { width: 100%; }
+  .appel__suite p { font-size: 0.9rem; }
 
   .avis-google .bouton { width: 100%; }
 
-  /* Bon d'intervention */
+  /* --- Pied de page --- */
+  .pied { padding-block: 44px 24px; }
+  .pied__marque { font-size: 1.35rem; }
+  .pied__grille { gap: 28px; }
+
+  /* --- Bon d'intervention --- */
+  .bon__feuille { padding: 20px 16px 22px 20px; }
+  .bon--complet .bon__titre { font-size: 1.45rem; }
+  .bon__tete { border-bottom-width: 2px; margin-bottom: 16px; }
+
   .progression {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 8px;
-    margin-bottom: 22px;
-    font-size: 0.75rem;
+    margin-bottom: 20px;
+    font-size: 0.72rem;
     line-height: 1.2;
   }
   .progression li { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .progression li::before { width: 22px; height: 22px; font-size: 0.72rem; border-width: 1.5px; }
 
-  .etape-bon__titre { font-size: var(--t-1); margin-bottom: 16px; }
-  .etape-bon legend { font-size: 1.125rem; }
+  .etape-bon__titre { font-size: 1.15rem; margin-bottom: 14px; }
+  .etape-bon legend { font-size: 1rem; margin-bottom: 8px; }
 
-  .cases { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 12px; }
-  .case label { font-size: 1rem; line-height: 1.25; }
+  .cases { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 10px; }
+  .case label { font-size: 0.95rem; line-height: 1.25; gap: 10px; }
+  .case__boite { width: 22px; height: 22px; border-width: 1.5px; }
+  .case__boite svg { left: -5.5px; top: -5.5px; width: 30px; height: 30px; }
+  .case input { top: 12px; width: 22px; height: 22px; }
 
-  .entoures { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 6px; }
-  .entoure label { width: 100%; justify-content: center; text-align: center; padding-inline: 6px; line-height: 1.2; }
+  .entoures { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 6px; }
+  .entoure label { width: 100%; min-height: 44px; justify-content: center; text-align: center; padding-inline: 6px; font-size: 0.95rem; line-height: 1.2; }
 
-  .ligne { margin-bottom: 18px; }
-  .ligne > label { font-size: 1rem; }
+  .ligne { margin-bottom: 16px; }
+  .ligne > label { font-size: 0.95rem; }
+  .bon input[type="text"], .bon input[type="tel"], .bon input[type="email"], .bon select { border-bottom-width: 1.5px; }
+  .fichier label { padding: 12px 14px; border-width: 1.5px; font-size: 0.95rem; }
 
-  .fichier label { padding: 14px 16px; }
-
-  .bon__actions { flex-direction: column; align-items: stretch; gap: 10px; }
-  .bon__actions .bouton { order: 1; min-height: 58px; }
-  .bouton-retour { order: 2; align-self: center; min-height: 44px; }
+  .bon__actions { flex-direction: column; align-items: stretch; gap: 8px; padding-top: 18px; border-top-width: 2px; }
+  .bon__actions .bouton { order: 1; min-height: 52px; }
+  .bouton-retour { order: 2; align-self: center; min-height: 40px; }
   .bon__actions [data-aide] { order: 3; text-align: center; }
   .bon__confirmation { order: 4; }
+  .bon__confirmation strong { font-size: 1.3rem; }
   .bon__confirmation .bouton { width: 100%; }
+  .cachet { font-size: 1.15rem; top: 220px; border-width: 3px; }
 
-  /* Coordonnées */
-  .coordonnees { padding: 24px 20px; margin-inline: calc(-1 * var(--gouttiere) + 8px); }
-  .coordonnees__tel { margin-bottom: 12px; }
-  .coordonnees__appeler { display: flex; width: 100%; min-height: 58px; margin-bottom: 10px; }
-  .coordonnees .bouton--papier { min-height: 56px; }
+  /* --- Coordonnées --- */
+  .coordonnees { padding: 22px 18px; background: var(--papier); }
+  .coordonnees h2 { font-size: 1.1rem; }
+  .coordonnees__tel { font-size: 1.75rem; margin-bottom: 12px; }
+  .coordonnees__appeler { display: flex; width: 100%; margin-bottom: 8px; }
+  .coordonnees h3 { font-size: 0.95rem; margin-top: 20px; }
+  .coordonnees p { font-size: 0.95rem; }
 }
