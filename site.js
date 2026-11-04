@@ -1,8 +1,9 @@
 /*
- * Multiservice Thau — script commun.
- * Génère l'en-tête, le pied de page, les icônes, la carte de la zone et les
- * infos de contact à partir de config.js ; gère le menu mobile, le mini bon
- * de l'accueil et le bon d'intervention (contact).
+ * Multiservice Thau — script commun (sans dépendance).
+ * Génère l'en-tête, la barre d'actions mobile, le pied de page et les infos de
+ * contact à partir de config.js ; gère le menu, la visite de la maison, la FAQ,
+ * le mini bon de l'accueil et le bon d'intervention en 3 étapes (contact).
+ * La scène 3D (scene.js) arrive en plus : le site fonctionne sans elle.
  */
 (function () {
   "use strict";
@@ -10,8 +11,10 @@
   var S = window.SITE;
   if (!S) return;
 
-  var reduit = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var html = document.documentElement;
   var page = document.body.getAttribute("data-page") || "";
+  var reduit = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var mqMobile = window.matchMedia("(max-width: 859px)");
 
   /* ---------- Outils ---------- */
 
@@ -21,7 +24,6 @@
     });
   }
 
-  // "06 39 98 00 00" -> "+33639980000"
   function telInternational(t) {
     var chiffres = String(t).replace(/\D/g, "");
     if (chiffres.indexOf("33") === 0) return "+" + chiffres;
@@ -39,97 +41,25 @@
   var tel = telInternational(S.telephone);
   var telHref = "tel:" + tel;
   var mailHref = "mailto:" + S.email;
-
-  /* ---------- Icônes maison (trait 1,75 px) ---------- */
+  var waHref = "https://wa.me/" + S.whatsapp + "?text=" + encodeURIComponent(S.whatsappMessage || "");
 
   var ICONES = {
     tel: "M6.6 3.5h2.6l1.6 4.2-2.1 1.5a11.5 11.5 0 0 0 6.1 6.1l1.5-2.1 4.2 1.6v2.6a2 2 0 0 1-2.1 2A16.6 16.6 0 0 1 4.6 5.6a2 2 0 0 1 2-2.1z",
     devis: "M7 3h7l4.5 4.5V19a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z M14 3v4.5h4.5 M8.5 12.5h7 M8.5 16h5",
-    horloge: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z M12 7.5V12l3 2",
-    cle: "M15.5 3.5a4.5 4.5 0 0 0-4.2 6.1L4.6 16.3a2 2 0 0 0 2.8 2.8l6.7-6.7a4.5 4.5 0 0 0 6.1-4.2l-2.8 2.8-2.6-.4-.4-2.6 2.8-2.8a4.5 4.5 0 0 0-1.7-.3z",
-    calendrier: "M5 6h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1z M8 3.5V8 M16 3.5V8 M4 10.5h16 M9 15.2l2 2 4-4",
-    rouleau: "M5 4h11a1.5 1.5 0 0 1 1.5 1.5v2A1.5 1.5 0 0 1 16 9H5a1.5 1.5 0 0 1-1.5-1.5v-2A1.5 1.5 0 0 1 5 4z M17.5 6.5h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H11v3 M10 14.5h2a.5.5 0 0 1 .5.5v5.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5V15a.5.5 0 0 1 .5-.5z",
-    equerre: "M4 4v16h16z M8 12.5V16h3.5z M4 8h2 M4 12h2.5 M12 20v-2.5 M16 20v-2",
-    propre: "M12 3.5l1.6 4.9 4.9 1.6-4.9 1.6L12 16.5l-1.6-4.9L5.5 10l4.9-1.6z M18.5 15.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z",
-    pin: "M12 21s-6.5-5.8-6.5-11a6.5 6.5 0 0 1 13 0c0 5.2-6.5 11-6.5 11z M12 12.3a2.3 2.3 0 1 0 0-4.6 2.3 2.3 0 0 0 0 4.6z",
-    mail: "M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z M3.5 7l8.5 6 8.5-6",
-    check: "M5 12.5l4.5 4.5L19 7.5",
     photo: "M4.5 7.5h3l1.5-2.5h6l1.5 2.5h3a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18V9a1.5 1.5 0 0 1 1.5-1.5z M12 16.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z",
-    info: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z M12 11v5.5 M12 7.7v.1",
-    menu: "M4 7h16 M4 12h16 M4 17h16",
-    fermer: "M6 6l12 12 M18 6L6 18",
+    coche: "M5 12.5l4.5 4.5L19 7.5",
   };
 
-  var ETOILE = "M12 2.8l2.8 5.8 6.3.8-4.6 4.4 1.2 6.3L12 17.1l-5.7 3 1.2-6.3L2.9 9.4l6.3-.8z";
-
-  function ico(nom, classe) {
-    return (
-      '<svg class="ico' + (classe ? " " + classe : "") + '" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="' +
-      ICONES[nom] +
-      '"/></svg>'
-    );
+  function ico(nom) {
+    return '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="' + ICONES[nom] + '"/></svg>';
   }
 
-  function logo() {
-    return (
-      '<svg class="logo__marque" viewBox="0 0 44 44" aria-hidden="true" focusable="false">' +
-      '<rect width="44" height="44" rx="11" fill="#2347A0"/>' +
-      '<path d="M10.5 21.5 22 12l11.5 9.5" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>' +
-      '<path d="M14.5 19.5v9.5h15v-9.5" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>' +
-      '<path d="M10 34.6c6.5-.8 16.5.6 24-.4" fill="none" stroke="#F2C230" stroke-width="3.2" stroke-linecap="round"/>' +
-      "</svg>"
-    );
-  }
-
-  function nomLogo() {
-    return '<span class="logo__nom">' + esc(S.nom) + "<small>" + esc(S.accroche) + "</small></span>";
-  }
-
-  /* ---------- Carte schématique de la zone ---------- */
-
-  // Positions calculées depuis les coordonnées GPS des communes (projection simple).
-  var POSITIONS = {
-    sete: [368, 272, 10, 5, "start"],
-    frontignan: [464, 172, 10, -8, "start"],
-    balaruclesbains: [336, 187, 10, 6, "start"],
-    balaruclevieux: [347, 140, 10, 4, "start"],
-    meze: [219, 221, -10, 4, "end"],
-    marseillan: [94, 377, -10, 4, "end"],
-    bouzigues: [303, 172, -8, -8, "end"],
-    poussan: [324, 80, -10, 4, "end"],
-    gigean: [391, 58, 10, 4, "start"],
-    viclagardiole: [530, 82, 0, 24, "middle"],
-  };
-
-  function carteZone() {
-    var points = "";
-    var noms = "";
-    S.villes.forEach(function (v) {
-      var p = POSITIONS[normaliser(v)];
-      if (!p) return;
-      points += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="7"/>';
-      noms +=
-        '<text x="' + (p[0] + p[2]) + '" y="' + (p[1] + p[3]) + '" text-anchor="' + p[4] + '">' + esc(v) + "</text>";
-    });
-    var grille = "";
-    for (var x = 60; x < 600; x += 60) grille += "M" + x + " 30V470";
-    for (var y = 60; y < 470; y += 60) grille += "M0 " + y + "H600";
-    return (
-      '<svg viewBox="0 30 600 440" role="img" aria-labelledby="carte-titre">' +
-      '<title id="carte-titre">Schéma de la zone d\'intervention autour de l\'étang de Thau : ' + esc(S.villes.join(", ")) + "</title>" +
-      '<rect x="0" y="30" width="600" height="440" fill="#F6F8FC"/>' +
-      '<path d="' + grille + '" stroke="#E7ECF4" stroke-width="1" fill="none"/>' +
-      '<path d="M-16.2 510.6C-0.0 500.9 51.4 472.0 81.1 452.6C110.8 433.3 135.1 413.2 162.2 394.7C189.2 376.1 217.6 356.8 243.2 341.1C268.9 325.5 297.3 308.1 316.2 301.0C335.1 294.0 344.1 300.3 356.8 298.8C369.5 297.3 380.3 299.2 392.4 292.1C404.6 285.0 414.1 270.5 429.7 256.4C445.4 242.3 466.2 224.1 486.5 207.4C506.8 190.6 529.7 171.7 551.4 156.1C573.0 140.5 605.4 120.8 616.2 113.7L640 500L-20 520Z" fill="#DCE5F6" stroke="#A9BBE0" stroke-width="1.5"/>' +
-      '<path d="M105.4 390.2C110.3 377.9 131.1 354.9 145.9 336.7C160.8 318.5 179.7 296.9 194.6 280.9C209.5 265.0 221.6 253.8 235.1 240.8C248.6 227.8 263.5 211.8 275.7 202.9C287.8 194.0 298.4 188.0 308.1 187.3C317.8 186.6 325.9 194.4 334.1 198.4C342.2 202.5 351.9 205.9 356.8 211.8C361.6 217.8 365.9 227.1 363.2 234.1C360.5 241.2 351.1 246.8 340.5 254.2C330.0 261.6 315.7 267.6 300.0 278.7C284.3 289.9 264.1 307.0 246.5 321.1C228.9 335.2 211.4 350.4 194.6 363.4C177.8 376.5 158.9 391.3 145.9 399.1C133.0 406.9 123.5 411.8 116.8 410.3C110.0 408.8 100.5 402.5 105.4 390.2Z" fill="#DCE5F6" stroke="#A9BBE0" stroke-width="1.5"/>' +
-      '<g font-family="Barlow, sans-serif" font-weight="500" font-size="14" fill="#4D66A6" letter-spacing=".02em">' +
-      '<text transform="translate(206 330) rotate(-38)">Étang de Thau</text>' +
-      '<text transform="translate(410 392) rotate(-33)">Mer Méditerranée</text>' +
-      "</g>" +
-      '<g fill="#2347A0" stroke="#fff" stroke-width="2.5">' + points + "</g>" +
-      '<g font-family="Barlow Semi Condensed, Barlow, sans-serif" font-weight="700" font-size="17" fill="#14213D" stroke="#F6F8FC" stroke-width="4.5" paint-order="stroke" stroke-linejoin="round">' +
-      noms +
-      "</g></svg>"
-    );
+  function villesHTML() {
+    return S.villes
+      .map(function (v, i) {
+        return "<span>" + esc(v) + (i === S.villes.length - 1 ? "." : ",") + "</span>";
+      })
+      .join(" ");
   }
 
   var pages = [
@@ -142,41 +72,21 @@
   function liensPages() {
     return pages
       .map(function (p) {
-        var courant = p.id === page ? ' aria-current="page"' : "";
-        return '<li><a href="' + p.href + '"' + courant + ">" + p.texte + "</a></li>";
+        return '<li><a href="' + p.href + '"' + (p.id === page ? ' aria-current="page"' : "") + ">" + p.texte + "</a></li>";
       })
       .join("");
-  }
-
-  function villesHTML() {
-    return S.villes
-      .map(function (v, i) {
-        return "<span>" + esc(v) + (i === S.villes.length - 1 ? "." : ",") + "</span>";
-      })
-      .join(" ");
   }
 
   /* ---------- En-tête ---------- */
 
   var entete = document.querySelector("[data-slot='entete']");
   if (entete) {
-    var barre = document.createElement("div");
-    barre.className = "barre-contact";
-    barre.innerHTML =
-      '<div class="conteneur barre-contact__ligne">' +
-      "<p>" + esc(S.accroche) + " autour de l'étang de Thau</p>" +
-      '<div class="barre-contact__liens">' +
-      '<a href="' + telHref + '">' + ico("tel") + esc(S.telephone) + "</a>" +
-      "<span>" + esc(S.horaires.texte) + "</span>" +
-      "</div></div>";
-    entete.parentNode.insertBefore(barre, entete);
-
     entete.innerHTML =
       '<div class="conteneur entete__ligne">' +
-      '<a class="logo" href="./" aria-label="' + esc(S.nom) + ', accueil">' + logo() + nomLogo() + "</a>" +
+      '<a class="marque" href="./">' + esc(S.nom) + "</a>" +
       '<nav class="nav" aria-label="Navigation principale"><ul>' + liensPages() + "</ul></nav>" +
-      '<a class="bouton bouton--action entete__devis" href="contact">' + ico("devis") + "Demander un devis</a>" +
-      '<button class="entete__menu" type="button" aria-expanded="false" aria-controls="menu">' + ico("menu") + "<span>Menu</span></button>" +
+      '<a class="entete__tel" href="' + telHref + '" data-track="call"><small>Appelez-nous</small><strong>' + esc(S.telephone) + "</strong></a>" +
+      '<button class="entete__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>' +
       "</div>" +
       '<div class="menu" id="menu" hidden><div class="conteneur">' +
       '<nav aria-label="Navigation mobile"><ul>' + liensPages() + "</ul></nav>" +
@@ -186,23 +96,20 @@
     var boutonMenu = entete.querySelector(".entete__menu");
     var menu = entete.querySelector("#menu");
 
-    function majBoutonMenu(ouvert) {
-      boutonMenu.setAttribute("aria-expanded", ouvert ? "true" : "false");
-      boutonMenu.innerHTML = ico(ouvert ? "fermer" : "menu") + "<span>" + (ouvert ? "Fermer" : "Menu") + "</span>";
-    }
-
-    function fermerMenu(rendreFocus) {
+    var fermerMenu = function (rendreFocus) {
       menu.hidden = true;
       menu.classList.remove("est-ouvert");
-      majBoutonMenu(false);
+      boutonMenu.setAttribute("aria-expanded", "false");
+      boutonMenu.textContent = "Menu";
       if (rendreFocus) boutonMenu.focus();
-    }
+    };
 
     boutonMenu.addEventListener("click", function () {
       if (menu.hidden) {
         menu.hidden = false;
         menu.classList.add("est-ouvert");
-        majBoutonMenu(true);
+        boutonMenu.setAttribute("aria-expanded", "true");
+        boutonMenu.textContent = "Fermer";
       } else {
         fermerMenu(false);
       }
@@ -212,10 +119,27 @@
       if (e.key === "Escape" && !menu.hidden) fermerMenu(true);
     });
 
-    window.matchMedia("(min-width: 1024px)").addEventListener("change", function (e) {
+    window.matchMedia("(min-width: 1000px)").addEventListener("change", function (e) {
       if (e.matches) fermerMenu(false);
     });
+
+    var majEntete = function () {
+      entete.classList.toggle("est-defile", window.scrollY > 8);
+    };
+    window.addEventListener("scroll", majEntete, { passive: true });
+    majEntete();
   }
+
+  /* ---------- Barre d'actions mobile ---------- */
+
+  var barre = document.createElement("nav");
+  barre.className = "barre-actions";
+  barre.setAttribute("aria-label", "Nous contacter");
+  barre.innerHTML =
+    '<a href="' + telHref + '" data-track="call">' + ico("tel") + "Appeler</a>" +
+    '<a href="contact" data-track="devis">' + ico("devis") + "Devis gratuit</a>" +
+    '<a href="' + waHref + '" data-track="whatsapp" target="_blank" rel="noopener">' + ico("photo") + "Photo WhatsApp</a>";
+  document.body.appendChild(barre);
 
   /* ---------- Pied de page ---------- */
 
@@ -225,13 +149,15 @@
       '<div class="conteneur">' +
       '<div class="pied__grille">' +
       "<div>" +
-      '<a class="logo" href="./">' + logo() + nomLogo() + "</a>" +
-      "<p>Réparer, entretenir, rénover, aménager.<br>Un seul interlocuteur pour toute la maison.</p>" +
+      '<p class="pied__marque">' + esc(S.nom) + "</p>" +
+      "<p>On s'occupe de votre maison, dedans comme dehors, autour de l'étang de Thau.</p>" +
+      "<p>" + esc(S.confiance.decennale) + ". " + esc(S.confiance.experience) + ".</p>" +
       "</div>" +
       "<div>" +
       "<h2>Nous joindre</h2>" +
       "<ul>" +
-      '<li><a class="pied__tel" href="' + telHref + '">' + esc(S.telephone) + "</a></li>" +
+      '<li><a class="pied__tel" href="' + telHref + '" data-track="call">' + esc(S.telephone) + "</a></li>" +
+      '<li><a href="' + waHref + '" data-track="whatsapp" target="_blank" rel="noopener">Envoyer une photo sur WhatsApp</a></li>' +
       '<li><a href="' + mailHref + '">' + esc(S.email) + "</a></li>" +
       "<li>" + esc(S.horaires.texte) + "</li>" +
       "</ul>" +
@@ -252,16 +178,7 @@
       "</div>";
   }
 
-  /* ---------- Barre d'actions mobile & badge maquette ---------- */
-
-  var barreMobile = document.createElement("div");
-  barreMobile.className = "barre-mobile";
-  barreMobile.innerHTML =
-    '<a class="bouton bouton--bleu" href="' + telHref + '" aria-label="Appeler le ' + esc(S.telephone) + '">' + ico("tel") +
-    (page === "contact" ? "Appeler le " + esc(S.telephone) : "Appeler") + "</a>" +
-    (page === "contact" ? "" : '<a class="bouton bouton--action" href="contact">' + ico("devis") + "Devis gratuit</a>");
-  if (page === "contact") barreMobile.classList.add("barre-mobile--seule");
-  document.body.appendChild(barreMobile);
+  /* ---------- Badge maquette ---------- */
 
   if (S.maquette) {
     var badge = document.createElement("div");
@@ -285,61 +202,73 @@
     if (valeurs[cle] != null) el.textContent = valeurs[cle];
   });
 
+  document.querySelectorAll("[data-confiance]").forEach(function (el) {
+    var cle = el.getAttribute("data-confiance");
+    if (S.confiance[cle]) el.textContent = S.confiance[cle];
+  });
+
   document.querySelectorAll("[data-href]").forEach(function (el) {
     var type = el.getAttribute("data-href");
     if (type === "tel") el.href = telHref;
     if (type === "mail") el.href = mailHref;
+    if (type === "whatsapp") el.href = waHref;
     if (type === "avis-google") el.href = S.liens.avisGoogle;
   });
 
-  document.querySelectorAll("[data-ico]").forEach(function (el) {
-    var nom = el.getAttribute("data-ico");
-    if (ICONES[nom]) el.outerHTML = ico(nom, el.getAttribute("class") === "ico" ? "" : el.getAttribute("class"));
+  document.querySelectorAll("[data-coches]").forEach(function (el) {
+    var cles = (el.getAttribute("data-coches") || "devisGratuit reponse prixAvant").split(" ");
+    el.innerHTML = cles
+      .map(function (c) {
+        return "<li>" + ico("coche") + esc(S.confiance[c]) + "</li>";
+      })
+      .join("");
   });
 
-  document.querySelectorAll("[data-etoiles]").forEach(function (el) {
-    var html = "";
-    for (var i = 0; i < 5; i++) html += '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="' + ETOILE + '"/></svg>';
-    el.innerHTML = html;
+  document.querySelectorAll("[data-ico]").forEach(function (el) {
+    el.outerHTML = ico(el.getAttribute("data-ico"));
   });
 
   document.querySelectorAll("[data-villes]").forEach(function (el) {
     el.innerHTML = villesHTML();
   });
 
-  document.querySelectorAll("[data-villes-pastilles]").forEach(function (el) {
-    el.innerHTML = S.villes
-      .map(function (v) {
-        return "<li>" + ico("pin") + esc(v) + "</li>";
-      })
-      .join("");
-  });
-
-  document.querySelectorAll("[data-carte]").forEach(function (el) {
-    el.innerHTML = carteZone();
-  });
-
   document.querySelectorAll("[data-villes-options]").forEach(function (el) {
-    var html = "";
+    var h = "";
     S.villes.forEach(function (v) {
-      html += '<option value="' + esc(v) + '">' + esc(v) + "</option>";
+      h += '<option value="' + esc(v) + '">' + esc(v) + "</option>";
     });
-    if (el.tagName === "SELECT") html += '<option value="Autre">Autre ville</option>';
-    el.insertAdjacentHTML("beforeend", html);
+    if (el.tagName === "SELECT") h += '<option value="Autre">Autre ville</option>';
+    el.insertAdjacentHTML("beforeend", h);
   });
 
-  var aujourdhui = new Date().toLocaleDateString("fr-FR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
+  var aujourdhui = new Date().toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric" });
   document.querySelectorAll("[data-date]").forEach(function (el) {
     el.textContent = aujourdhui;
   });
 
+  /* ---------- Mesure (prête pour l'analytics) ---------- */
+
+  window.dataLayer = window.dataLayer || [];
+  function mesurer(nom, details) {
+    var ev = { event: "mst_" + nom.replace(/-/g, "_") };
+    if (details) for (var k in details) ev[k] = details[k];
+    window.dataLayer.push(ev);
+  }
+  document.addEventListener("click", function (e) {
+    var cible = e.target.closest("a[data-track], button[data-track]");
+    if (cible) mesurer(cible.getAttribute("data-track"), { page: page });
+  });
+
   /* ---------- Données structurées ---------- */
 
-  var ld = {
+  function jsonLd(objet) {
+    var s = document.createElement("script");
+    s.type = "application/ld+json";
+    s.textContent = JSON.stringify(objet);
+    document.head.appendChild(s);
+  }
+
+  jsonLd({
     "@context": "https://schema.org",
     "@type": "HomeAndConstructionBusiness",
     name: S.nom,
@@ -357,11 +286,122 @@
         closes: S.horaires.fermeture,
       },
     ],
-  };
-  var script = document.createElement("script");
-  script.type = "application/ld+json";
-  script.textContent = JSON.stringify(ld);
-  document.head.appendChild(script);
+  });
+
+  var faq = document.querySelectorAll(".faq details");
+  if (faq.length) {
+    jsonLd({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: Array.prototype.map.call(faq, function (d) {
+        var reponse = d.querySelector(".faq__reponse p");
+        return {
+          "@type": "Question",
+          name: d.querySelector("summary").textContent.trim(),
+          acceptedAnswer: { "@type": "Answer", text: reponse ? reponse.textContent.trim() : "" },
+        };
+      }),
+    });
+  }
+
+  /* ---------- Scène 3D : secours si elle n'arrive pas ---------- */
+
+  var scene = document.querySelector("[data-scene]");
+  if (scene) {
+    setTimeout(function () {
+      if (!scene.classList.contains("scene--prete") && !scene.classList.contains("scene--svg")) {
+        scene.classList.add("scene--svg");
+        scene.innerHTML = '<img src="img/maison.svg" alt="">';
+        html.classList.remove("intro");
+      }
+    }, 7000);
+  }
+
+  /* ---------- Visite de la maison ---------- */
+
+  var visite = document.querySelector("[data-visite]");
+  if (visite) {
+    var fiches = visite.querySelectorAll(".fiche");
+    var reperes = visite.querySelectorAll(".visite__reperes button");
+    var collant = visite.querySelector(".visite__collant");
+    var fil = visite.querySelector(".visite__fil");
+    var filLigne = fil && fil.querySelector("line");
+    var filPoint = fil && fil.querySelector("circle");
+    var zone = -1;
+
+    var activer = function (i) {
+      if (i === zone) return;
+      zone = i;
+      fiches.forEach(function (f, k) {
+        f.classList.toggle("est-active", k === i);
+      });
+      reperes.forEach(function (r, k) {
+        r.setAttribute("aria-current", k === i ? "true" : "false");
+      });
+      if (fil) fil.setAttribute("hidden", "");
+      document.dispatchEvent(new CustomEvent("mst:zone", { detail: { zone: i } }));
+    };
+
+    var zoneDepuisScroll = function () {
+      if (mqMobile.matches) return;
+      var course = visite.offsetHeight - window.innerHeight;
+      var p = (window.scrollY - visite.offsetTop) / Math.max(1, course);
+      activer(p < -0.02 || p > 1.0 ? -1 : Math.min(3, Math.max(0, Math.floor(p * 4))));
+    };
+
+    window.addEventListener("scroll", zoneDepuisScroll, { passive: true });
+    window.addEventListener("resize", zoneDepuisScroll);
+    zoneDepuisScroll();
+
+    // Mobile : la zone change quand chaque fiche entre à l'écran.
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(
+        function (entrees) {
+          if (!mqMobile.matches) return;
+          entrees.forEach(function (e) {
+            if (e.isIntersecting) activer(Array.prototype.indexOf.call(fiches, e.target));
+          });
+        },
+        { rootMargin: "-35% 0px -35% 0px" }
+      );
+      fiches.forEach(function (f) {
+        io.observe(f);
+      });
+      new IntersectionObserver(function (entrees) {
+        if (mqMobile.matches && !entrees[0].isIntersecting) activer(-1);
+      }).observe(visite);
+    }
+
+    // Les repères : aller directement à une zone.
+    reperes.forEach(function (r, k) {
+      r.addEventListener("click", function () {
+        var course = visite.offsetHeight - window.innerHeight;
+        window.scrollTo({
+          top: visite.offsetTop + course * ((k + 0.5) / 4),
+          behavior: reduit ? "auto" : "smooth",
+        });
+      });
+    });
+
+    // Le fil jaune entre l'œillet de la fiche et la zone de la maison.
+    document.addEventListener("mst:ancre", function (e) {
+      if (!fil || mqMobile.matches || zone < 0 || e.detail.zone !== zone) return;
+      var oeillet = fiches[zone].querySelector(".fiche__oeillet");
+      var boite = collant.getBoundingClientRect();
+      var o = oeillet.getBoundingClientRect();
+      var x1 = o.left + o.width / 2 - boite.left;
+      var y1 = o.top + o.height / 2 - boite.top;
+      var x2 = e.detail.x - boite.left;
+      var y2 = e.detail.y - boite.top;
+      filLigne.setAttribute("x1", x1);
+      filLigne.setAttribute("y1", y1);
+      filLigne.setAttribute("x2", x2);
+      filLigne.setAttribute("y2", y2);
+      filPoint.setAttribute("cx", x2);
+      filPoint.setAttribute("cy", y2);
+      fil.removeAttribute("hidden");
+    });
+  }
 
   /* ---------- Bon d'intervention (contact) ---------- */
 
@@ -369,11 +409,16 @@
   if (!bon) return;
 
   var form = bon.querySelector("form");
-  var champs = bon.querySelector(".bon__champs");
+  var etapes = bon.querySelectorAll(".etape-bon");
+  var progression = bon.querySelectorAll(".progression li");
+  var boutonSuivant = bon.querySelector("[data-suivant]");
+  var boutonRetour = bon.querySelector("[data-retour]");
+  var aide = bon.querySelector("[data-aide]");
   var selectVille = form.elements.ville;
-  var ligneAutre = bon.querySelector(".champ--autre");
+  var ligneAutre = bon.querySelector(".ligne--autre");
   var confirmation = bon.querySelector(".bon__confirmation");
-  var essaye = false;
+  var etapeCourante = 0;
+  var essayees = [false, false, false];
 
   function majAutre() {
     var autre = selectVille.value === "Autre";
@@ -382,15 +427,18 @@
   }
   selectVille.addEventListener("change", majAutre);
 
-  // Pré-remplissage depuis le mini bon de l'accueil
+  // Pré-remplissage depuis le mini bon de l'accueil ou les fiches de la visite
   var params = new URLSearchParams(window.location.search);
   var repris = false;
+  (params.get("type") || "").split(",").forEach(function (t) {
+    var c = form.querySelector("input[name='besoin'][value='" + t.replace(/[^a-z]/g, "") + "']");
+    if (c) {
+      c.checked = true;
+      repris = true;
+    }
+  });
   if (params.get("besoin")) {
     form.elements.description.value = params.get("besoin");
-    repris = true;
-  }
-  if (params.get("tel")) {
-    form.elements.telephone.value = params.get("tel");
     repris = true;
   }
   if (params.get("ville")) {
@@ -409,7 +457,7 @@
   majAutre();
   if (repris) bon.querySelector(".bon__prerempli").hidden = false;
 
-  // Liste des photos choisies
+  // Photos choisies
   var fichier = form.elements.photos;
   var listeFichiers = bon.querySelector(".fichier__liste");
   fichier.addEventListener("change", function () {
@@ -423,86 +471,85 @@
 
   // Validation
   function zoneErreur(el) {
-    var ids = (el.getAttribute("aria-describedby") || "").split(" ");
-    var id = ids.filter(function (i) {
+    var id = (el.getAttribute("aria-describedby") || "").split(" ").filter(function (i) {
       return /-erreur$/.test(i);
     })[0];
     return id ? document.getElementById(id) : null;
   }
 
   function poserErreur(el, message) {
-    var zone = zoneErreur(el);
     el.setAttribute("aria-invalid", "true");
-    if (zone) zone.textContent = message;
+    var z = zoneErreur(el);
+    if (z) z.textContent = message;
   }
 
   function effacerErreur(el) {
-    var zone = zoneErreur(el);
     el.removeAttribute("aria-invalid");
-    if (zone) zone.textContent = "";
+    var z = zoneErreur(el);
+    if (z) z.textContent = "";
   }
 
   var regles = [
-    {
-      el: form.elements.nom,
-      test: function (v) {
-        return v.trim().length >= 2 ? "" : "Indiquez votre nom pour qu'on sache qui rappeler.";
+    [
+      {
+        el: bon.querySelector(".groupe-besoin"),
+        groupe: true,
+        test: function () {
+          return form.querySelector("input[name='besoin']:checked") ? "" : "Cochez au moins une case, même « Autre ».";
+        },
       },
-    },
-    {
-      el: form.elements.telephone,
-      test: function (v) {
-        var t = v.replace(/[\s.\-()]/g, "");
-        if (!t) return "Indiquez un numéro pour qu'on puisse vous rappeler.";
-        if (!/^(?:\+33|0033|0)[1-9]\d{8}$/.test(t))
-          return "Ce numéro semble incomplet. Il faut 10 chiffres, par exemple 06 12 34 56 78.";
-        return "";
+      {
+        el: form.elements.description,
+        test: function (v) {
+          return v.trim().length >= 5 ? "" : "Décrivez en quelques mots ce qu'il faut faire.";
+        },
       },
-    },
-    {
-      el: form.elements.email,
-      test: function (v) {
-        if (!v.trim()) return "";
-        return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim())
-          ? ""
-          : "Cette adresse e-mail semble incomplète. Vous pouvez aussi laisser ce champ vide.";
+    ],
+    [
+      {
+        el: selectVille,
+        test: function (v) {
+          return v ? "" : "Choisissez votre ville dans la liste.";
+        },
       },
-    },
-    {
-      el: selectVille,
-      test: function (v) {
-        return v ? "" : "Choisissez votre ville dans la liste.";
+      {
+        el: form.elements.villeAutre,
+        test: function (v) {
+          return selectVille.value !== "Autre" || v.trim() ? "" : "Indiquez le nom de votre ville.";
+        },
       },
-    },
-    {
-      el: form.elements.villeAutre,
-      test: function (v) {
-        if (selectVille.value !== "Autre") return "";
-        return v.trim() ? "" : "Indiquez le nom de votre ville.";
+      {
+        el: bon.querySelector(".groupe-delai"),
+        groupe: true,
+        test: function () {
+          return form.querySelector("input[name='delai']:checked") ? "" : "Choisissez un délai.";
+        },
       },
-    },
-    {
-      el: bon.querySelector(".groupe-besoin"),
-      groupe: "besoin",
-      test: function () {
-        return form.querySelectorAll("input[name='besoin']:checked").length
-          ? ""
-          : "Cochez au moins une case, même « Autre ».";
+    ],
+    [
+      {
+        el: form.elements.nom,
+        test: function (v) {
+          return v.trim().length >= 2 ? "" : "Indiquez votre nom pour qu'on sache qui rappeler.";
+        },
       },
-    },
-    {
-      el: form.elements.description,
-      test: function (v) {
-        return v.trim().length >= 5 ? "" : "Décrivez en quelques mots ce qu'il faut faire.";
+      {
+        el: form.elements.telephone,
+        test: function (v) {
+          var t = v.replace(/[\s.\-()]/g, "");
+          if (!t) return "Indiquez un numéro pour qu'on puisse vous rappeler.";
+          if (!/^(?:\+33|0033|0)[1-9]\d{8}$/.test(t)) return "Ce numéro semble incomplet. Il faut 10 chiffres, par exemple 06 12 34 56 78.";
+          return "";
+        },
       },
-    },
-    {
-      el: bon.querySelector(".groupe-delai"),
-      groupe: "delai",
-      test: function () {
-        return form.querySelector("input[name='delai']:checked") ? "" : "Choisissez un délai.";
+      {
+        el: form.elements.email,
+        test: function (v) {
+          if (!v.trim()) return "";
+          return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()) ? "" : "Cette adresse e-mail semble incomplète. Vous pouvez aussi laisser ce champ vide.";
+        },
       },
-    },
+    ],
   ];
 
   function verifier(regle) {
@@ -512,42 +559,74 @@
     return message;
   }
 
-  regles.forEach(function (regle) {
-    var evt = regle.groupe || regle.el.tagName === "SELECT" ? "change" : "input";
-    regle.el.addEventListener(evt, function () {
-      if (essaye) verifier(regle);
-    });
-    if (!regle.groupe) {
-      regle.el.addEventListener("blur", function () {
-        if (essaye) verifier(regle);
+  regles.forEach(function (liste, i) {
+    liste.forEach(function (regle) {
+      var evt = regle.groupe || regle.el.tagName === "SELECT" ? "change" : "input";
+      regle.el.addEventListener(evt, function () {
+        if (essayees[i]) verifier(regle);
       });
+    });
+  });
+
+  function verifierEtape(i) {
+    essayees[i] = true;
+    var premiere = null;
+    regles[i].forEach(function (r) {
+      if (verifier(r) && !premiere) premiere = r;
+    });
+    if (premiere) (premiere.groupe ? premiere.el.querySelector("input") : premiere.el).focus();
+    return !premiere;
+  }
+
+  function allerA(i, focus) {
+    etapeCourante = i;
+    etapes.forEach(function (e, k) {
+      e.hidden = k !== i;
+    });
+    progression.forEach(function (li, k) {
+      if (k === i) li.setAttribute("aria-current", "step");
+      else li.removeAttribute("aria-current");
+      li.classList.toggle("est-fait", k < i);
+    });
+    boutonRetour.hidden = i === 0;
+    boutonSuivant.textContent = i === 2 ? "Envoyer ma demande" : "Continuer";
+    aide.textContent = i === 2 ? "On vous rappelle dans la journée." : "Étape " + (i + 1) + " sur 3.";
+    if (focus) {
+      var titre = etapes[i].querySelector(".etape-bon__titre");
+      titre.focus({ preventScroll: true });
+      bon.scrollIntoView({ behavior: reduit ? "auto" : "smooth", block: "start" });
     }
+  }
+
+  boutonRetour.addEventListener("click", function () {
+    allerA(Math.max(0, etapeCourante - 1), true);
   });
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
-    essaye = true;
-    var premiere = null;
-    regles.forEach(function (regle) {
-      if (verifier(regle) && !premiere) premiere = regle;
-    });
-
-    if (premiere) {
-      var cible = premiere.groupe ? premiere.el.querySelector("input") : premiere.el;
-      cible.focus();
+    if (!verifierEtape(etapeCourante)) return;
+    if (etapeCourante < 2) {
+      allerA(etapeCourante + 1, true);
       return;
     }
 
     // Pas de back-end : on tamponne le bon.
     var prenom = form.elements.nom.value.trim().split(/\s+/)[0];
     bon.classList.add("est-envoye");
-    champs.inert = true;
+    etapes.forEach(function (e) {
+      e.hidden = false;
+      e.inert = true;
+    });
     confirmation.innerHTML =
       "<strong>Votre demande est bien envoyée" + (prenom ? ", " + esc(prenom) : "") + ".</strong>" +
-      "<p>On vous rappelle dans la journée au " + esc(form.elements.telephone.value.trim()) + ". " +
-      "C'est urgent ? Appelez-nous au <a href=\"" + telHref + '">' + esc(S.telephone) + "</a>.</p>";
+      "<p>On vous rappelle dans la journée au " + esc(form.elements.telephone.value.trim()) + ".</p>" +
+      "<p>Pour aller plus vite, envoyez une photo du problème sur WhatsApp.</p>" +
+      '<a class="bouton" href="' + waHref + '" data-track="whatsapp" target="_blank" rel="noopener">' + ico("photo") + "Envoyer une photo sur WhatsApp</a>";
+    mesurer("form-submit", { page: page });
     confirmation.setAttribute("tabindex", "-1");
     confirmation.focus({ preventScroll: true });
     confirmation.scrollIntoView({ behavior: reduit ? "auto" : "smooth", block: "center" });
   });
+
+  allerA(0, false);
 })();

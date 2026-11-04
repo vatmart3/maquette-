@@ -3,53 +3,48 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Multiservice Thau | Travaux et bricolage pour la maison autour de Sète</title>
-  <meta name="description" content="Réparations, entretien, rénovation et aménagement de la maison à Sète, Frontignan, Balaruc et autour de l'étang de Thau. Un seul interlocuteur, un devis gratuit.">
+  <title>Multiservice Thau | Travaux dedans et dehors pour la maison autour de Sète</title>
+  <meta name="description" content="Multiservice autour de Sète, Frontignan, Balaruc et l'étang de Thau : dedans, dehors, petits et gros travaux. Un seul interlocuteur, un devis gratuit, une réponse dans la journée.">
   <meta name="robots" content="noindex, nofollow">
-  <meta name="theme-color" content="#2347A0">
+  <meta name="theme-color" content="#E9ECE8">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="preload" href="fonts/barlow-sc-700.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="fonts/barlow-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles.css">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="fr_FR">
   <meta property="og:site_name" content="Multiservice Thau">
   <meta property="og:title" content="Multiservice Thau | On s'occupe de votre maison">
-  <meta property="og:description" content="Réparer, entretenir, rénover, aménager autour de Sète. Un seul interlocuteur, un devis gratuit.">
+  <meta property="og:description" content="Dedans, dehors, petits et gros travaux autour de Sète. Un seul interlocuteur, un devis gratuit.">
   <meta property="og:url" content="https://maquette-multiservice-thau.vercel.app/">
   <meta property="og:image" content="https://maquette-multiservice-thau.vercel.app/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
+  <script>try{if(!sessionStorage.getItem("mst-intro")&&!matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("intro");setTimeout(function(){document.documentElement.classList.remove("intro")},4200)}}catch(e){}</script>
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js" crossorigin>
   <script src="config.js" defer></script>
   <script src="site.js" defer></script>
 </head>
 <body data-page="accueil">
   <a class="evitement" href="#contenu">Aller au contenu</a>
+  <div class="scene" data-scene aria-hidden="true"></div>
 
   <header class="entete" data-slot="entete">
-    <noscript><div class="conteneur entete__ligne"><a class="logo" href="./">Multiservice Thau</a> <a href="tel:+33639980000">06 39 98 00 00</a></div></noscript>
+    <noscript><div class="conteneur entete__ligne"><a class="marque" href="./">Multiservice Thau</a> <a href="tel:+33639980000">06 39 98 00 00</a></div></noscript>
   </header>
 
   <main id="contenu">
 
-    <section class="sur-bleu accroche" aria-labelledby="titre-page">
+    <section class="accroche" aria-labelledby="titre-page">
       <div class="conteneur accroche__grille">
-        <div>
+        <div class="accroche__texte">
           <h1 id="titre-page">On s'occupe de votre maison.</h1>
-          <svg class="cordeau cordeau--claque" viewBox="0 0 600 24" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-            <path class="cordeau__poudre" d="M3 13.5C70 11.6 150 14.4 232 12.6S392 11.2 468 13.1S560 12.4 597 11.8"/>
-            <path class="cordeau__trait" d="M3 13.5C70 11.6 150 14.4 232 12.6S392 11.2 468 13.1S560 12.4 597 11.8"/>
-          </svg>
-          <p class="chapeau">Réparations, entretien, rénovation et aménagement autour de Sète. Un seul interlocuteur pour tous vos travaux, et un devis gratuit avant de commencer.</p>
-          <div class="accroche__actions">
-            <a class="bouton bouton--action bouton--grand" data-href="tel" href="tel:+33639980000"><svg class="ico" data-ico="tel"></svg><span>Appeler le <span data-cfg="telephone">06 39 98 00 00</span></span></a>
-            <p>ou <a href="contact">demandez un devis en ligne</a></p>
-          </div>
-          <ul class="atouts">
-            <li><svg class="ico" data-ico="devis"></svg>Devis gratuit et écrit</li>
-            <li><svg class="ico" data-ico="horloge"></svg>Rappel dans la journée</li>
-            <li><svg class="ico" data-ico="propre"></svg>Chantier laissé propre</li>
+          <p class="chapeau">Dedans, dehors, petits et gros travaux autour de Sète. Un seul interlocuteur, un devis gratuit.</p>
+          <a class="bouton accroche__bouton" data-href="tel" href="tel:+33639980000" data-track="call"><svg data-ico="tel"></svg><span>Appeler le <span data-cfg="telephone">06 39 98 00 00</span></span></a>
+          <p class="accroche__whatsapp"><a data-href="whatsapp" href="https://wa.me/33639980000" data-track="whatsapp" target="_blank" rel="noopener">ou envoyez une photo du problème sur WhatsApp</a></p>
+          <ul class="coches" data-coches="devisGratuit reponse prixAvant">
+            <li>Devis gratuit</li><li>Réponse dans la journée</li><li>Prix annoncé avant de commencer</li>
           </ul>
         </div>
 
@@ -67,20 +62,16 @@
                 </div>
                 <p class="bon__ref"><span class="bon__numero">N° <span data-cfg="numeroBon">0412</span></span></p>
               </div>
-              <div class="champ">
-                <label for="mini-besoin">Ce qu'il faut faire</label>
-                <input class="saisie" id="mini-besoin" name="besoin" type="text" autocomplete="off" placeholder="En quelques mots">
+              <div class="ligne">
+                <label for="mini-besoin">Ce qu'il faut faire&nbsp;:</label>
+                <input id="mini-besoin" name="besoin" type="text" autocomplete="off" placeholder="En quelques mots">
               </div>
-              <div class="champ">
-                <label for="mini-ville">Ville</label>
-                <input class="saisie" id="mini-ville" name="ville" type="text" list="villes-liste" autocomplete="address-level2" placeholder="Sète, Frontignan…">
+              <div class="ligne">
+                <label for="mini-ville">Ville&nbsp;:</label>
+                <input id="mini-ville" name="ville" type="text" list="villes-liste" autocomplete="address-level2">
                 <datalist id="villes-liste" data-villes-options></datalist>
               </div>
-              <div class="champ">
-                <label for="mini-tel">Téléphone</label>
-                <input class="saisie" id="mini-tel" name="tel" type="tel" inputmode="tel" autocomplete="tel" placeholder="06 12 34 56 78">
-              </div>
-              <button class="bouton bouton--action" type="submit">Demander mon devis</button>
+              <button class="bouton" type="submit" data-track="devis">Demander mon devis</button>
               <p class="bon__aide">Vous complétez le reste sur la page suivante.</p>
             </form>
           </div>
@@ -88,129 +79,139 @@
       </div>
     </section>
 
-    <section class="section" aria-labelledby="titre-services">
-      <div class="conteneur">
-        <div class="tete-section">
-          <div>
-            <h2 id="titre-services">Ce qu'on fait</h2>
-            <p class="chapeau">Les petits travaux comme les plus gros. Vous n'avez qu'un numéro à retenir.</p>
+    <section class="visite" data-visite id="visite" aria-labelledby="titre-visite">
+      <div class="visite__collant">
+        <div class="conteneur visite__grille">
+          <div class="visite__tete">
+            <h2 id="titre-visite">Visite de la maison</h2>
+            <p>Faites défiler&nbsp;: on vous montre où on intervient, dedans comme dehors.</p>
           </div>
+          <div class="visite__fiches">
+            <article class="fiche" id="zone-dedans" aria-labelledby="titre-zone-dedans">
+              <span class="fiche__oeillet" aria-hidden="true"></span>
+              <h3 id="titre-zone-dedans">Dedans</h3>
+              <p>Tout ce qui se passe entre vos murs&nbsp;: ce qui est abîmé, ce qui ne fonctionne plus, la pièce à remettre au goût du jour.</p>
+              <a class="bouton" href="contact?type=dedans" data-track="devis">Demander un devis pour ça</a>
+            </article>
+            <article class="fiche" id="zone-dehors" aria-labelledby="titre-zone-dehors">
+              <span class="fiche__oeillet" aria-hidden="true"></span>
+              <h3 id="titre-zone-dehors">Dehors</h3>
+              <p>Les extérieurs de la maison, la terrasse, le jardin, le muret&nbsp;: on s'occupe aussi de ce qui prend le soleil et le vent.</p>
+              <a class="bouton" href="contact?type=dehors" data-track="devis">Demander un devis pour ça</a>
+            </article>
+            <article class="fiche" id="zone-petits" aria-labelledby="titre-zone-petits">
+              <span class="fiche__oeillet" aria-hidden="true"></span>
+              <h3 id="titre-zone-petits">Les petits travaux</h3>
+              <p>Ce qui traîne depuis des mois et que personne ne veut venir faire pour si peu. Nous, on vient.</p>
+              <a class="bouton" href="contact?type=petits" data-track="devis">Demander un devis pour ça</a>
+            </article>
+            <article class="fiche" id="zone-pro" aria-labelledby="titre-zone-pro">
+              <span class="fiche__oeillet" aria-hidden="true"></span>
+              <h3 id="titre-zone-pro">Pour les pros</h3>
+              <p>Commerces, bureaux, locations saisonnières&nbsp;: interventions rapides, au bon moment, entre deux clients.</p>
+              <a class="bouton" href="contact?type=pro" data-track="devis">Demander un devis pour ça</a>
+            </article>
+          </div>
+          <ol class="visite__reperes" aria-label="Zones de la visite"><li><button type="button" aria-current="false">Dedans</button></li><li><button type="button" aria-current="false">Dehors</button></li><li><button type="button" aria-current="false">Les petits travaux</button></li><li><button type="button" aria-current="false">Pour les pros</button></li></ol>
         </div>
-        <ul class="services">
-          <li class="carte service">
-            <span class="pastille"><svg class="ico" data-ico="cle"></svg></span>
-            <h3>Réparer</h3>
-            <p>Ce qui est cassé, ce qui fuit, ce qui ne ferme plus. Vous nous montrez, on s'en occupe.</p>
-          </li>
-          <li class="carte service">
-            <span class="pastille"><svg class="ico" data-ico="calendrier"></svg></span>
-            <h3>Entretenir</h3>
-            <p>Les petits travaux qu'on repousse toujours. On passe quand il faut, pour que tout tienne dans le temps.</p>
-          </li>
-          <li class="carte service">
-            <span class="pastille"><svg class="ico" data-ico="rouleau"></svg></span>
-            <h3>Rénover</h3>
-            <p>Une pièce, un mur, un sol qui a fait son temps. On remet à neuf sans vous laisser le chantier sur les bras.</p>
-          </li>
-          <li class="carte service">
-            <span class="pastille"><svg class="ico" data-ico="equerre"></svg></span>
-            <h3>Aménager</h3>
-            <p>À l'intérieur comme dehors. Vous savez ce que vous voulez, on trouve comment le faire.</p>
-          </li>
-        </ul>
+        <svg class="visite__fil" hidden aria-hidden="true" focusable="false"><line x1="0" y1="0" x2="0" y2="0"/><circle r="5" cx="0" cy="0"/></svg>
       </div>
     </section>
 
-    <section class="section section--fond" aria-labelledby="titre-etapes">
+    <section class="section section--voile" aria-labelledby="titre-etapes">
       <div class="conteneur">
-        <div class="tete-section">
-          <div>
-            <h2 id="titre-etapes">Comment ça se passe</h2>
-            <p class="chapeau">Quatre étapes, et vous savez toujours où on en est.</p>
-          </div>
+        <div class="entete-section">
+          <h2 id="titre-etapes">Comment ça se passe</h2>
         </div>
         <ol class="metre">
-          <li class="etape">
-            <span class="etape__num" aria-hidden="true">1</span>
-            <h3>Vous appelez ou vous écrivez</h3>
-            <p>Vous nous dites ce qui ne va pas. Une photo aide, mais elle n'est pas obligatoire.</p>
-          </li>
-          <li class="etape">
-            <span class="etape__num" aria-hidden="true">2</span>
-            <h3>On passe voir et on vous donne un prix</h3>
-            <p>On vient chez vous, on regarde, et vous recevez un devis écrit. C'est gratuit.</p>
-          </li>
-          <li class="etape">
-            <span class="etape__num" aria-hidden="true">3</span>
-            <h3>On fait les travaux</h3>
-            <p>À la date convenue, au prix convenu. Si quelque chose change, on vous le dit avant.</p>
-          </li>
-          <li class="etape">
-            <span class="etape__num" aria-hidden="true">4</span>
-            <h3>On laisse propre en partant</h3>
-            <p>Sol protégé, déchets emportés, coup de balai. Vous retrouvez votre maison comme avant.</p>
-          </li>
+          <li class="etape"><span class="etape__num" aria-hidden="true">1</span><h3>Vous appelez ou vous envoyez une photo</h3><p>Vous nous dites ce qui ne va pas. Une photo sur WhatsApp, et on comprend tout de suite.</p></li>
+          <li class="etape"><span class="etape__num" aria-hidden="true">2</span><h3>On passe voir et on vous donne un prix</h3><p>On vient chez vous, on regarde, et vous recevez un devis écrit. C'est gratuit.</p></li>
+          <li class="etape"><span class="etape__num" aria-hidden="true">3</span><h3>On fait les travaux</h3><p>À la date convenue, au prix convenu. Si quelque chose change, on vous le dit avant.</p></li>
+          <li class="etape"><span class="etape__num" aria-hidden="true">4</span><h3>On laisse propre en partant</h3><p>Sol protégé, déchets emportés, coup de balai. Vous retrouvez votre maison comme avant.</p></li>
         </ol>
+        <p class="apres-etapes"><a class="lien-action" data-href="whatsapp" href="https://wa.me/33639980000" data-track="whatsapp" target="_blank" rel="noopener">Commencer par une photo sur WhatsApp</a></p>
       </div>
     </section>
 
-    <section class="section" aria-labelledby="titre-avis">
+    <section class="section section--voile" aria-labelledby="titre-avis">
       <div class="conteneur">
-        <div class="tete-section">
-          <div>
-            <h2 id="titre-avis">Ce que disent nos clients</h2>
-            <p class="chapeau">Des exemples pour la maquette&nbsp;: les vrais avis Google les remplaceront.</p>
-          </div>
-          <a class="bouton bouton--contour" href="avis">Lire tous les avis</a>
+        <div class="entete-section">
+          <h2 id="titre-avis">Ce que disent nos clients</h2>
+          <p>Ce sont des exemples pour la maquette&nbsp;: les vrais avis Google les remplaceront.</p>
         </div>
-        <div class="avis-grille">
-          <figure class="avis avis--vedette">
-            <div class="etoiles" data-etoiles aria-hidden="true"></div>
-            <blockquote><p>«&#8239;Ils sont venus le lendemain de mon appel, m'ont donné le prix avant de commencer et sont repartis en laissant tout propre. Je garde le numéro.&#8239;»</p></blockquote>
-            <figcaption><span class="signature">Martine R., <span>Frontignan</span></span><span class="exemple">Exemple</span></figcaption>
-          </figure>
-          <div class="avis-colonne">
-            <figure class="avis">
-            <div class="etoiles" data-etoiles aria-hidden="true"></div>
-            <blockquote><p>«&#8239;J'ai appelé un lundi matin et quelqu'un a décroché. Rendez-vous pris pour le mercredi, et ils étaient à l'heure.&#8239;»</p></blockquote>
-            <figcaption><span class="signature">Karim B., <span>Sète</span></span><span class="exemple">Exemple</span></figcaption>
-          </figure>
-            <figure class="avis">
-            <div class="etoiles" data-etoiles aria-hidden="true"></div>
-            <blockquote><p>«&#8239;Le prix du devis, c'est ce que j'ai payé. Pas de supplément découvert en cours de route.&#8239;»</p></blockquote>
-            <figcaption><span class="signature">Sylvie M., <span>Balaruc-les-Bains</span></span><span class="exemple">Exemple</span></figcaption>
-          </figure>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section--fond" aria-labelledby="titre-zone">
-      <div class="conteneur zone">
-        <div>
-          <h2 id="titre-zone">Où on intervient</h2>
-          <ul class="villes" data-villes-pastilles>
-            <li>Sète</li><li>Frontignan</li><li>Balaruc-les-Bains</li><li>Balaruc-le-Vieux</li><li>Mèze</li><li>Marseillan</li><li>Bouzigues</li><li>Poussan</li><li>Gigean</li><li>Vic-la-Gardiole</li>
-          </ul>
-          <p class="discret">Vous habitez juste à côté&#8239;? Appelez, on vous dit si on peut venir.</p>
-        </div>
-        <figure class="carte-zone">
-          <div data-carte></div>
-          <figcaption>Schéma de la zone d'intervention autour de l'étang de Thau (non à l'échelle).</figcaption>
+        <div class="avis-accueil">
+          <figure class="avis-vedette">
+          <blockquote><p>«&#8239;Ils sont venus le lendemain de mon appel, m'ont donné le prix avant de commencer et sont repartis en laissant tout propre. Je garde le numéro.&#8239;»</p></blockquote>
+          <figcaption><span class="signature">Martine R., <span>Frontignan</span></span><span class="exemple">Exemple</span></figcaption>
         </figure>
+          <div>
+            <ul class="mots mots--accueil">
+              <li class="mot">
+            <figure>
+              <blockquote><p>«&#8239;J'ai appelé un lundi matin et quelqu'un a décroché. Rendez-vous pris pour le mercredi, et ils étaient à l'heure.&#8239;»</p></blockquote>
+              <figcaption><span class="signature">Karim B., <span>Sète</span></span><span class="exemple">Exemple</span></figcaption>
+            </figure>
+          </li>
+              <li class="mot">
+            <figure>
+              <blockquote><p>«&#8239;Le prix du devis, c'est ce que j'ai payé. Pas de supplément découvert en cours de route.&#8239;»</p></blockquote>
+              <figcaption><span class="signature">Sylvie M., <span>Balaruc-les-Bains</span></span><span class="exemple">Exemple</span></figcaption>
+            </figure>
+          </li>
+            </ul>
+            <p class="lien-avis"><a class="lien-action" href="avis">Lire tous les avis</a></p>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section class="sur-bleu appel" aria-labelledby="titre-appel">
-      <div class="conteneur appel__grille">
-        <div>
-          <h2 id="titre-appel">Un souci à la maison&#8239;? Appelez-nous.</h2>
-          <a class="appel__numero" data-href="tel" href="tel:+33639980000" data-cfg="telephone">06 39 98 00 00</a>
-          <p><span data-cfg="horaires">Du lundi au samedi, de 8 h à 19 h</span>. Si on est sur un chantier, on vous rappelle dans la journée.</p>
+    <section class="section section--voile" aria-labelledby="titre-faq">
+      <div class="conteneur">
+        <div class="entete-section">
+          <h2 id="titre-faq">Vos questions</h2>
         </div>
-        <div class="appel__actions">
-          <a class="bouton bouton--action bouton--grand" href="contact"><svg class="ico" data-ico="devis"></svg>Demander un devis</a>
-          <a class="bouton bouton--contour bouton--grand" data-href="mail" href="mailto:contact@multiservice-thau.fr"><svg class="ico" data-ico="mail"></svg>Nous écrire</a>
+        <div class="faq">
+          <details>
+            <summary>Le devis est-il vraiment gratuit&#8239;?</summary>
+            <div class="faq__reponse"><p>Oui. On passe voir, on vous remet un prix écrit, et vous décidez ensuite. Vous ne payez rien tant que vous n'avez pas dit oui.</p><a class="lien-action" href="contact" data-track="devis">Demander mon devis</a></div>
+          </details>
+          <details>
+            <summary>Vous vous déplacez pour des petits travaux&#8239;?</summary>
+            <div class="faq__reponse"><p>Oui, c'est même une bonne partie de notre travail. S'il y a plusieurs petites choses à faire, on les regroupe en une seule visite.</p><a class="lien-action" data-href="tel" href="tel:+33639980000" data-track="call">Appeler le <span data-cfg="telephone">06 39 98 00 00</span></a></div>
+          </details>
+          <details>
+            <summary>En combien de temps pouvez-vous venir&#8239;?</summary>
+            <div class="faq__reponse"><p>On vous rappelle dans la journée pour fixer un passage. Quand c'est urgent, on fait tout pour venir au plus vite.</p><a class="lien-action" data-href="tel" href="tel:+33639980000" data-track="call">Appeler le <span data-cfg="telephone">06 39 98 00 00</span></a></div>
+          </details>
+          <details>
+            <summary>Comment est fixé le prix&#8239;?</summary>
+            <div class="faq__reponse"><p>Après une visite, selon le temps et le matériel nécessaires. Le prix est écrit sur le devis avant de commencer, et c'est celui que vous payez.</p><a class="lien-action" href="contact" data-track="devis">Demander mon devis</a></div>
+          </details>
+          <details>
+            <summary>Vous travaillez aussi pour les professionnels&#8239;?</summary>
+            <div class="faq__reponse"><p>Oui&nbsp;: commerces, bureaux, locations saisonnières. On s'adapte à vos horaires et on intervient entre deux clients ou deux locations.</p><a class="lien-action" href="contact?type=pro" data-track="devis">Demander un devis pour un pro</a></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--voile" aria-labelledby="titre-zone">
+      <div class="conteneur">
+        <div class="entete-section">
+          <h2 id="titre-zone">Où on intervient</h2>
+        </div>
+        <p class="villes" data-villes>Sète, Frontignan, Balaruc-les-Bains, Balaruc-le-Vieux, Mèze, Marseillan, Bouzigues, Poussan, Gigean, Vic-la-Gardiole.</p>
+        <p class="zone__note">Vous habitez juste à côté&#8239;? <a class="lien-action" data-href="tel" href="tel:+33639980000" data-track="call">Appelez, on vous dit si on peut venir.</a></p>
+      </div>
+    </section>
+
+    <section class="appel" aria-labelledby="titre-appel">
+      <div class="conteneur">
+        <h2 id="titre-appel">Un souci à la maison&#8239;? Appelez-nous.</h2>
+        <a class="appel__numero" data-href="tel" href="tel:+33639980000" data-track="call" data-cfg="telephone">06 39 98 00 00</a>
+        <div class="appel__suite">
+          <a class="bouton bouton--papier" data-href="whatsapp" href="https://wa.me/33639980000" data-track="whatsapp" target="_blank" rel="noopener"><svg data-ico="photo"></svg>Envoyer une photo sur WhatsApp</a>
+          <p><span data-cfg="horaires">Du lundi au samedi, de 8 h à 19 h</span>. Si on est sur un chantier, on vous rappelle dans la journée.</p>
         </div>
       </div>
     </section>
@@ -218,5 +219,13 @@
   </main>
 
   <footer class="pied" data-slot="pied"></footer>
+
+  <script type="module">
+    // La 3D arrive en plus : le site est déjà utilisable sans elle.
+    const charger = () => import("./scene.js");
+    const attendre = !document.documentElement.classList.contains("intro") && matchMedia("(max-width: 859px)").matches;
+    if (attendre && document.readyState !== "complete") addEventListener("load", charger, { once: true });
+    else charger();
+  </script>
 </body>
 </html>

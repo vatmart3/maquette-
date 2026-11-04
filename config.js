@@ -1,17 +1,18 @@
 /*
  * Configuration du site — toutes les informations du client sont ici.
  * Remplacez les valeurs ci-dessous quand le client donne ses vraies infos :
- * en-tête, pied de page, numéros cliquables, listes de villes et données
- * structurées (JSON-LD) se mettent à jour automatiquement.
+ * en-tête, barre d'actions mobile, pied de page, liens tel: et WhatsApp,
+ * listes de villes et données structurées (JSON-LD) se mettent à jour seuls.
  */
 window.SITE = {
   nom: "Multiservice Thau",
 
-  // Petite ligne sous le nom (logo) et dans la barre de contact.
-  accroche: "Travaux et bricolage",
-
   // Numéro affiché (format français) — le lien tel: est calculé automatiquement.
   telephone: "06 39 98 00 00",
+
+  // WhatsApp : indicatif pays + numéro, sans espace ni « + ».
+  whatsapp: "33639980000",
+  whatsappMessage: "Bonjour, je vous envoie une photo du problème :",
 
   email: "contact@multiservice-thau.fr",
 
@@ -37,7 +38,17 @@ window.SITE = {
     "Vic-la-Gardiole",
   ],
 
-  // Adresse du site en ligne (pour les données structurées).
+  // Arguments de confiance, affichés près des boutons.
+  confiance: {
+    devisGratuit: "Devis gratuit", // À CONFIRMER
+    reponse: "Réponse dans la journée", // À CONFIRMER
+    prixAvant: "Prix annoncé avant de commencer", // À CONFIRMER
+    artisanLocal: "Artisan local, installé autour de Sète", // À CONFIRMER
+    decennale: "Assurance décennale", // À CONFIRMER
+    experience: "XX ans d'expérience", // À CONFIRMER : remplacer XX
+  },
+
+  // Adresse du site en ligne (données structurées).
   siteUrl: "https://maquette-multiservice-thau.vercel.app",
 
   // Numéro imprimé sur le bon d'intervention.

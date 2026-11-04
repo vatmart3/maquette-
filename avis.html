@@ -4,12 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Avis clients | Multiservice Thau, Sète et Bassin de Thau</title>
-  <meta name="description" content="Ce que disent les clients de Multiservice Thau à Sète, Frontignan, Mèze et autour de l'étang de Thau : délais, propreté, prix clair, réactivité.">
+  <meta name="description" content="Ce que disent les clients de Multiservice Thau à Sète, Frontignan, Mèze et autour de l'étang de Thau : délais tenus, chantier propre, prix clair, réponse rapide.">
   <meta name="robots" content="noindex, nofollow">
-  <meta name="theme-color" content="#2347A0">
+  <meta name="theme-color" content="#E9ECE8">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="preload" href="fonts/barlow-sc-700.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="fonts/barlow-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles.css">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="fr_FR">
@@ -21,85 +20,90 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js" crossorigin>
   <script src="config.js" defer></script>
   <script src="site.js" defer></script>
 </head>
 <body data-page="avis">
   <a class="evitement" href="#contenu">Aller au contenu</a>
+  <div class="scene" data-scene aria-hidden="true"></div>
 
   <header class="entete" data-slot="entete">
-    <noscript><div class="conteneur entete__ligne"><a class="logo" href="./">Multiservice Thau</a> <a href="tel:+33639980000">06 39 98 00 00</a></div></noscript>
+    <noscript><div class="conteneur entete__ligne"><a class="marque" href="./">Multiservice Thau</a> <a href="tel:+33639980000">06 39 98 00 00</a></div></noscript>
   </header>
 
   <main id="contenu">
 
-    <section class="sur-bleu tete-page" aria-labelledby="titre-page">
+    <section class="titre-page section--voile" aria-labelledby="titre-page">
       <div class="conteneur">
         <h1 id="titre-page">Ce que disent nos clients.</h1>
         <div class="avertissement">
-          <svg class="ico" data-ico="info"></svg>
+          <span class="exemple">Exemple</span>
           <p>Les avis de cette page sont des exemples pour la maquette. À la mise en ligne, ils seront remplacés par les vrais avis Google de <span data-cfg="nom">Multiservice Thau</span>.</p>
         </div>
       </div>
     </section>
 
-    <section class="section" aria-labelledby="titre-avis">
+    <section class="section section--voile" data-colle aria-labelledby="titre-vedette">
       <div class="conteneur">
-        <h2 id="titre-avis" class="sr">Avis d'exemple</h2>
-        <div class="avis-grille">
-          <figure class="avis avis--vedette">
-            <div class="etoiles" data-etoiles aria-hidden="true"></div>
-            <blockquote><p>«&#8239;Ils sont venus le lendemain de mon appel, m'ont donné le prix avant de commencer et sont repartis en laissant tout propre. Je garde le numéro.&#8239;»</p></blockquote>
-            <figcaption><span class="signature">Martine R., <span>Frontignan</span></span><span class="exemple">Exemple</span></figcaption>
-          </figure>
-          <div class="avis-colonne">
-            <figure class="avis">
-            <div class="etoiles" data-etoiles aria-hidden="true"></div>
-            <blockquote><p>«&#8239;J'ai appelé un lundi matin et quelqu'un a décroché. Rendez-vous pris pour le mercredi, et ils étaient à l'heure.&#8239;»</p></blockquote>
-            <figcaption><span class="signature">Karim B., <span>Sète</span></span><span class="exemple">Exemple</span></figcaption>
-          </figure>
-            <figure class="avis">
-            <div class="etoiles" data-etoiles aria-hidden="true"></div>
-            <blockquote><p>«&#8239;Ils avaient annoncé trois jours. C'était fini le troisième jour, en fin d'après-midi.&#8239;»</p></blockquote>
-            <figcaption><span class="signature">Odile F., <span>Marseillan</span></span><span class="exemple">Exemple</span></figcaption>
-          </figure>
-          </div>
-        </div>
-        <div class="mur">
-          <figure class="avis avis--large">
-            <div class="etoiles" data-etoiles aria-hidden="true"></div>
-            <blockquote><p>«&#8239;Des travaux dans le salon avec deux enfants à la maison. Ils ont protégé le sol tous les matins et passé l'aspirateur avant de partir.&#8239;»</p></blockquote>
-            <figcaption><span class="signature">Julien P., <span>Mèze</span></span><span class="exemple">Exemple</span></figcaption>
-          </figure>
-          <figure class="avis">
-            <div class="etoiles" data-etoiles aria-hidden="true"></div>
-            <blockquote><p>«&#8239;Le prix du devis, c'est ce que j'ai payé. Pas de supplément découvert en cours de route.&#8239;»</p></blockquote>
-            <figcaption><span class="signature">Sylvie M., <span>Balaruc-les-Bains</span></span><span class="exemple">Exemple</span></figcaption>
-          </figure>
-          <figure class="avis">
-            <div class="etoiles" data-etoiles aria-hidden="true"></div>
-            <blockquote><p>«&#8239;J'ai une petite boutique. Ils sont intervenus avant l'ouverture pour ne pas gêner les clients, et m'ont envoyé une photo une fois fini.&#8239;»</p></blockquote>
-            <figcaption><span class="signature">Thierry L., <span>Bouzigues</span></span><span class="exemple">Exemple</span></figcaption>
-          </figure>
-        </div>
+        <h2 id="titre-vedette" class="sr">Avis à la une</h2>
+        <figure class="avis-vedette">
+          <blockquote><p>«&#8239;Ils sont venus le lendemain de mon appel, m'ont donné le prix avant de commencer et sont repartis en laissant tout propre. Je garde le numéro.&#8239;»</p></blockquote>
+          <figcaption><span class="signature">Martine R., <span>Frontignan</span></span><span class="exemple">Exemple</span></figcaption>
+        </figure>
+      </div>
+    </section>
 
+    <section class="section section--voile" data-colle aria-labelledby="titre-tableau">
+      <div class="conteneur">
+        <h2 id="titre-tableau" class="sr">Autres avis</h2>
+        <ul class="tableau">
+          <li class="mot mot--large">
+            <figure>
+              <blockquote><p>«&#8239;J'ai appelé un lundi matin et quelqu'un a décroché. Rendez-vous pris pour le mercredi, et ils étaient à l'heure.&#8239;»</p></blockquote>
+              <figcaption><span class="signature">Karim B., <span>Sète</span></span><span class="exemple">Exemple</span></figcaption>
+            </figure>
+          </li>
+          <li class="mot">
+            <figure>
+              <blockquote><p>«&#8239;Le prix du devis, c'est ce que j'ai payé. Pas de supplément découvert en cours de route.&#8239;»</p></blockquote>
+              <figcaption><span class="signature">Sylvie M., <span>Balaruc-les-Bains</span></span><span class="exemple">Exemple</span></figcaption>
+            </figure>
+          </li>
+          <li class="mot">
+            <figure>
+              <blockquote><p>«&#8239;Ils avaient annoncé trois jours. C'était fini le troisième jour, en fin d'après-midi.&#8239;»</p></blockquote>
+              <figcaption><span class="signature">Odile F., <span>Marseillan</span></span><span class="exemple">Exemple</span></figcaption>
+            </figure>
+          </li>
+          <li class="mot mot--large">
+            <figure>
+              <blockquote><p>«&#8239;Des travaux dans le salon avec deux enfants à la maison. Ils ont protégé le sol tous les matins et passé l'aspirateur avant de partir.&#8239;»</p></blockquote>
+              <figcaption><span class="signature">Julien P., <span>Mèze</span></span><span class="exemple">Exemple</span></figcaption>
+            </figure>
+          </li>
+          <li class="mot">
+            <figure>
+              <blockquote><p>«&#8239;Je loue un studio à la semaine. Ils sont passés entre deux locataires, et m'ont envoyé une photo une fois fini.&#8239;»</p></blockquote>
+              <figcaption><span class="signature">Thierry L., <span>Bouzigues</span></span><span class="exemple">Exemple</span></figcaption>
+            </figure>
+          </li>
+        </ul>
         <div class="avis-google">
-          <a class="bouton bouton--bleu" data-href="avis-google" href="#">Laisser un avis sur Google</a>
+          <a class="bouton bouton--papier" data-href="avis-google" href="#">Laisser un avis sur Google</a>
           <p>Vous avez fait appel à nous&#8239;? Votre avis aide vos voisins à choisir.</p>
         </div>
       </div>
     </section>
 
-    <section class="sur-bleu appel" aria-labelledby="titre-appel">
-      <div class="conteneur appel__grille">
-        <div>
-          <h2 id="titre-appel">Un souci à la maison&#8239;? Appelez-nous.</h2>
-          <a class="appel__numero" data-href="tel" href="tel:+33639980000" data-cfg="telephone">06 39 98 00 00</a>
+    <section class="appel" aria-labelledby="titre-appel">
+      <div class="conteneur">
+        <h2 id="titre-appel">Un souci à la maison&#8239;? Appelez-nous.</h2>
+        <a class="appel__numero" data-href="tel" href="tel:+33639980000" data-track="call" data-cfg="telephone">06 39 98 00 00</a>
+        <div class="appel__suite">
+          <a class="bouton bouton--papier" data-href="whatsapp" href="https://wa.me/33639980000" data-track="whatsapp" target="_blank" rel="noopener"><svg data-ico="photo"></svg>Envoyer une photo sur WhatsApp</a>
           <p><span data-cfg="horaires">Du lundi au samedi, de 8 h à 19 h</span>. Si on est sur un chantier, on vous rappelle dans la journée.</p>
-        </div>
-        <div class="appel__actions">
-          <a class="bouton bouton--action bouton--grand" href="contact"><svg class="ico" data-ico="devis"></svg>Demander un devis</a>
-          <a class="bouton bouton--contour bouton--grand" data-href="mail" href="mailto:contact@multiservice-thau.fr"><svg class="ico" data-ico="mail"></svg>Nous écrire</a>
         </div>
       </div>
     </section>
@@ -107,5 +111,13 @@
   </main>
 
   <footer class="pied" data-slot="pied"></footer>
+
+  <script type="module">
+    // La 3D arrive en plus : le site est déjà utilisable sans elle.
+    const charger = () => import("./scene.js");
+    const attendre = !document.documentElement.classList.contains("intro") && matchMedia("(max-width: 859px)").matches;
+    if (attendre && document.readyState !== "complete") addEventListener("load", charger, { once: true });
+    else charger();
+  </script>
 </body>
 </html>
