@@ -14,7 +14,6 @@
   var html = document.documentElement;
   var page = document.body.getAttribute("data-page") || "";
   var reduit = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var mqMobile = window.matchMedia("(max-width: 859px)");
 
   /* ---------- Outils ---------- */
 
@@ -343,7 +342,6 @@
     };
 
     var zoneDepuisScroll = function () {
-      if (mqMobile.matches) return;
       var course = visite.offsetHeight - window.innerHeight;
       var p = (window.scrollY - visite.offsetTop) / Math.max(1, course);
       activer(p < -0.02 || p > 1.0 ? -1 : Math.min(3, Math.max(0, Math.floor(p * 4))));
@@ -352,25 +350,6 @@
     window.addEventListener("scroll", zoneDepuisScroll, { passive: true });
     window.addEventListener("resize", zoneDepuisScroll);
     zoneDepuisScroll();
-
-    // Mobile : la zone change quand chaque fiche entre à l'écran.
-    if ("IntersectionObserver" in window) {
-      var io = new IntersectionObserver(
-        function (entrees) {
-          if (!mqMobile.matches) return;
-          entrees.forEach(function (e) {
-            if (e.isIntersecting) activer(Array.prototype.indexOf.call(fiches, e.target));
-          });
-        },
-        { rootMargin: "-35% 0px -35% 0px" }
-      );
-      fiches.forEach(function (f) {
-        io.observe(f);
-      });
-      new IntersectionObserver(function (entrees) {
-        if (mqMobile.matches && !entrees[0].isIntersecting) activer(-1);
-      }).observe(visite);
-    }
 
     // Les repères : aller directement à une zone.
     reperes.forEach(function (r, k) {
@@ -385,7 +364,7 @@
 
     // Le fil jaune entre l'œillet de la fiche et la zone de la maison.
     document.addEventListener("mst:ancre", function (e) {
-      if (!fil || mqMobile.matches || zone < 0 || e.detail.zone !== zone) return;
+      if (!fil || zone < 0 || e.detail.zone !== zone) return;
       var oeillet = fiches[zone].querySelector(".fiche__oeillet");
       var boite = collant.getBoundingClientRect();
       var o = oeillet.getBoundingClientRect();

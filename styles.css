@@ -735,7 +735,7 @@ main { position: relative; z-index: 1; }
   background: #fff;
 }
 
-.case__boite svg { position: absolute; left: -5px; top: -6px; width: 36px; height: 36px; overflow: visible; }
+.case__boite svg { position: absolute; left: -6px; top: -6px; width: 34px; height: 34px; max-width: none; overflow: visible; }
 
 .case__boite path {
   fill: none;
@@ -787,6 +787,7 @@ main { position: relative; z-index: 1; }
   left: -4px;
   top: 0;
   width: calc(100% + 8px);
+  max-width: none;
   height: 100%;
   overflow: visible;
   pointer-events: none;
@@ -1079,14 +1080,51 @@ main { position: relative; z-index: 1; }
 .visite__reperes button[aria-current="true"]::before { background: var(--jaune); opacity: 1; }
 
 @media (max-width: 859px) {
-  .visite { height: auto; padding-block: 56px 24px; }
-  .visite__collant { position: static; height: auto; overflow: visible; }
-  .visite__grille { display: block; height: auto; padding: 0; }
-  .visite__tete { padding: 18px var(--gouttiere); margin: 0 calc(-1 * var(--gouttiere)) 28px; background: var(--platre-voile); }
-  .visite__fiches { width: auto; min-height: 0; display: grid; gap: 26vh; padding-block: 8vh 16vh; }
-  .fiche { position: relative; top: auto; transform: rotate(-0.8deg); opacity: 1; visibility: visible; }
-  .fiche:nth-child(even) { transform: rotate(0.7deg); }
-  .visite__fil, .visite__reperes { display: none; }
+  /* même visite collante que sur ordinateur : la maison au milieu, la fiche en bas */
+  .visite { height: 400vh; }
+  .visite__grille {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding-top: var(--entete);
+    padding-bottom: 0;
+  }
+  .visite__tete {
+    justify-self: auto;
+    margin: 0 calc(-1 * var(--gouttiere));
+    padding: 12px var(--gouttiere) 8px;
+  }
+  .visite__tete h2 { font-size: var(--t-2); max-width: none; }
+  .visite__tete p { margin-top: 4px; font-size: var(--t--1); }
+  .visite__reperes {
+    order: 2;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    margin: 0 calc(-1 * var(--gouttiere));
+    padding: 0 var(--gouttiere) 6px;
+    background: var(--platre-voile);
+  }
+  .visite__reperes button { min-width: 0; padding: 4px 0 8px; font-size: 0.75rem; line-height: 1.2; }
+  .visite__fiches {
+    order: 3;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--barre) + 30px);
+    width: auto;
+    min-height: 0;
+  }
+  .fiche {
+    top: auto;
+    bottom: 0;
+    padding: 18px 18px 18px 20px;
+    transform: rotate(-0.8deg);
+  }
+  .fiche h3 { font-size: var(--t-2); margin-bottom: 8px; }
+  .fiche p { margin-bottom: 14px; font-size: 1rem; line-height: 1.5; }
+  .fiche .bouton { min-height: 50px; }
+  .fiche__oeillet { top: 14px; right: 14px; }
 }
 
 /* ---------- Comment ça se passe : le mètre ruban ---------- */
@@ -1567,3 +1605,135 @@ main { position: relative; z-index: 1; }
 }
 
 [data-colle] { padding-top: 0; }
+
+/* ==========================================================================
+   Finitions téléphone
+   ========================================================================== */
+
+.accroche__whatsapp a { display: inline-flex; align-items: center; gap: 8px; }
+.accroche__whatsapp .ico { display: none; }
+.coordonnees__appeler { display: none; }
+
+@media (max-width: 999px) {
+  :root { --barre: 76px; }
+
+  .barre-actions {
+    grid-template-columns: 1.35fr 1fr 1fr;
+    gap: 8px;
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+    background: rgb(255 255 255 / 0.97);
+    border-top: 1px solid var(--trait);
+    box-shadow: 0 -10px 28px -14px rgb(20 33 61 / 0.4);
+  }
+
+  .barre-actions a {
+    min-height: 58px;
+    border-radius: 4px;
+    font-size: 0.78rem;
+    letter-spacing: 0;
+  }
+
+  .barre-actions a:first-child {
+    flex-direction: row;
+    gap: 10px;
+    font-stretch: 125%;
+    font-size: 1.0625rem;
+  }
+
+  .barre-actions a:first-child .ico { width: 22px; height: 22px; }
+
+  .entete__menu { min-height: 42px; padding: 6px 14px; font-size: var(--t--1); }
+}
+
+@media (max-width: 859px) {
+  /* Accueil */
+  .accroche { padding-bottom: 40px; }
+  .accroche p.chapeau { margin: 18px 0 22px; font-size: 1.1875rem; }
+  .accroche__bouton { min-height: 60px; font-size: 1.0625rem; }
+
+  .accroche__whatsapp { margin: 12px 0 0; text-shadow: none; }
+  .accroche__whatsapp a {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    min-height: 54px;
+    padding: 10px 16px;
+    border-radius: 3px;
+    background: var(--papier);
+    color: var(--nuit);
+    box-shadow: inset 0 0 0 2px var(--nuit);
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .accroche__whatsapp .ico { display: block; width: 20px; height: 20px; }
+  .accroche__whatsapp span::first-letter { text-transform: uppercase; }
+
+  .coches { display: grid; gap: 8px; margin-top: 20px; font-size: 0.95rem; }
+
+  .accroche__bon { margin-top: 12px; }
+  .bon--mini { transform: rotate(-0.6deg); }
+  .bon--mini .bouton { min-height: 54px; }
+  .bon--mini .bon__aide { text-align: center; }
+
+  .apres-etapes .lien-action,
+  .zone__note .lien-action {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 54px;
+    margin-top: 12px;
+    padding: 10px 16px;
+    border-radius: 3px;
+    background: var(--papier);
+    color: var(--nuit);
+    box-shadow: inset 0 0 0 2px var(--nuit);
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .faq summary { font-size: 1.15rem; padding-block: 18px; }
+  .faq__reponse .lien-action { display: inline-block; padding: 6px 0; }
+
+  .appel__suite { display: grid; gap: 14px; }
+  .appel__suite .bouton { width: 100%; min-height: 58px; }
+
+  .avis-google .bouton { width: 100%; }
+
+  /* Bon d'intervention */
+  .progression {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 22px;
+    font-size: 0.75rem;
+    line-height: 1.2;
+  }
+  .progression li { flex-direction: column; align-items: flex-start; gap: 6px; }
+
+  .etape-bon__titre { font-size: var(--t-1); margin-bottom: 16px; }
+  .etape-bon legend { font-size: 1.125rem; }
+
+  .cases { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 12px; }
+  .case label { font-size: 1rem; line-height: 1.25; }
+
+  .entoures { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 6px; }
+  .entoure label { width: 100%; justify-content: center; text-align: center; padding-inline: 6px; line-height: 1.2; }
+
+  .ligne { margin-bottom: 18px; }
+  .ligne > label { font-size: 1rem; }
+
+  .fichier label { padding: 14px 16px; }
+
+  .bon__actions { flex-direction: column; align-items: stretch; gap: 10px; }
+  .bon__actions .bouton { order: 1; min-height: 58px; }
+  .bouton-retour { order: 2; align-self: center; min-height: 44px; }
+  .bon__actions [data-aide] { order: 3; text-align: center; }
+  .bon__confirmation { order: 4; }
+  .bon__confirmation .bouton { width: 100%; }
+
+  /* Coordonnées */
+  .coordonnees { padding: 24px 20px; margin-inline: calc(-1 * var(--gouttiere) + 8px); }
+  .coordonnees__tel { margin-bottom: 12px; }
+  .coordonnees__appeler { display: flex; width: 100%; min-height: 58px; margin-bottom: 10px; }
+  .coordonnees .bouton--papier { min-height: 56px; }
+}

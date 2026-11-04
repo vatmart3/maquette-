@@ -42,7 +42,7 @@
           <h1 id="titre-page">On s'occupe de votre maison.</h1>
           <p class="chapeau">Dedans, dehors, petits et gros travaux autour de Sète. Un seul interlocuteur, un devis gratuit.</p>
           <a class="bouton accroche__bouton" data-href="tel" href="tel:+33639980000" data-track="call"><svg data-ico="tel"></svg><span>Appeler le <span data-cfg="telephone">06 39 98 00 00</span></span></a>
-          <p class="accroche__whatsapp"><a data-href="whatsapp" href="https://wa.me/33639980000" data-track="whatsapp" target="_blank" rel="noopener">ou envoyez une photo du problème sur WhatsApp</a></p>
+          <p class="accroche__whatsapp"><a data-href="whatsapp" href="https://wa.me/33639980000" data-track="whatsapp" target="_blank" rel="noopener"><svg data-ico="photo"></svg><span>ou envoyez une photo du problème sur WhatsApp</span></a></p>
           <ul class="coches" data-coches="devisGratuit reponse prixAvant">
             <li>Devis gratuit</li><li>Réponse dans la journée</li><li>Prix annoncé avant de commencer</li>
           </ul>
@@ -222,10 +222,7 @@
 
   <script type="module">
     // La 3D arrive en plus : le site est déjà utilisable sans elle.
-    const charger = () => import("./scene.js");
-    const attendre = !document.documentElement.classList.contains("intro") && matchMedia("(max-width: 859px)").matches;
-    if (attendre && document.readyState !== "complete") addEventListener("load", charger, { once: true });
-    else charger();
+    import("./scene.js");
   </script>
 </body>
 </html>

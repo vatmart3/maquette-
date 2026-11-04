@@ -78,23 +78,23 @@
                 <div class="cases">
                   <div class="case">
                     <input id="b-dedans" type="checkbox" name="besoin" value="dedans">
-                    <label for="b-dedans"><span class="case__boite" aria-hidden="true"><svg viewBox="0 0 36 36"><path pathLength="1" d="M8.5 9.5C14 15 20.5 21.5 27.5 27.2"/><path pathLength="1" d="M27.2 8.6C21 14.6 15 20.8 8.8 27.6"/></svg></span>Dedans</label>
+                    <label for="b-dedans"><span class="case__boite" aria-hidden="true"><svg viewBox="0 0 36 36"><path pathLength="1" d="M10 10C14.8 15.2 20.6 20.8 26 26.2"/><path pathLength="1" d="M26.2 9.8C21 15 15.2 20.8 9.8 26.2"/></svg></span>Dedans</label>
                   </div>
                   <div class="case">
                     <input id="b-dehors" type="checkbox" name="besoin" value="dehors">
-                    <label for="b-dehors"><span class="case__boite" aria-hidden="true"><svg viewBox="0 0 36 36"><path pathLength="1" d="M8.5 9.5C14 15 20.5 21.5 27.5 27.2"/><path pathLength="1" d="M27.2 8.6C21 14.6 15 20.8 8.8 27.6"/></svg></span>Dehors</label>
+                    <label for="b-dehors"><span class="case__boite" aria-hidden="true"><svg viewBox="0 0 36 36"><path pathLength="1" d="M10 10C14.8 15.2 20.6 20.8 26 26.2"/><path pathLength="1" d="M26.2 9.8C21 15 15.2 20.8 9.8 26.2"/></svg></span>Dehors</label>
                   </div>
                   <div class="case">
                     <input id="b-petits" type="checkbox" name="besoin" value="petits">
-                    <label for="b-petits"><span class="case__boite" aria-hidden="true"><svg viewBox="0 0 36 36"><path pathLength="1" d="M8.5 9.5C14 15 20.5 21.5 27.5 27.2"/><path pathLength="1" d="M27.2 8.6C21 14.6 15 20.8 8.8 27.6"/></svg></span>Petits travaux</label>
+                    <label for="b-petits"><span class="case__boite" aria-hidden="true"><svg viewBox="0 0 36 36"><path pathLength="1" d="M10 10C14.8 15.2 20.6 20.8 26 26.2"/><path pathLength="1" d="M26.2 9.8C21 15 15.2 20.8 9.8 26.2"/></svg></span>Petits travaux</label>
                   </div>
                   <div class="case">
                     <input id="b-pro" type="checkbox" name="besoin" value="pro">
-                    <label for="b-pro"><span class="case__boite" aria-hidden="true"><svg viewBox="0 0 36 36"><path pathLength="1" d="M8.5 9.5C14 15 20.5 21.5 27.5 27.2"/><path pathLength="1" d="M27.2 8.6C21 14.6 15 20.8 8.8 27.6"/></svg></span>Pour un pro</label>
+                    <label for="b-pro"><span class="case__boite" aria-hidden="true"><svg viewBox="0 0 36 36"><path pathLength="1" d="M10 10C14.8 15.2 20.6 20.8 26 26.2"/><path pathLength="1" d="M26.2 9.8C21 15 15.2 20.8 9.8 26.2"/></svg></span>Pour un pro</label>
                   </div>
                   <div class="case">
                     <input id="b-autre" type="checkbox" name="besoin" value="autre">
-                    <label for="b-autre"><span class="case__boite" aria-hidden="true"><svg viewBox="0 0 36 36"><path pathLength="1" d="M8.5 9.5C14 15 20.5 21.5 27.5 27.2"/><path pathLength="1" d="M27.2 8.6C21 14.6 15 20.8 8.8 27.6"/></svg></span>Autre</label>
+                    <label for="b-autre"><span class="case__boite" aria-hidden="true"><svg viewBox="0 0 36 36"><path pathLength="1" d="M10 10C14.8 15.2 20.6 20.8 26 26.2"/><path pathLength="1" d="M26.2 9.8C21 15 15.2 20.8 9.8 26.2"/></svg></span>Autre</label>
                   </div>
                 </div>
                 <p class="erreur" id="besoin-erreur"></p>
@@ -206,6 +206,7 @@
         <aside class="coordonnees" aria-label="Nos coordonnées">
           <h2>Vous préférez appeler&#8239;?</h2>
           <a class="coordonnees__tel" data-href="tel" href="tel:+33639980000" data-track="call" data-cfg="telephone">06 39 98 00 00</a>
+          <a class="bouton coordonnees__appeler" data-href="tel" href="tel:+33639980000" data-track="call"><svg data-ico="tel"></svg>Appeler maintenant</a>
           <a class="bouton bouton--papier" data-href="whatsapp" href="https://wa.me/33639980000" data-track="whatsapp" target="_blank" rel="noopener"><svg data-ico="photo"></svg>Envoyer une photo sur WhatsApp</a>
           <h3>Horaires</h3>
           <p><span data-cfg="horaires">Du lundi au samedi, de 8 h à 19 h</span>.</p>
@@ -228,10 +229,7 @@
 
   <script type="module">
     // La 3D arrive en plus : le site est déjà utilisable sans elle.
-    const charger = () => import("./scene.js");
-    const attendre = !document.documentElement.classList.contains("intro") && matchMedia("(max-width: 859px)").matches;
-    if (attendre && document.readyState !== "complete") addEventListener("load", charger, { once: true });
-    else charger();
+    import("./scene.js");
   </script>
 </body>
 </html>

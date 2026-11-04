@@ -30,7 +30,6 @@ let ordreCourant = 1;
 let detailCourant = false;
 
 function L(a, b) {
-  if (detailCourant && mobile) return;
   segs.push({ a, b, zone: zoneCourante, ordre: ordreCourant });
 }
 function avec(zone, ordre, detail, fn) {
@@ -271,15 +270,15 @@ const P = (pos, cible, ox, oy) => ({ pos: new THREE.Vector3(...pos), cible: new 
 
 const PLANS = mobile
   ? {
-      intro: P([0, 2.6, 82], [0, 2.6, 0], 0, -0.16),
+      intro: P([0, 2.6, 82], [0, 2.6, 0], 0, -0.26),
       hero: P([-30, 25, 58], [0.5, 3, 0], 0, -0.3),
       zones: [
-        P([-12, 10, 36], [0, 3, 0], 0, -0.16),
-        P([-30, 12, 28], [-7, 1.5, 2], 0, -0.16),
-        P([6, 8, 32], [0.5, 1.8, 6], 0, -0.16),
-        P([30, 11, 30], [8, 2, 2], 0, -0.16),
+        P([-10, 9, 34], [0, 3.4, 0], 0, -0.12),
+        P([-26, 11, 26], [-7, 1.5, 2], 0, -0.12),
+        P([5, 6, 30], [0.5, 2, 6], 0, -0.12),
+        P([26, 9, 26], [8, 2, 2], 0, -0.12),
       ],
-      large: P([-46, 34, 62], [0, 1, 0], 0, 0),
+      large: P([-46, 34, 62], [0, 1, 0], 0, -0.05),
     }
   : {
       intro: P([0, 1.9, 48], [0, 2.4, 0], 0.25, -0.075),
@@ -351,7 +350,7 @@ function demarrer() {
   geo.setColors(couleurs);
   const mat = new LineMaterial({
     vertexColors: true,
-    linewidth: mobile ? 1.3 : 1.5,
+    linewidth: 1.5,
     transparent: true,
     worldUnits: false,
   });
@@ -374,7 +373,7 @@ function demarrer() {
   groupe.add(cordeau);
 
   /* --- La poudre --- */
-  const NP = mobile ? 26 : 44;
+  const NP = 44;
   const poudreGeo = new THREE.BufferGeometry();
   const poudrePos = new Float32Array(NP * 3);
   const poudreVit = new Float32Array(NP * 3);
@@ -434,7 +433,6 @@ function demarrer() {
 
   const visite = document.querySelector("[data-visite]");
   const cibleCourante = { pos: new THREE.Vector3(), cible: new THREE.Vector3(), ox: 0, oy: 0, opacite: 1 };
-  let zoneMobile = -1;
 
   function calculerCible() {
     const y = window.scrollY;
@@ -458,20 +456,6 @@ function demarrer() {
     const course = Math.max(1, visite.offsetHeight - vh);
     const fin = haut + course;
 
-    if (mobile) {
-      if (zoneMobile >= 0 && y < fin + vh * 0.2) {
-        melanger(PLANS.zones[zoneMobile], PLANS.zones[zoneMobile], 0, out);
-        out.opacite = 0.5;
-      } else if (y < haut) {
-        melanger(PLANS.hero, PLANS.zones[0], lisse(clamp01(y / Math.max(1, haut))), out);
-        out.opacite = 0.5 + 0.5 * (1 - clamp01(y / (vh * 0.8)));
-      } else {
-        melanger(PLANS.zones[3], PLANS.large, lisse(clamp01((y - fin) / (vh * 1.5))), out);
-        out.opacite = 0.3;
-      }
-      return out;
-    }
-
     if (y <= haut) {
       melanger(PLANS.hero, PLANS.zones[0], lisse(clamp01(y / Math.max(1, haut))), out);
       out.opacite = 1;
@@ -493,7 +477,6 @@ function demarrer() {
   document.addEventListener("mst:zone", (e) => {
     etat.zoneActive = e.detail.zone;
     derniereAncre = "";
-    if (mobile) zoneMobile = e.detail.zone;
     relancer();
   });
 
@@ -520,7 +503,7 @@ function demarrer() {
 
   /* --- Intro --- */
   function lancerIntro() {
-    const duree = mobile ? 1.5 : 2.5;
+    const duree = 2.5;
     intro = { debut: performance.now(), duree };
     etat.trace = 0;
     etat.jaune = 1;
@@ -655,8 +638,8 @@ function demarrer() {
       else etat.zones[i] = but;
     }
 
-    // parallaxe souris (bureau)
-    if (!mobile && !reduit) {
+    // parallaxe : souris sur ordinateur, inclinaison du téléphone sur mobile
+    if (!reduit) {
       etat.sourisLissee.lerp(etat.souris, 1 - Math.exp(-dt * 3));
       groupe.rotation.y = etat.sourisLissee.x * 0.05;
       groupe.rotation.x = etat.sourisLissee.y * 0.025;
@@ -699,6 +682,14 @@ function demarrer() {
       relancer();
     }, { passive: true });
   }
+  if (mobile && !reduit) {
+    window.addEventListener("deviceorientation", (e) => {
+      if (e.gamma == null) return;
+      const c = (v) => Math.max(-1, Math.min(1, v));
+      etat.souris.set(c(e.gamma / 25), c((e.beta - 45) / 30));
+      relancer();
+    }, { passive: true });
+  }
   document.addEventListener("visibilitychange", () => {
     visible = !document.hidden;
     if (visible) relancer();
@@ -709,7 +700,7 @@ function demarrer() {
 
   // Intro : seulement sur l'accueil, une fois par session, si la 3D est prête vite.
   const html = document.documentElement;
-  const tropTard = performance.now() > 1600;
+  const tropTard = performance.now() > 1900;
   if (page === "accueil" && html.classList.contains("intro") && !reduit && !tropTard && window.scrollY < 40) {
     lancerIntro();
   } else {

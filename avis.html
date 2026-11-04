@@ -114,10 +114,7 @@
 
   <script type="module">
     // La 3D arrive en plus : le site est déjà utilisable sans elle.
-    const charger = () => import("./scene.js");
-    const attendre = !document.documentElement.classList.contains("intro") && matchMedia("(max-width: 859px)").matches;
-    if (attendre && document.readyState !== "complete") addEventListener("load", charger, { once: true });
-    else charger();
+    import("./scene.js");
   </script>
 </body>
 </html>
