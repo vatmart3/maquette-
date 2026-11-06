@@ -1,86 +1,91 @@
-# Maquette — Multiservice Thau (v3 « la maison tracée au cordeau »)
+# ARVÉO — site du couvreur zingueur de Frontignan
 
-Maquette de site vitrine (4 pages) réalisée par MJAGENCY pour une entreprise multiservice du Bassin de Thau.
-HTML, CSS et JavaScript vanilla + Three.js 0.169.0 (import map jsDelivr), sans étape de build.
+Site statique (HTML, CSS, JavaScript vanilla, Three.js 0.169.0 par CDN) + une fonction Vercel qui
+envoie les formulaires par e-mail. Réalisé par MJAGENCY.
 
-## Remplacer les infos du client
+## Structure
 
-Tout est dans **`config.js`** : nom, téléphone, WhatsApp, e-mail, horaires, villes, arguments de confiance
-(marqués `// À CONFIRMER`), numéro de bon, liens. En-tête, barre d'actions mobile, pied de page, liens
-`tel:` et WhatsApp, listes de villes et données structurées (JSON-LD) en découlent.
+| Fichier | Rôle |
+| --- | --- |
+| `config.js` | **Toutes les infos de l'entreprise** (téléphone, adresse, horaires, SIRET, liens Google…). Valeurs `// À CONFIRMER` à vérifier. |
+| `scripts/contenu.mjs` | Textes des pages services, des 10 pages communes et des FAQ. |
+| `scripts/build.mjs` | Génère les 26 pages HTML, `sitemap.xml`, `robots.txt` et les données structurées. |
+| `api/demande.js` | Reçoit les formulaires et envoie l'e-mail au client (Resend). |
+| `scene.js` | Animation 3D de la toiture (accueil). |
+| `site.js`, `styles.css` | Script et styles communs. |
 
-Restent écrits en dur dans les HTML : `<title>`, `meta description`, balises Open Graph, textes des avis
-d'exemple, des questions de la FAQ et de la page Notre histoire.
-
-## Lancer en local
+Après toute modification de `config.js` ou `scripts/contenu.mjs` :
 
 ```bash
-npx serve .
+node scripts/build.mjs
 ```
 
-## Déployer
+Le script liste ce qui reste à compléter avant la mise en ligne.
+
+## Mise en ligne (Vercel)
 
 ```bash
 npx vercel --prod
 ```
 
----
+### Envoi des formulaires par e-mail
 
-## Plan
+Les 5 formulaires (dépannage, devis, rendez-vous, rappel, contact) sont envoyés à `/api/demande`, qui
+transmet un e-mail mis en page comme le bon « Demande de dépannage » (photos en pièces jointes,
+bouton « Rappeler », objet marqué URGENT si besoin, adresse du client en « répondre à »).
 
-### Palette
-| Rôle | Couleur | Contraste vérifié |
-| --- | --- | --- |
-| Fond | Plâtre `#E9ECE8` | — |
-| Bon, fiches, surfaces de lecture | Blanc papier `#FFFFFF` | — |
-| Marque, traits de la maison, boutons, bandeau | Bleu de travail `#2347A0` | blanc sur bleu 8,5:1 ; bleu sur plâtre 7,1:1 |
-| Texte | Bleu nuit `#14213D` | 13,3:1 sur plâtre |
-| Cordeau, zone allumée, focus | Jaune cordeau `#F2C230` | jamais pour du texte ; focus doublé de bleu nuit |
-| Texte secondaire | Gris ciment `#5F666D` | 4,9:1 sur plâtre ; 5,8:1 sur blanc |
+1. Créer un compte gratuit sur [resend.com](https://resend.com) (3 000 e-mails/mois offerts).
+2. Y vérifier le domaine `arveo.fr` (3 enregistrements DNS à ajouter chez le registrar).
+3. Dans Vercel → Project → Settings → Environment Variables :
+   - `RESEND_API_KEY` : la clé API Resend
+   - `ARVEO_EMAIL_TO` : l'adresse qui reçoit les demandes (plusieurs possibles, séparées par des virgules)
+   - `ARVEO_EMAIL_FROM` : `Site ARVÉO <site@arveo.fr>`
+   - `ARVEO_ACCUSE` : `1` pour envoyer un accusé de réception au demandeur (facultatif)
+4. Redéployer, puis faire une demande de test depuis le site.
 
-Au-dessus de la 3D : la maison est dessinée en traits fins de 1,5 px ; tout bloc de texte qui la croise
-repose sur un fond plâtre ou papier (opacité ≥ 0,9), donc le contraste reste celui du tableau.
+Sans ces variables, le formulaire affiche un message d'erreur avec le téléphone et un lien
+« envoyer par e-mail » déjà rédigé : aucune demande n'est perdue.
 
-### Typographie
-Archivo variable auto-hébergée (`font-display: swap`). Titres en largeur 125 %, graisse 780–820,
-interlignage 1,02 ; texte en largeur 100 %, 18 px, interlignage 1,6, 65 caractères max.
-Échelle 1,25 en variables CSS (`--t--1` à `--t-8`).
+Protection anti-spam : champ piège invisible, envoi refusé en moins de 2 secondes, 6 envois maximum
+par adresse IP toutes les 10 minutes, validation côté serveur.
 
-### Wireframes
-- **Accueil** — hero à gauche (titre très large, un bouton « Appeler », lien WhatsApp, 3 coches de confiance)
-  + mini bon incliné à droite, maison 3D en arrière-plan à droite → **Visite de la maison** (section collante
-  de 4 écrans, une fiche épinglée par zone reliée à la maison par un trait jaune, indicateur 4 traits)
-  → mètre ruban (4 étapes) → avis (1 grand + 2 petits) → FAQ en accordéon → villes en bloc typographique
-  → bandeau bleu (numéro géant + WhatsApp).
-- **Notre histoire** — titre large, 3 paragraphes provisoires, grand emplacement photo plâtre,
-  3 engagements (promesse + explication), bandeau d'appel.
-- **Avis clients** — titre + avertissement « exemples », un avis géant, 5 petits mots épinglés de largeurs
-  différentes, bouton Google, bandeau d'appel.
-- **Contact** — bon d'intervention pleine largeur en 3 étapes (Le besoin, Où et quand, Vos coordonnées)
-  avec progression en haut, cachet « Demande reçue » ; à côté : téléphone géant, WhatsApp, horaires,
-  e-mail, zone, emplacement carte.
+## Référencement local (Frontignan et alentours)
 
-### Plans de caméra
-| Plan | Moment | Caméra |
-| --- | --- | --- |
-| Intro | Arrivée sur l'accueil (2,5 s, 1,5 s mobile) | Face, à hauteur d'homme : le cordeau traverse l'écran, claque, la maison se trace |
-| Hero | Haut de l'accueil | Trois-quarts avant gauche, maison décalée dans la moitié droite |
-| Dedans | Visite, zone 1 | Face à la façade, cadrage serré sur les fenêtres et l'escalier intérieur |
-| Dehors | Visite, zone 2 | Côté gauche : terrasse sous pergola, olivier, muret |
-| Petits travaux | Visite, zone 3 | Au ras du portillon : volets, boîte aux lettres, gouttière |
-| Pour les pros | Visite, zone 4 | Trois-quarts avant droit sur le local commercial et son store |
-| Vue large | Après la visite, jusqu'au pied de page | Recul en plongée, maison discrète (opacité 0,3) |
-| Pages intérieures | Toute la page | Lent travelling latéral lié au scroll, opacité 0,3, sans intro |
+Fait dans le site :
+- Une page par commune (`/couvreur/frontignan`, `/couvreur/sete`…) avec un texte propre à chacune
+  (quartiers, type de toitures, contraintes locales), et une page par service.
+- Titres, descriptions et H1 uniques, ciblés « couvreur + commune » et « service + Frontignan ».
+- Données structurées : `RoofingContractor` (adresse, GPS, horaires, zone desservie, catalogue de
+  services), `Service`, `FAQPage`, `BreadcrumbList`, `WebSite`.
+- Maillage interne : chaque page renvoie vers les communes, les services et les formulaires.
+- `sitemap.xml`, `robots.txt`, URLs propres, canonical, Open Graph, balises géographiques.
+- Site rapide (pas de framework ; la 3D se charge après le contenu, uniquement sur l'accueil).
 
-### Relecture « est-ce que ça irait à n'importe quel artisan ? » — ce qui a changé
-1. La maison était au départ une maison générique (toit à deux pans pentu, cheminée) : elle devient une
-   maison du Bassin de Thau — toit de tuiles canal à faible pente, volets battants, pergola sur la terrasse,
-   olivier, cyprès, muret bas avec portillon, et un petit local commercial à store pour les pros.
-2. Les fiches de la visite devaient être des cartes flottantes : ce sont des étiquettes de chantier
-   épinglées, reliées à la maison par un fil jaune, comme un cordeau tendu entre la fiche et la zone.
-3. L'intro prévoyait une simple ligne qui se dessine : elle devient le geste réel du métier
-   (le cordeau se tend, vibre, claque, la poudre retombe), et ce trait devient le sol de la maison.
-4. La barre d'actions mobile devait être trois boutons identiques : « Appeler » est plein (le plus urgent),
-   les deux autres sont en papier.
-5. Les étapes du formulaire ne sont pas des onglets : ce sont les rubriques d'un même bon, avec une
-   progression imprimée en haut, comme un carnet.
+**À faire par le client ou l'agence, indispensable pour être visible localement :**
+1. **Fiche Google Business Profile** catégorie « Couvreur » à Frontignan : même nom, adresse et
+   téléphone que sur le site (NAP identique), horaires, zone desservie, photos de chantiers.
+   C'est le facteur n°1 du « pack local » Google Maps. Mettre son lien dans `config.liens.googleBusiness`.
+2. **Avis Google** : demander un avis après chaque chantier. Les ajouter dans `config.avis` : la page
+   Avis et la note moyenne (données structurées) s'activent automatiquement. Ne jamais inventer d'avis.
+3. **Google Search Console** : ajouter le domaine et soumettre `https://arveo.fr/sitemap.xml`.
+4. **Annuaires locaux** avec le même NAP : PagesJaunes, Bing Places, Apple Plans, Houzz, annuaire
+   de la mairie de Frontignan, CMA Hérault.
+5. **Photos réelles** de chantiers (avant/après) à ajouter sur les pages services et communes.
+6. Remplacer le téléphone fictif, l'adresse exacte, le SIRET et l'assurance décennale dans `config.js`.
+
+## Identité visuelle
+
+Charte ARVÉO : bleu ardoise `#243746`, orange `#C65D28` (boutons en `#B9541F` pour le contraste AA
+avec le blanc), blanc cassé `#F7F5F0`, gris clair `#E5E7EB`, anthracite `#1F2933`.
+Manrope (titres), Inter (texte), DM Mono (données : téléphone, références). Logo « AV » redessiné en
+vectoriel (`img/arveo-mark.svg`) d'après la planche de charte : à remplacer par le fichier source
+officiel s'il existe.
+
+## Animation 3D
+
+Épure d'une toiture méditerranéenne en L : tuiles canal, faîtage et faîtières, rives, génoises,
+noues en zinc, gouttières et descentes, cheminée avec solin, fenêtre de toit avec abergement,
+charpente en écorché (chevrons, liteaux, pannes, ferme), mousses. À l'arrivée, un cordeau orange
+claque et la toiture se trace ; au défilement, la caméra visite 5 zones (couverture, charpente,
+zinguerie, étanchéité, démoussage), chacune avec sa fiche et un bouton « Devis pour ça ».
+Image SVG de secours sans WebGL, animation coupée en `prefers-reduced-motion`.

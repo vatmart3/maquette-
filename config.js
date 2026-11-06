@@ -1,69 +1,81 @@
 /*
- * Configuration du site — toutes les informations du client sont ici.
- * Remplacez les valeurs ci-dessous quand le client donne ses vraies infos :
- * en-tête, barre d'actions mobile, pied de page, liens tel: et WhatsApp,
- * listes de villes et données structurées (JSON-LD) se mettent à jour seuls.
+ * ARVÉO — configuration du site.
+ * Toutes les informations de l'entreprise sont ici. Après modification,
+ * relancez :  node scripts/build.mjs   (régénère les pages, le sitemap et les données Google).
+ * Les valeurs marquées « À CONFIRMER » doivent être vérifiées avec le client avant la mise en ligne.
  */
 window.SITE = {
-  nom: "Multiservice Thau",
+  nom: "ARVÉO",
+  activite: "Couvreur zingueur",
+  slogan: "Couverture, zinguerie et dépannage de toiture",
 
-  // Numéro affiché (format français) — le lien tel: est calculé automatiquement.
-  telephone: "06 39 98 00 00",
+  // Adresse du site (domaine définitif, sans « / » final). Sert aux liens canoniques et au sitemap.
+  siteUrl: "https://arveo.fr", // À CONFIRMER
 
-  // WhatsApp : indicatif pays + numéro, sans espace ni « + ».
-  whatsapp: "33639980000",
-  whatsappMessage: "Bonjour, je vous envoie une photo du problème :",
+  telephone: "06 39 98 00 00", // À CONFIRMER : numéro fictif ARCEP, à remplacer par le vrai
+  email: "contact@arveo.fr", // À CONFIRMER
 
-  email: "contact@multiservice-thau.fr",
+  adresse: {
+    rue: "", // À CONFIRMER : numéro et rue (laisser vide pour ne pas l'afficher)
+    codePostal: "34110",
+    ville: "Frontignan",
+    region: "Occitanie",
+    pays: "FR",
+    // Coordonnées GPS de l'entreprise (par défaut : centre de Frontignan).
+    latitude: 43.4483, // À CONFIRMER
+    longitude: 3.7546, // À CONFIRMER
+  },
 
   horaires: {
-    texte: "Du lundi au samedi, de 8 h à 19 h",
-    // Pour Google (JSON-LD) : jours en anglais, heures sur 24 h.
+    texte: "Du lundi au samedi, de 8 h à 19 h", // À CONFIRMER
     jours: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
     ouverture: "08:00",
     fermeture: "19:00",
   },
 
-  // Zone d'intervention, dans l'ordre d'affichage.
-  villes: [
-    "Sète",
-    "Frontignan",
-    "Balaruc-les-Bains",
-    "Balaruc-le-Vieux",
-    "Mèze",
-    "Marseillan",
-    "Bouzigues",
-    "Poussan",
-    "Gigean",
-    "Vic-la-Gardiole",
-  ],
-
-  // Arguments de confiance, affichés près des boutons.
+  // Arguments affichés près des boutons.
   confiance: {
-    devisGratuit: "Devis gratuit", // À CONFIRMER
-    reponse: "Réponse dans la journée", // À CONFIRMER
-    prixAvant: "Prix annoncé avant de commencer", // À CONFIRMER
-    artisanLocal: "Artisan local, installé autour de Sète", // À CONFIRMER
-    decennale: "Assurance décennale", // À CONFIRMER
+    devisGratuit: "Devis gratuit et détaillé", // À CONFIRMER
+    rappel: "Rappel dans la journée", // À CONFIRMER
+    decennale: "Garantie décennale", // À CONFIRMER : nom de l'assureur à mettre dans les mentions légales
+    local: "Artisan installé à Frontignan", // À CONFIRMER
     experience: "XX ans d'expérience", // À CONFIRMER : remplacer XX
   },
 
-  // Adresse du site en ligne (données structurées).
-  siteUrl: "https://maquette-multiservice-thau.vercel.app",
+  // Mentions légales (obligatoires pour un site professionnel).
+  legal: {
+    raisonSociale: "ARVÉO", // À CONFIRMER : forme juridique (EI, SARL…)
+    siret: "000 000 000 00000", // À CONFIRMER
+    assuranceDecennale: "Nom de l'assureur, n° de contrat", // À CONFIRMER
+    directeurPublication: "Nom du dirigeant", // À CONFIRMER
+    hebergeur: "Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis",
+  },
 
-  // Numéro imprimé sur le bon d'intervention.
-  numeroBon: "0412",
-
+  // Liens externes. La fiche Google Business Profile est le levier n°1 du référencement local.
   liens: {
-    mentionsLegales: "#",
-    avisGoogle: "#",
+    googleBusiness: "", // À CONFIRMER : lien de la fiche Google (sert au bouton « Voir nos avis »)
+    avisGoogle: "", // À CONFIRMER : lien direct « Laisser un avis »
+    facebook: "",
+    instagram: "",
   },
 
-  agence: {
-    nom: "MJAGENCY",
-    url: "https://mjagency.eu",
-  },
+  // Vrais avis Google à afficher (ne jamais publier d'avis inventés).
+  // Exemple : { auteur: "Martine R.", ville: "Frontignan", note: 5, texte: "…", date: "2026-10" }
+  avis: [],
 
-  // Maquette : passez à false pour retirer le badge « Maquette réalisée par MJAGENCY ».
-  maquette: true,
+  // Communes desservies : chaque commune a sa page « Couvreur à … » (contenu dans scripts/contenu.mjs).
+  villes: [
+    "Frontignan",
+    "Sète",
+    "Balaruc-les-Bains",
+    "Balaruc-le-Vieux",
+    "Vic-la-Gardiole",
+    "Mireval",
+    "Gigean",
+    "Poussan",
+    "Villeneuve-lès-Maguelone",
+    "Montbazin",
+  ],
+
+  agence: { nom: "MJAGENCY", url: "https://mjagency.eu" },
 };

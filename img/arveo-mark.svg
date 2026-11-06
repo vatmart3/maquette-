@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="40 25 945 500" role="img" aria-label="ARVÉO">
+  <defs>
+    <linearGradient id="av-a" x1="370" y1="100" x2="110" y2="515" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5DA6D3"/><stop offset="1" stop-color="#2B5B80"/>
+    </linearGradient>
+    <linearGradient id="av-b" x1="470" y1="130" x2="700" y2="510" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1C3850"/><stop offset=".45" stop-color="#3D6D94"/><stop offset=".7" stop-color="#6E92B2"/><stop offset=".86" stop-color="#D47A50"/><stop offset="1" stop-color="#C9612C"/>
+    </linearGradient>
+    <linearGradient id="av-c" x1="900" y1="40" x2="700" y2="445" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#EE8A45"/><stop offset=".55" stop-color="#C9622B"/><stop offset="1" stop-color="#6E3A22"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#av-a)" d="M55 515 L262 160 Q300 100 370 100 L450 100 Q505 100 535 155 L400 228 L265 470 Q240 515 180 515 Z"/>
+  <path fill="#2F5F82" d="M345 322 L452 322 L474 365 L320 365 Z"/>
+  <path fill="url(#av-b)" d="M400 228 L430 168 Q470 118 510 128 Q530 134 540 158 L690 430 Q700 450 722 452 L745 446 Q722 515 650 515 L600 515 Q552 515 528 476 Z"/>
+  <path fill="url(#av-c)" d="M620 318 L735 92 Q760 38 832 36 L965 35 L748 440 Q735 458 712 452 Q695 446 690 430 Z"/>
+</svg>
