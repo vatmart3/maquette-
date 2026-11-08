@@ -493,6 +493,7 @@ main { position: relative; z-index: 1; }
   transition: opacity 0.35s ease, visibility 0.35s, transform 0.35s ease;
 }
 .fiche.est-active { opacity: 1; visibility: visible; }
+.fiche__image { display: none; }
 .fiche__num { display: block; margin-bottom: 14px; color: var(--orange-clair); font-size: 0.85rem; letter-spacing: 0.04em; }
 .fiche h3 { font-size: clamp(1.7rem, 1.3rem + 1.3vw, 2.4rem); line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 14px; color: #fff; }
 .fiche p { margin: 0 0 24px; color: var(--texte-clair); font-size: 1.05rem; max-width: 30em; }
@@ -937,13 +938,16 @@ main { position: relative; z-index: 1; }
   .visite__tete h2 { font-size: 1.15rem; }
   .visite__reperes { order: 2; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; margin: 0 calc(-1 * var(--marge)); padding: 2px var(--marge) 8px; background: var(--ardoise); box-shadow: 0 1px 0 rgb(255 255 255 / 0.08); }
   .visite__reperes button { min-width: 0; padding: 2px 0 4px; gap: 5px; font-size: 0.64rem; }
-  .visite__fiches { order: 3; position: absolute; left: var(--marge); right: var(--marge); bottom: calc(var(--barre) + 22px); width: auto; min-height: 0; }
-  .fiche { top: auto; bottom: 0; transform: none; padding: 0; }
+  /* téléphone : une illustration par zone remplace la 3D pendant la visite */
+  .visite__fiches { order: 3; align-self: stretch; position: absolute; left: var(--marge); right: var(--marge); top: calc(var(--entete) + 126px); bottom: calc(var(--barre) + 20px); width: auto; min-height: 0; }
+  .fiche { top: 0; bottom: 0; transform: none; padding: 0; display: flex; flex-direction: column; justify-content: flex-end; }
+  .fiche__image { display: block; flex: 1 1 auto; min-height: 0; width: 100%; height: auto; margin-bottom: 18px; border-radius: var(--r-m); object-fit: cover; background: var(--ardoise-fonce); }
   .fiche__num { margin-bottom: 8px; font-size: 0.75rem; }
   .fiche h3 { font-size: 1.4rem; margin-bottom: 8px; }
   .fiche p { margin-bottom: 16px; font-size: 0.94rem; line-height: 1.5; }
   .fiche .bouton--petit { min-height: 44px; }
-  .visite__collant::before { background: linear-gradient(180deg, rgb(36 55 70 / 0) 40%, rgb(36 55 70 / 0.88) 62%, rgb(36 55 70 / 0.97) 100%); }
+  .visite__collant { background: var(--ardoise); }
+  .visite__collant::before { display: none; }
 
   /* grilles en une colonne */
   .urgence-bloc__grille, .zone, .cta-final__grille, .tete-page__grille, .services-bloc { grid-template-columns: minmax(0, 1fr); gap: 28px; }

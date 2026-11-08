@@ -690,6 +690,7 @@ const ZONES_VISITE = [
   };
   const fiches = ZONES_VISITE.map(
     (z, i) => `<article class="fiche" aria-labelledby="titre-zone-${i}">
+              <img class="fiche__image" src="/img/toiture-zone-${i + 1}.webp" alt="${esc(z.titre)} : la zone concernée est en orange sur le schéma de la toiture" width="800" height="600" loading="lazy" decoding="async">
               <span class="fiche__num mono">${String(i + 1).padStart(2, "0")} / ${String(ZONES_VISITE.length).padStart(2, "0")}</span>
               <h3 id="titre-zone-${i}">${esc(z.titre)}</h3>
               <p>${fr(z.texte)}</p>

@@ -554,7 +554,9 @@ function demarrer() {
 
   function calculerCible() {
     const y = window.scrollY, vh = window.innerHeight, o = cibleC;
-    if (reduit || !visite) {
+    // Sans section de visite : vue d'ensemble seulement. Avec « réduire les animations »,
+    // la caméra suit quand même les zones, mais par simples changements de vue (a = 1).
+    if (!visite) {
       melanger(PLANS.hero, PLANS.hero, 0, o);
       o.opacite = y > vh * 0.9 ? 0 : 1;
       return o;
@@ -566,10 +568,15 @@ function demarrer() {
       melanger(PLANS.hero, PLANS.zones[0], lisse(c01(y / Math.max(1, haut))), o);
       if (mobile) {
         const sortie = c01((y - vh * 0.2) / (vh * 0.3));
-        const entree = c01((y - (haut - vh * 0.45)) / (vh * 0.4));
-        o.opacite = Math.max(1 - sortie, entree);
+        o.opacite = 1 - sortie;
       } else o.opacite = 1;
     } else if (y <= fin) {
+      if (mobile) {
+        // sur téléphone, la visite s'affiche en illustrations fixes : la 3D s'efface
+        melanger(PLANS.zones[0], PLANS.zones[0], 0, o);
+        o.opacite = 0;
+        return o;
+      }
       const p = c01((y - haut) / course) * NZ;
       const i = Math.min(NZ - 1, Math.floor(p));
       if (i === 0) melanger(PLANS.zones[0], PLANS.zones[0], 0, o);
@@ -578,7 +585,7 @@ function demarrer() {
     } else {
       const t = lisse(c01((y - fin) / (vh * 1.2)));
       melanger(PLANS.zones[NZ - 1], PLANS.large, t, o);
-      o.opacite = 1 - c01((y - fin) / (vh * 0.6));
+      o.opacite = mobile ? 0 : 1 - c01((y - fin) / (vh * 0.6));
     }
     return o;
   }
