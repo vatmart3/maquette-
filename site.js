@@ -356,7 +356,7 @@
           var tel = collecte.donnees.telephone ? " au " + esc(collecte.donnees.telephone) : "";
           retour.innerHTML =
             "<strong>" + (type === "rappel" ? "C'est noté, on vous rappelle." : "Votre " + TYPES[type] + " est bien envoyée.") + "</strong>" +
-            (j.reference ? '<p>Référence : <span class="mono">' + esc(j.reference) + "</span></p>" : "") +
+            (j.reference ? '<p>Référence <span class="mono">' + esc(j.reference) + "</span></p>" : "") +
             "<p>On vous rappelle dans la journée" + tel + ".</p>" +
             (type === "depannage" ? '<p>Fuite active ? Appelez sans attendre : <a class="mono" href="' + telHref + '">' + esc(S.telephone) + "</a></p>" : "");
           retour.focus({ preventScroll: true });
