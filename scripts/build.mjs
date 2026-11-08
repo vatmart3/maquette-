@@ -86,9 +86,9 @@ const avecAvis = S.avis.length > 0 || !!S.liens.googleBusiness;
 if (avecAvis) NAV.splice(3, 0, { id: "avis", href: "/avis", texte: "Avis" });
 
 function logo(clair = false) {
-  return `<a class="logo${clair ? " logo--clair" : ""}" href="/" aria-label="${esc(S.nom)}, couvreur à Frontignan, accueil">
+  return `<a class="logo${clair ? " logo--clair" : ""}" href="/" aria-label="${esc(S.nom)}, couvreur à Frontignan et ses alentours, accueil">
         <img class="logo__marque" src="/img/arveo-mark.svg" alt="" width="68" height="36">
-        <span class="logo__texte"><span class="logo__nom">${esc(S.nom)}</span><span class="logo__activite">Couvreur à ${esc(S.adresse.ville)}</span></span>
+        <span class="logo__texte"><span class="logo__nom">${esc(S.nom)}</span><span class="logo__activite">Couvreur à ${esc(S.adresse.ville)} <span class="logo__suite">&amp; ses alentours</span></span></span>
       </a>`;
 }
 
@@ -146,7 +146,6 @@ function bandeauUrgence() {
     <div class="conteneur urgence__ligne">
       <p>${ico("alerte")}<span><strong>Urgence toiture</strong><span class="urgence__long">Fuite, tuiles arrachées, dégâts après intempéries</span></span></p>
       <p class="urgence__actions">
-        <a href="${TEL}" data-track="call">${ico("tel")}<span class="mono">${esc(S.telephone)}</span></a>
         <a href="/depannage-toiture" data-track="depannage">Dépannage en ligne</a>
       </p>
     </div>
@@ -168,7 +167,6 @@ function entete(id) {
         <nav aria-label="Navigation mobile"><ul>
           <li><a href="/">Accueil</a></li>${liens}
           <li><a href="/devis-toiture">Devis gratuit</a></li>
-          <li><a href="/rendez-vous">Prendre rendez-vous</a></li>
         </ul></nav>
         <p class="menu__horaires">${esc(S.horaires.texte)}</p>
       </div>
@@ -484,7 +482,6 @@ function formDepannage() {
           ${consentement("J'autorise ARVÉO à me recontacter au sujet de cette demande.")}
           <div class="formulaire__envoi">
             <button class="bouton bouton--orange bouton--grand" type="submit">${ico("alerte")}Envoyer ma demande de dépannage</button>
-            <p>Urgence immédiate ? Appelez directement le <a href="${TEL}" class="mono" data-track="call">${esc(S.telephone)}</a></p>
           </div>
           ${retour}
           ${datalistVilles}
@@ -516,7 +513,6 @@ function formDevis() {
           ${consentement("J'autorise ARVÉO à me recontacter au sujet de ma demande de devis.")}
           <div class="formulaire__envoi">
             <button class="bouton bouton--orange bouton--grand" type="submit">${ico("devis")}Recevoir mon devis gratuit</button>
-            <p>Réponse rapide. Vous préférez parler ? <a href="${TEL}" class="mono" data-track="call">${esc(S.telephone)}</a></p>
           </div>
           ${retour}
           ${datalistVilles}
@@ -739,7 +735,6 @@ const ZONES_VISITE = [
           <p class="chapeau-sombre">On met votre toiture hors d'eau (bâchage), on trouve l'origine de la fuite, puis on répare. Décrivez le problème en ligne ou appelez-nous, on vous rappelle au plus vite.</p>
           <div class="actions">
             <a class="bouton bouton--orange" href="/depannage-toiture" data-track="depannage">${ico("alerte")}Faire une demande de dépannage</a>
-            <a class="bouton bouton--ardoise" href="${TEL}" data-track="call">${ico("tel")}Appeler le <span class="mono">${esc(S.telephone)}</span></a>
           </div>
         </div>
         <ol class="etapes-urgence">
@@ -756,7 +751,6 @@ const ZONES_VISITE = [
           <h2 id="titre-services">Tous les travaux de toiture, à Frontignan et alentours</h2>
           <p class="texte">De la tuile cassée à la couverture refaite à neuf, un seul artisan suit votre toiture du diagnostic au nettoyage du chantier.</p>
           <a class="bouton bouton--orange" href="/devis-toiture" data-track="devis">${ico("devis")}Demander un devis gratuit</a>
-          <a class="services-bloc__tel mono" href="${TEL}" data-track="call">${ico("tel")}${esc(S.telephone)}</a>
         </div>
         ${cartesServices()}
       </div>
@@ -819,7 +813,7 @@ for (const s of SERVICES_PAGES) {
             <p><strong>Besoin d'un avis sur votre toiture ?</strong> Le diagnostic et le devis sont gratuits.</p>
             <div class="actions">
               <a class="bouton bouton--orange" href="/devis-toiture?travaux=${encodeURIComponent(ZONES_VISITE.find((z) => z.lien === s.path)?.devis || "")}" data-track="devis">${ico("devis")}Demander un devis</a>
-              <a class="bouton bouton--contour" href="${TEL}" data-track="call">${ico("tel")}<span class="mono">${esc(S.telephone)}</span></a>
+              <a class="bouton bouton--contour" href="/rendez-vous" data-track="rdv">${ico("agenda")}Prendre rendez-vous</a>
             </div>
           </div>
         </div>
@@ -908,7 +902,7 @@ for (const v of VILLES_PAGES) {
           <div class="encart-cta">
             <p><strong>Un problème de toiture à ${esc(v.nom)} ?</strong> On se déplace pour un diagnostic gratuit.</p>
             <div class="actions">
-              <a class="bouton bouton--orange" href="${TEL}" data-track="call">${ico("tel")}Appeler le <span class="mono">${esc(S.telephone)}</span></a>
+              <a class="bouton bouton--orange" href="/devis-toiture" data-track="devis">${ico("devis")}Demander un devis</a>
               <a class="bouton bouton--contour" href="/rendez-vous" data-track="rdv">${ico("agenda")}Prendre rendez-vous</a>
             </div>
           </div>
@@ -1022,11 +1016,6 @@ ${bandeauCta()}` +
       <div class="conteneur formulaire-page">
         ${formDevis()}
         <aside class="formulaire-page__cote">
-          <div class="cote-carte cote-carte--sombre">
-            <h2>Vous préférez appeler ?</h2>
-            <a class="cote-tel mono" href="${TEL}" data-track="call">${esc(S.telephone)}</a>
-            <p>${esc(S.horaires.texte)}</p>
-          </div>
           <div class="cote-carte">
             <h2>Notre devis comprend</h2>
             <ul class="liste-coches">
@@ -1063,11 +1052,6 @@ ${bandeauCta()}` +
       <div class="conteneur formulaire-page">
         ${formRdv()}
         <aside class="formulaire-page__cote">
-          <div class="cote-carte cote-carte--sombre">
-            <h2>Plus rapide par téléphone</h2>
-            <a class="cote-tel mono" href="${TEL}" data-track="call">${esc(S.telephone)}</a>
-            <p>${esc(S.horaires.texte)}</p>
-          </div>
           <div class="cote-carte">
             <h2>Pendant le diagnostic</h2>
             <ul class="liste-coches">
@@ -1157,7 +1141,6 @@ ${bandeauCta()}` +
         <aside class="article__cote">
           <div class="cote-carte cote-carte--sombre">
             <h2>Parlons de votre toiture</h2>
-            <a class="cote-tel mono" href="${TEL}" data-track="call">${esc(S.telephone)}</a>
             <a class="bouton bouton--orange" href="/rendez-vous" data-track="rdv">${ico("agenda")}Prendre rendez-vous</a>
           </div>
         </aside>

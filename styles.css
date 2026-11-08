@@ -897,41 +897,100 @@ main { position: relative; z-index: 1; }
 }
 
 @media (max-width: 859px) {
-  :root { --entete: 62px; --bandeau: 36px; }
+  :root { --entete: 62px; --bandeau: 34px; --section: 56px; }
   body { font-size: 1rem; line-height: 1.6; }
-  h1 { font-size: clamp(2rem, 1.4rem + 3vw, 2.5rem); }
+  h1 { font-size: 2.05rem; line-height: 1.08; }
+  h2 { font-size: 1.6rem; line-height: 1.15; }
+  h3 { font-size: 1.12rem; }
+  .chapeau, .chapeau-sombre { font-size: 1.02rem; }
+  .texte { font-size: 0.97rem; }
 
-  .urgence { font-size: 0.8rem; }
-  .urgence__long, .urgence__actions a:last-child { display: none; }
+  /* bandeau du haut : une ligne, sans numéro (la barre du bas a déjà « Appeler ») */
+  .urgence { font-size: 0.78rem; }
+  .urgence__long { display: none; }
+  .urgence__actions a:last-child { display: inline-flex; }
 
-  .logo__marque { width: 46px; }
-  .logo__nom { font-size: 1.25rem; }
-  .logo__activite { font-size: 0.58rem; }
+  .logo { gap: 10px; }
+  .logo__marque { width: 42px; }
+  .logo__nom { font-size: 1.15rem; }
+  .logo__activite { margin-top: 4px; font-size: 0.56rem; letter-spacing: 0.12em; line-height: 1.35; }
+  .logo__suite { display: block; }
 
-  .bouton { min-height: 50px; padding-inline: 18px; }
+  .bouton { min-height: 50px; padding-inline: 18px; font-size: 0.97rem; }
+  .bouton--grand { min-height: 54px; font-size: 1rem; }
   .actions { flex-direction: column; align-items: stretch; }
-  .actions .lien-fleche { align-self: center; padding: 6px 0; }
+  .garanties { margin-top: 18px; font-size: 0.82rem; }
+  .garanties span:not(:last-child)::after { margin: 0 9px; }
 
+  /* accueil */
   .accroche { min-height: 0; padding: 0 0 40px; }
   .accroche__grille { grid-template-columns: minmax(0, 1fr); }
   .accroche__texte { padding-top: max(32vh, 220px); }
+  .accroche .chapeau { margin: 16px 0 24px; }
   .intro .accroche h1 { opacity: 1; }
   .intro-finie .accroche h1 { animation: none; }
-  .coches { display: grid; gap: 6px; font-size: 0.88rem; }
 
+  /* visite */
   .visite { height: 500vh; }
   .visite__grille { display: flex; flex-direction: column; padding-top: calc(var(--entete) + 6px); padding-bottom: 0; }
   .visite__tete { margin: 0 calc(-1 * var(--marge)); padding: 12px var(--marge) 6px; background: var(--ardoise); }
-  .visite__tete .sur-titre { margin-bottom: 4px; font-size: 0.68rem; }
-  .visite__tete h2 { font-size: 1.2rem; }
+  .visite__tete h2 { font-size: 1.15rem; }
   .visite__reperes { order: 2; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; margin: 0 calc(-1 * var(--marge)); padding: 2px var(--marge) 8px; background: var(--ardoise); box-shadow: 0 1px 0 rgb(255 255 255 / 0.08); }
   .visite__reperes button { min-width: 0; padding: 2px 0 4px; gap: 5px; font-size: 0.64rem; }
   .visite__fiches { order: 3; position: absolute; left: var(--marge); right: var(--marge); bottom: calc(var(--barre) + 22px); width: auto; min-height: 0; }
   .fiche { top: auto; bottom: 0; transform: none; padding: 0; }
   .fiche__num { margin-bottom: 8px; font-size: 0.75rem; }
-  .fiche h3 { font-size: 1.45rem; margin-bottom: 8px; }
-  .fiche p { margin-bottom: 16px; font-size: 0.95rem; line-height: 1.5; }
-  
+  .fiche h3 { font-size: 1.4rem; margin-bottom: 8px; }
+  .fiche p { margin-bottom: 16px; font-size: 0.94rem; line-height: 1.5; }
+  .fiche .bouton--petit { min-height: 44px; }
+  .visite__collant::before { background: linear-gradient(180deg, rgb(36 55 70 / 0) 40%, rgb(36 55 70 / 0.88) 62%, rgb(36 55 70 / 0.97) 100%); }
+
+  /* grilles en une colonne */
+  .urgence-bloc__grille, .zone, .cta-final__grille, .tete-page__grille, .services-bloc { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .services-bloc__intro { position: static; }
+  .methode { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .methode li { padding: 16px 0 18px; }
+  .villes { columns: 1; }
+  .cta-final__liens--clair { grid-template-columns: minmax(0, 1fr); }
+  .prestation a { grid-template-columns: minmax(0, 1fr) 22px; gap: 4px 12px; padding: 18px 0; }
+  .prestation__nom { font-size: 1.1rem; }
+  .prestation__resume { grid-column: 1; font-size: 0.92rem; line-height: 1.5; }
+  .prestation__fleche { grid-column: 2; grid-row: 1 / span 2; }
+  .etapes-urgence li { grid-template-columns: 34px 1fr; }
+  .cta-final__liens strong { font-size: 1.05rem; }
+  .cta-final__liens span { font-size: 0.9rem; }
+  .cta-final__tel { font-size: 1.75rem; }
+  .tete-page { padding-block: 28px 40px; }
+  .tete-page__dessin { width: 120%; right: -40%; top: 18%; opacity: 0.14; }
+  .ariane ol { margin-bottom: 16px; font-size: 0.8rem; }
+  .article__corps h2 { font-size: 1.3rem; margin-top: 30px; }
+  .faq summary { font-size: 1rem; padding-block: 16px; padding-right: 40px; }
+  .faq__reponse { padding-right: 0; font-size: 0.95rem; }
+
+  /* formulaires */
+  .blocs--2, .blocs--2-1 { grid-template-columns: minmax(0, 1fr); }
+  .bloc { padding: 16px 16px 4px; }
+  .bloc__titre { font-size: 1rem; }
+  .bloc__corps, .trois-colonnes { grid-template-columns: minmax(0, 1fr); }
+  .groupe--2 .groupe__choix { grid-template-columns: minmax(0, 1fr); }
+  .fiche-tete { flex-direction: column; align-items: flex-start; }
+  .fiche-tete__titre { text-align: left; font-size: 1.6rem; }
+  .formulaire__envoi .bouton { width: 100%; }
+  .formulaire__envoi p { text-align: center; width: 100%; }
+
+  /* pied de page */
+  .pied { padding-block: 44px 24px; font-size: 0.9rem; line-height: 1.55; }
+  .pied__grille { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 20px; }
+  .pied__marque { grid-column: 1 / -1; }
+  .pied__marque p { font-size: 0.88rem; color: var(--texte-clair); }
+  .pied__grille > div:nth-child(2) { grid-column: 1 / -1; }
+  .pied h2 { margin-bottom: 10px; font-size: 0.72rem; letter-spacing: 0.12em; }
+  .pied li + li { margin-top: 6px; }
+  .pied__villes { font-size: 0.86rem; }
+  .pied__bas { margin-top: 32px; padding-top: 18px; flex-direction: column; gap: 14px; font-size: 0.8rem; }
+  .pied__bas ul { gap: 6px 16px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
@@ -952,5 +1011,5 @@ main { position: relative; z-index: 1; }
 .logo-fixe:hover { transform: scale(1.06); }
 
 @media (max-width: 1023px) {
-  .logo-fixe { right: 12px; bottom: calc(var(--barre) + 12px); width: 48px; }
+  .logo-fixe { right: 10px; bottom: calc(var(--barre) + 10px); width: 40px; }
 }
