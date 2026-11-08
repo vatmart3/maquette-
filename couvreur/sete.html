@@ -71,7 +71,7 @@
 
     <section class="tete-page">
       <img class="tete-page__dessin" src="/img/toiture.svg" alt="" width="1440" height="900" aria-hidden="true">
-      <div class="conteneur tete-page__grille">
+      <div class="conteneur tete-page__grille tete-page__grille--seule">
         <div class="tete-page__texte">
           <nav class="ariane" aria-label="Fil d'Ariane"><ol><li><a href="/">Accueil</a></li><li><a href="/zone-intervention">Zone d&#39;intervention</a></li><li aria-current="page">Couvreur Sète</li></ol></nav>
           <h1>Couvreur à Sète</h1>
@@ -82,33 +82,7 @@
         </div>
           <p class="garanties garanties--clair"><span>Devis gratuit et détaillé</span><span>Rappel dans la journée</span><span>Garantie décennale</span></p>
         </div>
-        <div class="tete-page__carte"><form class="formulaire formulaire--rappel" data-formulaire="rappel" novalidate aria-label="Être rappelé">
-          <div class="hp" aria-hidden="true"><label>Laissez ce champ vide<input type="text" name="site_web" tabindex="-1" autocomplete="off"></label></div>
-          <input type="hidden" name="contexte" value="Page Sète">
-          <p class="rappel__titre">Être rappelé gratuitement</p>
-          <p class="rappel__texte">Laissez votre numéro, on vous rappelle dans la journée.</p>
-          <div class="champ">
-              <label for="nom-25">Nom <span class="requis" aria-hidden="true">*</span></label>
-              <input id="nom-25" name="nom" type="text" aria-describedby="nom-25-erreur" required data-message="Indiquez votre nom." autocomplete="name">
-              
-              <p class="erreur" id="nom-25-erreur"></p>
-            </div>
-          <div class="champ">
-              <label for="telephone-26">Téléphone <span class="requis" aria-hidden="true">*</span></label>
-              <input id="telephone-26" name="telephone" type="tel" aria-describedby="telephone-26-erreur" required data-message="Indiquez votre numéro." inputmode="tel" autocomplete="tel">
-              
-              <p class="erreur" id="telephone-26-erreur"></p>
-            </div>
-          <div class="champ">
-              <label for="besoin-27">Votre besoin <span class="facultatif">(facultatif)</span></label>
-              <select id="besoin-27" name="besoin" aria-describedby="besoin-27-erreur" ><option value="">Choisir</option><option>Fuite / urgence</option><option>Réparation</option><option>Réfection de toiture</option><option>Démoussage</option><option>Zinguerie / gouttières</option><option>Charpente</option><option>Autre</option></select>
-              
-              <p class="erreur" id="besoin-27-erreur"></p>
-            </div>
-          <button class="bouton bouton--orange" type="submit"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.6 3.5h2.6l1.6 4.2-2.1 1.5a11.5 11.5 0 0 0 6.1 6.1l1.5-2.1 4.2 1.6v2.6a2 2 0 0 1-2.1 2A16.6 16.6 0 0 1 4.6 5.6a2 2 0 0 1 2-2.1z"/></svg>Me faire rappeler</button>
-          <p class="rappel__mention">En envoyant ce formulaire, vous acceptez d'être recontacté par ARVÉO. <a href="/confidentialite">Données personnelles</a></p>
-          <div class="formulaire__retour" role="status" aria-live="polite" tabindex="-1"></div>
-        </form></div>
+        
       </div>
     </section>
     <section class="section section--claire">
@@ -139,15 +113,15 @@
           <div class="cote-carte">
             <h2>Communes voisines</h2>
             <ul class="villes villes--compact">
-          <li><a href="/couvreur/frontignan"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s-6.5-5.8-6.5-11a6.5 6.5 0 0 1 13 0c0 5.2-6.5 11-6.5 11zM12 12.3a2.3 2.3 0 1 0 0-4.6 2.3 2.3 0 0 0 0 4.6z"/></svg>Couvreur Frontignan</a></li>
-          <li><a href="/couvreur/balaruc-les-bains"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s-6.5-5.8-6.5-11a6.5 6.5 0 0 1 13 0c0 5.2-6.5 11-6.5 11zM12 12.3a2.3 2.3 0 1 0 0-4.6 2.3 2.3 0 0 0 0 4.6z"/></svg>Couvreur Balaruc-les-Bains</a></li>
-          <li><a href="/couvreur/balaruc-le-vieux"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s-6.5-5.8-6.5-11a6.5 6.5 0 0 1 13 0c0 5.2-6.5 11-6.5 11zM12 12.3a2.3 2.3 0 1 0 0-4.6 2.3 2.3 0 0 0 0 4.6z"/></svg>Couvreur Balaruc-le-Vieux</a></li>
-          <li><a href="/couvreur/vic-la-gardiole"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s-6.5-5.8-6.5-11a6.5 6.5 0 0 1 13 0c0 5.2-6.5 11-6.5 11zM12 12.3a2.3 2.3 0 1 0 0-4.6 2.3 2.3 0 0 0 0 4.6z"/></svg>Couvreur Vic-la-Gardiole</a></li>
-          <li><a href="/couvreur/mireval"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s-6.5-5.8-6.5-11a6.5 6.5 0 0 1 13 0c0 5.2-6.5 11-6.5 11zM12 12.3a2.3 2.3 0 1 0 0-4.6 2.3 2.3 0 0 0 0 4.6z"/></svg>Couvreur Mireval</a></li>
-          <li><a href="/couvreur/gigean"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s-6.5-5.8-6.5-11a6.5 6.5 0 0 1 13 0c0 5.2-6.5 11-6.5 11zM12 12.3a2.3 2.3 0 1 0 0-4.6 2.3 2.3 0 0 0 0 4.6z"/></svg>Couvreur Gigean</a></li>
-          <li><a href="/couvreur/poussan"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s-6.5-5.8-6.5-11a6.5 6.5 0 0 1 13 0c0 5.2-6.5 11-6.5 11zM12 12.3a2.3 2.3 0 1 0 0-4.6 2.3 2.3 0 0 0 0 4.6z"/></svg>Couvreur Poussan</a></li>
-          <li><a href="/couvreur/villeneuve-les-maguelone"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s-6.5-5.8-6.5-11a6.5 6.5 0 0 1 13 0c0 5.2-6.5 11-6.5 11zM12 12.3a2.3 2.3 0 1 0 0-4.6 2.3 2.3 0 0 0 0 4.6z"/></svg>Couvreur Villeneuve-lès-Maguelone</a></li>
-          <li><a href="/couvreur/montbazin"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s-6.5-5.8-6.5-11a6.5 6.5 0 0 1 13 0c0 5.2-6.5 11-6.5 11zM12 12.3a2.3 2.3 0 1 0 0-4.6 2.3 2.3 0 0 0 0 4.6z"/></svg>Couvreur Montbazin</a></li>
+          <li><a href="/couvreur/frontignan">Couvreur à Frontignan</a></li>
+          <li><a href="/couvreur/balaruc-les-bains">Couvreur à Balaruc-les-Bains</a></li>
+          <li><a href="/couvreur/balaruc-le-vieux">Couvreur à Balaruc-le-Vieux</a></li>
+          <li><a href="/couvreur/vic-la-gardiole">Couvreur à Vic-la-Gardiole</a></li>
+          <li><a href="/couvreur/mireval">Couvreur à Mireval</a></li>
+          <li><a href="/couvreur/gigean">Couvreur à Gigean</a></li>
+          <li><a href="/couvreur/poussan">Couvreur à Poussan</a></li>
+          <li><a href="/couvreur/villeneuve-les-maguelone">Couvreur à Villeneuve-lès-Maguelone</a></li>
+          <li><a href="/couvreur/montbazin">Couvreur à Montbazin</a></li>
         </ul>
           </div>
           <div class="cote-carte cote-carte--orange">
@@ -187,10 +161,11 @@
           <a class="cta-final__tel" href="tel:+33639980000" data-track="call"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.6 3.5h2.6l1.6 4.2-2.1 1.5a11.5 11.5 0 0 0 6.1 6.1l1.5-2.1 4.2 1.6v2.6a2 2 0 0 1-2.1 2A16.6 16.6 0 0 1 4.6 5.6a2 2 0 0 1 2-2.1z"/></svg><span class="mono">06 39 98 00 00</span></a>
           <p class="cta-final__horaires">Du lundi au samedi, de 8 h à 19 h</p>
         </div>
-        <div class="cta-final__cartes">
-          <a class="carte-action" href="/depannage-toiture" data-track="depannage"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4 2.8 19.5h18.4zM12 10v4.5M12 17.2v.1"/></svg><strong>Dépannage urgent</strong><span>Fuite ou tuiles envolées, décrivez le problème en ligne.</span></a>
-          <a class="carte-action" href="/devis-toiture" data-track="devis"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 3h7l4.5 4.5V19a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM14 3v4.5h4.5M8.5 12.5h7M8.5 16h5"/></svg><strong>Devis gratuit</strong><span>Réfection, réparation, démoussage, zinguerie.</span></a>
-          <a class="carte-action" href="/rendez-vous" data-track="rdv"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 6h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zM8 3.5V8M16 3.5V8M4 10.5h16M8 14h2M12 14h2M8 17h2"/></svg><strong>Rendez-vous diagnostic</strong><span>Choisissez une date, on confirme par téléphone.</span></a>
+        <ul class="cta-final__liens">
+          <li><a href="/depannage-toiture" data-track="depannage"><strong>Dépannage urgent</strong><span>Fuite ou tuiles envolées, décrivez le problème en ligne.</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+          <li><a href="/devis-toiture" data-track="devis"><strong>Devis gratuit</strong><span>Réfection, réparation, démoussage, zinguerie.</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+          <li><a href="/rendez-vous" data-track="rdv"><strong>Rendez-vous diagnostic</strong><span>Choisissez une date, on confirme par téléphone.</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+        </ul>
         </div>
       </div>
     </section>
@@ -254,6 +229,8 @@
       <p>© 2026 ARVÉO. Site réalisé par <a href="https://mjagency.eu">MJAGENCY</a></p>
     </div>
   </footer>
+
+  <a class="logo-fixe" href="/" aria-label="ARVÉO, retour à l'accueil"><img src="/img/arveo-mark.svg" alt="" width="64" height="34"></a>
 
   <nav class="barre-actions" aria-label="Nous contacter">
     <a href="tel:+33639980000" data-track="call"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.6 3.5h2.6l1.6 4.2-2.1 1.5a11.5 11.5 0 0 0 6.1 6.1l1.5-2.1 4.2 1.6v2.6a2 2 0 0 1-2.1 2A16.6 16.6 0 0 1 4.6 5.6a2 2 0 0 1 2-2.1z"/></svg><span>Appeler</span></a>

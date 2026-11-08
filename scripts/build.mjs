@@ -215,10 +215,11 @@ function bandeauCta(titre = "Un problème de toiture ?", texte = "Appelez-nous, 
           <a class="cta-final__tel" href="${TEL}" data-track="call">${ico("tel")}<span class="mono">${esc(S.telephone)}</span></a>
           <p class="cta-final__horaires">${esc(S.horaires.texte)}</p>
         </div>
-        <div class="cta-final__cartes">
-          <a class="carte-action" href="/depannage-toiture" data-track="depannage">${ico("alerte")}<strong>Dépannage urgent</strong><span>Fuite ou tuiles envolées, décrivez le problème en ligne.</span></a>
-          <a class="carte-action" href="/devis-toiture" data-track="devis">${ico("devis")}<strong>Devis gratuit</strong><span>Réfection, réparation, démoussage, zinguerie.</span></a>
-          <a class="carte-action" href="/rendez-vous" data-track="rdv">${ico("agenda")}<strong>Rendez-vous diagnostic</strong><span>Choisissez une date, on confirme par téléphone.</span></a>
+        <ul class="cta-final__liens">
+          <li><a href="/depannage-toiture" data-track="depannage"><strong>Dépannage urgent</strong><span>Fuite ou tuiles envolées, décrivez le problème en ligne.</span>${ico("fleche")}</a></li>
+          <li><a href="/devis-toiture" data-track="devis"><strong>Devis gratuit</strong><span>Réfection, réparation, démoussage, zinguerie.</span>${ico("fleche")}</a></li>
+          <li><a href="/rendez-vous" data-track="rdv"><strong>Rendez-vous diagnostic</strong><span>Choisissez une date, on confirme par téléphone.</span>${ico("fleche")}</a></li>
+        </ul>
         </div>
       </div>
     </section>
@@ -272,6 +273,8 @@ function pied() {
       <p>© ${new Date().getFullYear()} ${esc(S.nom)}. Site réalisé par <a href="${esc(S.agence.url)}">${esc(S.agence.nom)}</a></p>
     </div>
   </footer>
+
+  <a class="logo-fixe" href="/" aria-label="${esc(S.nom)}, retour à l'accueil"><img src="/img/arveo-mark.svg" alt="" width="64" height="34"></a>
 
   <nav class="barre-actions" aria-label="Nous contacter">
     <a href="${TEL}" data-track="call">${ico("tel")}<span>Appeler</span></a>
@@ -548,21 +551,6 @@ function formRdv() {
         </form>`;
 }
 
-function formRappel(contexte = "") {
-  return `<form class="formulaire formulaire--rappel" data-formulaire="rappel" novalidate aria-label="Être rappelé">
-          ${piege}
-          <input type="hidden" name="contexte" value="${esc(contexte)}">
-          <p class="rappel__titre">Être rappelé gratuitement</p>
-          <p class="rappel__texte">Laissez votre numéro, on vous rappelle dans la journée.</p>
-          ${champ({ label: "Nom", name: "nom", requis: true, message: "Indiquez votre nom.", attrs: 'autocomplete="name"' })}
-          ${champ({ label: "Téléphone", name: "telephone", type: "tel", requis: true, message: "Indiquez votre numéro.", attrs: 'inputmode="tel" autocomplete="tel"' })}
-          ${champ({ label: "Votre besoin", name: "besoin", type: "select", options: ["Fuite / urgence", "Réparation", "Réfection de toiture", "Démoussage", "Zinguerie / gouttières", "Charpente", "Autre"] })}
-          <button class="bouton bouton--orange" type="submit">${ico("tel")}Me faire rappeler</button>
-          <p class="rappel__mention">En envoyant ce formulaire, vous acceptez d'être recontacté par ARVÉO. <a href="/confidentialite">Données personnelles</a></p>
-          ${retour}
-        </form>`;
-}
-
 function formContact() {
   return `<form class="formulaire" data-formulaire="contact" novalidate aria-label="Nous écrire">
           ${piege}
@@ -601,22 +589,6 @@ function faqHtml(liste, titre = "Vos questions") {
     </section>`;
 }
 
-// Petits dessins techniques, au trait, un par prestation (viewBox 0 0 120 80).
-const DESSINS = {
-  depannage:
-    '<path d="M6 66 112 18"/><path d="M14 63q5-9 10-4M26 58q5-9 10-4M38 52q5-9 10-4M74 37q5-9 10-4M86 31q5-9 10-4M98 26q5-9 10-4"/><path d="M52 41l9-13 13 6-9 12z" class="d-accent"/><path d="M57 54v6M62 60v7M52 62v6" class="d-accent"/><path d="M6 74h106" class="d-fin"/>',
-  "refection-toiture":
-    '<path d="M8 56q10 13 20 0q10 13 20 0q10 13 20 0q10 13 20 0q10 13 20 0"/><path d="M18 56q10-14 20 0M58 56q10-14 20 0M98 56q6-9 12-4" class="d-accent"/><path d="M38 56q10-14 20 0M78 56q10-14 20 0"/><path d="M8 56 30 20M48 56 62 20M88 56 94 20M30 20h80" class="d-fin"/><path d="M14 46 34 30M54 46 66 30M94 46 98 30" class="d-fin"/>',
-  "recherche-de-fuite":
-    '<path d="M8 50 60 14l52 36"/><path d="M8 50h104M14 50v22h92V50"/><path d="M70 21l6 4" class="d-accent"/><path d="M73 24c-3 8 4 12 0 20s3 10 1 16" class="d-accent d-tirets"/><path d="M74 64c-2 3-2 6 0 7s3-4 0-7z" class="d-accent"/><path d="M14 72h92" class="d-fin"/>',
-  "demoussage-toiture":
-    '<path d="M8 58q10 13 20 0q10 13 20 0q10 13 20 0q10 13 20 0q10 13 20 0M18 58q10-14 20 0M38 58q10-14 20 0M58 58q10-14 20 0M78 58q10-14 20 0"/><path d="M26 47c3-4 9-4 11 0 3 1 3 5 0 6-3 2-8 2-11 0-3-1-3-5 0-6zM66 45c3-3 7-3 9 0 3 1 2 4 0 5-3 1-7 1-9 0-2-1-2-4 0-5z" class="d-accent"/><path d="M84 18l18 22M80 22l8-8 18 22-8 8z"/><path d="M8 72h104" class="d-fin"/>',
-  "zinguerie-gouttieres":
-    '<path d="M8 22h70l10 8"/><path d="M60 30h36a14 14 0 0 1-36 0z" class="d-accent"/><path d="M84 44v8q0 6 6 6h0v18M96 44v8q0 6-6 6M90 76h0M84 58v18M96 58v18"/><path d="M80 64h20M80 72h20" class="d-fin"/><path d="M8 30h52M8 22v52" class="d-fin"/>',
-  charpente:
-    '<path d="M8 66 60 16l52 50z"/><path d="M60 16v50M60 54 36 43M60 54l24-11"/><path d="M8 66h104" class="d-accent"/><path d="M30 46h6v6h-6zM84 46h6v6h-6zM57 12h6v6h-6z" class="d-fin"/><path d="M4 70 60 16 116 70" class="d-fin d-tirets"/>',
-};
-
 const RESUMES = {
   depannage: "Fuite, tuiles envolées, dégâts d'orage. Mise hors d'eau rapide, puis réparation.",
   "refection-toiture": "Couverture refaite en tuiles canal, romanes ou mécaniques, en totalité ou par pan.",
@@ -634,13 +606,7 @@ function cartesServices(exclure) {
   return `<ul class="prestations">
           ${lignes
             .map(
-              (c) => `<li class="prestation${c.urgent ? " prestation--urgent" : ""}">
-            <a href="${c.path}">
-              <svg class="prestation__dessin" viewBox="0 0 120 80" aria-hidden="true" focusable="false">${DESSINS[c.cle]}</svg>
-              <span class="prestation__texte"><span class="prestation__nom">${esc(c.nom)}${c.urgent ? ' <span class="prestation__badge">Intervention rapide</span>' : ""}</span><span class="prestation__resume">${fr(RESUMES[c.cle])}</span></span>
-              <span class="prestation__lien">${c.urgent ? "Faire une demande" : "Voir le détail"} ${ico("fleche")}</span>
-            </a>
-          </li>`
+              (c) => `<li class="prestation${c.urgent ? " prestation--urgent" : ""}"><a href="${c.path}"><span class="prestation__nom">${esc(c.nom)}</span><span class="prestation__resume">${fr(RESUMES[c.cle])}</span>${ico("fleche", "ico prestation__fleche")}</a></li>`
             )
             .join("\n          ")}
         </ul>`;
@@ -649,7 +615,7 @@ function cartesServices(exclure) {
 function listeVilles(exclure) {
   return `<ul class="villes">
           ${VILLES_PAGES.filter((v) => v.nom !== exclure)
-            .map((v) => `<li><a href="${v.path}">${ico("pin")}Couvreur ${esc(v.nom)}</a></li>`)
+            .map((v) => `<li><a href="${v.path}">Couvreur à ${esc(v.nom)}</a></li>`)
             .join("\n          ")}
         </ul>`;
 }
@@ -747,11 +713,8 @@ const ZONES_VISITE = [
         <div class="accroche__texte">
           <h1 id="titre-page">Couvreur à Frontignan, <span>votre toiture entre de bonnes mains.</span></h1>
           <p class="chapeau">ARVÉO répare, refait et entretient les toitures de Frontignan, de Sète et de tout le secteur de l'étang de Thau. Devis gratuit et dépannage rapide.</p>
-          ${actions({ clair: true, sansDevis: true })}
+          ${actions({ clair: true })}
           ${coches(CONFIANCE, true)}
-        </div>
-        <div class="accroche__carte">
-          ${formRappel("Accueil")}
         </div>
       </div>
     </section>
@@ -848,7 +811,7 @@ for (const s of SERVICES_PAGES) {
     .join("\n          ");
   const html =
     head(p) +
-    enTetePage({ surTitre: `${S.activite} · Frontignan`, h1: s.h1, chapo: s.chapo, ariane: ar.html, rappel: formRappel(s.nom) }) +
+    enTetePage({ surTitre: `${S.activite} · Frontignan`, h1: s.h1, chapo: s.chapo, ariane: ar.html }) +
     `
     <section class="section section--claire">
       <div class="conteneur article">
@@ -900,7 +863,7 @@ ${bandeauCta()}` +
   };
   const html =
     head(p) +
-    enTetePage({ surTitre: "Nos services", h1: "Travaux de couverture et de zinguerie", chapo: "De la tuile cassée à la réfection complète, un seul artisan pour toute votre toiture, à Frontignan et dans les communes voisines.", ariane: ar.html, rappel: formRappel("Services") }) +
+    enTetePage({ surTitre: "Nos services", h1: "Travaux de couverture et de zinguerie", chapo: "De la tuile cassée à la réfection complète, un seul artisan pour toute votre toiture, à Frontignan et dans les communes voisines.", ariane: ar.html }) +
     `
     <section class="section section--claire">
       <div class="conteneur">
@@ -931,7 +894,7 @@ for (const v of VILLES_PAGES) {
   };
   const html =
     head(p) +
-    enTetePage({ surTitre: `Couvreur ${v.nom} · ${v.cp}`, h1: `Couvreur à ${v.nom}`, chapo: v.intro, ariane: ar.html, rappel: formRappel(`Page ${v.nom}`) }) +
+    enTetePage({ surTitre: `Couvreur ${v.nom} · ${v.cp}`, h1: `Couvreur à ${v.nom}`, chapo: v.intro, ariane: ar.html }) +
     `
     <section class="section section--claire">
       <div class="conteneur article">
@@ -984,7 +947,7 @@ ${bandeauCta(`Votre couvreur à ${v.nom}`, `Réparation, réfection, démoussage
   };
   const html =
     head(p) +
-    enTetePage({ surTitre: "Zone d'intervention", h1: "Couvreur à Frontignan et dans les communes voisines", chapo: "Installés à Frontignan, on intervient rapidement dans tout le secteur, entre l'étang de Thau, le massif de la Gardiole et le littoral.", ariane: ar.html, rappel: formRappel("Zone d'intervention") }) +
+    enTetePage({ surTitre: "Zone d'intervention", h1: "Couvreur à Frontignan et dans les communes voisines", chapo: "Installés à Frontignan, on intervient rapidement dans tout le secteur, entre l'étang de Thau, le massif de la Gardiole et le littoral.", ariane: ar.html }) +
     `
     <section class="section section--claire">
       <div class="conteneur">
@@ -1142,12 +1105,12 @@ ${bandeauCta()}` +
     `
     <section class="section section--claire">
       <div class="conteneur">
-        <div class="contact-cartes">
-          <a class="carte-action carte-action--claire" href="${TEL}" data-track="call">${ico("tel")}<strong class="mono">${esc(S.telephone)}</strong><span>${esc(S.horaires.texte)}</span></a>
-          <a class="carte-action carte-action--claire" href="/depannage-toiture" data-track="depannage">${ico("alerte")}<strong>Dépannage urgent</strong><span>Formulaire détaillé avec photos</span></a>
-          <a class="carte-action carte-action--claire" href="/devis-toiture" data-track="devis">${ico("devis")}<strong>Devis gratuit</strong><span>Décrivez votre projet</span></a>
-          <a class="carte-action carte-action--claire" href="/rendez-vous" data-track="rdv">${ico("agenda")}<strong>Rendez-vous</strong><span>Diagnostic de toiture</span></a>
-        </div>
+        <ul class="cta-final__liens cta-final__liens--clair">
+          <li><a href="${TEL}" data-track="call"><strong class="mono">${esc(S.telephone)}</strong><span>${esc(S.horaires.texte)}</span>${ico("fleche")}</a></li>
+          <li><a href="/depannage-toiture" data-track="depannage"><strong>Dépannage urgent</strong><span>Formulaire détaillé avec photos</span>${ico("fleche")}</a></li>
+          <li><a href="/devis-toiture" data-track="devis"><strong>Devis gratuit</strong><span>Décrivez votre projet</span>${ico("fleche")}</a></li>
+          <li><a href="/rendez-vous" data-track="rdv"><strong>Rendez-vous</strong><span>Diagnostic de toiture</span>${ico("fleche")}</a></li>
+        </ul>
         <div class="formulaire-page">
           ${formContact()}
           <aside class="formulaire-page__cote">

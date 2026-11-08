@@ -71,7 +71,7 @@
 
     <section class="tete-page">
       <img class="tete-page__dessin" src="/img/toiture.svg" alt="" width="1440" height="900" aria-hidden="true">
-      <div class="conteneur tete-page__grille">
+      <div class="conteneur tete-page__grille tete-page__grille--seule">
         <div class="tete-page__texte">
           <nav class="ariane" aria-label="Fil d'Ariane"><ol><li><a href="/">Accueil</a></li><li><a href="/services">Services</a></li><li aria-current="page">Zinguerie</li></ol></nav>
           <h1>Zinguerie et gouttières</h1>
@@ -82,33 +82,7 @@
         </div>
           <p class="garanties garanties--clair"><span>Devis gratuit et détaillé</span><span>Rappel dans la journée</span><span>Garantie décennale</span></p>
         </div>
-        <div class="tete-page__carte"><form class="formulaire formulaire--rappel" data-formulaire="rappel" novalidate aria-label="Être rappelé">
-          <div class="hp" aria-hidden="true"><label>Laissez ce champ vide<input type="text" name="site_web" tabindex="-1" autocomplete="off"></label></div>
-          <input type="hidden" name="contexte" value="Zinguerie et gouttières">
-          <p class="rappel__titre">Être rappelé gratuitement</p>
-          <p class="rappel__texte">Laissez votre numéro, on vous rappelle dans la journée.</p>
-          <div class="champ">
-              <label for="nom-13">Nom <span class="requis" aria-hidden="true">*</span></label>
-              <input id="nom-13" name="nom" type="text" aria-describedby="nom-13-erreur" required data-message="Indiquez votre nom." autocomplete="name">
-              
-              <p class="erreur" id="nom-13-erreur"></p>
-            </div>
-          <div class="champ">
-              <label for="telephone-14">Téléphone <span class="requis" aria-hidden="true">*</span></label>
-              <input id="telephone-14" name="telephone" type="tel" aria-describedby="telephone-14-erreur" required data-message="Indiquez votre numéro." inputmode="tel" autocomplete="tel">
-              
-              <p class="erreur" id="telephone-14-erreur"></p>
-            </div>
-          <div class="champ">
-              <label for="besoin-15">Votre besoin <span class="facultatif">(facultatif)</span></label>
-              <select id="besoin-15" name="besoin" aria-describedby="besoin-15-erreur" ><option value="">Choisir</option><option>Fuite / urgence</option><option>Réparation</option><option>Réfection de toiture</option><option>Démoussage</option><option>Zinguerie / gouttières</option><option>Charpente</option><option>Autre</option></select>
-              
-              <p class="erreur" id="besoin-15-erreur"></p>
-            </div>
-          <button class="bouton bouton--orange" type="submit"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.6 3.5h2.6l1.6 4.2-2.1 1.5a11.5 11.5 0 0 0 6.1 6.1l1.5-2.1 4.2 1.6v2.6a2 2 0 0 1-2.1 2A16.6 16.6 0 0 1 4.6 5.6a2 2 0 0 1 2-2.1z"/></svg>Me faire rappeler</button>
-          <p class="rappel__mention">En envoyant ce formulaire, vous acceptez d'être recontacté par ARVÉO. <a href="/confidentialite">Données personnelles</a></p>
-          <div class="formulaire__retour" role="status" aria-live="polite" tabindex="-1"></div>
-        </form></div>
+        
       </div>
     </section>
     <section class="section section--claire">
@@ -164,41 +138,11 @@
       <div class="conteneur">
         <h2 id="titre-autres">Les autres travaux de toiture</h2>
         <ul class="prestations">
-          <li class="prestation prestation--urgent">
-            <a href="/depannage-toiture">
-              <svg class="prestation__dessin" viewBox="0 0 120 80" aria-hidden="true" focusable="false"><path d="M6 66 112 18"/><path d="M14 63q5-9 10-4M26 58q5-9 10-4M38 52q5-9 10-4M74 37q5-9 10-4M86 31q5-9 10-4M98 26q5-9 10-4"/><path d="M52 41l9-13 13 6-9 12z" class="d-accent"/><path d="M57 54v6M62 60v7M52 62v6" class="d-accent"/><path d="M6 74h106" class="d-fin"/></svg>
-              <span class="prestation__texte"><span class="prestation__nom">Dépannage de toiture <span class="prestation__badge">Intervention rapide</span></span><span class="prestation__resume">Fuite, tuiles envolées, dégâts d&#39;orage. Mise hors d&#39;eau rapide, puis réparation.</span></span>
-              <span class="prestation__lien">Faire une demande <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-            </a>
-          </li>
-          <li class="prestation">
-            <a href="/services/refection-toiture">
-              <svg class="prestation__dessin" viewBox="0 0 120 80" aria-hidden="true" focusable="false"><path d="M8 56q10 13 20 0q10 13 20 0q10 13 20 0q10 13 20 0q10 13 20 0"/><path d="M18 56q10-14 20 0M58 56q10-14 20 0M98 56q6-9 12-4" class="d-accent"/><path d="M38 56q10-14 20 0M78 56q10-14 20 0"/><path d="M8 56 30 20M48 56 62 20M88 56 94 20M30 20h80" class="d-fin"/><path d="M14 46 34 30M54 46 66 30M94 46 98 30" class="d-fin"/></svg>
-              <span class="prestation__texte"><span class="prestation__nom">Réfection de toiture</span><span class="prestation__resume">Couverture refaite en tuiles canal, romanes ou mécaniques, en totalité ou par pan.</span></span>
-              <span class="prestation__lien">Voir le détail <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-            </a>
-          </li>
-          <li class="prestation">
-            <a href="/services/recherche-de-fuite">
-              <svg class="prestation__dessin" viewBox="0 0 120 80" aria-hidden="true" focusable="false"><path d="M8 50 60 14l52 36"/><path d="M8 50h104M14 50v22h92V50"/><path d="M70 21l6 4" class="d-accent"/><path d="M73 24c-3 8 4 12 0 20s3 10 1 16" class="d-accent d-tirets"/><path d="M74 64c-2 3-2 6 0 7s3-4 0-7z" class="d-accent"/><path d="M14 72h92" class="d-fin"/></svg>
-              <span class="prestation__texte"><span class="prestation__nom">Recherche de fuite et réparation</span><span class="prestation__resume">On trouve d&#39;où vient l&#39;eau avant de réparer, pour ne pas payer deux fois.</span></span>
-              <span class="prestation__lien">Voir le détail <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-            </a>
-          </li>
-          <li class="prestation">
-            <a href="/services/demoussage-toiture">
-              <svg class="prestation__dessin" viewBox="0 0 120 80" aria-hidden="true" focusable="false"><path d="M8 58q10 13 20 0q10 13 20 0q10 13 20 0q10 13 20 0q10 13 20 0M18 58q10-14 20 0M38 58q10-14 20 0M58 58q10-14 20 0M78 58q10-14 20 0"/><path d="M26 47c3-4 9-4 11 0 3 1 3 5 0 6-3 2-8 2-11 0-3-1-3-5 0-6zM66 45c3-3 7-3 9 0 3 1 2 4 0 5-3 1-7 1-9 0-2-1-2-4 0-5z" class="d-accent"/><path d="M84 18l18 22M80 22l8-8 18 22-8 8z"/><path d="M8 72h104" class="d-fin"/></svg>
-              <span class="prestation__texte"><span class="prestation__nom">Démoussage et traitement hydrofuge</span><span class="prestation__resume">Brossage, traitement anti-mousse et hydrofuge, sans haute pression agressive.</span></span>
-              <span class="prestation__lien">Voir le détail <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-            </a>
-          </li>
-          <li class="prestation">
-            <a href="/services/charpente">
-              <svg class="prestation__dessin" viewBox="0 0 120 80" aria-hidden="true" focusable="false"><path d="M8 66 60 16l52 50z"/><path d="M60 16v50M60 54 36 43M60 54l24-11"/><path d="M8 66h104" class="d-accent"/><path d="M30 46h6v6h-6zM84 46h6v6h-6zM57 12h6v6h-6z" class="d-fin"/><path d="M4 70 60 16 116 70" class="d-fin d-tirets"/></svg>
-              <span class="prestation__texte"><span class="prestation__nom">Réparation et renforcement de charpente</span><span class="prestation__resume">Chevrons, pannes et liteaux contrôlés, renforcés ou remplacés.</span></span>
-              <span class="prestation__lien">Voir le détail <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-            </a>
-          </li>
+          <li class="prestation prestation--urgent"><a href="/depannage-toiture"><span class="prestation__nom">Dépannage de toiture</span><span class="prestation__resume">Fuite, tuiles envolées, dégâts d&#39;orage. Mise hors d&#39;eau rapide, puis réparation.</span><svg class="ico prestation__fleche" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+          <li class="prestation"><a href="/services/refection-toiture"><span class="prestation__nom">Réfection de toiture</span><span class="prestation__resume">Couverture refaite en tuiles canal, romanes ou mécaniques, en totalité ou par pan.</span><svg class="ico prestation__fleche" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+          <li class="prestation"><a href="/services/recherche-de-fuite"><span class="prestation__nom">Recherche de fuite et réparation</span><span class="prestation__resume">On trouve d&#39;où vient l&#39;eau avant de réparer, pour ne pas payer deux fois.</span><svg class="ico prestation__fleche" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+          <li class="prestation"><a href="/services/demoussage-toiture"><span class="prestation__nom">Démoussage et traitement hydrofuge</span><span class="prestation__resume">Brossage, traitement anti-mousse et hydrofuge, sans haute pression agressive.</span><svg class="ico prestation__fleche" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+          <li class="prestation"><a href="/services/charpente"><span class="prestation__nom">Réparation et renforcement de charpente</span><span class="prestation__resume">Chevrons, pannes et liteaux contrôlés, renforcés ou remplacés.</span><svg class="ico prestation__fleche" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
         </ul>
       </div>
     </section>
@@ -211,10 +155,11 @@
           <a class="cta-final__tel" href="tel:+33639980000" data-track="call"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.6 3.5h2.6l1.6 4.2-2.1 1.5a11.5 11.5 0 0 0 6.1 6.1l1.5-2.1 4.2 1.6v2.6a2 2 0 0 1-2.1 2A16.6 16.6 0 0 1 4.6 5.6a2 2 0 0 1 2-2.1z"/></svg><span class="mono">06 39 98 00 00</span></a>
           <p class="cta-final__horaires">Du lundi au samedi, de 8 h à 19 h</p>
         </div>
-        <div class="cta-final__cartes">
-          <a class="carte-action" href="/depannage-toiture" data-track="depannage"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4 2.8 19.5h18.4zM12 10v4.5M12 17.2v.1"/></svg><strong>Dépannage urgent</strong><span>Fuite ou tuiles envolées, décrivez le problème en ligne.</span></a>
-          <a class="carte-action" href="/devis-toiture" data-track="devis"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 3h7l4.5 4.5V19a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM14 3v4.5h4.5M8.5 12.5h7M8.5 16h5"/></svg><strong>Devis gratuit</strong><span>Réfection, réparation, démoussage, zinguerie.</span></a>
-          <a class="carte-action" href="/rendez-vous" data-track="rdv"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 6h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zM8 3.5V8M16 3.5V8M4 10.5h16M8 14h2M12 14h2M8 17h2"/></svg><strong>Rendez-vous diagnostic</strong><span>Choisissez une date, on confirme par téléphone.</span></a>
+        <ul class="cta-final__liens">
+          <li><a href="/depannage-toiture" data-track="depannage"><strong>Dépannage urgent</strong><span>Fuite ou tuiles envolées, décrivez le problème en ligne.</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+          <li><a href="/devis-toiture" data-track="devis"><strong>Devis gratuit</strong><span>Réfection, réparation, démoussage, zinguerie.</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+          <li><a href="/rendez-vous" data-track="rdv"><strong>Rendez-vous diagnostic</strong><span>Choisissez une date, on confirme par téléphone.</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+        </ul>
         </div>
       </div>
     </section>
@@ -278,6 +223,8 @@
       <p>© 2026 ARVÉO. Site réalisé par <a href="https://mjagency.eu">MJAGENCY</a></p>
     </div>
   </footer>
+
+  <a class="logo-fixe" href="/" aria-label="ARVÉO, retour à l'accueil"><img src="/img/arveo-mark.svg" alt="" width="64" height="34"></a>
 
   <nav class="barre-actions" aria-label="Nous contacter">
     <a href="tel:+33639980000" data-track="call"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.6 3.5h2.6l1.6 4.2-2.1 1.5a11.5 11.5 0 0 0 6.1 6.1l1.5-2.1 4.2 1.6v2.6a2 2 0 0 1-2.1 2A16.6 16.6 0 0 1 4.6 5.6a2 2 0 0 1 2-2.1z"/></svg><span>Appeler</span></a>
