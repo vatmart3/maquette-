@@ -79,7 +79,6 @@ const ico = (n, cls = "ico") => `<svg class="${cls}" viewBox="0 0 24 24" aria-hi
 const NAV = [
   { id: "services", href: "/services", texte: "Services" },
   { id: "depannage", href: "/depannage-toiture", texte: "Dépannage" },
-  { id: "zone", href: "/zone-intervention", texte: "Zone d'intervention" },
   { id: "apropos", href: "/a-propos", texte: "À propos" },
   { id: "contact", href: "/contact", texte: "Contact" },
 ];
@@ -145,7 +144,7 @@ ${entete(p.id)}
 function bandeauUrgence() {
   return `  <div class="urgence">
     <div class="conteneur urgence__ligne">
-      <p>${ico("alerte")}<span><strong>Urgence toiture</strong><span class="urgence__long"> : fuite, tuiles arrachées, dégâts après intempéries</span></span></p>
+      <p>${ico("alerte")}<span><strong>Urgence toiture</strong><span class="urgence__long">Fuite, tuiles arrachées, dégâts après intempéries</span></span></p>
       <p class="urgence__actions">
         <a href="${TEL}" data-track="call">${ico("tel")}<span class="mono">${esc(S.telephone)}</span></a>
         <a href="/depannage-toiture" data-track="depannage">Dépannage en ligne</a>
@@ -192,34 +191,32 @@ function filAriane(items) {
   };
 }
 
-function actions({ clair = false, sansDevis = false, sansRdv = false, ancre = "" } = {}) {
+function actions({ clair = false, ancre = "", secondaire } = {}) {
+  const sec = secondaire || { href: ancre || "/depannage-toiture", texte: ancre ? "Remplir la demande" : "Demande de dépannage", icone: "alerte", track: "depannage" };
   return `<div class="actions">
           <a class="bouton bouton--orange" href="${TEL}" data-track="call">${ico("tel")}Appeler le <span class="mono">${esc(S.telephone)}</span></a>
-          <a class="bouton ${clair ? "bouton--contour-clair" : "bouton--contour"}" href="${ancre || "/depannage-toiture"}" data-track="depannage">${ico("alerte")}${ancre ? "Remplir la demande" : "Demande de dépannage"}</a>
-          ${sansDevis ? "" : `<a class="bouton ${clair ? "bouton--contour-clair" : "bouton--contour"}" href="/devis-toiture" data-track="devis">${ico("devis")}Devis gratuit</a>`}
-          ${sansRdv ? "" : `<a class="lien-fleche${clair ? " lien-fleche--clair" : ""}" href="/rendez-vous" data-track="rdv">Prendre rendez-vous ${ico("fleche")}</a>`}
+          <a class="bouton ${clair ? "bouton--contour-clair" : "bouton--contour"}" href="${sec.href}" data-track="${sec.track}">${ico(sec.icone)}${sec.texte}</a>
         </div>`;
 }
 
 function coches(liste, clair = false) {
-  return `<ul class="coches${clair ? " coches--clair" : ""}">${liste.filter(Boolean).map((t) => `<li>${ico("coche")}${esc(t)}</li>`).join("")}</ul>`;
+  return `<p class="garanties${clair ? " garanties--clair" : ""}">${liste.filter(Boolean).map((t) => `<span>${esc(t)}</span>`).join("")}</p>`;
 }
 
-const CONFIANCE = [S.confiance.devisGratuit, S.confiance.rappel, confirme(S.confiance.decennale), confirme(S.confiance.local)];
+const CONFIANCE = [S.confiance.devisGratuit, S.confiance.rappel, confirme(S.confiance.decennale)];
 
 function bandeauCta(titre = "Un problème de toiture ?", texte = "Appelez-nous, faites une demande de dépannage ou prenez rendez-vous pour un diagnostic gratuit.") {
   return `
     <section class="cta-final" aria-labelledby="titre-cta">
       <div class="conteneur cta-final__grille">
         <div>
-          <p class="sur-titre sur-titre--clair">ARVÉO, couvreur à ${esc(S.adresse.ville)}</p>
           <h2 id="titre-cta">${fr(titre)}</h2>
           <p class="cta-final__texte">${fr(texte)}</p>
           <a class="cta-final__tel" href="${TEL}" data-track="call">${ico("tel")}<span class="mono">${esc(S.telephone)}</span></a>
           <p class="cta-final__horaires">${esc(S.horaires.texte)}</p>
         </div>
         <div class="cta-final__cartes">
-          <a class="carte-action" href="/depannage-toiture" data-track="depannage">${ico("alerte")}<strong>Dépannage urgent</strong><span>Fuite, tuiles envolées : décrivez le problème en ligne.</span></a>
+          <a class="carte-action" href="/depannage-toiture" data-track="depannage">${ico("alerte")}<strong>Dépannage urgent</strong><span>Fuite ou tuiles envolées, décrivez le problème en ligne.</span></a>
           <a class="carte-action" href="/devis-toiture" data-track="devis">${ico("devis")}<strong>Devis gratuit</strong><span>Réfection, réparation, démoussage, zinguerie.</span></a>
           <a class="carte-action" href="/rendez-vous" data-track="rdv">${ico("agenda")}<strong>Rendez-vous diagnostic</strong><span>Choisissez une date, on confirme par téléphone.</span></a>
         </div>
@@ -257,7 +254,7 @@ function pied() {
         </ul>
       </div>
       <div>
-        <h2>Couvreur près de chez vous</h2>
+        <h2><a href="/zone-intervention">Zone d'intervention</a></h2>
         <ul class="pied__villes">
           ${VILLES_PAGES.map((v) => `<li><a href="${v.path}">Couvreur ${esc(v.nom)}</a></li>`).join("\n          ")}
         </ul>
@@ -268,6 +265,7 @@ function pied() {
         <li><a href="/devis-toiture">Devis gratuit</a></li>
         <li><a href="/rendez-vous">Rendez-vous</a></li>
         <li><a href="/contact">Contact</a></li>
+        <li><a href="/zone-intervention">Zone d'intervention</a></li>
         <li><a href="/mentions-legales">Mentions légales</a></li>
         <li><a href="/confidentialite">Confidentialité</a></li>
       </ul>
@@ -302,7 +300,7 @@ function ldEntreprise() {
     "@type": "RoofingContractor",
     "@id": ENTREPRISE_ID,
     name: S.nom,
-    description: `${S.activite} à ${a.ville} : réparation et réfection de toiture, recherche de fuite, démoussage, zinguerie, charpente et dépannage d'urgence.`,
+    description: `${S.activite} à ${a.ville}. Réparation et réfection de toiture, recherche de fuite, démoussage, zinguerie, charpente et dépannage d'urgence.`,
     url: BASE + "/",
     logo: BASE + "/img/logo-arveo.png",
     image: BASE + "/og.png",
@@ -443,7 +441,7 @@ function formDepannage() {
   return `<form class="formulaire formulaire--fiche" data-formulaire="depannage" novalidate aria-label="Demande de dépannage">
           ${piege}
           <div class="fiche-tete">
-            <div class="fiche-tete__marque">${logo()}<p class="mono">Couverture · Zinguerie · Dépannage</p></div>
+            <div class="fiche-tete__marque">${logo()}<p class="mono">Frontignan &amp; alentours</p></div>
             <h2 class="fiche-tete__titre">Demande de <span>dépannage</span></h2>
           </div>
           <p class="fiche-intro"><strong>Un problème à signaler ?</strong> Remplissez ce formulaire afin de nous transmettre les informations utiles pour préparer votre prise en charge.</p>
@@ -588,7 +586,6 @@ function faqHtml(liste, titre = "Vos questions") {
   return `
     <section class="section" aria-labelledby="titre-faq">
       <div class="conteneur conteneur--etroit">
-        <p class="sur-titre">Questions fréquentes</p>
         <h2 id="titre-faq">${fr(titre)}</h2>
         <div class="faq">
           ${liste
@@ -604,20 +601,44 @@ function faqHtml(liste, titre = "Vos questions") {
     </section>`;
 }
 
+// Petits dessins techniques, au trait, un par prestation (viewBox 0 0 120 80).
+const DESSINS = {
+  depannage:
+    '<path d="M6 66 112 18"/><path d="M14 63q5-9 10-4M26 58q5-9 10-4M38 52q5-9 10-4M74 37q5-9 10-4M86 31q5-9 10-4M98 26q5-9 10-4"/><path d="M52 41l9-13 13 6-9 12z" class="d-accent"/><path d="M57 54v6M62 60v7M52 62v6" class="d-accent"/><path d="M6 74h106" class="d-fin"/>',
+  "refection-toiture":
+    '<path d="M8 56q10 13 20 0q10 13 20 0q10 13 20 0q10 13 20 0q10 13 20 0"/><path d="M18 56q10-14 20 0M58 56q10-14 20 0M98 56q6-9 12-4" class="d-accent"/><path d="M38 56q10-14 20 0M78 56q10-14 20 0"/><path d="M8 56 30 20M48 56 62 20M88 56 94 20M30 20h80" class="d-fin"/><path d="M14 46 34 30M54 46 66 30M94 46 98 30" class="d-fin"/>',
+  "recherche-de-fuite":
+    '<path d="M8 50 60 14l52 36"/><path d="M8 50h104M14 50v22h92V50"/><path d="M70 21l6 4" class="d-accent"/><path d="M73 24c-3 8 4 12 0 20s3 10 1 16" class="d-accent d-tirets"/><path d="M74 64c-2 3-2 6 0 7s3-4 0-7z" class="d-accent"/><path d="M14 72h92" class="d-fin"/>',
+  "demoussage-toiture":
+    '<path d="M8 58q10 13 20 0q10 13 20 0q10 13 20 0q10 13 20 0q10 13 20 0M18 58q10-14 20 0M38 58q10-14 20 0M58 58q10-14 20 0M78 58q10-14 20 0"/><path d="M26 47c3-4 9-4 11 0 3 1 3 5 0 6-3 2-8 2-11 0-3-1-3-5 0-6zM66 45c3-3 7-3 9 0 3 1 2 4 0 5-3 1-7 1-9 0-2-1-2-4 0-5z" class="d-accent"/><path d="M84 18l18 22M80 22l8-8 18 22-8 8z"/><path d="M8 72h104" class="d-fin"/>',
+  "zinguerie-gouttieres":
+    '<path d="M8 22h70l10 8"/><path d="M60 30h36a14 14 0 0 1-36 0z" class="d-accent"/><path d="M84 44v8q0 6 6 6h0v18M96 44v8q0 6-6 6M90 76h0M84 58v18M96 58v18"/><path d="M80 64h20M80 72h20" class="d-fin"/><path d="M8 30h52M8 22v52" class="d-fin"/>',
+  charpente:
+    '<path d="M8 66 60 16l52 50z"/><path d="M60 16v50M60 54 36 43M60 54l24-11"/><path d="M8 66h104" class="d-accent"/><path d="M30 46h6v6h-6zM84 46h6v6h-6zM57 12h6v6h-6z" class="d-fin"/><path d="M4 70 60 16 116 70" class="d-fin d-tirets"/>',
+};
+
+const RESUMES = {
+  depannage: "Fuite, tuiles envolées, dégâts d'orage. Mise hors d'eau rapide, puis réparation.",
+  "refection-toiture": "Couverture refaite en tuiles canal, romanes ou mécaniques, en totalité ou par pan.",
+  "recherche-de-fuite": "On trouve d'où vient l'eau avant de réparer, pour ne pas payer deux fois.",
+  "demoussage-toiture": "Brossage, traitement anti-mousse et hydrofuge, sans haute pression agressive.",
+  "zinguerie-gouttieres": "Gouttières, descentes, noues et solins en zinc, posés ou réparés.",
+  charpente: "Chevrons, pannes et liteaux contrôlés, renforcés ou remplacés.",
+};
+
 function cartesServices(exclure) {
-  const cartes = [
-    { path: "/depannage-toiture", nom: "Dépannage de toiture", texte: "Fuite, tuiles arrachées, dégâts d'orage : mise hors d'eau et réparation.", icone: "alerte", urgent: true },
-    ...SERVICES_PAGES.map((s) => ({ path: s.path, nom: s.nom, texte: s.chapo, icone: { 0: "toit", 1: "toit", 2: "goutte", 3: "goutte", 4: "toit" }[s.zone] })),
+  const lignes = [
+    { cle: "depannage", path: "/depannage-toiture", nom: "Dépannage de toiture", urgent: true },
+    ...SERVICES_PAGES.map((s) => ({ cle: s.slug, path: s.path, nom: s.nom })),
   ].filter((c) => c.path !== exclure);
-  return `<ul class="services">
-          ${cartes
+  return `<ul class="prestations">
+          ${lignes
             .map(
-              (c) => `<li class="service${c.urgent ? " service--urgent" : ""}">
+              (c) => `<li class="prestation${c.urgent ? " prestation--urgent" : ""}">
             <a href="${c.path}">
-              <span class="service__icone">${ico(c.icone)}</span>
-              <h3>${esc(c.nom)}</h3>
-              <p>${fr(c.texte)}</p>
-              <span class="lien-fleche">${c.urgent ? "Demander un dépannage" : "En savoir plus"} ${ico("fleche")}</span>
+              <svg class="prestation__dessin" viewBox="0 0 120 80" aria-hidden="true" focusable="false">${DESSINS[c.cle]}</svg>
+              <span class="prestation__texte"><span class="prestation__nom">${esc(c.nom)}${c.urgent ? ' <span class="prestation__badge">Intervention rapide</span>' : ""}</span><span class="prestation__resume">${fr(RESUMES[c.cle])}</span></span>
+              <span class="prestation__lien">${c.urgent ? "Faire une demande" : "Voir le détail"} ${ico("fleche")}</span>
             </a>
           </li>`
             )
@@ -638,7 +659,6 @@ function avisHtml() {
   return `
     <section class="section section--claire" aria-labelledby="titre-avis">
       <div class="conteneur">
-        <p class="sur-titre">Avis Google</p>
         <h2 id="titre-avis">Ce que disent nos clients</h2>
         <ul class="avis">
           ${S.avis
@@ -664,7 +684,6 @@ function enTetePage({ surTitre, h1, chapo, ariane, rappel, illustration = true, 
       <div class="conteneur tete-page__grille${rappel ? "" : " tete-page__grille--seule"}">
         <div class="tete-page__texte">
           ${ariane}
-          <p class="sur-titre sur-titre--clair">${esc(surTitre)}</p>
           <h1>${fr(h1)}</h1>
           <p class="chapeau">${fr(chapo)}</p>
           ${actions({ clair: true, ancre })}
@@ -690,11 +709,11 @@ const ecrire = (fichier, html, meta) => {
 /* --- Accueil --- */
 
 const ZONES_VISITE = [
-  { titre: "Couverture et tuiles", texte: "Tuiles canal, romanes ou mécaniques, faîtage, rives et génoises : on répare un pan ou on refait toute la couverture.", lien: "/services/refection-toiture", devis: "Réfection de toiture" },
-  { titre: "Charpente", texte: "Chevrons, pannes, liteaux : on contrôle et on renforce la structure qui porte vos tuiles.", lien: "/services/charpente", devis: "Charpente" },
-  { titre: "Zinguerie", texte: "Gouttières, descentes, noues en zinc : l'eau doit partir loin de vos murs, pas couler sur la façade.", lien: "/services/zinguerie-gouttieres", devis: "Zinguerie / gouttières" },
-  { titre: "Fuites et étanchéité", texte: "Solin de cheminée, fenêtre de toit, tuile cassée : on trouve d'où vient l'eau avant de réparer.", lien: "/services/recherche-de-fuite", devis: "Réparation / fuite" },
-  { titre: "Démoussage et entretien", texte: "Mousses, lichens, tuiles poreuses : un nettoyage et un traitement prolongent la vie de la toiture.", lien: "/services/demoussage-toiture", devis: "Démoussage / traitement" },
+  { titre: "Couverture et tuiles", texte: "Tuiles canal, romanes ou mécaniques, faîtage, rives et génoises. On répare un pan ou on refait toute la couverture.", lien: "/services/refection-toiture", devis: "Réfection de toiture" },
+  { titre: "Charpente", texte: "Chevrons, pannes et liteaux portent vos tuiles. On les contrôle et on les renforce.", lien: "/services/charpente", devis: "Charpente" },
+  { titre: "Zinguerie", texte: "Gouttières, descentes et noues en zinc éloignent l'eau de vos murs et de vos façades.", lien: "/services/zinguerie-gouttieres", devis: "Zinguerie / gouttières" },
+  { titre: "Fuites et étanchéité", texte: "Solin de cheminée, fenêtre de toit, tuile cassée. On trouve d'où vient l'eau avant de réparer.", lien: "/services/recherche-de-fuite", devis: "Réparation / fuite" },
+  { titre: "Démoussage et entretien", texte: "Un nettoyage et un traitement contre mousses et lichens prolongent la vie de la toiture.", lien: "/services/demoussage-toiture", devis: "Démoussage / traitement" },
 ];
 
 {
@@ -702,14 +721,14 @@ const ZONES_VISITE = [
     id: "accueil",
     path: "/",
     scene: true,
-    title: "Couvreur à Frontignan : réparation et réfection de toiture | ARVÉO",
+    title: "Couvreur à Frontignan, réparation et réfection de toiture | ARVÉO",
     ogTitle: "ARVÉO, couvreur à Frontignan",
-    description: `Couvreur zingueur à Frontignan : fuite, tuiles cassées, réfection de toiture, démoussage, gouttières. Dépannage rapide à Sète et Balaruc. Devis gratuit.`,
+    description: `Couvreur zingueur à Frontignan pour fuites, tuiles cassées, réfection de toiture, démoussage, gouttières. Dépannage rapide à Sète et Balaruc. Devis gratuit.`,
     jsonld: [ldEntreprise(), ldSite, ldFaq(FAQ_ACCUEIL)],
   };
   const fiches = ZONES_VISITE.map(
     (z, i) => `<article class="fiche" aria-labelledby="titre-zone-${i}">
-              <span class="fiche__num mono">${String(i + 1).padStart(2, "0")}</span>
+              <span class="fiche__num mono">${String(i + 1).padStart(2, "0")} / ${String(ZONES_VISITE.length).padStart(2, "0")}</span>
               <span class="fiche__oeillet" aria-hidden="true"></span>
               <h3 id="titre-zone-${i}">${esc(z.titre)}</h3>
               <p>${fr(z.texte)}</p>
@@ -726,9 +745,8 @@ const ZONES_VISITE = [
     <section class="accroche" aria-labelledby="titre-page">
       <div class="conteneur accroche__grille">
         <div class="accroche__texte">
-          <p class="sur-titre sur-titre--clair">Couvreur zingueur à Frontignan</p>
           <h1 id="titre-page">Couvreur à Frontignan, <span>votre toiture entre de bonnes mains.</span></h1>
-          <p class="chapeau">Fuite, tuiles cassées, réfection, démoussage, zinguerie : ARVÉO intervient à Frontignan, Sète et dans tout le secteur de l'étang de Thau. Devis gratuit, dépannage rapide.</p>
+          <p class="chapeau">ARVÉO répare, refait et entretient les toitures de Frontignan, de Sète et de tout le secteur de l'étang de Thau. Devis gratuit et dépannage rapide.</p>
           ${actions({ clair: true, sansDevis: true })}
           ${coches(CONFIANCE, true)}
         </div>
@@ -742,7 +760,6 @@ const ZONES_VISITE = [
       <div class="visite__collant">
         <div class="conteneur visite__grille">
           <div class="visite__tete">
-            <p class="sur-titre sur-titre--clair">Visite de votre toiture</p>
             <h2 id="titre-visite">Du faîtage à la gouttière, on s'occupe de tout.</h2>
           </div>
           <div class="visite__fiches">
@@ -757,9 +774,8 @@ const ZONES_VISITE = [
     <section class="section section--claire urgence-bloc" aria-labelledby="titre-urgence">
       <div class="conteneur urgence-bloc__grille">
         <div>
-          <p class="sur-titre sur-titre--orange">Dépannage toiture</p>
           <h2 id="titre-urgence">Fuite ou tuiles arrachées après un coup de vent${" "}?</h2>
-          <p class="chapeau-sombre">On met votre toiture hors d'eau (bâchage), on trouve l'origine de la fuite, puis on répare. Décrivez le problème en ligne ou appelez-nous : on vous rappelle au plus vite.</p>
+          <p class="chapeau-sombre">On met votre toiture hors d'eau (bâchage), on trouve l'origine de la fuite, puis on répare. Décrivez le problème en ligne ou appelez-nous, on vous rappelle au plus vite.</p>
           <div class="actions">
             <a class="bouton bouton--orange" href="/depannage-toiture" data-track="depannage">${ico("alerte")}Faire une demande de dépannage</a>
             <a class="bouton bouton--ardoise" href="${TEL}" data-track="call">${ico("tel")}Appeler le <span class="mono">${esc(S.telephone)}</span></a>
@@ -774,16 +790,19 @@ const ZONES_VISITE = [
     </section>
 
     <section class="section" aria-labelledby="titre-services">
-      <div class="conteneur">
-        <p class="sur-titre">Nos services</p>
-        <h2 id="titre-services">Tous les travaux de toiture, à Frontignan et alentours</h2>
+      <div class="conteneur services-bloc">
+        <div class="services-bloc__intro">
+          <h2 id="titre-services">Tous les travaux de toiture, à Frontignan et alentours</h2>
+          <p class="texte">De la tuile cassée à la couverture refaite à neuf, un seul artisan suit votre toiture du diagnostic au nettoyage du chantier.</p>
+          <a class="bouton bouton--orange" href="/devis-toiture" data-track="devis">${ico("devis")}Demander un devis gratuit</a>
+          <a class="services-bloc__tel mono" href="${TEL}" data-track="call">${ico("tel")}${esc(S.telephone)}</a>
+        </div>
         ${cartesServices()}
       </div>
     </section>
 
     <section class="section section--claire" aria-labelledby="titre-methode">
       <div class="conteneur">
-        <p class="sur-titre">Comment ça se passe</p>
         <h2 id="titre-methode">Quatre étapes, un seul interlocuteur</h2>
         <ol class="methode">
           <li><span class="methode__num mono">01</span><h3>Diagnostic</h3><p>On inspecte la couverture et les combles, photos à l'appui.</p></li>
@@ -801,7 +820,6 @@ ${avisHtml()}
     <section class="section" aria-labelledby="titre-zone">
       <div class="conteneur zone">
         <div>
-          <p class="sur-titre">Zone d'intervention</p>
           <h2 id="titre-zone">Votre couvreur à Frontignan et dans les communes voisines</h2>
           <p class="texte">Installés à Frontignan, nous intervenons rapidement à Sète, Balaruc-les-Bains, Balaruc-le-Vieux, Vic-la-Gardiole, Mireval, Gigean, Poussan, Villeneuve-lès-Maguelone et Montbazin. Frontignan-Plage et La Peyrade comprises.</p>
           <a class="lien-fleche" href="/zone-intervention">Voir toute la zone d'intervention ${ico("fleche")}</a>
@@ -851,16 +869,15 @@ for (const s of SERVICES_PAGES) {
           </div>
           <div class="cote-carte cote-carte--orange">
             <h2>Une urgence ?</h2>
-            <p>Fuite active, tuiles envolées : faites une demande de dépannage.</p>
+            <p>Fuite active ou tuiles envolées ? Faites une demande de dépannage.</p>
             <a class="bouton bouton--orange" href="/depannage-toiture" data-track="depannage">${ico("alerte")}Dépannage</a>
           </div>
         </aside>
       </div>
     </section>
-${faqHtml(s.faq, `Questions sur : ${s.court.toLowerCase()}`)}
+${faqHtml(s.faq, `Vos questions sur ${s.court.toLowerCase() === "charpente" ? "la charpente" : "ce service"}`)}
     <section class="section section--claire" aria-labelledby="titre-autres">
       <div class="conteneur">
-        <p class="sur-titre">Nos autres services</p>
         <h2 id="titre-autres">Les autres travaux de toiture</h2>
         ${cartesServices(s.path)}
       </div>
@@ -877,7 +894,7 @@ ${bandeauCta()}` +
   const p = {
     id: "services",
     path: "/services",
-    title: "Travaux de toiture à Frontignan : nos services | ARVÉO couvreur",
+    title: "Travaux de toiture à Frontignan, nos services | ARVÉO couvreur",
     description: "Dépannage, réparation de fuite, réfection de toiture, démoussage, zinguerie et charpente à Frontignan, Sète et alentours. Couvreur zingueur, devis gratuit.",
     jsonld: [ldEntreprise(), ar.ld],
   };
@@ -903,8 +920,8 @@ for (const v of VILLES_PAGES) {
   const p = {
     id: "zone",
     path: v.path,
-    title: (v.nom.length > 16 ? `Couvreur à ${v.nom} (${v.cp}) | ARVÉO` : `Couvreur à ${v.nom} (${v.cp}) : réparation de toiture | ARVÉO`),
-    description: `Couvreur à ${v.nom} (${v.cp}) : fuite, tuiles cassées, réfection, démoussage, gouttières. Artisan de Frontignan, dépannage rapide, devis gratuit.`,
+    title: (v.nom.length > 16 ? `Couvreur à ${v.nom} (${v.cp}) | ARVÉO` : `Couvreur à ${v.nom} (${v.cp}), réparation de toiture | ARVÉO`),
+    description: `Couvreur à ${v.nom} (${v.cp}) pour fuites, tuiles cassées, réfection, démoussage et gouttières. Artisan de Frontignan, dépannage rapide, devis gratuit.`,
     jsonld: [
       ldEntreprise(),
       { ...ldService(`Couvreur à ${v.nom}`, v.path, v.nom), areaServed: { "@type": "City", name: v.nom, geo: { "@type": "GeoCoordinates", latitude: v.lat, longitude: v.lng } } },
@@ -948,8 +965,8 @@ for (const v of VILLES_PAGES) {
         </aside>
       </div>
     </section>
-${faqHtml([...v.faq, FAQ_ACCUEIL[0], FAQ_ACCUEIL[1]], `Couvreur à ${v.nom} : vos questions`)}
-${bandeauCta(`Votre couvreur à ${v.nom}`, `Réparation, réfection, démoussage ou urgence : appelez-nous ou faites votre demande en ligne.`)}` +
+${faqHtml([...v.faq, FAQ_ACCUEIL[0], FAQ_ACCUEIL[1]], `Couvreur à ${v.nom}, vos questions`)}
+${bandeauCta(`Votre couvreur à ${v.nom}`, `Réparation, réfection, démoussage ou urgence. Appelez-nous ou faites votre demande en ligne.`)}` +
     pied() +
     FIN_PAGE(false);
   ecrire(`couvreur/${v.slug}.html`, html, { path: v.path, priorite: v.nom === "Frontignan" ? "0.9" : "0.8" });
@@ -961,7 +978,7 @@ ${bandeauCta(`Votre couvreur à ${v.nom}`, `Réparation, réfection, démoussage
   const p = {
     id: "zone",
     path: "/zone-intervention",
-    title: "Couvreur Frontignan, Sète, Balaruc : zone d'intervention | ARVÉO",
+    title: "Couvreur à Frontignan, Sète et Balaruc, zone d'intervention | ARVÉO",
     description: "Couvreur à Frontignan, ARVÉO intervient à Sète, Balaruc, Vic-la-Gardiole, Mireval, Gigean, Poussan, Villeneuve-lès-Maguelone et Montbazin.",
     jsonld: [ldEntreprise(), ar.ld],
   };
@@ -974,7 +991,7 @@ ${bandeauCta(`Votre couvreur à ${v.nom}`, `Réparation, réfection, démoussage
         <ul class="villes-cartes">
           ${VILLES_PAGES.map((v) => `<li><a href="${v.path}"><span class="mono">${v.cp}</span><h2>Couvreur ${esc(v.nom)}</h2><p>${fr(v.accent)}</p><span class="lien-fleche">Voir la page ${ico("fleche")}</span></a></li>`).join("\n          ")}
         </ul>
-        <p class="texte">Votre commune n'est pas dans la liste ? Appelez-nous : on vous dit tout de suite si on peut intervenir.</p>
+        <p class="texte">Votre commune n'est pas dans la liste ? Appelez-nous, on vous dit tout de suite si on peut intervenir.</p>
       </div>
     </section>
 ${bandeauCta()}` +
@@ -989,13 +1006,13 @@ ${bandeauCta()}` +
   const p = {
     id: "depannage",
     path: "/depannage-toiture",
-    title: "Dépannage toiture urgent à Frontignan : demande en ligne | ARVÉO",
-    description: `Fuite de toiture, tuiles arrachées, dégâts après orage à Frontignan, Sète et alentours : faites votre demande de dépannage en ligne ou appelez le ${S.telephone}.`,
+    title: "Dépannage de toiture urgent à Frontignan, demande en ligne | ARVÉO",
+    description: `Fuite de toiture, tuiles arrachées, dégâts après orage à Frontignan, Sète et alentours. Faites votre demande de dépannage en ligne ou appelez le ${S.telephone}.`,
     jsonld: [ldEntreprise(), ldService("Dépannage de toiture", "/depannage-toiture"), ar.ld, ldFaq(FAQ_DEPANNAGE)],
   };
   const html =
     head(p) +
-    enTetePage({ surTitre: "Dépannage de toiture", h1: "Demande de dépannage toiture en ligne", chapo: "Fuite, tuile cassée, gouttière arrachée : remplissez la demande, on la reçoit immédiatement et on vous rappelle au plus vite. Pour une urgence immédiate, appelez.", ariane: ar.html, ancre: "#formulaire" }) +
+    enTetePage({ surTitre: "Dépannage de toiture", h1: "Demande de dépannage toiture en ligne", chapo: "Fuite, tuile cassée ou gouttière arrachée ? Remplissez la demande, nous la recevons immédiatement et vous rappelons au plus vite.", ariane: ar.html, ancre: "#formulaire" }) +
     `
     <section class="section section--claire" id="formulaire" aria-label="Formulaire de dépannage">
       <div class="conteneur formulaire-page">
@@ -1019,7 +1036,7 @@ ${bandeauCta()}` +
         </aside>
       </div>
     </section>
-${faqHtml(FAQ_DEPANNAGE, "Dépannage : vos questions")}
+${faqHtml(FAQ_DEPANNAGE, "Vos questions sur le dépannage")}
 ${bandeauCta()}` +
     pied() +
     FIN_PAGE(false);
@@ -1033,12 +1050,12 @@ ${bandeauCta()}` +
     id: "devis",
     path: "/devis-toiture",
     title: "Devis toiture gratuit à Frontignan | Couvreur ARVÉO",
-    description: "Demandez votre devis gratuit de couvreur à Frontignan et alentours : réfection, réparation, démoussage, zinguerie, charpente. Réponse rapide.",
+    description: "Demandez votre devis gratuit de couvreur à Frontignan et alentours pour une réfection, une réparation, un démoussage, de la zinguerie ou la charpente.",
     jsonld: [ldEntreprise(), ar.ld],
   };
   const html =
     head(p) +
-    enTetePage({ surTitre: "Devis gratuit", h1: "Votre devis de toiture gratuit", chapo: "Décrivez votre projet en deux minutes : on vous rappelle pour organiser la visite et vous remettre un devis écrit et détaillé.", ariane: ar.html }) +
+    enTetePage({ surTitre: "Devis gratuit", h1: "Votre devis de toiture gratuit", chapo: "Décrivez votre projet en deux minutes. Nous vous rappelons pour organiser la visite et vous remettre un devis écrit et détaillé.", ariane: ar.html }) +
     `
     <section class="section section--claire" id="formulaire" aria-label="Formulaire de devis">
       <div class="conteneur formulaire-page">
@@ -1074,12 +1091,12 @@ ${bandeauCta()}` +
     id: "rdv",
     path: "/rendez-vous",
     title: "Prendre rendez-vous avec un couvreur à Frontignan | ARVÉO",
-    description: "Prenez rendez-vous pour un diagnostic de toiture gratuit à Frontignan et alentours : choisissez une date et un créneau, on vous rappelle pour confirmer.",
+    description: "Prenez rendez-vous pour un diagnostic de toiture gratuit à Frontignan et alentours. Choisissez une date et un créneau, nous confirmons par téléphone.",
     jsonld: [ldEntreprise(), ar.ld],
   };
   const html =
     head(p) +
-    enTetePage({ surTitre: "Rendez-vous", h1: "Prendre rendez-vous pour un diagnostic", chapo: "Choisissez une date et un créneau : on vous rappelle pour confirmer l'heure. Le diagnostic et le devis sont gratuits.", ariane: ar.html }) +
+    enTetePage({ surTitre: "Rendez-vous", h1: "Prendre rendez-vous pour un diagnostic", chapo: "Choisissez une date et un créneau, nous vous rappelons pour confirmer l'heure. Le diagnostic et le devis sont gratuits.", ariane: ar.html }) +
     `
     <section class="section section--claire" id="formulaire" aria-label="Formulaire de rendez-vous">
       <div class="conteneur formulaire-page">
@@ -1115,13 +1132,13 @@ ${bandeauCta()}` +
   const p = {
     id: "contact",
     path: "/contact",
-    title: "Contact : ARVÉO couvreur à Frontignan",
-    description: `Contactez ARVÉO, couvreur zingueur à Frontignan : téléphone ${S.telephone}, e-mail, demande de devis, dépannage ou rendez-vous.`,
+    title: "Contacter ARVÉO, couvreur à Frontignan",
+    description: `Contactez ARVÉO, couvreur zingueur à Frontignan, par téléphone au ${S.telephone}, par e-mail ou en ligne pour un devis, un dépannage ou un rendez-vous.`,
     jsonld: [ldEntreprise(), ar.ld],
   };
   const html =
     head(p) +
-    enTetePage({ surTitre: "Contact", h1: "Contactez votre couvreur à Frontignan", chapo: "Une question, un projet, une urgence : choisissez le plus simple pour vous.", ariane: ar.html }) +
+    enTetePage({ surTitre: "Contact", h1: "Contactez votre couvreur à Frontignan", chapo: "Une question, un projet ou une urgence ? Choisissez le moyen le plus simple pour vous, nous répondons dans la journée.", ariane: ar.html }) +
     `
     <section class="section section--claire">
       <div class="conteneur">
@@ -1155,18 +1172,18 @@ ${bandeauCta()}` +
     id: "apropos",
     path: "/a-propos",
     title: "À propos d'ARVÉO, couvreur zingueur à Frontignan",
-    description: "ARVÉO, couvreur zingueur installé à Frontignan : nos engagements, notre façon de travailler et notre zone d'intervention autour de l'étang de Thau.",
+    description: "ARVÉO, couvreur zingueur installé à Frontignan. Nos engagements, notre façon de travailler et notre zone d'intervention autour de l'étang de Thau.",
     jsonld: [ldEntreprise(), ar.ld],
   };
   const html =
     head(p) +
-    enTetePage({ surTitre: "À propos", h1: "Un couvreur d'ici, pour les toitures d'ici", chapo: "ARVÉO est une entreprise de couverture et de zinguerie installée à Frontignan. Notre métier : garder votre maison au sec, durablement.", ariane: ar.html }) +
+    enTetePage({ surTitre: "À propos", h1: "Un couvreur d'ici, pour les toitures d'ici", chapo: "ARVÉO est une entreprise de couverture et de zinguerie installée à Frontignan. Notre métier, garder votre maison au sec durablement.", ariane: ar.html }) +
     `
     <section class="section section--claire">
       <div class="conteneur article">
         <div class="article__corps">
           <h2>Notre façon de travailler</h2>
-          <p>Une toiture se répare dans les règles de l'art : on trouve la cause avant de traiter le symptôme, on explique ce qu'on fait et on annonce le prix avant de commencer.</p>
+          <p>Une toiture se répare dans les règles de l'art. On trouve la cause avant de traiter le symptôme, on explique ce qu'on fait et on annonce le prix avant de commencer.</p>
           <p>Entre la tramontane, le vent marin et les orages d'automne, les toitures du littoral héraultais travaillent dur. On choisit les matériaux, les fixations et la ventilation de la couverture en fonction de l'exposition de chaque maison.</p>
           <h2>Nos engagements</h2>
           <ul class="engagements">
@@ -1197,7 +1214,7 @@ if (avecAvis) {
   const p = {
     id: "avis",
     path: "/avis",
-    title: "Avis clients : ARVÉO couvreur à Frontignan",
+    title: "Avis clients d'ARVÉO, couvreur à Frontignan",
     description: "Les avis Google des clients d'ARVÉO, couvreur zingueur à Frontignan et alentours.",
     jsonld: [ldEntreprise(), ar.ld],
   };
@@ -1227,7 +1244,7 @@ ${bandeauCta()}` +
   const a = S.adresse;
   const legal = (id, pathP, titre, contenu) => {
     const ar = filAriane([{ nom: titre, path: pathP }]);
-    const p = { id, path: pathP, title: `${titre} | ${S.nom}`, description: `${titre} du site ${S.nom}, couvreur zingueur à Frontignan (Hérault) : éditeur, hébergement, données personnelles et vos droits.`, jsonld: [ar.ld] };
+    const p = { id, path: pathP, title: `${titre} | ${S.nom}`, description: `${titre} du site ${S.nom}, couvreur zingueur à Frontignan (Hérault). Éditeur, hébergement, données personnelles et vos droits.`, jsonld: [ar.ld] };
     return (
       head(p) +
       `
@@ -1268,7 +1285,7 @@ ${bandeauCta()}` +
       "/confidentialite",
       "Politique de confidentialité",
       `<h2>Données collectées</h2>
-        <p>Les formulaires du site (dépannage, devis, rendez-vous, rappel, contact) recueillent les informations que vous saisissez : nom, coordonnées, adresse de l'intervention, description et photos de la toiture.</p>
+        <p>Les formulaires du site (dépannage, devis, rendez-vous, rappel, contact) recueillent les informations que vous saisissez, à savoir votre nom, vos coordonnées, adresse de l'intervention, description et photos de la toiture.</p>
         <h2>Utilisation</h2>
         <p>Ces données servent uniquement à traiter votre demande et à vous recontacter. Elles sont transmises par e-mail à ${esc(S.nom)} et ne sont ni revendues ni utilisées à des fins publicitaires.</p>
         <h2>Durée de conservation</h2>
@@ -1292,7 +1309,6 @@ ${bandeauCta()}` +
     <section class="tete-page">
       <div class="conteneur tete-page__grille tete-page__grille--seule">
         <div class="tete-page__texte">
-          <p class="sur-titre sur-titre--clair">Erreur 404</p>
           <h1>Cette page s'est envolée.</h1>
           <p class="chapeau">Elle n'existe pas ou a été déplacée. Votre toiture, elle, peut compter sur nous.</p>
           ${actions({ clair: true })}

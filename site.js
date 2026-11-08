@@ -182,12 +182,12 @@
     var v = (el.value || "").trim();
     if (el.required && !v) return el.getAttribute("data-message") || "Ce champ est nécessaire.";
     if (!v) return "";
-    if (el.type === "tel" && !REGEX_TEL.test(v.replace(/[\s.\-()]/g, ""))) return "Ce numéro semble incomplet : 10 chiffres, par exemple 06 12 34 56 78.";
+    if (el.type === "tel" && !REGEX_TEL.test(v.replace(/[\s.\-()]/g, ""))) return "Ce numéro semble incomplet. Il faut 10 chiffres, par exemple 06 12 34 56 78.";
     if (el.type === "email" && !REGEX_MAIL.test(v)) return "Cette adresse e-mail semble incomplète.";
     if (el.name === "code_postal" && !/^\d{5}$/.test(v)) return "Le code postal doit compter 5 chiffres.";
     if (el.hasAttribute("data-date-rdv")) {
       if (v < aujourdhuiIso) return "Choisissez une date à venir.";
-      if (new Date(v + "T12:00:00").getDay() === 0) return "Nous ne travaillons pas le dimanche : choisissez un autre jour.";
+      if (new Date(v + "T12:00:00").getDay() === 0) return "Nous ne travaillons pas le dimanche, choisissez un autre jour.";
     }
     return "";
   }
@@ -301,7 +301,7 @@
       var liste = form.querySelector(".fichier__liste");
       photos.addEventListener("change", function () {
         var noms = Array.prototype.map.call(photos.files, function (f) { return f.name; });
-        if (noms.length > 4) noms = noms.slice(0, 4).concat(["(4 photos maximum : les suivantes ne seront pas envoyées)"]);
+        if (noms.length > 4) noms = noms.slice(0, 4).concat(["(4 photos maximum, les suivantes ne seront pas envoyées)"]);
         liste.textContent = noms.length ? noms.join(", ") : "";
       });
     }

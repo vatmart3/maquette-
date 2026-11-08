@@ -17,6 +17,12 @@ const reduit = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const C_TOIT = new THREE.Color("#A8CAE4");
 const C_MUR = new THREE.Color("#5B7C96");
 const C_ORANGE = new THREE.Color("#F0915A");
+const C_SOL = new THREE.Color("#3E5A72");
+const FOND = new THREE.Color("#243746");
+// faces pleines (donnent le volume et masquent les arêtes cachées)
+const F_TOIT = new THREE.Color("#3D5F7C");
+const F_MUR = new THREE.Color("#2C4558");
+const LUMIERE = new THREE.Vector3(-0.45, 0.85, 0.55).normalize();
 
 /* ------------------------------------------------------------------ */
 /* 1. La toiture : une liste de segments                               */
@@ -280,6 +286,48 @@ function construire() {
 
 construire();
 
+/* --- Faces pleines --- */
+const faces = [];
+function F(tris, zones, ton) { faces.push({ tris, zones, ton }); }
+const quad = (a, b, c, d) => [[a, b, c], [a, c, d]];
+
+function construireFaces() {
+  // versant nord de A (hors écorché, pour laisser voir la charpente)
+  F(quad([ECORCHE, H, -4], [6, H, -4], [6, YA, 0], [ECORCHE, YA, 0]), [0, 4], "toit");
+  // versant sud de A, découpé par l'aile B
+  const o = [-6, YA, 0], a = [-6, H, 4], b = [1, H, 4], c = [3.5, YB, 1.5], d = [6, H, 4], e = [6, YA, 0];
+  F([[o, a, b], [o, b, c], [o, c, e], [e, c, d]], [0], "toit");
+  // aile B
+  F(quad([1, H, 4], [1, H, 10], [3.5, YB, 10], [3.5, YB, 1.5]), [0], "toit");
+  F(quad([6, H, 4], [6, H, 10], [3.5, YB, 10], [3.5, YB, 1.5]), [0], "toit");
+  // murs et pignons
+  F(quad([-6, 0, 4], [1, 0, 4], [1, H, 4], [-6, H, 4]), [], "mur");
+  F(quad([-6, 0, -4], [6, 0, -4], [6, H, -4], [-6, H, -4]), [], "mur");
+  F(quad([-6, 0, -4], [-6, 0, 4], [-6, H, 4], [-6, H, -4]), [], "mur");
+  F([[[-6, H, -4], [-6, YA, 0], [-6, H, 4]]], [], "mur");
+  F(quad([6, 0, -4], [6, 0, 4], [6, H, 4], [6, H, -4]), [], "mur");
+  F([[[6, H, -4], [6, YA, 0], [6, H, 4]]], [], "mur");
+  F(quad([1, 0, 4], [1, 0, 10], [1, H, 10], [1, H, 4]), [], "mur");
+  F(quad([6, 0, 4], [6, 0, 10], [6, H, 10], [6, H, 4]), [], "mur");
+  F(quad([1, 0, 10], [6, 0, 10], [6, H, 10], [1, H, 10]), [], "mur");
+  F([[[1, H, 10], [3.5, YB, 10], [6, H, 10]]], [], "mur");
+  // cheminée
+  const ch = CHEM;
+  const bas = [[ch.x0, yA(ch.z0), ch.z0], [ch.x1, yA(ch.z0), ch.z0], [ch.x1, yA(ch.z1), ch.z1], [ch.x0, yA(ch.z1), ch.z1]];
+  for (let i = 0; i < 4; i++) {
+    const p0 = bas[i], p1 = bas[(i + 1) % 4];
+    F(quad(p0, p1, [p1[0], ch.haut, p1[2]], [p0[0], ch.haut, p0[2]]), [3], "mur");
+  }
+  F(quad(...bas.map((p) => [p[0], ch.haut, p[2]])), [3], "toit");
+}
+construireFaces();
+
+/* --- Quadrillage au sol, comme sur une épure --- */
+avec([], 0, "sol", () => {
+  for (let x = -14; x <= 18; x += 2) L([x, 0, -10], [x, 0, 15]);
+  for (let z = -10; z <= 15; z += 2) L([-14, 0, z], [18, 0, z]);
+});
+
 const ANCRES = [
   new THREE.Vector3(-4.6, yA(2.6), 2.6), // couverture
   new THREE.Vector3(-3.75, 6.2, -1.9),   // charpente
@@ -363,9 +411,48 @@ function demarrer() {
   const geo = new LineSegmentsGeometry();
   geo.setPositions(positions);
   geo.setColors(new Float32Array(n * 6));
-  const mat = new LineMaterial({ vertexColors: true, linewidth: mobile ? 1.15 : 1.4, transparent: true, worldUnits: false });
-  groupe.add(new LineSegments2(geo, mat));
+  const mat = new LineMaterial({ vertexColors: true, linewidth: mobile ? 1.25 : 1.5, transparent: true, worldUnits: false });
+  mat.fog = true;
+  const lignes = new LineSegments2(geo, mat);
+  lignes.renderOrder = 1;
+  groupe.add(lignes);
   const couleurs = geo.attributes.instanceColorStart.data;
+  scene.fog = new THREE.Fog(FOND, 30, 90);
+
+  /* --- Faces pleines, ombrées selon la lumière --- */
+  const fPos = [], fBase = [], fZones = [];
+  const nrm = new THREE.Vector3(), u = new THREE.Vector3(), w2 = new THREE.Vector3();
+  for (const f of faces) {
+    for (const [a, b, c] of f.tris) {
+      u.set(b[0] - a[0], b[1] - a[1], b[2] - a[2]);
+      w2.set(c[0] - a[0], c[1] - a[1], c[2] - a[2]);
+      nrm.crossVectors(u, w2).normalize();
+      const k = 0.62 + 0.5 * Math.abs(nrm.dot(LUMIERE));
+      const base = (f.ton === "mur" ? F_MUR : F_TOIT).clone().multiplyScalar(k);
+      for (const p of [a, b, c]) {
+        fPos.push(...p);
+        fBase.push(base);
+        fZones.push(f.zones);
+      }
+    }
+  }
+  const facesGeo = new THREE.BufferGeometry();
+  facesGeo.setAttribute("position", new THREE.Float32BufferAttribute(fPos, 3));
+  const fCol = new Float32Array(fPos.length);
+  facesGeo.setAttribute("color", new THREE.BufferAttribute(fCol, 3));
+  const facesMat = new THREE.MeshBasicMaterial({
+    vertexColors: true,
+    side: THREE.DoubleSide,
+    transparent: true,
+    opacity: 1,
+    polygonOffset: true,
+    polygonOffsetFactor: 1.5,
+    polygonOffsetUnits: 2,
+    fog: true,
+  });
+  const volumes = new THREE.Mesh(facesGeo, facesMat);
+  volumes.renderOrder = 0;
+  groupe.add(volumes);
 
   /* --- Le cordeau de l'intro --- */
   const NB = 48;
@@ -494,12 +581,21 @@ function demarrer() {
       const s = segs[i];
       let f = etat.orange;
       for (const z of s.zones) f = Math.max(f, etat.zones[z]);
-      tmp.copy(s.ton === "mur" ? C_MUR : C_TOIT).lerp(C_ORANGE, f);
+      tmp.copy(s.ton === "mur" ? C_MUR : s.ton === "sol" ? C_SOL : C_TOIT).lerp(C_ORANGE, s.ton === "sol" ? 0 : f);
       arr[i * 6] = arr[i * 6 + 3] = tmp.r;
       arr[i * 6 + 1] = arr[i * 6 + 4] = tmp.g;
       arr[i * 6 + 2] = arr[i * 6 + 5] = tmp.b;
     }
     couleurs.needsUpdate = true;
+    for (let i = 0; i < fBase.length; i++) {
+      let f = 0;
+      for (const z of fZones[i]) f = Math.max(f, etat.zones[z]);
+      tmp.copy(fBase[i]).lerp(C_ORANGE, f * 0.38);
+      fCol[i * 3] = tmp.r;
+      fCol[i * 3 + 1] = tmp.g;
+      fCol[i * 3 + 2] = tmp.b;
+    }
+    facesGeo.attributes.color.needsUpdate = true;
   }
 
   /* --- Intro : le cordeau se tend, claque, la toiture se trace --- */
@@ -507,6 +603,7 @@ function demarrer() {
     intro = { debut: performance.now(), duree: 2.6 };
     etat.trace = 0;
     etat.orange = 1;
+    facesMat.opacity = 0;
     etat.pos.copy(PLANS.intro.pos);
     etat.cible.copy(PLANS.intro.cible);
     etat.ox = PLANS.intro.ox;
@@ -523,6 +620,7 @@ function demarrer() {
     intro = null;
     etat.trace = 1;
     etat.orange = 0;
+    facesMat.opacity = 1;
     cordeau.visible = false;
     poudre.visible = false;
     document.documentElement.classList.remove("intro");
@@ -567,6 +665,7 @@ function demarrer() {
     etat.trace = c01((t - 0.75) / 1.35);
     if (t > 0.8) cordeau.visible = false;
     etat.orange = 1 - lisse(c01((t - 2.05) / 0.55));
+    facesMat.opacity = lisse(c01((t - 1.7) / 0.7));
     const c = calculerCible();
     const m = lisse(c01((t - 1.25) / 1.35));
     etat.pos.lerpVectors(PLANS.intro.pos, c.pos, m);
@@ -628,6 +727,9 @@ function demarrer() {
 
     camera.position.copy(etat.pos);
     camera.lookAt(etat.cible);
+    const dist = etat.pos.distanceTo(etat.cible);
+    scene.fog.near = dist * 0.8;
+    scene.fog.far = dist * 2.1;
     const w = etat.largeur, h = etat.hauteur;
     camera.setViewOffset(w, h, -etat.ox * w, -etat.oy * h, w, h);
     racine.style.opacity = etat.opacite.toFixed(3);

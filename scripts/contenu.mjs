@@ -17,20 +17,20 @@ export const SERVICES = [
     zone: 0,
     title: "Réfection de toiture à Frontignan | Couvreur ARVÉO",
     description:
-      "Réfection de toiture en tuiles canal, romanes ou mécaniques à Frontignan, Sète et alentours : écran sous-toiture, liteaux, faîtage. Devis gratuit.",
+      "Réfection de toiture en tuiles canal, romanes ou mécaniques à Frontignan, Sète et alentours. Écran sous-toiture, liteaux et faîtage neufs, devis gratuit.",
     h1: "Réfection de toiture à Frontignan et alentours",
     chapo:
-      "Tuiles poreuses, fuites à répétition, liteaux fatigués : quand les réparations ne suffisent plus, on refait la couverture, en totalité ou par pan.",
+      "Quand les tuiles deviennent poreuses, que les fuites reviennent et que les liteaux fatiguent, les réparations ne suffisent plus. On refait la couverture, en totalité ou par pan.",
     sections: [
       {
         h2: "Quand faut-il refaire sa toiture ?",
         p: [
-          "Une toiture en tuiles bien entretenue dure longtemps, mais elle finit par s'user : les tuiles deviennent poreuses et gélives, les liteaux pourrissent, le mortier du faîtage se fissure. Sous le soleil et les embruns du littoral, ce vieillissement est plus rapide côté mer.",
+          "Une toiture en tuiles bien entretenue dure longtemps, mais elle finit par s'user. Les tuiles deviennent poreuses et gélives, les liteaux pourrissent, le mortier du faîtage se fissure. Sous le soleil et les embruns du littoral, ce vieillissement est plus rapide côté mer.",
         ],
         liste: [
           "Des fuites qui reviennent malgré les réparations",
           "Des tuiles qui glissent, se cassent ou se décolorent par plaques",
-          "Un toit qui ondule : liteaux ou chevrons affaissés",
+          "Un toit qui ondule, signe de liteaux ou de chevrons affaissés",
           "Des traces d'humidité dans les combles après chaque orage",
         ],
       },
@@ -67,7 +67,7 @@ export const SERVICES = [
       },
       {
         q: "Faut-il une autorisation pour refaire sa toiture ?",
-        r: "À l'identique, une déclaration préalable n'est en général pas nécessaire. Si vous changez de matériau, de couleur ou de pente, ou en secteur protégé, renseignez-vous en mairie : on vous aide à préparer le dossier.",
+        r: "À l'identique, une déclaration préalable n'est en général pas nécessaire. Si vous changez de matériau, de couleur ou de pente, ou en secteur protégé, renseignez-vous en mairie. On vous aide à préparer le dossier.",
       },
     ],
   },
@@ -76,12 +76,12 @@ export const SERVICES = [
     nom: "Recherche de fuite et réparation",
     court: "Fuite de toiture",
     zone: 3,
-    title: "Fuite de toiture à Frontignan : recherche et réparation | ARVÉO",
+    title: "Recherche de fuite et réparation de toiture à Frontignan | ARVÉO",
     description:
-      "Tache au plafond, goutte qui tombe ? Recherche de fuite de toiture et réparation à Frontignan, Sète, Balaruc : tuiles, solins, cheminée, fenêtre de toit, noue.",
+      "Tache au plafond, goutte qui tombe ? Recherche de fuite et réparation de toiture à Frontignan, Sète et Balaruc, sur tuiles, solins, cheminées et fenêtres de toit.",
     h1: "Recherche de fuite et réparation de toiture",
     chapo:
-      "Une tache au plafond n'est pas toujours sous la tuile cassée : l'eau chemine. On trouve l'origine de la fuite avant de réparer, pour ne pas payer deux fois.",
+      "Une tache au plafond n'est pas toujours sous la tuile cassée, car l'eau chemine. On trouve l'origine de la fuite avant de réparer, pour ne pas payer deux fois.",
     sections: [
       {
         h2: "Les causes de fuite les plus fréquentes",
@@ -130,7 +130,7 @@ export const SERVICES = [
     zone: 4,
     title: "Démoussage de toiture à Frontignan et Sète | ARVÉO",
     description:
-      "Démoussage et traitement hydrofuge de toiture autour de Frontignan : mousses, lichens, tuiles poreuses, sans haute pression agressive. Devis gratuit.",
+      "Démoussage et traitement hydrofuge de toiture autour de Frontignan. Mousses, lichens et tuiles poreuses traités sans haute pression agressive. Devis gratuit.",
     h1: "Démoussage et traitement hydrofuge de toiture",
     chapo:
       "La mousse retient l'eau, soulève les tuiles et bouche les gouttières. Un démoussage régulier prolonge nettement la durée de vie de votre couverture.",
@@ -138,7 +138,7 @@ export const SERVICES = [
       {
         h2: "Pourquoi démousser ?",
         p: [
-          "Les versants nord, les toits ombragés par les pins et ceux qui regardent l'étang restent humides plus longtemps : mousses et lichens s'y installent. Leurs racines s'infiltrent sous les tuiles, gardent l'humidité et favorisent la casse au moindre gel.",
+          "Les versants nord, les toits ombragés par les pins et ceux qui regardent l'étang restent humides plus longtemps, et les mousses et lichens s'y installent. Leurs racines s'infiltrent sous les tuiles, gardent l'humidité et favorisent la casse au moindre gel.",
         ],
       },
       {
@@ -179,7 +179,7 @@ export const SERVICES = [
       "Pose et réparation de gouttières en zinc, descentes, noues, solins et abergements à Frontignan, Sète et alentours. Nettoyage de gouttières. Devis gratuit.",
     h1: "Zinguerie et gouttières",
     chapo:
-      "Gouttières, descentes, noues, solins : la zinguerie conduit l'eau loin de vos murs. Quand elle fatigue, ce sont les façades et les fondations qui prennent.",
+      "Gouttières, descentes, noues et solins conduisent l'eau loin de vos murs. Quand elle fatigue, ce sont les façades et les fondations qui prennent.",
     sections: [
       {
         h2: "Nos travaux de zinguerie",
@@ -215,27 +215,27 @@ export const SERVICES = [
       },
       {
         q: "Réparer ou remplacer une gouttière ?",
-        r: "Un joint ou un crochet se répare. Une gouttière percée sur plusieurs mètres ou mal pentée se remplace : on vous montre l'état réel en photos.",
+        r: "Un joint ou un crochet se répare. Une gouttière percée sur plusieurs mètres ou mal pentée se remplace. On vous montre l'état réel en photos.",
       },
     ],
   },
   {
     slug: "charpente",
-    nom: "Charpente : réparation et renforcement",
+    nom: "Réparation et renforcement de charpente",
     court: "Charpente",
     zone: 1,
     title: "Réparation de charpente à Frontignan | Couvreur ARVÉO",
     description:
-      "Diagnostic et réparation de charpente bois à Frontignan et alentours : chevrons, pannes, liteaux, traitement contre les insectes et champignons. Devis gratuit.",
+      "Diagnostic et réparation de charpente bois à Frontignan et alentours. Chevrons, pannes, liteaux et traitement contre insectes et champignons. Devis gratuit.",
     h1: "Réparation et renforcement de charpente",
     chapo:
-      "La charpente porte toute la couverture. Chevron fendu, panne affaissée, bois attaqué : on la contrôle et on la répare avant de reposer les tuiles.",
+      "La charpente porte toute la couverture. Chevron fendu, panne affaissée ou bois attaqué, on la contrôle et on la répare avant de reposer les tuiles.",
     sections: [
       {
         h2: "Ce qu'on vérifie",
         liste: [
           "Les chevrons, les pannes et la panne faîtière",
-          "Les fermes : arbalétriers, entrait, poinçon",
+          "Les fermes, avec leurs arbalétriers, entrait et poinçon",
           "Les liteaux et voliges sous la couverture",
           "La présence d'insectes (capricornes, vrillettes) ou de champignons",
           "Les traces d'eau et d'humidité",
@@ -253,14 +253,14 @@ export const SERVICES = [
       {
         h2: "Charpente et couverture, un seul interlocuteur",
         p: [
-          "Une charpente abîmée se découvre souvent en refaisant le toit. Comme on gère les deux, vous n'attendez pas un second artisan : le chantier continue et la maison reste hors d'eau.",
+          "Une charpente abîmée se découvre souvent en refaisant le toit. Comme on gère les deux, vous n'attendez pas un second artisan. Le chantier continue et la maison reste hors d'eau.",
         ],
       },
     ],
     faq: [
       {
         q: "Comment savoir si ma charpente est attaquée ?",
-        r: "Sciure au sol des combles, petits trous dans le bois, bois qui s'effrite sous la pointe d'un tournevis : ce sont des signes à faire vérifier.",
+        r: "Sciure au sol des combles, petits trous dans le bois, bois qui s'effrite sous la pointe d'un tournevis sont des signes à faire vérifier.",
       },
     ],
   },
@@ -279,14 +279,14 @@ export const VILLES = [
     intro:
       "ARVÉO est installé à Frontignan. Du centre ancien à La Peyrade, en passant par Frontignan-Plage, on intervient sur toutes les toitures de la commune, souvent dans la journée pour une urgence.",
     texte: [
-      "Le centre historique compte beaucoup de maisons de ville mitoyennes couvertes en tuiles canal, avec génoises et faîtages scellés : des toitures qu'on répare dans les règles, en réemployant les tuiles anciennes quand c'est possible.",
-      "À Frontignan-Plage, les villas sont exposées au vent marin et aux embruns : fixations, zinguerie et solins y vieillissent plus vite. À La Peyrade, entre l'étang et Sète, on rencontre aussi des bâtiments plus récents en tuiles mécaniques et des toitures de garages ou d'annexes.",
+      "Le centre historique compte beaucoup de maisons de ville mitoyennes couvertes en tuiles canal, avec génoises et faîtages scellés. Ces toitures se réparent dans les règles, en réemployant les tuiles anciennes quand c'est possible.",
+      "À Frontignan-Plage, les villas sont exposées au vent marin et aux embruns, si bien que fixations, zinguerie et solins y vieillissent plus vite. À La Peyrade, entre l'étang et Sète, on rencontre aussi des bâtiments plus récents en tuiles mécaniques et des toitures de garages ou d'annexes.",
     ],
-    accent: "Couvreur de proximité : intervention rapide sur toute la commune",
+    accent: "Couvreur de proximité, intervention rapide sur toute la commune",
     faq: [
       {
         q: "Intervenez-vous à Frontignan-Plage et à La Peyrade ?",
-        r: "Oui, partout sur la commune de Frontignan : centre-ville, La Peyrade, Frontignan-Plage et les quartiers résidentiels.",
+        r: "Oui, partout sur la commune de Frontignan, du centre-ville à La Peyrade, Frontignan-Plage et les quartiers résidentiels.",
       },
     ],
   },
@@ -296,12 +296,12 @@ export const VILLES = [
     lat: 43.4028,
     lng: 3.6928,
     intro:
-      "Couvreur à Sète pour la réparation de toiture, la recherche de fuite et la zinguerie : quartier haut, Mont Saint-Clair, bords des canaux ou corniche, on se déplace depuis Frontignan voisine.",
+      "Couvreur à Sète pour la réparation de toiture, la recherche de fuite et la zinguerie. Quartier haut, Mont Saint-Clair, bords des canaux ou corniche, on se déplace depuis Frontignan voisine.",
     texte: [
       "À Sète, le vent marin et le sel attaquent les fixations, les gouttières et les solins plus vite qu'ailleurs. Les maisons du quartier haut et les immeubles anciens du centre ont souvent des toitures en tuiles canal sur des charpentes d'origine, qu'il faut contrôler avant toute réfection.",
-      "Les rues étroites et les pentes du Mont Saint-Clair demandent d'organiser l'accès : échafaudage, monte-matériaux ou nacelle, et autorisation de voirie quand c'est nécessaire. On s'en occupe avec vous.",
+      "Les rues étroites et les pentes du Mont Saint-Clair demandent d'organiser l'accès avec échafaudage, monte-matériaux ou nacelle, et autorisation de voirie quand c'est nécessaire. On s'en occupe avec vous.",
     ],
-    accent: "Toitures exposées aux embruns : zinguerie et fixations renforcées",
+    accent: "Zinguerie et fixations renforcées face aux embruns",
     faq: [
       {
         q: "Vous occupez-vous des autorisations pour un échafaudage à Sète ?",
@@ -315,10 +315,10 @@ export const VILLES = [
     lat: 43.4419,
     lng: 3.6775,
     intro:
-      "Couvreur à Balaruc-les-Bains : réparation de toiture, démoussage et zinguerie pour les maisons, les résidences et les locations de la station thermale.",
+      "Couvreur à Balaruc-les-Bains pour la réparation de toiture, le démoussage et la zinguerie des maisons, résidences et locations de la station thermale.",
     texte: [
       "Beaucoup de logements de Balaruc-les-Bains accueillent des curistes ou des vacanciers. On organise les interventions entre deux locations pour ne pas bloquer votre calendrier, et on vous envoie des photos une fois le travail terminé.",
-      "Au bord de l'étang de Thau, l'humidité favorise les mousses sur les versants nord : un démoussage régulier et des gouttières dégagées évitent bien des infiltrations.",
+      "Au bord de l'étang de Thau, l'humidité favorise les mousses sur les versants nord. Un démoussage régulier et des gouttières dégagées évitent bien des infiltrations.",
     ],
     accent: "Interventions planifiées entre deux locations",
     faq: [
@@ -334,9 +334,9 @@ export const VILLES = [
     lat: 43.4628,
     lng: 3.6853,
     intro:
-      "Couvreur à Balaruc-le-Vieux, du village circulaire aux zones d'activité : réparation de toiture, réfection, zinguerie et dépannage.",
+      "Couvreur à Balaruc-le-Vieux, du village circulaire aux zones d'activité, pour la réparation, la réfection, la zinguerie et le dépannage.",
     texte: [
-      "Dans le vieux village, les maisons mitoyennes serrées autour de l'église ont des toitures imbriquées : chaque reprise de faîtage ou de noue doit se raccorder proprement à celle du voisin.",
+      "Dans le vieux village, les maisons mitoyennes serrées autour de l'église ont des toitures imbriquées, et chaque reprise de faîtage ou de noue doit se raccorder proprement à celle du voisin.",
       "Côté zones commerciales et artisanales, on intervient aussi sur les toitures de locaux professionnels, y compris en bac acier, pour des réparations rapides qui ne gênent pas votre activité.",
     ],
     accent: "Maisons de village et locaux professionnels",
@@ -353,9 +353,9 @@ export const VILLES = [
     lat: 43.4889,
     lng: 3.7967,
     intro:
-      "Couvreur à Vic-la-Gardiole, entre les étangs et le massif de la Gardiole : réparation de toiture, nettoyage de gouttières et démoussage.",
+      "Couvreur à Vic-la-Gardiole, entre les étangs et le massif de la Gardiole, pour la réparation de toiture, le nettoyage des gouttières et le démoussage.",
     texte: [
-      "Les maisons proches de la pinède de la Gardiole reçoivent leur lot d'aiguilles de pin : elles bouchent les gouttières et les noues, et l'eau finit par déborder sous la génoise. Un nettoyage avant les pluies d'automne évite la plupart des dégâts.",
+      "Les maisons proches de la pinède de la Gardiole reçoivent leur lot d'aiguilles de pin, qui bouchent les gouttières et les noues, et l'eau finit par déborder sous la génoise. Un nettoyage avant les pluies d'automne évite la plupart des dégâts.",
       "Côté étangs, l'humidité favorise mousses et lichens. On propose un démoussage manuel suivi d'un traitement, sans haute pression qui fragilise les tuiles.",
     ],
     accent: "Gouttières et noues dégagées avant les pluies d'automne",
@@ -372,9 +372,9 @@ export const VILLES = [
     lat: 43.5089,
     lng: 3.8008,
     intro:
-      "Couvreur à Mireval : toitures de maisons de village, de mas et d'anciennes remises viticoles au pays du muscat.",
+      "Couvreur à Mireval pour les toitures de maisons de village, de mas et d'anciennes remises viticoles au pays du muscat.",
     texte: [
-      "Les anciennes maisons vigneronnes de Mireval ont souvent de grandes toitures sur charpente traditionnelle. Avant de refaire la couverture, on contrôle chevrons et pannes : une charpente saine, c'est une toiture qui ne bouge pas.",
+      "Les anciennes maisons vigneronnes de Mireval ont souvent de grandes toitures sur charpente traditionnelle. Avant de refaire la couverture, on contrôle chevrons et pannes, car une charpente saine fait une toiture qui ne bouge pas.",
       "Pour les remises et dépendances, on propose aussi des réparations simples et économiques pour remettre le bâtiment hors d'eau.",
     ],
     accent: "Charpentes traditionnelles et grandes toitures",
@@ -391,7 +391,7 @@ export const VILLES = [
     lat: 43.4994,
     lng: 3.7106,
     intro:
-      "Couvreur à Gigean, au pied du massif de la Gardiole : réparation, réfection et entretien de toitures pour le village et ses quartiers résidentiels.",
+      "Couvreur à Gigean, au pied du massif de la Gardiole, pour la réparation, la réfection et l'entretien des toitures du village et ses quartiers résidentiels.",
     texte: [
       "Gigean mêle maisons anciennes du centre et lotissements plus récents en tuiles romanes ou mécaniques. Sur ces toitures récentes, les problèmes viennent surtout du faîtage et des rives, plus exposés à la tramontane.",
       "On contrôle les fixations, on reprend les faîtages posés à sec et on vérifie les closoirs pour garder une couverture bien ventilée.",
@@ -400,7 +400,7 @@ export const VILLES = [
     faq: [
       {
         q: "Des tuiles se sont envolées après un coup de vent, que faire ?",
-        r: "Appelez-nous ou faites une demande de dépannage en ligne : on met la toiture hors d'eau puis on remplace les tuiles et on renforce les fixations.",
+        r: "Appelez-nous ou faites une demande de dépannage en ligne. On met la toiture hors d'eau, puis on remplace les tuiles et on renforce les fixations.",
       },
     ],
   },
@@ -410,16 +410,16 @@ export const VILLES = [
     lat: 43.4889,
     lng: 3.6714,
     intro:
-      "Couvreur à Poussan : réparation de toiture, recherche de fuite et réfection pour les maisons du vieux village et des quartiers proches de l'étang de Thau.",
+      "Couvreur à Poussan pour la réparation, la recherche de fuite et la réfection des toitures des maisons du vieux village et des quartiers proches de l'étang de Thau.",
     texte: [
       "Le centre ancien de Poussan compte de nombreuses maisons en pierre aux toitures anciennes en tuiles canal. On privilégie le réemploi des tuiles d'origine pour garder le caractère du village.",
-      "Les épisodes méditerranéens d'automne mettent ces couvertures à l'épreuve : une révision avant l'automne permet de repérer les tuiles glissées et les solins fissurés.",
+      "Les épisodes méditerranéens d'automne mettent ces couvertures à l'épreuve. Une révision avant l'automne permet de repérer les tuiles glissées et les solins fissurés.",
     ],
     accent: "Réemploi des tuiles anciennes du vieux village",
     faq: [
       {
         q: "Conservez-vous les tuiles anciennes ?",
-        r: "Quand elles sont saines, oui : on les trie, on les nettoie et on les repose, en complétant si besoin avec des tuiles de récupération.",
+        r: "Quand elles sont saines, oui. On les trie, on les nettoie et on les repose, en complétant si besoin avec des tuiles de récupération.",
       },
     ],
   },
@@ -429,7 +429,7 @@ export const VILLES = [
     lat: 43.5325,
     lng: 3.8603,
     intro:
-      "Couvreur à Villeneuve-lès-Maguelone, entre Montpellier et la mer : réparation de toiture, zinguerie et démoussage.",
+      "Couvreur à Villeneuve-lès-Maguelone, entre Montpellier et la mer, pour la réparation de toiture, la zinguerie et le démoussage.",
     texte: [
       "Entre étangs et littoral, les toitures de Villeneuve-lès-Maguelone subissent l'humidité et le vent marin. Gouttières et solins sont les premiers points à surveiller.",
       "On intervient aussi bien sur les maisons du centre que sur les quartiers récents, pour un dépannage ponctuel comme pour un entretien régulier.",
@@ -448,16 +448,16 @@ export const VILLES = [
     lat: 43.5167,
     lng: 3.6967,
     intro:
-      "Couvreur à Montbazin, dans la vallée de la Vène : réparation, réfection et entretien de toitures pour le village et ses environs.",
+      "Couvreur à Montbazin, dans la vallée de la Vène, pour la réparation, la réfection et l'entretien des toitures du village et ses environs.",
     texte: [
       "Les maisons anciennes de Montbazin ont des toitures à faible pente en tuiles canal. Après les orages violents d'automne, on vérifie les tuiles déplacées, les faîtages et les noues.",
-      "Pour une réfection, on étudie avec vous l'isolation de la toiture au moment des travaux : c'est le bon moment pour poser un écran sous-toiture.",
+      "Pour une réfection, on étudie avec vous l'isolation de la toiture au moment des travaux, le bon moment pour poser un écran sous-toiture.",
     ],
     accent: "Révision des toitures après les orages d'automne",
     faq: [
       {
         q: "Faites-vous une visite de contrôle après un orage ?",
-        r: "Oui, prenez rendez-vous pour un diagnostic : on contrôle la couverture et on vous dit ce qui doit être réparé, sans engagement.",
+        r: "Oui, prenez rendez-vous pour un diagnostic. On contrôle la couverture et on vous dit ce qui doit être réparé, sans engagement.",
       },
     ],
   },
@@ -470,7 +470,7 @@ export const VILLES = [
 export const FAQ_ACCUEIL = [
   {
     q: "Intervenez-vous en urgence après une fuite ou un coup de vent ?",
-    r: "Oui. Appelez-nous ou remplissez la demande de dépannage en ligne : on vous rappelle au plus vite et on met la toiture hors d'eau avant la réparation définitive.",
+    r: "Oui. Appelez-nous ou remplissez la demande de dépannage en ligne. On vous rappelle au plus vite et on met la toiture hors d'eau avant la réparation définitive.",
     lien: { href: "/depannage-toiture", texte: "Faire une demande de dépannage" },
   },
   {
@@ -495,7 +495,7 @@ export const FAQ_ACCUEIL = [
   },
   {
     q: "Dans quelles communes intervenez-vous ?",
-    r: "À Frontignan et dans les communes voisines : Sète, Balaruc-les-Bains, Balaruc-le-Vieux, Vic-la-Gardiole, Mireval, Gigean, Poussan, Villeneuve-lès-Maguelone et Montbazin.",
+    r: "À Frontignan et dans les communes voisines, à Sète, Balaruc-les-Bains, Balaruc-le-Vieux, Vic-la-Gardiole, Mireval, Gigean, Poussan, Villeneuve-lès-Maguelone et Montbazin.",
     lien: { href: "/zone-intervention", texte: "Voir la zone d'intervention" },
   },
 ];
@@ -515,6 +515,6 @@ export const FAQ_DEPANNAGE = [
   },
   {
     q: "Je suis locataire, puis-je faire la demande ?",
-    r: "Oui, signalez-le dans le formulaire. Prévenez aussi votre propriétaire ou votre syndic : les travaux de toiture sont en général à leur charge.",
+    r: "Oui, signalez-le dans le formulaire. Prévenez aussi votre propriétaire ou votre syndic, car les travaux de toiture sont en général à leur charge.",
   },
 ];
