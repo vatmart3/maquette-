@@ -695,7 +695,6 @@ const ZONES_VISITE = [
   const fiches = ZONES_VISITE.map(
     (z, i) => `<article class="fiche" aria-labelledby="titre-zone-${i}">
               <span class="fiche__num mono">${String(i + 1).padStart(2, "0")} / ${String(ZONES_VISITE.length).padStart(2, "0")}</span>
-              <span class="fiche__oeillet" aria-hidden="true"></span>
               <h3 id="titre-zone-${i}">${esc(z.titre)}</h3>
               <p>${fr(z.texte)}</p>
               <div class="fiche__actions">
@@ -730,7 +729,6 @@ const ZONES_VISITE = [
           </div>
           <ol class="visite__reperes" aria-label="Étapes de la visite">${reperes}</ol>
         </div>
-        <svg class="visite__fil" hidden aria-hidden="true" focusable="false"><line x1="0" y1="0" x2="0" y2="0"/><circle r="5" cx="0" cy="0"/></svg>
       </div>
     </section>
 

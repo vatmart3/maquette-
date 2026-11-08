@@ -319,6 +319,26 @@ function construireFaces() {
     F(quad(p0, p1, [p1[0], ch.haut, p1[2]], [p0[0], ch.haut, p0[2]]), [3], "mur");
   }
   F(quad(...bas.map((p) => [p[0], ch.haut, p[2]])), [3], "toit");
+
+  // zinguerie : gouttières, descentes et noues en surfaces pleines (pour être colorées)
+  const g = (a, b, d) => {
+    const o = (p, k, dy) => [p[0] + d[0] * k, p[1] + dy, p[2] + d[2] * k];
+    F(quad(o(a, 0.02, -0.06), o(b, 0.02, -0.06), o(b, 0.18, -0.24), o(a, 0.18, -0.24)), [2], "toit");
+    F(quad(o(a, 0.18, -0.24), o(b, 0.18, -0.24), o(b, 0.34, -0.06), o(a, 0.34, -0.06)), [2], "toit");
+  };
+  g([-6.1, H, -4], [6.1, H, -4], [0, 0, -1]);
+  g([-6.1, H, 4], [1, H, 4], [0, 0, 1]);
+  g([1, H, 4], [1, H, 10.1], [-1, 0, 0]);
+  g([6, H, 4], [6, H, 10.1], [1, 0, 0]);
+  for (const [x, z, dx, dz] of [[-5.7, -4, 0, -1], [5.7, -4, 0, -1], [-5.7, 4, 0, 1], [1, 9.7, -1, 0], [6, 9.7, 1, 0]]) {
+    const px = x + dx * 0.18, pz = z + dz * 0.18, w = 0.08, h = H - 0.69;
+    const e = (k, y) => [px + (dz ? k : 0), y, pz + (dx ? k : 0)];
+    F(quad(e(-w, 0.35), e(w, 0.35), e(w, h), e(-w, h)), [2], "toit");
+  }
+  for (const sens of [-1, 1]) {
+    const xb = sens < 0 ? 1 : 6;
+    F(quad([xb, H + 0.03, 4 - 0.22], [3.5, YB + 0.03, 1.5 - 0.22], [3.5 - sens * 0.18, YB + 0.03, 1.55], [xb - sens * 0.22, H + 0.03, 4]), [2], "toit");
+  }
 }
 construireFaces();
 
@@ -590,7 +610,7 @@ function demarrer() {
     for (let i = 0; i < fBase.length; i++) {
       let f = 0;
       for (const z of fZones[i]) f = Math.max(f, etat.zones[z]);
-      tmp.copy(fBase[i]).lerp(C_ORANGE, f * 0.38);
+      tmp.copy(fBase[i]).lerp(C_ORANGE, f * 0.62);
       fCol[i * 3] = tmp.r;
       fCol[i * 3 + 1] = tmp.g;
       fCol[i * 3 + 2] = tmp.b;

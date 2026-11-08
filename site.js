@@ -91,10 +91,6 @@
   if (visite) {
     var fiches = visite.querySelectorAll(".fiche");
     var reperes = visite.querySelectorAll(".visite__reperes button");
-    var collant = visite.querySelector(".visite__collant");
-    var fil = visite.querySelector(".visite__fil");
-    var filLigne = fil && fil.querySelector("line");
-    var filPoint = fil && fil.querySelector("circle");
     var n = fiches.length;
     var zone = -1;
 
@@ -103,7 +99,6 @@
       zone = i;
       fiches.forEach(function (f, k) { f.classList.toggle("est-active", k === i); });
       reperes.forEach(function (r, k) { r.setAttribute("aria-current", k === i ? "true" : "false"); });
-      if (fil) fil.setAttribute("hidden", "");
       document.dispatchEvent(new CustomEvent("arv:zone", { detail: { zone: i } }));
     };
 
@@ -121,19 +116,6 @@
         var course = visite.offsetHeight - window.innerHeight;
         window.scrollTo({ top: visite.offsetTop + course * ((k + 0.5) / n), behavior: reduit ? "auto" : "smooth" });
       });
-    });
-
-    document.addEventListener("arv:ancre", function (e) {
-      if (!fil || zone < 0 || e.detail.zone !== zone) return;
-      var oeillet = fiches[zone].querySelector(".fiche__oeillet");
-      var boite = collant.getBoundingClientRect();
-      var o = oeillet.getBoundingClientRect();
-      var x1 = o.left + o.width / 2 - boite.left, y1 = o.top + o.height / 2 - boite.top;
-      var x2 = e.detail.x - boite.left, y2 = e.detail.y - boite.top;
-      filLigne.setAttribute("x1", x1); filLigne.setAttribute("y1", y1);
-      filLigne.setAttribute("x2", x2); filLigne.setAttribute("y2", y2);
-      filPoint.setAttribute("cx", x2); filPoint.setAttribute("cy", y2);
-      fil.removeAttribute("hidden");
     });
   }
 

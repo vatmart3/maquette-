@@ -485,8 +485,7 @@ main { position: relative; z-index: 1; }
   left: 0;
   top: 50%;
   width: 100%;
-  padding: 4px 0 0 22px;
-  border-left: 2px solid var(--orange-clair);
+  padding: 0;
   color: #fff;
   transform: translateY(-50%);
   opacity: 0;
@@ -495,16 +494,6 @@ main { position: relative; z-index: 1; }
 }
 .fiche.est-active { opacity: 1; visibility: visible; }
 .fiche__num { display: block; margin-bottom: 14px; color: var(--orange-clair); font-size: 0.85rem; letter-spacing: 0.04em; }
-.fiche__oeillet {
-  position: absolute;
-  left: -7px;
-  top: 0;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--orange-clair);
-  box-shadow: 0 0 0 4px rgb(238 142 85 / 0.25);
-}
 .fiche h3 { font-size: clamp(1.7rem, 1.3rem + 1.3vw, 2.4rem); line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 14px; color: #fff; }
 .fiche p { margin: 0 0 24px; color: var(--texte-clair); font-size: 1.05rem; max-width: 30em; }
 .fiche__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; }
@@ -522,11 +511,6 @@ main { position: relative; z-index: 1; }
 }
 .visite__grille { z-index: 1; }
 
-.visite__fil { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
-.visite__fil { z-index: 1; }
-.visite__fil line { stroke: var(--orange-clair); stroke-width: 1.4; stroke-linecap: round; opacity: 0.85; }
-.visite__fil circle { fill: var(--orange-clair); stroke: #fff; stroke-width: 2; }
-.visite__fil[hidden] { display: none; }
 
 .visite__reperes { display: flex; gap: 8px; list-style: none; margin: 0; padding: 0; }
 .visite__reperes button {
@@ -943,42 +927,11 @@ main { position: relative; z-index: 1; }
   .visite__reperes { order: 2; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; margin: 0 calc(-1 * var(--marge)); padding: 2px var(--marge) 8px; background: var(--ardoise); box-shadow: 0 1px 0 rgb(255 255 255 / 0.08); }
   .visite__reperes button { min-width: 0; padding: 2px 0 4px; gap: 5px; font-size: 0.64rem; }
   .visite__fiches { order: 3; position: absolute; left: var(--marge); right: var(--marge); bottom: calc(var(--barre) + 22px); width: auto; min-height: 0; }
-  .fiche { top: auto; bottom: 0; transform: none; padding: 2px 0 0 16px; }
+  .fiche { top: auto; bottom: 0; transform: none; padding: 0; }
   .fiche__num { margin-bottom: 8px; font-size: 0.75rem; }
   .fiche h3 { font-size: 1.45rem; margin-bottom: 8px; }
   .fiche p { margin-bottom: 16px; font-size: 0.95rem; line-height: 1.5; }
-  .fiche__oeillet { left: -7px; top: 0; }
-  .visite__collant::before { background: linear-gradient(180deg, rgb(36 55 70 / 0) 40%, rgb(36 55 70 / 0.88) 62%, rgb(36 55 70 / 0.97) 100%); }
-
-  .services-bloc { grid-template-columns: minmax(0, 1fr); gap: 28px; }
-  .services-bloc__intro { position: static; }
-  .prestation__resume { font-size: 0.92rem; }
-  .garanties { font-size: 0.85rem; }
-
-  .urgence-bloc__grille, .zone, .cta-final__grille, .tete-page__grille { grid-template-columns: minmax(0, 1fr); }
-  .methode { grid-template-columns: minmax(0, 1fr); gap: 0; }
-  .methode li { padding: 16px 0 18px; }
-  .villes { columns: 1; }
-  .cta-final__liens--clair { grid-template-columns: minmax(0, 1fr); }
-  .prestation a { grid-template-columns: minmax(0, 1fr) 22px; gap: 4px 12px; padding: 18px 0; }
-  .prestation__resume { grid-column: 1; font-size: 0.92rem; }
-  .prestation__fleche { grid-column: 2; grid-row: 1 / span 2; }
-  .tete-page__dessin { width: 120%; right: -40%; top: 18%; opacity: 0.14; }
-
-  .blocs--2, .blocs--2-1 { grid-template-columns: minmax(0, 1fr); }
-  .bloc { padding: 16px 16px 4px; }
-  .bloc__corps, .trois-colonnes { grid-template-columns: minmax(0, 1fr); }
-  .groupe--2 .groupe__choix { grid-template-columns: minmax(0, 1fr); }
-  .fiche-tete { flex-direction: column; align-items: flex-start; }
-  .fiche-tete__titre { text-align: left; }
-  .formulaire__envoi .bouton { width: 100%; }
-  .formulaire__envoi p { text-align: center; width: 100%; }
-
-  .pied__grille { grid-template-columns: minmax(0, 1fr); }
-  .faq summary { font-size: 1.02rem; padding-block: 16px; }
-  .faq__reponse { padding-right: 0; }
-}
-
+  
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
