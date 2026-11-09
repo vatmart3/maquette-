@@ -86,7 +86,7 @@ const avecAvis = S.avis.length > 0 || !!S.liens.googleBusiness;
 if (avecAvis) NAV.splice(3, 0, { id: "avis", href: "/avis", texte: "Avis" });
 
 function logo(clair = false) {
-  return `<a class="logo${clair ? " logo--clair" : ""}" href="/" aria-label="${esc(S.nom)}, couvreur à Frontignan et ses alentours, accueil">
+  return `<a class="logo${clair ? " logo--clair" : ""}" href="/">
         <img class="logo__marque" src="/img/arveo-mark.svg" alt="" width="68" height="36">
         <span class="logo__texte"><span class="logo__nom">${esc(S.nom)}</span><span class="logo__activite">Couvreur à ${esc(S.adresse.ville)} <span class="logo__suite">&amp; ses alentours</span></span></span>
       </a>`;
@@ -96,9 +96,10 @@ function head(p) {
   const ld = p.jsonld.map((o) => `  <script type="application/ld+json">${JSON.stringify(o)}</script>`).join("\n");
   const scene = p.scene
     ? `
-  <script>try{if(!sessionStorage.getItem("arv-intro")&&!matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("intro");setTimeout(function(){document.documentElement.classList.remove("intro")},4200)}}catch(e){}</script>
+  <script>try{if(!sessionStorage.getItem("arv-intro")&&!matchMedia("(prefers-reduced-motion: reduce)").matches&&matchMedia("(min-width: 860px)").matches){document.documentElement.classList.add("intro");setTimeout(function(){document.documentElement.classList.remove("intro")},4200)}}catch(e){}</script>
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
-  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js" crossorigin>`
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js" crossorigin media="(min-width: 860px)">`
     : "";
   return `<!doctype html>
 <html lang="fr">
@@ -118,7 +119,7 @@ function head(p) {
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <link rel="preload" href="/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/styles.min.css">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="fr_FR">
   <meta property="og:site_name" content="${esc(S.nom)}">
@@ -128,6 +129,7 @@ function head(p) {
   <meta property="og:image" content="${BASE}/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="ARVÉO, couvreur à Frontignan : réparation, réfection et dépannage de toiture">
   <meta name="twitter:card" content="summary_large_image">${scene}
 ${ld}
   <script src="/config.js" defer></script>
@@ -135,7 +137,7 @@ ${ld}
 </head>
 <body data-page="${p.id}"${p.sombre ? ' class="page-sombre"' : ""}>
   <a class="evitement" href="#contenu">Aller au contenu</a>
-${p.scene ? '  <div class="scene" data-scene aria-hidden="true"></div>\n' : ""}${bandeauUrgence()}
+${p.scene ? '  <div class="scene" data-scene aria-hidden="true"><picture><source media="(min-width: 860px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="><img class="scene__apercu" src="/img/toiture-mobile.webp" alt="" width="780" height="840" decoding="async"></picture></div>\n' : ""}${bandeauUrgence()}
 ${entete(p.id)}
   <main id="contenu">
 `;
@@ -283,7 +285,17 @@ function pied() {
 }
 
 const FIN_PAGE = (scene) => `${scene ? `
-  <script type="module">import("/scene.js");</script>` : ""}
+  <script type="module">
+    // Ordinateur : la 3D se charge tout de suite (intro). Téléphone : au premier geste
+    // ou après quelques secondes, pour que la page soit utilisable immédiatement.
+    let fait = false;
+    const charger = () => { if (fait) return; fait = true; import("/scene.js"); };
+    if (matchMedia("(min-width: 860px)").matches) charger();
+    else {
+      ["touchstart", "scroll", "pointerdown", "keydown"].forEach((e) => addEventListener(e, charger, { once: true, passive: true }));
+      addEventListener("load", () => setTimeout(() => (window.requestIdleCallback || setTimeout)(charger), 3500), { once: true });
+    }
+  </script>` : ""}
 </body>
 </html>
 `;
@@ -320,6 +332,10 @@ function ldEntreprise() {
     openingHoursSpecification: [
       { "@type": "OpeningHoursSpecification", dayOfWeek: S.horaires.jours, opens: S.horaires.ouverture, closes: S.horaires.fermeture },
     ],
+    slogan: S.slogan,
+    knowsAbout: ["Couverture", "Zinguerie", "Charpente", "Recherche de fuite", "Démoussage de toiture", "Tuiles canal", "Gouttières en zinc"],
+    knowsLanguage: "fr",
+    currenciesAccepted: "EUR",
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: "Travaux de couverture",
@@ -708,7 +724,7 @@ const ZONES_VISITE = [
   };
   const fiches = ZONES_VISITE.map(
     (z, i) => `<article class="fiche" aria-labelledby="titre-zone-${i}">
-              <img class="fiche__image" src="/img/toiture-zone-${i + 1}.webp" alt="${esc(z.titre)} : la zone concernée est en orange sur le schéma de la toiture" width="800" height="600" loading="lazy" decoding="async">
+              <img class="fiche__image" src="/img/toiture-zone-${i + 1}-480.webp" srcset="/img/toiture-zone-${i + 1}-480.webp 480w, /img/toiture-zone-${i + 1}.webp 800w" sizes="(max-width: 859px) calc(100vw - 32px), 1px" alt="${esc(z.titre)} : la zone concernée est en orange sur le schéma de la toiture" width="800" height="600" loading="lazy" decoding="async">
               <span class="fiche__num mono">${String(i + 1).padStart(2, "0")} / ${String(ZONES_VISITE.length).padStart(2, "0")}</span>
               <h3 id="titre-zone-${i}">${esc(z.titre)}</h3>
               <p>${fr(z.texte)}</p>
@@ -1286,6 +1302,20 @@ ${bandeauCta()}` +
       pied() +
       FIN_PAGE(false)
   );
+}
+
+/* --- Feuille de style compressée (styles.css reste la source à modifier) --- */
+
+{
+  const css = fs
+    .readFileSync(path.join(RACINE, "styles.css"), "utf8")
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/\s+/g, " ")
+    .replace(/\s*([{};,])\s*/g, "$1")
+    .replace(/:\s+/g, ":")
+    .replace(/;}/g, "}")
+    .trim();
+  fs.writeFileSync(path.join(RACINE, "styles.min.css"), css);
 }
 
 /* --- Sitemap et robots --- */

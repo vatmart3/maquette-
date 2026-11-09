@@ -21,6 +21,7 @@
   --orange-survol: #a2481a;
   --orange-clair: #ee8e55;  /* orange lisible sur bleu ardoise */
   --orange-pale: #f8ebe2;
+  --orange-texte: #a3471a; /* texte orange sur fond clair : contraste AA */
   --bleu-ciel: #5da6d3;
   --blanc: #ffffff;
 
@@ -95,7 +96,7 @@ h3 { font-size: var(--t-h3); line-height: 1.25; font-weight: 700; letter-spacing
 
 p { margin: 0 0 1em; max-width: 68ch; }
 
-a { color: var(--orange-action); text-underline-offset: 0.2em; text-decoration-thickness: 1.5px; }
+a { color: var(--orange-texte); text-underline-offset: 0.2em; text-decoration-thickness: 1.5px; }
 a:hover { color: var(--orange-survol); }
 
 img, svg { display: block; max-width: 100%; }
@@ -203,7 +204,7 @@ main { position: relative; z-index: 1; }
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: var(--orange-action);
+  color: var(--orange-texte);
   font-family: var(--titres);
   font-weight: 700;
   text-decoration: none;
@@ -421,7 +422,15 @@ main { position: relative; z-index: 1; }
   pointer-events: none;
   opacity: 0;
 }
-.scene canvas { display: block; }
+.scene canvas { display: block; position: absolute; inset: 0; }
+.scene__apercu { position: absolute; top: 0; left: 0; width: 100%; height: auto; transition: opacity 0.6s ease; }
+.scene--prete .scene__apercu, .scene--svg .scene__apercu { opacity: 0; }
+@media (max-width: 859px) {
+  .scene:not(.scene--prete):not(.scene--svg) { opacity: 1; }
+}
+@media (min-width: 860px) {
+  .scene__apercu { display: none; }
+}
 .scene--svg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 75% 40%; opacity: 0.6; }
 
 /* ---------- Accueil : accroche ---------- */
@@ -574,7 +583,7 @@ main { position: relative; z-index: 1; }
 .prestation a:hover .prestation__nom { color: var(--orange-action); }
 .prestation a:hover .prestation__fleche { transform: translateX(4px); }
 .prestation a:hover::after { width: 100%; }
-.prestation--urgent .prestation__nom { color: var(--orange-action); }
+.prestation--urgent .prestation__nom { color: var(--orange-texte); }
 
 /* ---------- Méthode ---------- */
 
@@ -750,7 +759,7 @@ main { position: relative; z-index: 1; }
 
 .fiche-tete { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; padding: 10px 0 20px; }
 .fiche-tete__marque .logo { margin: 0; }
-.fiche-tete__marque p { margin: 10px 0 0; color: var(--orange-action); font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.fiche-tete__marque p { margin: 10px 0 0; color: var(--orange-texte); font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; }
 .fiche-tete__titre { text-align: right; font-size: clamp(1.6rem, 1.2rem + 1.5vw, 2.4rem); line-height: 1.12; text-transform: uppercase; color: var(--ardoise); }
 .fiche-tete__titre span { display: block; margin-top: 0.12em; color: var(--orange); }
 .fiche-intro { margin: 0 0 20px; padding: 16px 0 14px; border-top: 3px solid var(--ardoise); color: var(--texte-2); font-size: 0.95rem; max-width: none; }
@@ -855,7 +864,7 @@ main { position: relative; z-index: 1; }
 
 .fichier input { position: absolute; width: 1px; height: 1px; opacity: 0; }
 .fichier__zone { display: flex !important; gap: 14px; align-items: center; margin: 0 !important; padding: 14px 16px; border: 1.5px dashed #aab2bb; border-radius: var(--r-m); background: var(--casse); cursor: pointer; font-weight: 400 !important; color: var(--texte-2); font-size: 0.92rem !important; }
-.fichier__zone strong { display: block; color: var(--orange-action); font-family: var(--titres); font-size: 1rem; }
+.fichier__zone strong { display: block; color: var(--orange-texte); font-family: var(--titres); font-size: 1rem; }
 .fichier__zone .ico { width: 28px; height: 28px; color: var(--ardoise); }
 .fichier__zone:hover { border-color: var(--orange); }
 .fichier input:focus-visible + .fichier__zone { outline: 3px solid var(--orange-clair); outline-offset: 2px; }
@@ -884,6 +893,7 @@ main { position: relative; z-index: 1; }
 
 .pied { position: relative; z-index: 1; background: var(--anthracite); color: var(--texte-clair); padding-block: 64px 28px; font-size: 0.95rem; }
 .pied a { color: #fff; text-decoration: none; }
+.pied__bas p a { text-decoration: underline; text-underline-offset: 0.2em; }
 .pied a:hover { color: var(--orange-clair); }
 .pied__grille { display: grid; grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr)); gap: 40px 32px; }
 .pied__marque .logo { margin-bottom: 18px; }

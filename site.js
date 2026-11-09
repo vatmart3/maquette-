@@ -74,7 +74,8 @@
   /* ---------- Scène 3D : image de secours si elle n'arrive pas ---------- */
 
   var scene = document.querySelector("[data-scene]");
-  if (scene) {
+  // Sur téléphone, l'aperçu image sert déjà de secours : pas de remplacement.
+  if (scene && window.matchMedia("(min-width: 860px)").matches) {
     setTimeout(function () {
       if (!scene.classList.contains("scene--prete") && !scene.classList.contains("scene--svg")) {
         scene.classList.add("scene--svg");

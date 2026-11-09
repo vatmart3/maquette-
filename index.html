@@ -16,7 +16,7 @@
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <link rel="preload" href="/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/styles.min.css">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="fr_FR">
   <meta property="og:site_name" content="ARVÉO">
@@ -26,11 +26,13 @@
   <meta property="og:image" content="https://arveo.fr/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="ARVÉO, couvreur à Frontignan : réparation, réfection et dépannage de toiture">
   <meta name="twitter:card" content="summary_large_image">
-  <script>try{if(!sessionStorage.getItem("arv-intro")&&!matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("intro");setTimeout(function(){document.documentElement.classList.remove("intro")},4200)}}catch(e){}</script>
+  <script>try{if(!sessionStorage.getItem("arv-intro")&&!matchMedia("(prefers-reduced-motion: reduce)").matches&&matchMedia("(min-width: 860px)").matches){document.documentElement.classList.add("intro");setTimeout(function(){document.documentElement.classList.remove("intro")},4200)}}catch(e){}</script>
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
-  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js" crossorigin>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"RoofingContractor","@id":"https://arveo.fr/#entreprise","name":"ARVÉO","description":"Couvreur zingueur à Frontignan. Réparation et réfection de toiture, recherche de fuite, démoussage, zinguerie, charpente et dépannage d'urgence.","url":"https://arveo.fr/","logo":"https://arveo.fr/img/logo-arveo.png","image":"https://arveo.fr/og.png","telephone":"+33639980000","email":"contact@arveo.fr","address":{"@type":"PostalAddress","postalCode":"34110","addressLocality":"Frontignan","addressRegion":"Occitanie","addressCountry":"FR"},"geo":{"@type":"GeoCoordinates","latitude":43.4483,"longitude":3.7546},"areaServed":[{"@type":"City","name":"Frontignan"},{"@type":"City","name":"Sète"},{"@type":"City","name":"Balaruc-les-Bains"},{"@type":"City","name":"Balaruc-le-Vieux"},{"@type":"City","name":"Vic-la-Gardiole"},{"@type":"City","name":"Mireval"},{"@type":"City","name":"Gigean"},{"@type":"City","name":"Poussan"},{"@type":"City","name":"Villeneuve-lès-Maguelone"},{"@type":"City","name":"Montbazin"}],"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"opens":"08:00","closes":"19:00"}],"hasOfferCatalog":{"@type":"OfferCatalog","name":"Travaux de couverture","itemListElement":[{"@type":"Offer","itemOffered":{"@type":"Service","name":"Dépannage de toiture","url":"https://arveo.fr/depannage-toiture"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Réfection de toiture","url":"https://arveo.fr/services/refection-toiture"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Recherche de fuite et réparation","url":"https://arveo.fr/services/recherche-de-fuite"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Démoussage et traitement hydrofuge","url":"https://arveo.fr/services/demoussage-toiture"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Zinguerie et gouttières","url":"https://arveo.fr/services/zinguerie-gouttieres"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Réparation et renforcement de charpente","url":"https://arveo.fr/services/charpente"}}]}}</script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js" crossorigin media="(min-width: 860px)">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"RoofingContractor","@id":"https://arveo.fr/#entreprise","name":"ARVÉO","description":"Couvreur zingueur à Frontignan. Réparation et réfection de toiture, recherche de fuite, démoussage, zinguerie, charpente et dépannage d'urgence.","url":"https://arveo.fr/","logo":"https://arveo.fr/img/logo-arveo.png","image":"https://arveo.fr/og.png","telephone":"+33639980000","email":"contact@arveo.fr","address":{"@type":"PostalAddress","postalCode":"34110","addressLocality":"Frontignan","addressRegion":"Occitanie","addressCountry":"FR"},"geo":{"@type":"GeoCoordinates","latitude":43.4483,"longitude":3.7546},"areaServed":[{"@type":"City","name":"Frontignan"},{"@type":"City","name":"Sète"},{"@type":"City","name":"Balaruc-les-Bains"},{"@type":"City","name":"Balaruc-le-Vieux"},{"@type":"City","name":"Vic-la-Gardiole"},{"@type":"City","name":"Mireval"},{"@type":"City","name":"Gigean"},{"@type":"City","name":"Poussan"},{"@type":"City","name":"Villeneuve-lès-Maguelone"},{"@type":"City","name":"Montbazin"}],"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"opens":"08:00","closes":"19:00"}],"slogan":"Couverture, zinguerie et dépannage de toiture","knowsAbout":["Couverture","Zinguerie","Charpente","Recherche de fuite","Démoussage de toiture","Tuiles canal","Gouttières en zinc"],"knowsLanguage":"fr","currenciesAccepted":"EUR","hasOfferCatalog":{"@type":"OfferCatalog","name":"Travaux de couverture","itemListElement":[{"@type":"Offer","itemOffered":{"@type":"Service","name":"Dépannage de toiture","url":"https://arveo.fr/depannage-toiture"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Réfection de toiture","url":"https://arveo.fr/services/refection-toiture"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Recherche de fuite et réparation","url":"https://arveo.fr/services/recherche-de-fuite"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Démoussage et traitement hydrofuge","url":"https://arveo.fr/services/demoussage-toiture"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Zinguerie et gouttières","url":"https://arveo.fr/services/zinguerie-gouttieres"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Réparation et renforcement de charpente","url":"https://arveo.fr/services/charpente"}}]}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"ARVÉO","url":"https://arveo.fr/","inLanguage":"fr-FR","publisher":{"@id":"https://arveo.fr/#entreprise"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Intervenez-vous en urgence après une fuite ou un coup de vent ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Appelez-nous ou remplissez la demande de dépannage en ligne. On vous rappelle au plus vite et on met la toiture hors d'eau avant la réparation définitive."}},{"@type":"Question","name":"Le devis est-il gratuit ?","acceptedAnswer":{"@type":"Answer","text":"Oui. On passe voir la toiture, on vous remet un devis écrit et détaillé, et vous décidez ensuite. Rien n'est facturé sans votre accord."}},{"@type":"Question","name":"Ma toiture doit-elle être refaite ou simplement réparée ?","acceptedAnswer":{"@type":"Answer","text":"Tout dépend de l'état des tuiles, des liteaux et de la charpente. Après un diagnostic sur place, on vous dit franchement si une réparation suffit."}},{"@type":"Question","name":"Faut-il démousser sa toiture ?","acceptedAnswer":{"@type":"Answer","text":"La mousse retient l'eau et soulève les tuiles. Un démoussage tous les quatre à six ans selon l'exposition suffit le plus souvent."}},{"@type":"Question","name":"Êtes-vous assuré ?","acceptedAnswer":{"@type":"Answer","text":"Nos travaux de couverture sont couverts par une assurance décennale. Ses références figurent sur chaque devis et dans les mentions légales."}},{"@type":"Question","name":"Dans quelles communes intervenez-vous ?","acceptedAnswer":{"@type":"Answer","text":"À Frontignan et dans les communes voisines, à Sète, Balaruc-les-Bains, Balaruc-le-Vieux, Vic-la-Gardiole, Mireval, Gigean, Poussan, Villeneuve-lès-Maguelone et Montbazin."}}]}</script>
   <script src="/config.js" defer></script>
@@ -38,7 +40,7 @@
 </head>
 <body data-page="accueil">
   <a class="evitement" href="#contenu">Aller au contenu</a>
-  <div class="scene" data-scene aria-hidden="true"></div>
+  <div class="scene" data-scene aria-hidden="true"><picture><source media="(min-width: 860px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="><img class="scene__apercu" src="/img/toiture-mobile.webp" alt="" width="780" height="840" decoding="async"></picture></div>
   <div class="urgence">
     <div class="conteneur urgence__ligne">
       <p><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4 2.8 19.5h18.4zM12 10v4.5M12 17.2v.1"/></svg><span><strong>Urgence toiture</strong><span class="urgence__long">Fuite, tuiles arrachées, dégâts après intempéries</span></span></p>
@@ -49,7 +51,7 @@
   </div>
   <header class="entete">
     <div class="conteneur entete__ligne">
-      <a class="logo" href="/" aria-label="ARVÉO, couvreur à Frontignan et ses alentours, accueil">
+      <a class="logo" href="/">
         <img class="logo__marque" src="/img/arveo-mark.svg" alt="" width="68" height="36">
         <span class="logo__texte"><span class="logo__nom">ARVÉO</span><span class="logo__activite">Couvreur à Frontignan <span class="logo__suite">&amp; ses alentours</span></span></span>
       </a>
@@ -92,7 +94,7 @@
           </div>
           <div class="visite__fiches">
             <article class="fiche" aria-labelledby="titre-zone-0">
-              <img class="fiche__image" src="/img/toiture-zone-1.webp" alt="Couverture et tuiles : la zone concernée est en orange sur le schéma de la toiture" width="800" height="600" loading="lazy" decoding="async">
+              <img class="fiche__image" src="/img/toiture-zone-1-480.webp" srcset="/img/toiture-zone-1-480.webp 480w, /img/toiture-zone-1.webp 800w" sizes="(max-width: 859px) calc(100vw - 32px), 1px" alt="Couverture et tuiles : la zone concernée est en orange sur le schéma de la toiture" width="800" height="600" loading="lazy" decoding="async">
               <span class="fiche__num mono">01 / 05</span>
               <h3 id="titre-zone-0">Couverture et tuiles</h3>
               <p>Tuiles canal, romanes ou mécaniques, faîtage, rives et génoises. On répare un pan ou on refait toute la couverture.</p>
@@ -102,7 +104,7 @@
               </div>
             </article>
             <article class="fiche" aria-labelledby="titre-zone-1">
-              <img class="fiche__image" src="/img/toiture-zone-2.webp" alt="Charpente : la zone concernée est en orange sur le schéma de la toiture" width="800" height="600" loading="lazy" decoding="async">
+              <img class="fiche__image" src="/img/toiture-zone-2-480.webp" srcset="/img/toiture-zone-2-480.webp 480w, /img/toiture-zone-2.webp 800w" sizes="(max-width: 859px) calc(100vw - 32px), 1px" alt="Charpente : la zone concernée est en orange sur le schéma de la toiture" width="800" height="600" loading="lazy" decoding="async">
               <span class="fiche__num mono">02 / 05</span>
               <h3 id="titre-zone-1">Charpente</h3>
               <p>Chevrons, pannes et liteaux portent vos tuiles. On les contrôle et on les renforce.</p>
@@ -112,7 +114,7 @@
               </div>
             </article>
             <article class="fiche" aria-labelledby="titre-zone-2">
-              <img class="fiche__image" src="/img/toiture-zone-3.webp" alt="Zinguerie : la zone concernée est en orange sur le schéma de la toiture" width="800" height="600" loading="lazy" decoding="async">
+              <img class="fiche__image" src="/img/toiture-zone-3-480.webp" srcset="/img/toiture-zone-3-480.webp 480w, /img/toiture-zone-3.webp 800w" sizes="(max-width: 859px) calc(100vw - 32px), 1px" alt="Zinguerie : la zone concernée est en orange sur le schéma de la toiture" width="800" height="600" loading="lazy" decoding="async">
               <span class="fiche__num mono">03 / 05</span>
               <h3 id="titre-zone-2">Zinguerie</h3>
               <p>Gouttières, descentes et noues en zinc éloignent l&#39;eau de vos murs et de vos façades.</p>
@@ -122,7 +124,7 @@
               </div>
             </article>
             <article class="fiche" aria-labelledby="titre-zone-3">
-              <img class="fiche__image" src="/img/toiture-zone-4.webp" alt="Fuites et étanchéité : la zone concernée est en orange sur le schéma de la toiture" width="800" height="600" loading="lazy" decoding="async">
+              <img class="fiche__image" src="/img/toiture-zone-4-480.webp" srcset="/img/toiture-zone-4-480.webp 480w, /img/toiture-zone-4.webp 800w" sizes="(max-width: 859px) calc(100vw - 32px), 1px" alt="Fuites et étanchéité : la zone concernée est en orange sur le schéma de la toiture" width="800" height="600" loading="lazy" decoding="async">
               <span class="fiche__num mono">04 / 05</span>
               <h3 id="titre-zone-3">Fuites et étanchéité</h3>
               <p>Solin de cheminée, fenêtre de toit, tuile cassée. On trouve d&#39;où vient l&#39;eau avant de réparer.</p>
@@ -132,7 +134,7 @@
               </div>
             </article>
             <article class="fiche" aria-labelledby="titre-zone-4">
-              <img class="fiche__image" src="/img/toiture-zone-5.webp" alt="Démoussage et entretien : la zone concernée est en orange sur le schéma de la toiture" width="800" height="600" loading="lazy" decoding="async">
+              <img class="fiche__image" src="/img/toiture-zone-5-480.webp" srcset="/img/toiture-zone-5-480.webp 480w, /img/toiture-zone-5.webp 800w" sizes="(max-width: 859px) calc(100vw - 32px), 1px" alt="Démoussage et entretien : la zone concernée est en orange sur le schéma de la toiture" width="800" height="600" loading="lazy" decoding="async">
               <span class="fiche__num mono">05 / 05</span>
               <h3 id="titre-zone-4">Démoussage et entretien</h3>
               <p>Un nettoyage et un traitement contre mousses et lichens prolongent la vie de la toiture.</p>
@@ -278,7 +280,7 @@
   <footer class="pied">
     <div class="conteneur pied__grille">
       <div class="pied__marque">
-        <a class="logo logo--clair" href="/" aria-label="ARVÉO, couvreur à Frontignan et ses alentours, accueil">
+        <a class="logo logo--clair" href="/">
         <img class="logo__marque" src="/img/arveo-mark.svg" alt="" width="68" height="36">
         <span class="logo__texte"><span class="logo__nom">ARVÉO</span><span class="logo__activite">Couvreur à Frontignan <span class="logo__suite">&amp; ses alentours</span></span></span>
       </a>
@@ -341,6 +343,16 @@
     <a href="/devis-toiture" data-track="devis"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 3h7l4.5 4.5V19a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM14 3v4.5h4.5M8.5 12.5h7M8.5 16h5"/></svg><span>Devis</span></a>
   </nav>
 
-  <script type="module">import("/scene.js");</script>
+  <script type="module">
+    // Ordinateur : la 3D se charge tout de suite (intro). Téléphone : au premier geste
+    // ou après quelques secondes, pour que la page soit utilisable immédiatement.
+    let fait = false;
+    const charger = () => { if (fait) return; fait = true; import("/scene.js"); };
+    if (matchMedia("(min-width: 860px)").matches) charger();
+    else {
+      ["touchstart", "scroll", "pointerdown", "keydown"].forEach((e) => addEventListener(e, charger, { once: true, passive: true }));
+      addEventListener("load", () => setTimeout(() => (window.requestIdleCallback || setTimeout)(charger), 3500), { once: true });
+    }
+  </script>
 </body>
 </html>
