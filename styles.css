@@ -1233,3 +1233,8 @@ main { position: relative; z-index: 1; }
 .sommaire a:hover { color: var(--orange-action); }
 .article--conseil .article__corps h2 { scroll-margin-top: 110px; }
 @media (min-width: 1024px) { .article--conseil .sommaire { position: sticky; top: 110px; } }
+
+/* Menu ordinateur : les liens secondaires n'apparaissent que si la place le permet. */
+.nav a, .entete__devis { white-space: nowrap; }
+@media (max-width: 1279px) { .nav__secondaire { display: none; } }
+@media (min-width: 1024px) { .logo__activite { white-space: nowrap; } }

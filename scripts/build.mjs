@@ -288,7 +288,7 @@ function bandeauUrgence() {
 }
 
 function entete(id) {
-  const liens = NAV.map((n) => `<li><a href="${n.href}"${n.id === id ? ' aria-current="page"' : ""}>${n.texte}</a></li>`).join("");
+  const liens = NAV.map((n) => `<li${n.id === "prix" || n.id === "realisations" ? ' class="nav__secondaire"' : ""}><a href="${n.href}"${n.id === id ? ' aria-current="page"' : ""}>${n.texte}</a></li>`).join("");
   return `  <header class="entete">
     <div class="conteneur entete__ligne">
       ${logo()}
@@ -805,10 +805,13 @@ const RESUMES = {
   charpente: "Chevrons, pannes et liteaux contrôlés, renforcés ou remplacés.",
 };
 
-function cartesServices(exclure) {
+// Liste des services ; sur une page service, seulement les plus proches (même zone de la toiture d'abord).
+function cartesServices(exclure, proche) {
+  let services = SERVICES_PAGES.filter((s) => s.path !== exclure);
+  if (proche) services = [...services.filter((s) => s.zone === proche.zone), ...services.filter((s) => s.zone !== proche.zone)].slice(0, 4);
   const lignes = [
     { cle: "depannage", path: "/depannage-toiture", nom: "Dépannage de toiture", urgent: true },
-    ...SERVICES_PAGES.map((s) => ({ cle: s.slug, path: s.path, nom: s.nom, resume: s.resume })),
+    ...services.map((s) => ({ cle: s.slug, path: s.path, nom: s.nom, resume: s.resume })),
   ].filter((c) => c.path !== exclure);
   return `<ul class="prestations">
           ${lignes
@@ -1242,8 +1245,9 @@ ${listeRealisations(REALISATIONS.filter((c) => c.service === s.slug), `${s.court
 ${faqHtml(s.faq, `Vos questions sur ${s.court.toLowerCase() === "charpente" ? "la charpente" : "ce service"}`)}
     <section class="section section--claire" aria-labelledby="titre-autres" data-commun>
       <div class="conteneur">
-        <h2 id="titre-autres">Les autres travaux de toiture</h2>
-        ${cartesServices(s.path)}
+        <h2 id="titre-autres">Travaux souvent associés</h2>
+        ${cartesServices(s.path, s)}
+        <p class="texte"><a class="lien-fleche" href="/#services">Tous nos travaux de toiture ${ico("fleche")}</a></p>
       </div>
     </section>
 ${bandeauCta()}` +
@@ -1843,7 +1847,7 @@ ${bandeauCta()}` +
           <article class="bon" aria-labelledby="titre-bon">
             <header class="bon__tete">
               <h2 id="titre-bon">Bon d'intervention</h2>
-              <p class="mono">Réf. ${esc(c.slug.toUpperCase().slice(0, 24))}</p>
+              <p class="mono">Réf. ${c.annee}-${String(c.mois).padStart(2, "0")}-${String(REALISATIONS.indexOf(c) + 1).padStart(3, "0")}</p>
             </header>
             <dl class="bon__infos">
               ${ligne("Commune", ville)}${ligne("Service", nomService(c.service))}${ligne("Date", c.date)}${ligne("Durée", c.duree)}${ligne("Maison", c.maison)}${ligne("Matériaux", (c.materiaux || []).join(", "))}
