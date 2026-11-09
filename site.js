@@ -115,54 +115,26 @@
       document.dispatchEvent(new CustomEvent("arv:zone", { detail: { zone: i } }));
     };
 
-    var mqTel = window.matchMedia("(max-width: 859px)");
-    var rail = visite.querySelector(".visite__fiches");
-
-    // Ordinateur : la zone suit le défilement vertical (section collante).
+    // Ordinateur et téléphone : la section reste en place et la zone suit le défilement vertical.
+    var collant = visite.querySelector(".visite__collant");
+    var position = function () {
+      var haut = parseFloat(getComputedStyle(collant).top) || 0;
+      var course = Math.max(1, visite.offsetHeight - collant.offsetHeight);
+      return { debut: visite.offsetTop - haut, course: course };
+    };
     var depuisScroll = function () {
-      if (mqTel.matches) return;
-      var course = visite.offsetHeight - window.innerHeight;
-      var p = (window.scrollY - visite.offsetTop) / Math.max(1, course);
+      var q = position();
+      var p = (window.scrollY - q.debut) / q.course;
       activer(p < -0.02 || p > 1 ? -1 : Math.min(n - 1, Math.max(0, Math.floor(p * n))));
     };
     window.addEventListener("scroll", depuisScroll, { passive: true });
     window.addEventListener("resize", depuisScroll);
-
-    // Téléphone : carrousel à faire glisser, la zone suit le glissement horizontal.
-    var depuisRail = function () {
-      if (!mqTel.matches) return;
-      activer(Math.min(n - 1, Math.max(0, Math.round(rail.scrollLeft / Math.max(1, rail.clientWidth)))));
-    };
-    rail.addEventListener("scroll", depuisRail, { passive: true });
-    // Téléphone : glisser sur la scène 3D fait aussi passer d'une zone à l'autre.
-    if (cadre3d) {
-      var x0 = null, y0 = 0;
-      cadre3d.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
-      cadre3d.addEventListener("touchend", function (e) {
-        if (x0 === null) return;
-        var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
-        x0 = null;
-        if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
-        var k = Math.min(n - 1, Math.max(0, zone + (dx < 0 ? 1 : -1)));
-        rail.scrollTo({ left: rail.clientWidth * k, behavior: reduit ? "auto" : "smooth" });
-      }, { passive: true });
-    }
-    var initialiser = function () {
-      zone = -2;
-      if (mqTel.matches) depuisRail();
-      else depuisScroll();
-    };
-    mqTel.addEventListener("change", initialiser);
-    initialiser();
+    depuisScroll();
 
     reperes.forEach(function (r, k) {
       r.addEventListener("click", function () {
-        if (mqTel.matches) {
-          rail.scrollTo({ left: rail.clientWidth * k, behavior: reduit ? "auto" : "smooth" });
-          return;
-        }
-        var course = visite.offsetHeight - window.innerHeight;
-        window.scrollTo({ top: visite.offsetTop + course * ((k + 0.5) / n), behavior: reduit ? "auto" : "smooth" });
+        var q = position();
+        window.scrollTo({ top: q.debut + q.course * ((k + 0.5) / n), behavior: reduit ? "auto" : "smooth" });
       });
     });
   }

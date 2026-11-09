@@ -378,7 +378,7 @@ const BUREAU = {
 
 // Téléphone, visite : une seconde vue 3D dans un cadre 4:3 au-dessus des fiches, même caméra que
 // sur ordinateur pour chaque zone, recentrée et un peu reculée pour le format de l'écran.
-const ATELIER = BUREAU.zones.map((z) => ({ ...loin(z, 1.12), ox: 0, oy: 0 }));
+const ATELIER = BUREAU.zones.map((z) => ({ ...loin(z, 1.75), ox: 0, oy: 0 }));
 
 const PLANS = mobile
   ? {
@@ -562,6 +562,7 @@ function demarrer() {
       hauteur: 1,
       visible: true,
       rendu: false,
+      decalage: 0,
     };
     const taille = () => {
       const w = Math.max(1, cadre.clientWidth), h = Math.max(1, cadre.clientHeight);
@@ -574,8 +575,20 @@ function demarrer() {
       atelier.camera.aspect = w / h;
       atelier.camera.updateProjectionMatrix();
       atelier.rendu = false;
+      centrer();
       relancer();
     };
+    // La zone est centrée dans l'espace libre entre les repères (en haut) et la fiche (en bas).
+    const centrer = () => {
+      const b = cadre.getBoundingClientRect();
+      const haut = document.querySelector(".visite__reperes");
+      const bas = document.querySelector(".visite__fiches");
+      if (!haut || !bas) return;
+      const y0 = haut.getBoundingClientRect().bottom - b.top;
+      const y1 = bas.getBoundingClientRect().top + 40 - b.top;
+      atelier.decalage = Math.max(0, atelier.hauteur / 2 - (y0 + y1) / 2);
+    };
+    if ("ResizeObserver" in window) new ResizeObserver(() => { centrer(); atelier.rendu = false; relancer(); }).observe(document.querySelector(".visite__fiches"));
     if ("ResizeObserver" in window) new ResizeObserver(taille).observe(cadre);
     window.addEventListener("resize", taille);
     taille();
@@ -873,8 +886,7 @@ function demarrer() {
         const cam = atelier.camera;
         cam.position.copy(atelier.pos);
         cam.lookAt(atelier.cible);
-        // la zone est remontée d'un dixième du cadre pour équilibrer le vide au-dessus du toit
-        cam.setViewOffset(atelier.largeur, atelier.hauteur, 0, atelier.hauteur * 0.1, atelier.largeur, atelier.hauteur);
+        cam.setViewOffset(atelier.largeur, atelier.hauteur, 0, atelier.decalage, atelier.largeur, atelier.hauteur);
         const d = atelier.pos.distanceTo(atelier.cible);
         scene.fog.near = d * 0.8;
         scene.fog.far = d * 2.1;
