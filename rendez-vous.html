@@ -46,7 +46,7 @@
   <header class="entete">
     <div class="conteneur entete__ligne">
       <a class="logo" href="/">
-        <img class="logo__marque" src="/img/arveo-mark.svg" alt="" width="68" height="36">
+        <img class="logo__marque" src="/img/arveo-mark.svg" alt="" role="presentation" width="68" height="36">
         <span class="logo__texte"><span class="logo__nom">ARVÉO</span><span class="logo__activite">Couvreur à Frontignan <span class="logo__suite">&amp; ses alentours</span></span></span>
       </a>
       <nav class="nav" aria-label="Navigation principale"><ul><li><a href="/#services">Services</a></li><li><a href="/depannage-toiture">Dépannage</a></li><li><a href="/a-propos">À propos</a></li><li><a href="/contact">Contact</a></li></ul></nav>
@@ -74,11 +74,11 @@
           <nav class="ariane" aria-label="Fil d'Ariane"><ol><li><a href="/">Accueil</a></li><li aria-current="page">Prendre rendez-vous</li></ol></nav>
           <h1>Prendre rendez-vous pour un diagnostic</h1>
           <p class="chapeau">Choisissez une date et un créneau, nous vous rappelons pour confirmer l&#39;heure. Le diagnostic et le devis sont gratuits.</p>
-          <div class="actions">
+          <div class="actions" data-commun>
           <a class="bouton bouton--orange" href="tel:+33639980000" data-track="call"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.6 3.5h2.6l1.6 4.2-2.1 1.5a11.5 11.5 0 0 0 6.1 6.1l1.5-2.1 4.2 1.6v2.6a2 2 0 0 1-2.1 2A16.6 16.6 0 0 1 4.6 5.6a2 2 0 0 1 2-2.1z"/></svg>Appeler le <span class="mono">06 39 98 00 00</span></a>
           <a class="bouton bouton--contour-clair" href="/depannage-toiture" data-track="depannage"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4 2.8 19.5h18.4zM12 10v4.5M12 17.2v.1"/></svg>Demande de dépannage</a>
         </div>
-          <p class="garanties garanties--clair"><span>Devis gratuit et détaillé</span><span>Rappel dans la journée</span><span>Garantie décennale</span></p>
+          <p class="garanties garanties--clair" data-commun><span>Devis gratuit et détaillé</span><span>Rappel dans la journée</span><span>Garantie décennale</span></p>
         </div>
         
       </div>
@@ -86,6 +86,7 @@
     <section class="section section--claire" id="formulaire" aria-label="Formulaire de rendez-vous">
       <div class="conteneur formulaire-page">
         <form class="formulaire" data-formulaire="rdv" novalidate aria-label="Demande de rendez-vous">
+          <h2 class="sr">Formulaire de demande de rendez-vous</h2>
           <div class="hp" aria-hidden="true"><label>Laissez ce champ vide<input type="text" name="site_web" tabindex="-1" autocomplete="off"></label></div>
           <section class="bloc">
             <h3 class="bloc__titre"><span class="bloc__num mono">01</span>Motif du rendez-vous</h3>
@@ -181,7 +182,7 @@
               <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Conseils et devis gratuit</li>
             </ul>
           </div>
-          <div class="cote-carte">
+          <div class="cote-carte" data-commun>
             <h2>Après votre demande</h2>
             <ol class="suite-demande">
               <li><span class="mono">01</span><span><strong>Réception immédiate</strong>Votre demande arrive directement chez ARVÉO.</span></li>
@@ -189,7 +190,7 @@
               <li><span class="mono">03</span><span><strong>Visite et devis</strong>Diagnostic sur place, prix écrit avant tout travail.</span></li>
             </ol>
           </div>
-          <div class="cote-carte">
+          <div class="cote-carte" data-commun>
             <h2>Une urgence ?</h2>
             <p>Fuite active ou tuiles envolées, utilisez plutôt la demande de dépannage.</p>
             <a class="lien-fleche" href="/depannage-toiture" data-track="depannage">Demande de dépannage <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
@@ -199,7 +200,7 @@
       </div>
     </section>
 
-    <section class="cta-final" aria-labelledby="titre-cta">
+    <section class="cta-final" aria-labelledby="titre-cta" data-commun>
       <div class="conteneur cta-final__grille">
         <div>
           <h2 id="titre-cta">Un problème de toiture ?</h2>
@@ -222,7 +223,7 @@
     <div class="conteneur pied__grille">
       <div class="pied__marque">
         <a class="logo logo--clair" href="/">
-        <img class="logo__marque" src="/img/arveo-mark.svg" alt="" width="68" height="36">
+        <img class="logo__marque" src="/img/arveo-mark.svg" alt="" role="presentation" width="68" height="36">
         <span class="logo__texte"><span class="logo__nom">ARVÉO</span><span class="logo__activite">Couvreur à Frontignan <span class="logo__suite">&amp; ses alentours</span></span></span>
       </a>
         <p>Couvreur zingueur à Frontignan. Couverture, zinguerie et dépannage de toiture pour les particuliers et les professionnels du secteur de Frontignan et de l'étang de Thau.</p>
@@ -276,7 +277,7 @@
     </div>
   </footer>
 
-  <a class="logo-fixe" href="/" aria-label="ARVÉO, retour à l'accueil"><img src="/img/arveo-mark.svg" alt="" width="64" height="34"></a>
+  <a class="logo-fixe" href="/" aria-label="ARVÉO, retour à l'accueil"><img src="/img/arveo-mark.svg" alt="" role="presentation" width="64" height="34"></a>
 
   <nav class="barre-actions" aria-label="Nous contacter">
     <a href="tel:+33639980000" data-track="call"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.6 3.5h2.6l1.6 4.2-2.1 1.5a11.5 11.5 0 0 0 6.1 6.1l1.5-2.1 4.2 1.6v2.6a2 2 0 0 1-2.1 2A16.6 16.6 0 0 1 4.6 5.6a2 2 0 0 1 2-2.1z"/></svg><span>Appeler</span></a>

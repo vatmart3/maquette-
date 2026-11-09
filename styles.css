@@ -1080,3 +1080,16 @@ main { position: relative; z-index: 1; }
 @media (max-width: 1023px) {
   .logo-fixe { right: 10px; bottom: calc(var(--barre) + 10px); width: 46px; padding: 7px 6px; border-radius: 10px; background: rgb(247 245 240 / 0.92); filter: none; box-shadow: 0 4px 14px -4px rgb(15 25 35 / 0.35); }
 }
+
+/* ------------------------------------------------------------------ */
+/* Référencement : listes de liens, prix, secteurs, conseils, chantiers */
+/* ------------------------------------------------------------------ */
+
+.liste-liens--simple { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 32px; border-top: 0; }
+.liste-liens--simple li:nth-child(-n+2) { border-top: 1px solid var(--filet); }
+.liste-liens--simple a { color: var(--texte); font-family: var(--titres); font-weight: 600; }
+.liste-liens--simple a:hover { color: var(--orange-action); }
+@media (max-width: 639px) {
+  .liste-liens--simple { grid-template-columns: 1fr; }
+  .liste-liens--simple li:nth-child(2) { border-top: 0; }
+}

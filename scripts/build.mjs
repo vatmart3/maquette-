@@ -10,6 +10,7 @@ import path from "node:path";
 import vm from "node:vm";
 import { fileURLToPath } from "node:url";
 import { SERVICES, VILLES, FAQ_ACCUEIL, FAQ_DEPANNAGE } from "./contenu.mjs";
+import { controler } from "./qa.mjs";
 
 const RACINE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const ctx = { window: {} };
@@ -70,6 +71,10 @@ const fr = (t) =>
     .replace(/« /g, "« ")
     .replace(/ »/g, " »");
 
+// Texte enrichi : typographie française + liens internes écrits [ancre](/chemin).
+const riche = (t) => fr(t).replace(/\[([^\]]+)\]\((\/[^)\s]*)\)/g, (_, ancre, href) => `<a href="${href}">${ancre}</a>`);
+const enumerer = (l) => (l.length < 2 ? l.join("") : `${l.slice(0, -1).join(", ")} et ${l[l.length - 1]}`);
+
 const slug = (t) =>
   String(t).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
@@ -87,6 +92,8 @@ const TEL_INTERNATIONAL = `+33 ${TEL_CHIFFRES[1]} ${TEL_CHIFFRES.slice(2).match(
 S.telephone = TEL_NATIONAL;
 const TEL = `tel:${tel}`;
 const urlPage = (p) => BASE + (p === "/" ? "/" : p);
+// Premier titre de la liste qui tient dans les 60 caractères recommandés.
+const titreCourt = (variantes) => variantes.find((t) => [...t].length <= 60) || variantes[variantes.length - 1];
 
 const VILLES_PAGES = VILLES.map((v) => ({ ...v, slug: slug(v.nom), path: `/couvreur/${slug(v.nom)}` }));
 const SERVICES_PAGES = SERVICES.map((s) => ({ ...s, path: `/services/${s.slug}` }));
@@ -128,7 +135,7 @@ if (avecAvis) NAV.splice(3, 0, { id: "avis", href: "/avis", texte: "Avis" });
 
 function logo(clair = false) {
   return `<a class="logo${clair ? " logo--clair" : ""}" href="/">
-        <img class="logo__marque" src="/img/arveo-mark.svg" alt="" width="68" height="36">
+        <img class="logo__marque" src="/img/arveo-mark.svg" alt="" role="presentation" width="68" height="36">
         <span class="logo__texte"><span class="logo__nom">${esc(S.nom)}</span><span class="logo__activite">Couvreur à ${esc(S.adresse.ville)} <span class="logo__suite">&amp; ses alentours</span></span></span>
       </a>`;
 }
@@ -235,21 +242,21 @@ function filAriane(items) {
 
 function actions({ clair = false, ancre = "", secondaire } = {}) {
   const sec = secondaire || { href: ancre || "/depannage-toiture", texte: ancre ? "Remplir la demande" : "Demande de dépannage", icone: "alerte", track: "depannage" };
-  return `<div class="actions">
+  return `<div class="actions" data-commun>
           <a class="bouton bouton--orange" href="${TEL}" data-track="call">${ico("tel")}Appeler le <span class="mono">${esc(S.telephone)}</span></a>
           <a class="bouton ${clair ? "bouton--contour-clair" : "bouton--contour"}" href="${sec.href}" data-track="${sec.track}">${ico(sec.icone)}${sec.texte}</a>
         </div>`;
 }
 
 function coches(liste, clair = false) {
-  return `<p class="garanties${clair ? " garanties--clair" : ""}">${liste.filter(Boolean).map((t) => `<span>${esc(t)}</span>`).join("")}</p>`;
+  return `<p class="garanties${clair ? " garanties--clair" : ""}" data-commun>${liste.filter(Boolean).map((t) => `<span>${esc(t)}</span>`).join("")}</p>`;
 }
 
 const CONFIANCE = [S.confiance.devisGratuit, S.confiance.rappel, confirme(S.confiance.decennale)];
 
 function bandeauCta(titre = "Un problème de toiture ?", texte = "Appelez-nous, faites une demande de dépannage ou prenez rendez-vous pour un diagnostic gratuit.") {
   return `
-    <section class="cta-final" aria-labelledby="titre-cta">
+    <section class="cta-final" aria-labelledby="titre-cta" data-commun>
       <div class="conteneur cta-final__grille">
         <div>
           <h2 id="titre-cta">${fr(titre)}</h2>
@@ -316,7 +323,7 @@ function pied() {
     </div>
   </footer>
 
-  <a class="logo-fixe" href="/" aria-label="${esc(S.nom)}, retour à l'accueil"><img src="/img/arveo-mark.svg" alt="" width="64" height="34"></a>
+  <a class="logo-fixe" href="/" aria-label="${esc(S.nom)}, retour à l'accueil"><img src="/img/arveo-mark.svg" alt="" role="presentation" width="64" height="34"></a>
 
   <nav class="barre-actions" aria-label="Nous contacter">
     <a href="${TEL}" data-track="call">${ico("tel")}<span>Appeler</span></a>
@@ -566,6 +573,7 @@ function formDepannage() {
 
 function formDevis() {
   return `<form class="formulaire" data-formulaire="devis" novalidate aria-label="Demande de devis">
+          <h2 class="sr">Formulaire de demande de devis</h2>
           ${piege}
           ${bloc("01", "Votre projet", `
             ${choix({ legende: "Type de travaux", name: "travaux", options: ["Réparation / fuite", "Réfection de toiture", "Démoussage / traitement", "Zinguerie / gouttières", "Charpente", "Autre"], requis: true, message: "Cochez au moins un type de travaux.", colonnes: "2" })}
@@ -597,6 +605,7 @@ function formDevis() {
 
 function formRdv() {
   return `<form class="formulaire" data-formulaire="rdv" novalidate aria-label="Demande de rendez-vous">
+          <h2 class="sr">Formulaire de demande de rendez-vous</h2>
           ${piege}
           ${bloc("01", "Motif du rendez-vous", `
             ${choix({ legende: "Motif", name: "motif", type: "radio", options: ["Diagnostic toiture gratuit", "Visite pour un devis", "Contrôle après intempéries", "Autre"], requis: true, message: "Choisissez un motif.", colonnes: "2" })}
@@ -625,6 +634,7 @@ function formRdv() {
 
 function formContact() {
   return `<form class="formulaire" data-formulaire="contact" novalidate aria-label="Nous écrire">
+          <h2 class="sr">Formulaire de contact</h2>
           ${piege}
           ${bloc("01", "Votre message", `
             ${champ({ label: "Nom / Prénom", name: "nom", requis: true, message: "Indiquez votre nom.", attrs: 'autocomplete="name"' })}
@@ -642,7 +652,7 @@ function formContact() {
 /* Blocs de contenu                                                    */
 /* ------------------------------------------------------------------ */
 
-const APRES_DEMANDE = `<div class="cote-carte">
+const APRES_DEMANDE = `<div class="cote-carte" data-commun>
             <h2>Après votre demande</h2>
             <ol class="suite-demande">
               <li><span class="mono">01</span><span><strong>Réception immédiate</strong>Votre demande arrive directement chez ARVÉO.</span></li>
@@ -650,7 +660,7 @@ const APRES_DEMANDE = `<div class="cote-carte">
               <li><span class="mono">03</span><span><strong>Visite et devis</strong>Diagnostic sur place, prix écrit avant tout travail.</span></li>
             </ol>
           </div>
-          <div class="cote-carte">
+          <div class="cote-carte" data-commun>
             <h2>Une urgence ?</h2>
             <p>Fuite active ou tuiles envolées, utilisez plutôt la demande de dépannage.</p>
             <a class="lien-fleche" href="/depannage-toiture" data-track="depannage">Demande de dépannage ${ico("fleche")}</a>
@@ -660,7 +670,7 @@ function faqHtml(liste, titre = "Vos questions") {
   return `
     <section class="section" aria-labelledby="titre-faq">
       <div class="conteneur faq-bloc">
-        <div class="faq-bloc__intro">
+        <div class="faq-bloc__intro" data-commun>
           <h2 id="titre-faq">${fr(titre)}</h2>
           <p class="texte">Une question qui n'est pas dans la liste ? Décrivez votre situation, nous vous rappelons dans la journée.</p>
           <a class="bouton bouton--orange" href="/depannage-toiture" data-track="depannage">${ico("alerte")}Faire une demande de dépannage</a>
@@ -755,11 +765,13 @@ function enTetePage({ surTitre, h1, chapo, ariane, rappel, illustration = true, 
 /* ------------------------------------------------------------------ */
 
 const pages = [];
+const GENERES = []; // toutes les pages écrites, pour le contrôle qualité
 const ecrire = (fichier, html, meta) => {
   const f = path.join(RACINE, fichier);
   fs.mkdirSync(path.dirname(f), { recursive: true });
   fs.writeFileSync(f, html);
   if (meta) pages.push(meta);
+  GENERES.push({ fichier, path: meta?.path || "/" + fichier.replace(/\.html$/, ""), html, indexable: !!meta && !/name="robots" content="noindex/.test(html) });
 };
 
 /* --- Accueil --- */
@@ -777,7 +789,7 @@ const ZONES_VISITE = [
     id: "accueil",
     path: "/",
     scene: true,
-    title: "Couvreur à Frontignan, réparation et réfection de toiture | ARVÉO",
+    title: "Couvreur à Frontignan, réparation de toiture | ARVÉO",
     ogTitle: "ARVÉO, couvreur à Frontignan",
     description: `Couvreur zingueur à Frontignan pour fuites, tuiles cassées, réfection de toiture, démoussage, gouttières. Dépannage rapide à Sète et Balaruc. Devis gratuit.`,
     jsonld: [ldEntreprise(), ldSite, ldFaq(FAQ_ACCUEIL)],
@@ -888,7 +900,7 @@ for (const s of SERVICES_PAGES) {
       <div class="conteneur article">
         <div class="article__corps">
           ${corps}
-          <div class="encart-cta">
+          <div class="encart-cta" data-commun>
             <p><strong>Besoin d'un avis sur votre toiture ?</strong> Le diagnostic et le devis sont gratuits.</p>
             <div class="actions">
               <a class="bouton bouton--orange" href="/devis-toiture?travaux=${encodeURIComponent(ZONES_VISITE.find((z) => z.lien === s.path)?.devis || "")}" data-track="devis">${ico("devis")}Demander un devis</a>
@@ -901,7 +913,7 @@ for (const s of SERVICES_PAGES) {
             <h2>Intervention à</h2>
             <ul class="villes villes--compact">${VILLES_PAGES.map((v) => `<li><a href="${v.path}">${ico("pin")}${esc(v.nom)}</a></li>`).join("")}</ul>
           </div>
-          <div class="cote-carte cote-carte--orange">
+          <div class="cote-carte cote-carte--orange" data-commun>
             <h2>Une urgence ?</h2>
             <p>Fuite active ou tuiles envolées ? Faites une demande de dépannage.</p>
             <a class="bouton bouton--orange" href="/depannage-toiture" data-track="depannage">${ico("alerte")}Dépannage</a>
@@ -930,8 +942,8 @@ for (const v of VILLES_PAGES) {
   const p = {
     id: "zone",
     path: v.path,
-    title: (v.nom.length > 16 ? `Couvreur à ${v.nom} (${v.cp}) | ARVÉO` : `Couvreur à ${v.nom} (${v.cp}), réparation de toiture | ARVÉO`),
-    description: `Couvreur à ${v.nom} (${v.cp}) pour fuites, tuiles cassées, réfection, démoussage et gouttières. Artisan de Frontignan, dépannage rapide, devis gratuit.`,
+    title: titreCourt([`Couvreur à ${v.nom} (${v.cp}), réparation de toiture | ARVÉO`, `Couvreur à ${v.nom} (${v.cp}), toiture | ARVÉO`, `Couvreur à ${v.nom} (${v.cp}) | ARVÉO`]),
+    description: v.description || `Couvreur à ${v.nom} (${v.cp}) pour fuites, tuiles cassées, réfection, démoussage et gouttières. Artisan de Frontignan, devis gratuit.`,
     jsonld: [
       ldEntreprise(),
       { ...ldService(`Couvreur à ${v.nom}`, v.path, v.nom), areaServed: { "@type": "City", name: v.nom, geo: { "@type": "GeoCoordinates", latitude: v.lat, longitude: v.lng } } },
@@ -948,13 +960,16 @@ for (const v of VILLES_PAGES) {
         <div class="article__corps">
           <p class="encart-accent">${ico("toit")}<strong>${fr(v.accent)}</strong></p>
           <h2>Les toitures de ${esc(v.nom)}</h2>
-          ${v.texte.map((t) => `<p>${fr(t)}</p>`).join("\n          ")}
+          ${v.texte.map((t) => `<p>${riche(t)}</p>`).join("\n          ")}
+          ${v.quartiers?.length ? `<p>Nous intervenons notamment à ${fr(enumerer(v.quartiers))}.</p>` : ""}
+          ${v.vigilance?.length ? `<h2>Ce que nous surveillons à ${esc(v.nom)}</h2>
+          <ul class="liste-coches">${v.vigilance.map((t) => `<li>${ico("coche")}${riche(t)}</li>`).join("")}</ul>` : ""}
           <h2>Nos interventions à ${esc(v.nom)}</h2>
-          <ul class="liste-liens">
-            <li><a href="/depannage-toiture">${ico("alerte")}<span><strong>Dépannage de toiture à ${esc(v.nom)}</strong> fuite, tuiles arrachées, bâchage d'urgence</span></a></li>
-            ${SERVICES_PAGES.map((s) => `<li><a href="${s.path}">${ico("coche")}<span><strong>${esc(s.nom)}</strong> ${fr(s.chapo.split(".")[0])}.</span></a></li>`).join("\n            ")}
+          <ul class="liste-liens liste-liens--simple">
+            <li><a href="/depannage-toiture">${ico("alerte")}<span>Dépannage de toiture à ${esc(v.nom)}</span></a></li>
+            ${SERVICES_PAGES.map((s) => `<li><a href="${s.path}">${ico("coche")}<span>${esc(s.court)} à ${esc(v.nom)}</span></a></li>`).join("\n            ")}
           </ul>
-          <div class="encart-cta">
+          <div class="encart-cta" data-commun>
             <p><strong>Un problème de toiture à ${esc(v.nom)} ?</strong> On se déplace pour un diagnostic gratuit.</p>
             <div class="actions">
               <a class="bouton bouton--orange" href="/devis-toiture" data-track="devis">${ico("devis")}Demander un devis</a>
@@ -967,7 +982,7 @@ for (const v of VILLES_PAGES) {
             <h2>Communes voisines</h2>
             ${listeVilles(v.nom).replace('class="villes"', 'class="villes villes--compact"')}
           </div>
-          <div class="cote-carte cote-carte--orange">
+          <div class="cote-carte cote-carte--orange" data-commun>
             <h2>Urgence à ${esc(v.nom)} ?</h2>
             <p>Décrivez le problème en ligne, on vous rappelle au plus vite.</p>
             <a class="bouton bouton--orange" href="/depannage-toiture" data-track="depannage">${ico("alerte")}Dépannage</a>
@@ -975,7 +990,7 @@ for (const v of VILLES_PAGES) {
         </aside>
       </div>
     </section>
-${faqHtml([...v.faq, FAQ_ACCUEIL[0], FAQ_ACCUEIL[1]], `Couvreur à ${v.nom}, vos questions`)}
+${faqHtml(v.faq, `Couvreur à ${v.nom}, vos questions`)}
 ${bandeauCta(`Votre couvreur à ${v.nom}`, `Réparation, réfection, démoussage ou urgence. Appelez-nous ou faites votre demande en ligne.`)}` +
     pied() +
     FIN_PAGE(false);
@@ -988,7 +1003,7 @@ ${bandeauCta(`Votre couvreur à ${v.nom}`, `Réparation, réfection, démoussage
   const p = {
     id: "zone",
     path: "/zone-intervention",
-    title: "Couvreur à Frontignan, Sète et Balaruc, zone d'intervention | ARVÉO",
+    title: "Couvreur dans l'Hérault, zone d'intervention | ARVÉO",
     description: "Couvreur à Frontignan, ARVÉO intervient à Sète, Balaruc, Vic-la-Gardiole, Mireval, Gigean, Poussan, Villeneuve-lès-Maguelone et Montbazin.",
     jsonld: [ldEntreprise(), ar.ld],
   };
@@ -1016,7 +1031,7 @@ ${bandeauCta()}` +
   const p = {
     id: "depannage",
     path: "/depannage-toiture",
-    title: "Dépannage de toiture urgent à Frontignan, demande en ligne | ARVÉO",
+    title: "Dépannage de toiture à Frontignan, demande en ligne | ARVÉO",
     description: `Fuite de toiture, tuiles arrachées, dégâts après orage à Frontignan, Sète et alentours. Faites votre demande de dépannage en ligne ou appelez le ${S.telephone}.`,
     jsonld: [ldEntreprise(), ldService("Dépannage de toiture", "/depannage-toiture"), ar.ld, ldFaq(FAQ_DEPANNAGE)],
   };
@@ -1350,6 +1365,17 @@ ${pages.map((p) => `  <url><loc>${urlPage(p.path)}</loc><lastmod>${AUJOURDHUI}</
 );
 fs.writeFileSync(path.join(RACINE, "robots.txt"), `User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: ${BASE}/sitemap.xml\n`);
 
+/* --- Contrôle qualité SEO --- */
+
+const QA = (() => {
+  const chemins = new Set(GENERES.map((g) => g.path));
+  const redirections = JSON.parse(fs.readFileSync(path.join(RACINE, "vercel.json"), "utf8")).redirects.map((r) => r.source);
+  const existe = (c) =>
+    c === "/" || chemins.has(c) || redirections.includes(c) || (fs.existsSync(path.join(RACINE, c)) && fs.statSync(path.join(RACINE, c)).isFile());
+  return controler(GENERES, { base: BASE, sitemap: pages.map((p) => p.path), existe });
+})();
+
+
 /* --- Bilan --- */
 
 {
@@ -1364,5 +1390,13 @@ fs.writeFileSync(path.join(RACINE, "robots.txt"), `User-agent: *\nAllow: /\nDisa
   }
 }
 
-console.log(`${pages.length + 1} pages générées, sitemap.xml et robots.txt à jour.`);
+console.log(`${GENERES.length} pages générées (${pages.length} dans le sitemap), sitemap.xml et robots.txt à jour.`);
+console.log(`\nContrôle SEO : ${QA.erreurs.length} erreur(s), ${QA.alertes.length} alerte(s).`);
+for (const e of QA.erreurs) console.log("  ✗ " + e);
+for (const e of QA.alertes) console.log("  ! " + e);
+console.log("Similarité de contenu, 10 paires les plus proches (seuil 25 %) :");
+for (const x of QA.similarites.slice(0, 10)) console.log(`  ${(x.j * 100).toFixed(1).padStart(5)} %  ${x.a}  ↔  ${x.b}`);
+if (process.argv.includes("--rapport"))
+  fs.writeFileSync(path.join(RACINE, "scripts", ".rapport-seo.json"), JSON.stringify({ similarites: QA.similarites.slice(0, 50), mots: QA.mots, erreurs: QA.erreurs, alertes: QA.alertes }, null, 1));
+if (QA.erreurs.length) process.exitCode = 1;
 if (avertissements.length) console.log(`\nÀ compléter avant la mise en ligne (${avertissements.length}) :\n- ` + avertissements.join("\n- "));
