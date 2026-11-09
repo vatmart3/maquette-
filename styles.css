@@ -1093,3 +1093,10 @@ main { position: relative; z-index: 1; }
   .liste-liens--simple { grid-template-columns: 1fr; }
   .liste-liens--simple li:nth-child(2) { border-top: 0; }
 }
+
+.photos { list-style: none; margin: 28px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.photos figure { margin: 0; }
+.photos img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 6px; background: var(--gris); }
+.photos figcaption { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--filet); color: var(--texte-2); font-size: .92rem; }
+@media (max-width: 1023px) { .photos { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 639px) { .photos { grid-template-columns: 1fr; gap: 20px; } }

@@ -95,6 +95,12 @@ const urlPage = (p) => BASE + (p === "/" ? "/" : p);
 // Premier titre de la liste qui tient dans les 60 caractères recommandés.
 const titreCourt = (variantes) => variantes.find((t) => [...t].length <= 60) || variantes[variantes.length - 1];
 
+/* Photos de chantier (préparées par scripts/photos.mjs ; manifeste vide = aucune section photo). */
+const PHOTOS = (() => {
+  const f = path.join(RACINE, "img", "chantiers", "photos.json");
+  return fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, "utf8")) : [];
+})();
+
 const VILLES_PAGES = VILLES.map((v) => ({ ...v, slug: slug(v.nom), path: `/couvreur/${slug(v.nom)}` }));
 const SERVICES_PAGES = SERVICES.map((s) => ({ ...s, path: `/services/${s.slug}` }));
 
@@ -760,6 +766,51 @@ function enTetePage({ surTitre, h1, chapo, ariane, rappel, illustration = true, 
     </section>`;
 }
 
+/* --- Photos de chantier --- */
+
+const nomCommune = (s) => VILLES_PAGES.find((v) => v.slug === s)?.nom || s.replace(/-/g, " ").replace(/^./, (c) => c.toUpperCase());
+const nomService = (s) => (s === "depannage-toiture" ? "Dépannage de toiture" : SERVICES_PAGES.find((x) => x.slug === s)?.nom || s.replace(/-/g, " "));
+const altPhoto = (ph) => `${nomService(ph.service)} à ${nomCommune(ph.commune)}${ph.description ? `, ${ph.description}` : ""}`;
+const photosDe = ({ commune, service, liste } = {}) =>
+  PHOTOS.filter((ph) => (liste ? liste.includes(ph.original) || liste.includes(ph.versions[1280].src.split("/").pop()) : (!commune || ph.commune === commune) && (!service || ph.service === service)));
+
+function galerie(photos, titre, idTitre = "titre-photos") {
+  if (!photos.length) return "";
+  return `
+    <section class="section" aria-labelledby="${idTitre}">
+      <div class="conteneur">
+        <h2 id="${idTitre}">${fr(titre)}</h2>
+        <ul class="photos">
+          ${photos
+            .slice(0, 9)
+            .map(
+              (ph) => `<li><figure>
+            <img src="${ph.versions[480].src}" srcset="${ph.versions[480].src} ${ph.versions[480].largeur}w, ${ph.versions[1280].src} ${ph.versions[1280].largeur}w" sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 400px" width="${ph.largeur}" height="${ph.hauteur}" alt="${esc(altPhoto(ph))}" loading="lazy" decoding="async">
+            <figcaption>${fr(altPhoto(ph))}</figcaption>
+          </figure></li>`
+            )
+            .join("\n          ")}
+        </ul>
+      </div>
+    </section>`;
+}
+
+const ldImages = (photos, ville) =>
+  photos.map((ph) =>
+    nettoyer({
+      "@context": "https://schema.org",
+      "@type": "ImageObject",
+      contentUrl: BASE + ph.versions[1280].src,
+      url: BASE + ph.versions[1280].src,
+      width: ph.largeur,
+      height: ph.hauteur,
+      caption: altPhoto(ph),
+      contentLocation: ville ? { "@type": "City", name: ville } : undefined,
+      creditText: S.nom,
+      copyrightNotice: S.nom,
+    })
+  );
+
 /* ------------------------------------------------------------------ */
 /* Pages                                                               */
 /* ------------------------------------------------------------------ */
@@ -884,7 +935,8 @@ ${bandeauCta()}` +
 
 for (const s of SERVICES_PAGES) {
   const ar = filAriane([{ nom: s.court, path: s.path }]);
-  const p = { id: "services", path: s.path, title: s.title, description: s.description, jsonld: [ldEntreprise(), ldService(s.nom, s.path), ar.ld, ldFaq(s.faq)] };
+  const photosS = photosDe({ service: s.slug });
+  const p = { id: "services", path: s.path, title: s.title, description: s.description, jsonld: [ldEntreprise(), ldService(s.nom, s.path), ar.ld, ldFaq(s.faq), ...ldImages(photosS)] };
   const corps = s.sections
     .map(
       (sec) => `<h2>${fr(sec.h2)}</h2>
@@ -921,6 +973,7 @@ for (const s of SERVICES_PAGES) {
         </aside>
       </div>
     </section>
+${galerie(photosS, `${s.court}, photos de nos chantiers`)}
 ${faqHtml(s.faq, `Vos questions sur ${s.court.toLowerCase() === "charpente" ? "la charpente" : "ce service"}`)}
     <section class="section section--claire" aria-labelledby="titre-autres">
       <div class="conteneur">
@@ -931,13 +984,14 @@ ${faqHtml(s.faq, `Vos questions sur ${s.court.toLowerCase() === "charpente" ? "l
 ${bandeauCta()}` +
     pied() +
     FIN_PAGE(false);
-  ecrire(`services/${s.slug}.html`, html, { path: s.path, priorite: "0.8" });
+  ecrire(`services/${s.slug}.html`, html, { path: s.path, priorite: "0.8", images: photosS });
 }
 
 
 /* --- Pages communes --- */
 
 for (const v of VILLES_PAGES) {
+  const photosV = photosDe({ commune: v.slug });
   const ar = filAriane([{ nom: "Zone d'intervention", path: "/zone-intervention" }, { nom: `Couvreur ${v.nom}`, path: v.path }]);
   const p = {
     id: "zone",
@@ -949,6 +1003,7 @@ for (const v of VILLES_PAGES) {
       { ...ldService(`Couvreur à ${v.nom}`, v.path, v.nom), areaServed: { "@type": "City", name: v.nom, geo: { "@type": "GeoCoordinates", latitude: v.lat, longitude: v.lng } } },
       ar.ld,
       ldFaq(v.faq),
+      ...ldImages(photosV, v.nom),
     ],
   };
   const html =
@@ -990,11 +1045,12 @@ for (const v of VILLES_PAGES) {
         </aside>
       </div>
     </section>
+${galerie(photosV, `Nos chantiers à ${v.nom} en photos`)}
 ${faqHtml(v.faq, `Couvreur à ${v.nom}, vos questions`)}
 ${bandeauCta(`Votre couvreur à ${v.nom}`, `Réparation, réfection, démoussage ou urgence. Appelez-nous ou faites votre demande en ligne.`)}` +
     pied() +
     FIN_PAGE(false);
-  ecrire(`couvreur/${v.slug}.html`, html, { path: v.path, priorite: v.nom === "Frontignan" ? "0.9" : "0.8" });
+  ecrire(`couvreur/${v.slug}.html`, html, { path: v.path, priorite: v.nom === "Frontignan" ? "0.9" : "0.8", images: photosV });
 }
 
 /* --- Zone d'intervention --- */
@@ -1358,8 +1414,15 @@ ${bandeauCta()}` +
 fs.writeFileSync(
   path.join(RACINE, "sitemap.xml"),
   `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${pages.map((p) => `  <url><loc>${urlPage(p.path)}</loc><lastmod>${AUJOURDHUI}</lastmod><priority>${p.priorite}</priority></url>`).join("\n")}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+${pages
+  .map(
+    (p) =>
+      `  <url><loc>${urlPage(p.path)}</loc><lastmod>${AUJOURDHUI}</lastmod><priority>${p.priorite}</priority>${(p.images || [])
+        .map((ph) => `<image:image><image:loc>${BASE}${ph.versions[1280].src}</image:loc></image:image>`)
+        .join("")}</url>`
+  )
+  .join("\n")}
 </urlset>
 `
 );

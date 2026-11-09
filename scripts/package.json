@@ -1,0 +1,13 @@
+{
+  "name": "arveo-outils",
+  "private": true,
+  "description": "Outils de génération du site ARVÉO (non déployés : le dossier scripts est exclu par .vercelignore).",
+  "scripts": {
+    "build": "node build.mjs",
+    "photos": "node photos.mjs",
+    "indexnow": "node indexnow.mjs"
+  },
+  "devDependencies": {
+    "sharp": "0.33.5"
+  }
+}

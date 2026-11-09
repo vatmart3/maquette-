@@ -73,6 +73,21 @@ Fait dans le site :
 5. **Photos réelles** de chantiers (avant/après) à ajouter sur les pages services et communes.
 6. Remplacer le téléphone fictif, l'adresse exacte, le SIRET et l'assurance décennale dans `config.js`.
 
+## Ajouter des photos de chantier
+
+Uniquement de **vraies** photos de chantiers ARVÉO. Sans photo, aucune section photo n'apparaît.
+
+1. Déposez les originaux dans `photos/`, nommés `commune__service__description.jpg`
+   (ex. `sete__refection-toiture__tuiles-canal-reposées.jpg`, voir `photos/LISEZMOI.md`).
+2. La première fois seulement, installez l'outil d'images : `npm install --prefix scripts`.
+3. Lancez `npm run photos --prefix scripts` : versions WebP 480 et 1280 px dans `img/chantiers/`,
+   orientation corrigée, GPS et données EXIF supprimés, noms de fichiers descriptifs.
+4. Lancez `node scripts/build.mjs` : les photos apparaissent sur la page de la commune et sur la
+   page du service (texte alternatif, dimensions, chargement différé, `ImageObject` dans les données
+   structurées et balises `image:image` dans le sitemap). Commitez `img/chantiers/` et poussez.
+
+Le dossier `photos/` n'est jamais mis en ligne (exclu par `.vercelignore`).
+
 ## Identité visuelle
 
 Charte ARVÉO : bleu ardoise `#243746`, orange `#C65D28` (boutons en `#B9541F` pour le contraste AA
