@@ -823,9 +823,41 @@ function demarrer() {
   }
 
   const v3 = new THREE.Vector3();
+  // Téléphone : qualité adaptative. Si l'animation descend sous ~40 images par seconde de façon
+  // durable, la finesse du rendu baisse d'un cran (jamais sous 1) pour retrouver la fluidité.
+  const qualite = { ratio: renderer.getPixelRatio(), cumul: 0, n: 0, dernierChangement: 0 };
+  function surveillerFluidite(intervalle, t0) {
+    if (!mobile || intervalle <= 0 || intervalle > 100) return;
+    qualite.cumul += intervalle;
+    qualite.n++;
+    if (qualite.n < 40) return;
+    const moyenne = qualite.cumul / qualite.n;
+    qualite.cumul = 0;
+    qualite.n = 0;
+    if (moyenne > 25 && qualite.ratio > 1 && t0 - qualite.dernierChangement > 1500) {
+      qualite.ratio = Math.max(1, qualite.ratio - 0.25);
+      qualite.dernierChangement = t0;
+      renderer.setPixelRatio(qualite.ratio);
+      renderer.setSize(etat.largeur, etat.hauteur, false);
+    }
+  }
+
+  // Téléphone : la caméra suit le défilement comme un ressort amorti (accélère et freine en
+  // douceur, sans dépasser), au lieu de repartir sèchement à chaque variation du défilement.
+  const ressort = { pos: new THREE.Vector3(), cible: new THREE.Vector3(), ox: 0, oy: 0 };
+  const W_RESSORT = 7.5;
+  const tmpA = new THREE.Vector3();
+  function suivreRessort(x, v, but, dt) {
+    // accélération = w²·(but − x) − 2w·v (amortissement critique)
+    tmpA.subVectors(but, x).multiplyScalar(W_RESSORT * W_RESSORT).addScaledVector(v, -2 * W_RESSORT);
+    v.addScaledVector(tmpA, dt);
+    x.addScaledVector(v, dt);
+  }
+
   function boucle(t0) {
     if (!visible) { enCours = false; return; }
-    const dt = derniere ? Math.min(0.05, (t0 - derniere) / 1000) : 0.016;
+    const brut = derniere ? t0 - derniere : 0;
+    const dt = derniere ? Math.min(0.05, brut / 1000) : 0.016;
     derniere = t0;
     let bouge = false;
 
@@ -836,10 +868,24 @@ function demarrer() {
       const c = calculerCible();
       const a = reduit ? 1 : 1 - Math.exp(-dt * 4.5);
       const ecart = etat.pos.distanceToSquared(c.pos) + etat.cible.distanceToSquared(c.cible);
-      etat.pos.lerp(c.pos, a);
-      etat.cible.lerp(c.cible, a);
-      etat.ox += (c.ox - etat.ox) * a;
-      etat.oy += (c.oy - etat.oy) * a;
+      if (mobile && !sansAnimation) {
+        // sous-pas de 1/120 s pour un ressort stable même si une image arrive en retard
+        for (let reste = dt; reste > 1e-4; reste -= 1 / 120) {
+          const h = Math.min(reste, 1 / 120);
+          suivreRessort(etat.pos, ressort.pos, c.pos, h);
+          suivreRessort(etat.cible, ressort.cible, c.cible, h);
+          ressort.ox += (W_RESSORT * W_RESSORT * (c.ox - etat.ox) - 2 * W_RESSORT * ressort.ox) * h;
+          etat.ox += ressort.ox * h;
+          ressort.oy += (W_RESSORT * W_RESSORT * (c.oy - etat.oy) - 2 * W_RESSORT * ressort.oy) * h;
+          etat.oy += ressort.oy * h;
+        }
+        if (ressort.pos.lengthSq() + ressort.cible.lengthSq() > 1e-6) bouge = true;
+      } else {
+        etat.pos.lerp(c.pos, a);
+        etat.cible.lerp(c.cible, a);
+        etat.ox += (c.ox - etat.ox) * a;
+        etat.oy += (c.oy - etat.oy) * a;
+      }
       etat.opacite += (c.opacite - etat.opacite) * a;
       if (ecart > 1e-5 || Math.abs(c.opacite - etat.opacite) > 0.002) bouge = true;
     }
@@ -883,8 +929,14 @@ function demarrer() {
       }
     }
 
-    if (bouge) requestAnimationFrame(boucle);
-    else enCours = false;
+    if (bouge) {
+      surveillerFluidite(brut, t0);
+      requestAnimationFrame(boucle);
+    } else {
+      enCours = false;
+      qualite.cumul = 0;
+      qualite.n = 0;
+    }
   }
 
   window.addEventListener("resize", redimensionner);
