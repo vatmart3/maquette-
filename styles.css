@@ -49,7 +49,7 @@
   /* Mise en page */
   --marge: clamp(16px, 4vw, 48px);
   --largeur: 1240px;
-  --section: clamp(64px, 8vw, 112px);
+  --section: clamp(48px, 6vw, 84px);
   --entete: 76px;
   --bandeau: 40px;
   --barre: 0px;
@@ -128,6 +128,9 @@ main { position: relative; z-index: 1; }
 
 .section { padding-block: var(--section); background: var(--casse); }
 .section--claire { background: var(--blanc); }
+/* deux sections de même fond qui se suivent : un seul espacement, pas deux */
+.section:not(.section--claire) + .section:not(.section--claire),
+.section--claire + .section--claire { padding-top: 0; }
 
 .sur-titre {
   margin: 0 0 14px;
@@ -211,7 +214,7 @@ main { position: relative; z-index: 1; }
 .lien-fleche--clair:hover { color: #fff; }
 
 .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 14px; }
-.actions--centre { justify-content: center; margin-top: clamp(32px, 4vw, 48px); }
+.actions--centre { justify-content: center; margin-top: clamp(28px, 3vw, 40px); }
 
 .garanties {
   display: flex;
@@ -642,6 +645,16 @@ main { position: relative; z-index: 1; }
 .faq__reponse { padding: 0 52px 22px 0; color: var(--texte-2); }
 .faq__reponse p { margin-bottom: 10px; }
 
+.faq-bloc { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: clamp(32px, 5vw, 80px); align-items: start; }
+.faq-bloc__intro { position: sticky; top: calc(var(--entete) + 32px); }
+.faq-bloc__intro .texte { margin: 18px 0 26px; }
+
+.suite-demande { list-style: none; margin: 0; padding: 0; }
+.suite-demande li { display: grid; grid-template-columns: 32px 1fr; padding: 12px 0; border-bottom: 1px solid var(--filet); font-size: 0.92rem; color: var(--texte-2); }
+.suite-demande li:last-child { border-bottom: 0; }
+.suite-demande .mono { color: var(--orange-action); font-size: 0.85rem; padding-top: 2px; }
+.suite-demande strong { display: block; color: var(--texte); font-family: var(--titres); font-size: 0.98rem; }
+
 /* ---------- Bandeau final ---------- */
 
 .cta-final { position: relative; z-index: 1; background: var(--ardoise); color: #fff; padding-block: var(--section); }
@@ -898,7 +911,7 @@ main { position: relative; z-index: 1; }
 }
 
 @media (max-width: 859px) {
-  :root { --entete: 62px; --bandeau: 34px; --section: 56px; }
+  :root { --entete: 62px; --bandeau: 34px; --section: 44px; }
   body { font-size: 1rem; line-height: 1.6; }
   h1 { font-size: 2.05rem; line-height: 1.08; }
   h2 { font-size: 1.6rem; line-height: 1.15; }
@@ -972,6 +985,10 @@ main { position: relative; z-index: 1; }
   .ariane ol { margin-bottom: 16px; font-size: 0.8rem; }
   .article__corps h2 { font-size: 1.3rem; margin-top: 30px; }
   .faq summary { font-size: 1rem; padding-block: 16px; padding-right: 40px; }
+  .faq-bloc { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .faq-bloc__intro { position: static; }
+  .faq-bloc__intro .bouton { display: none; }
+  .faq-bloc__intro .texte { margin: 12px 0 0; }
   .faq__reponse { padding-right: 0; font-size: 0.95rem; }
 
   /* formulaires */

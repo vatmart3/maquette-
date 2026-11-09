@@ -566,11 +566,29 @@ function formContact() {
 /* Blocs de contenu                                                    */
 /* ------------------------------------------------------------------ */
 
+const APRES_DEMANDE = `<div class="cote-carte">
+            <h2>Après votre demande</h2>
+            <ol class="suite-demande">
+              <li><span class="mono">01</span><span><strong>Réception immédiate</strong>Votre demande arrive directement chez ARVÉO.</span></li>
+              <li><span class="mono">02</span><span><strong>Rappel dans la journée</strong>On fait le point avec vous par téléphone.</span></li>
+              <li><span class="mono">03</span><span><strong>Visite et devis</strong>Diagnostic sur place, prix écrit avant tout travail.</span></li>
+            </ol>
+          </div>
+          <div class="cote-carte">
+            <h2>Une urgence ?</h2>
+            <p>Fuite active ou tuiles envolées, utilisez plutôt la demande de dépannage.</p>
+            <a class="lien-fleche" href="/depannage-toiture" data-track="depannage">Demande de dépannage ${ico("fleche")}</a>
+          </div>`;
+
 function faqHtml(liste, titre = "Vos questions") {
   return `
     <section class="section" aria-labelledby="titre-faq">
-      <div class="conteneur conteneur--etroit">
-        <h2 id="titre-faq">${fr(titre)}</h2>
+      <div class="conteneur faq-bloc">
+        <div class="faq-bloc__intro">
+          <h2 id="titre-faq">${fr(titre)}</h2>
+          <p class="texte">Une question qui n'est pas dans la liste ? Décrivez votre situation, nous vous rappelons dans la journée.</p>
+          <a class="bouton bouton--orange" href="/depannage-toiture" data-track="depannage">${ico("alerte")}Faire une demande de dépannage</a>
+        </div>
         <div class="faq">
           ${liste
             .map(
@@ -1026,6 +1044,8 @@ ${bandeauCta()}` +
               <li>${ico("coche")}Un délai d'intervention</li>
             </ul>
           </div>
+          ${APRES_DEMANDE}
+        
         </aside>
       </div>
     </section>
@@ -1062,6 +1082,8 @@ ${bandeauCta()}` +
               <li>${ico("coche")}Conseils et devis gratuit</li>
             </ul>
           </div>
+          ${APRES_DEMANDE}
+        
         </aside>
       </div>
     </section>
