@@ -15,9 +15,45 @@ const RACINE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const ctx = { window: {} };
 vm.runInNewContext(fs.readFileSync(path.join(RACINE, "config.js"), "utf8"), ctx);
 const S = ctx.window.SITE;
+if (process.env.ARVEO_PRODUCTION === "1") S.production = true; // test du mode production sans modifier config.js
 const BASE = S.siteUrl.replace(/\/$/, "");
 const AUJOURDHUI = new Date().toISOString().slice(0, 10);
 const avertissements = [];
+
+/* ------------------------------------------------------------------ */
+/* Valeurs provisoires                                                 */
+/* ------------------------------------------------------------------ */
+// Une valeur est provisoire si sa ligne de config.js porte « // À CONFIRMER », ou si elle
+// ressemble à un bouche-trou (XX, SIRET à zéro, numéro fictif ARCEP, texte d'exemple).
+// Les valeurs provisoires ne sont jamais envoyées dans les données structurées.
+
+const A_CONFIRMER = (() => {
+  const cles = new Map();
+  const pile = [];
+  for (const ligne of fs.readFileSync(path.join(RACINE, "config.js"), "utf8").split("\n")) {
+    const ouvre = ligne.match(/^\s*([\w$]+):\s*[[{]\s*(?:\/\/.*)?$/);
+    if (ouvre) { pile.push(ouvre[1]); continue; }
+    if (/^\s*[\]}],?\s*$/.test(ligne)) { pile.pop(); continue; }
+    const m = ligne.match(/^\s*([\w$]+):.*\/\/\s*À CONFIRMER\s*:?\s*(.*)$/);
+    if (m) cles.set([...pile, m[1]].filter((k) => k !== "SITE").join("."), m[2].trim());
+  }
+  return cles;
+})();
+
+const TEL_FICTIFS = /^0(199|26191|35301|46571|53649|63998|97510)/;
+const BOUCHE_TROU = /XX|À CONFIRMER|000 000|Nom de l'assureur|Nom du dirigeant/;
+
+const valeur = (chemin) => chemin.split(".").reduce((o, k) => (o == null ? o : o[k]), S);
+function provisoire(chemin) {
+  const v = valeur(chemin);
+  if (A_CONFIRMER.has(chemin)) return true;
+  if (v == null || v === "" || (Array.isArray(v) && !v.length)) return true;
+  if (typeof v === "string" && BOUCHE_TROU.test(v)) return true;
+  if (chemin === "telephone" && TEL_FICTIFS.test(v.replace(/\D/g, "").replace(/^33/, "0"))) return true;
+  return false;
+}
+// Valeur sûre pour Google, ou undefined.
+const fiable = (chemin) => (provisoire(chemin) ? undefined : valeur(chemin));
 
 /* ------------------------------------------------------------------ */
 /* Outils                                                              */
@@ -40,10 +76,15 @@ const slug = (t) =>
 // Une valeur encore « à confirmer » ne doit pas apparaître sur le site public.
 const confirme = (v) => (v && !/XX|À CONFIRMER|000 000/.test(v) ? v : "");
 
-const tel = (() => {
+// NAP : un seul numéro, écrit au format national sur les pages et international dans le JSON-LD.
+const TEL_CHIFFRES = (() => {
   const c = S.telephone.replace(/\D/g, "");
-  return c.startsWith("33") ? "+" + c : "+33" + c.replace(/^0/, "");
+  return c.startsWith("33") ? "0" + c.slice(2) : c;
 })();
+const TEL_NATIONAL = TEL_CHIFFRES.replace(/(\d{2})(?=\d)/g, "$1 ");
+const tel = "+33" + TEL_CHIFFRES.slice(1);
+const TEL_INTERNATIONAL = `+33 ${TEL_CHIFFRES[1]} ${TEL_CHIFFRES.slice(2).match(/\d{2}/g).join(" ")}`;
+S.telephone = TEL_NATIONAL;
 const TEL = `tel:${tel}`;
 const urlPage = (p) => BASE + (p === "/" ? "/" : p);
 
@@ -318,22 +359,25 @@ function ldEntreprise() {
     url: BASE + "/",
     logo: BASE + "/img/logo-arveo.png",
     image: BASE + "/og.png",
-    telephone: tel,
-    email: S.email,
+    telephone: fiable("telephone") && TEL_INTERNATIONAL,
+    email: fiable("email"),
     address: {
       "@type": "PostalAddress",
-      ...(confirme(a.rue) ? { streetAddress: a.rue } : {}),
+      streetAddress: fiable("adresse.rue"),
       postalCode: a.codePostal,
       addressLocality: a.ville,
       addressRegion: a.region,
       addressCountry: a.pays,
     },
-    geo: { "@type": "GeoCoordinates", latitude: a.latitude, longitude: a.longitude },
+    geo: fiable("adresse.latitude") && fiable("adresse.longitude") ? { "@type": "GeoCoordinates", latitude: a.latitude, longitude: a.longitude } : undefined,
     areaServed: VILLES_PAGES.map((v) => ({ "@type": "City", name: v.nom })),
-    openingHoursSpecification: [
-      { "@type": "OpeningHoursSpecification", dayOfWeek: S.horaires.jours, opens: S.horaires.ouverture, closes: S.horaires.fermeture },
-    ],
+    openingHoursSpecification: fiable("horaires.texte")
+      ? [{ "@type": "OpeningHoursSpecification", dayOfWeek: S.horaires.jours, opens: S.horaires.ouverture, closes: S.horaires.fermeture }]
+      : undefined,
     slogan: S.slogan,
+    foundingDate: fiable("fondation"),
+    priceRange: fiable("gammePrix"),
+    paymentAccepted: fiable("paiements") && S.paiements.join(", "),
     knowsAbout: ["Couverture", "Zinguerie", "Charpente", "Recherche de fuite", "Démoussage de toiture", "Tuiles canal", "Gouttières en zinc"],
     knowsLanguage: "fr",
     currenciesAccepted: "EUR",
@@ -346,13 +390,28 @@ function ldEntreprise() {
       ],
     },
   };
-  const sameAs = [S.liens.googleBusiness, S.liens.facebook, S.liens.instagram].filter(Boolean);
+  const sameAs = ["googleBusiness", "facebook", "instagram", "pagesJaunes"].map((k) => fiable("liens." + k)).filter(Boolean);
   if (sameAs.length) o.sameAs = sameAs;
   if (S.avis.length) {
     const moy = S.avis.reduce((t, a) => t + (a.note || 5), 0) / S.avis.length;
     o.aggregateRating = { "@type": "AggregateRating", ratingValue: moy.toFixed(1), reviewCount: S.avis.length, bestRating: 5 };
   }
-  return o;
+  return nettoyer(o);
+}
+
+// Retire récursivement les propriétés vides (undefined, "", [], {}).
+function nettoyer(o) {
+  if (Array.isArray(o)) return o.map(nettoyer).filter((v) => v !== undefined);
+  if (o && typeof o === "object") {
+    const r = {};
+    for (const [k, v] of Object.entries(o)) {
+      const n = nettoyer(v);
+      if (n === undefined || n === "" || (Array.isArray(n) && !n.length) || (n && typeof n === "object" && !Array.isArray(n) && !Object.keys(n).length)) continue;
+      r[k] = n;
+    }
+    return r;
+  }
+  return o === false ? undefined : o;
 }
 
 const ldSite = {
@@ -1210,9 +1269,9 @@ ${bandeauCta()}` +
       "/mentions-legales",
       "Mentions légales",
       `<h2>Éditeur du site</h2>
-        <p>${esc(L.raisonSociale)}<br>${[esc(a.rue), `${esc(a.codePostal)} ${esc(a.ville)}`].filter(Boolean).join("<br>")}<br>SIRET : ${esc(L.siret)}<br>Téléphone : ${esc(S.telephone)}<br>E-mail : ${esc(S.email)}<br>Directeur de la publication : ${esc(L.directeurPublication)}</p>
+        <p>${esc(L.raisonSociale)}<br>${[esc(fiable("adresse.rue")), `${esc(a.codePostal)} ${esc(a.ville)}`].filter(Boolean).join("<br>")}<br>SIRET ${esc(fiable("legal.siret") || "en cours de renseignement")}<br>Téléphone ${esc(S.telephone)}<br>E-mail ${esc(S.email)}<br>Directeur de la publication ${esc(fiable("legal.directeurPublication") || "en cours de renseignement")}</p>
         <h2>Assurance professionnelle</h2>
-        <p>Assurance responsabilité civile décennale : ${esc(L.assuranceDecennale)}. Couverture géographique : France.</p>
+        <p>Assurance responsabilité civile décennale ${esc(fiable("legal.assuranceDecennale") || "en cours de renseignement")}. Couverture géographique, France.</p>
         <h2>Hébergement</h2>
         <p>${esc(L.hebergeur)}</p>
         <h2>Conception</h2>
@@ -1293,11 +1352,17 @@ fs.writeFileSync(path.join(RACINE, "robots.txt"), `User-agent: *\nAllow: /\nDisa
 
 /* --- Bilan --- */
 
-if (/39 98 00 00/.test(S.telephone)) avertissements.push("Téléphone fictif : remplacez config.telephone par le vrai numéro.");
-if (!confirme(S.adresse.rue)) avertissements.push("Adresse : la rue n'est pas renseignée (config.adresse.rue). Elle est importante pour Google.");
-if (!S.liens.googleBusiness) avertissements.push("Fiche Google Business Profile non renseignée (config.liens.googleBusiness) : c'est le levier n°1 du référencement local.");
-if (!confirme(S.legal.siret)) avertissements.push("Mentions légales : SIRET, assurance décennale et directeur de publication à compléter (config.legal).");
-if (!confirme(S.confiance.experience)) avertissements.push("Années d'expérience non renseignées (masquées sur le site).");
+{
+  const LEGAL_CONTACT = ["telephone", "email", "adresse.rue", "legal.raisonSociale", "legal.siret", "legal.assuranceDecennale", "legal.directeurPublication", "siteUrl"];
+  const bloquants = LEGAL_CONTACT.filter(provisoire);
+  const lignes = [...A_CONFIRMER.entries()].map(([k, note]) => `config.${k}${note ? ` (${note})` : ""}${k === "telephone" && provisoire("telephone") ? " [numéro fictif, omis du JSON-LD]" : ""}`);
+  for (const k of ["telephone", "legal.siret", "confiance.experience"]) if (provisoire(k) && !A_CONFIRMER.has(k)) lignes.push(`config.${k} (valeur bouche-trou)`);
+  avertissements.unshift(...lignes);
+  if (S.production && bloquants.length) {
+    console.error(`\nÉchec du build en mode production : informations légales ou de contact provisoires.\n- ${bloquants.map((k) => "config." + k).join("\n- ")}`);
+    process.exit(1);
+  }
+}
 
 console.log(`${pages.length + 1} pages générées, sitemap.xml et robots.txt à jour.`);
-if (avertissements.length) console.log("\nÀ compléter avant la mise en ligne :\n- " + avertissements.join("\n- "));
+if (avertissements.length) console.log(`\nÀ compléter avant la mise en ligne (${avertissements.length}) :\n- ` + avertissements.join("\n- "));

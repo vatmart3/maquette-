@@ -3,8 +3,14 @@
  * Toutes les informations de l'entreprise sont ici. Après modification,
  * relancez :  node scripts/build.mjs   (régénère les pages, le sitemap et les données Google).
  * Les valeurs marquées « À CONFIRMER » doivent être vérifiées avec le client avant la mise en ligne.
+ * Tant qu'une ligne porte le commentaire « À CONFIRMER », sa valeur n'est PAS envoyée à Google
+ * (données structurées JSON-LD). Une fois la vraie valeur saisie, supprimez le commentaire.
  */
 window.SITE = {
+  // Passez à true pour la mise en ligne définitive : le build échoue alors si une information
+  // légale ou de contact est encore provisoire.
+  production: false,
+
   nom: "ARVÉO",
   activite: "Couvreur zingueur",
   slogan: "Couverture, zinguerie et dépannage de toiture",
@@ -55,8 +61,9 @@ window.SITE = {
   liens: {
     googleBusiness: "", // À CONFIRMER : lien de la fiche Google (sert au bouton « Voir nos avis »)
     avisGoogle: "", // À CONFIRMER : lien direct « Laisser un avis »
-    facebook: "",
-    instagram: "",
+    facebook: "", // À CONFIRMER
+    instagram: "", // À CONFIRMER
+    pagesJaunes: "", // À CONFIRMER : lien de la fiche PagesJaunes
   },
 
   // Vrais avis Google à afficher (ne jamais publier d'avis inventés).
@@ -76,6 +83,11 @@ window.SITE = {
     "Villeneuve-lès-Maguelone",
     "Montbazin",
   ],
+
+  // Informations complémentaires pour Google (omises tant qu'elles sont vides ou à confirmer).
+  fondation: "", // À CONFIRMER : année de création, ex. "2021"
+  gammePrix: "", // À CONFIRMER : ex. "€€"
+  paiements: [], // À CONFIRMER : ex. ["Chèque", "Virement bancaire", "Carte bancaire", "Espèces"]
 
   agence: { nom: "MJAGENCY", url: "https://mjagency.eu" },
 };
