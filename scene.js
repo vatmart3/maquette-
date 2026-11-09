@@ -548,16 +548,28 @@ function demarrer() {
   const POINTS = [];
   for (const sg of segs) if (sg.ordre >= 1) POINTS.push(sg.a, sg.b); // la maison seule, sans le tracé au sol
   function cadrerAccueil() {
-    if (!mobile) return;
     const accroche = document.querySelector(".accroche");
     const titre = accroche && accroche.querySelector("h1");
     if (!titre) return;
     const sy = window.scrollY;
-    const haut = accroche.getBoundingClientRect().top + sy + 12;
-    const bas = titre.getBoundingClientRect().top + sy - 16;
-    const A = bas - haut;
     const w = etat.largeur, h = etat.hauteur;
-    if (A < 60 || w < 2 || h < 2) return;
+    // Espace libre : téléphone, entre l'en-tête et le titre ; ordinateur et tablette en paysage,
+    // à droite du texte et sous l'en-tête, quelle que soit la taille de l'écran.
+    let gauche = 14, droite = w - 14, haut, bas;
+    if (mobile) {
+      haut = accroche.getBoundingClientRect().top + sy + 12;
+      bas = titre.getBoundingClientRect().top + sy - 16;
+    } else {
+      const texte = accroche.querySelector(".accroche__texte") || titre;
+      const vh = window.innerHeight;
+      gauche = texte.getBoundingClientRect().right + Math.max(24, w * 0.02);
+      droite = w - Math.max(24, w * 0.03);
+      haut = accroche.getBoundingClientRect().top + sy + Math.max(24, vh * 0.05);
+      bas = Math.min(vh, haut + vh * 0.62) - Math.max(24, vh * 0.06);
+    }
+    const A = bas - haut;
+    const L = droite - gauche;
+    if (A < 60 || L < 60 || w < 2 || h < 2) return;
     const cam = new THREE.PerspectiveCamera(camera.fov, w / h, 0.1, 500);
     const v = new THREE.Vector3();
     const boite = (pos) => {
@@ -575,12 +587,12 @@ function demarrer() {
     let pos = HERO0.pos.clone();
     for (let i = 0; i < 4; i++) {
       const b = boite(pos);
-      const k = Math.max((b.y1 - b.y0) / A, (b.x1 - b.x0) / (w - 28));
+      const k = Math.max((b.y1 - b.y0) / A, (b.x1 - b.x0) / L);
       pos = HERO0.cible.clone().add(pos.clone().sub(HERO0.cible).multiplyScalar(k));
     }
     const b = boite(pos);
     PLANS.hero.pos.copy(pos);
-    PLANS.hero.ox = -((b.x0 + b.x1) / 2 - w / 2) / w;
+    PLANS.hero.ox = -((b.x0 + b.x1) / 2 - (gauche + droite) / 2) / w;
     PLANS.hero.oy = -((b.y0 + b.y1) / 2 - (haut + bas) / 2) / h;
   }
 
