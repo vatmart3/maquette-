@@ -86,18 +86,16 @@ window.SITE = {
     "bachage-urgence",
   ],
 
-  // Communes desservies : chaque commune a sa page « Couvreur à … » (contenu dans scripts/contenu.mjs).
-  villes: [
-    "Frontignan",
-    "Sète",
-    "Balaruc-les-Bains",
-    "Balaruc-le-Vieux",
-    "Vic-la-Gardiole",
-    "Mireval",
-    "Gigean",
-    "Poussan",
-    "Villeneuve-lès-Maguelone",
-    "Montbazin",
+  // Secteurs de l'Hérault desservis : chaque secteur a sa page /secteur/…, ses communes ont
+  // leur page /couvreur/… (contenus dans scripts/secteurs.mjs et scripts/communes-herault.mjs).
+  secteurs: [ // À CONFIRMER : secteurs réellement desservis
+    "bassin-de-thau",
+    "montpellier-metropole",
+    "lunellois",
+    "biterrois",
+    "agde-pezenas",
+    "clermontais-lodevois",
+    "hauts-cantons",
   ],
 
   // Informations complémentaires pour Google (omises tant qu'elles sont vides ou à confirmer).

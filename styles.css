@@ -1178,3 +1178,34 @@ main { position: relative; z-index: 1; }
   .tarifs a { grid-template-columns: 1fr 20px; }
   .tarifs__montant { grid-column: 1; grid-row: 2; }
 }
+
+/* Hub Hérault */
+.hub { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 48px; align-items: start; }
+.carte { margin: 0; position: sticky; top: 110px; }
+.carte svg { display: block; width: 100%; height: auto; }
+.carte__dept { fill: none; stroke: var(--ardoise); stroke-width: 1.5; stroke-linejoin: round; }
+.carte__zone path { fill: #dfe7ee; stroke: #dfe7ee; stroke-width: 1; stroke-linejoin: round; transition: fill .2s, stroke .2s; }
+.carte__zone--b path { fill: #cdd9e3; stroke: #cdd9e3; }
+.carte__zone--c path { fill: #bccbd8; stroke: #bccbd8; }
+.carte__zone--base path { fill: #f3d9c8; stroke: #f3d9c8; }
+.carte__zone text { fill: var(--ardoise); font-family: var(--titres); font-weight: 700; font-size: 15px; text-anchor: middle; pointer-events: none; }
+.carte__zone:hover path, .carte__zone:focus-visible path { fill: var(--orange); stroke: var(--orange); }
+.carte__zone:hover text, .carte__zone:focus-visible text { fill: var(--blanc); }
+.carte__zone:focus-visible { outline: none; }
+.carte__villes circle { fill: var(--ardoise); }
+.carte__villes .carte__base { fill: var(--orange-action); stroke: var(--blanc); stroke-width: 2; }
+.carte__frontignan { fill: var(--orange-texte); font-family: var(--donnees); font-size: 13px; }
+.carte__mer { fill: #5d7d96; font-family: var(--donnees); font-size: 13px; letter-spacing: .08em; }
+.carte figcaption { margin-top: 10px; color: var(--texte-2); font-size: .9rem; }
+.secteurs-liste { list-style: none; margin: 18px 0 0; padding: 0; border-top: 1px solid var(--filet); }
+.secteurs-liste li { padding: 16px 0; border-bottom: 1px solid var(--filet); }
+.secteurs-liste h3 { margin: 0 0 6px; }
+.secteurs-liste h3 a { color: var(--texte); text-decoration: none; }
+.secteurs-liste h3 a:hover { color: var(--orange-action); }
+.secteurs-liste p { margin: 0; color: var(--texte-2); font-size: .95rem; }
+.secteurs-liste p a { color: var(--texte-2); }
+@media (max-width: 1023px) {
+  .hub { grid-template-columns: 1fr; gap: 28px; }
+  .carte { position: static; }
+}
+@media (max-width: 639px) { .carte__zone text { font-size: 23px; } .carte__frontignan, .carte__mer { font-size: 17px; } }

@@ -13,6 +13,8 @@ import { SERVICES, VILLES, FAQ_ACCUEIL, FAQ_DEPANNAGE } from "./contenu.mjs";
 import { controler } from "./qa.mjs";
 import { CHANTIERS } from "./chantiers.mjs";
 import { PRIX, PRIX_HUB } from "./prix.mjs";
+import { SECTEURS } from "./secteurs.mjs";
+import { VILLES_HERAULT } from "./communes-herault.mjs";
 
 const RACINE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const ctx = { window: {} };
@@ -108,7 +110,22 @@ const PHOTOS = (() => {
   return fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, "utf8")) : [];
 })();
 
-const VILLES_PAGES = VILLES.map((v) => ({ ...v, slug: slug(v.nom), path: `/couvreur/${slug(v.nom)}` }));
+// Secteurs actifs (config.secteurs) : seules leurs communes ont une page.
+const SECTEURS_ACTIFS = Array.isArray(S.secteurs) && S.secteurs.length ? S.secteurs : SECTEURS.map((x) => x.slug);
+const SECTEURS_PAGES = SECTEURS.filter((x) => SECTEURS_ACTIFS.includes(x.slug)).map((x) => ({ ...x, path: `/secteur/${x.slug}` }));
+const VILLES_PAGES = [...VILLES, ...VILLES_HERAULT]
+  .filter((v) => SECTEURS_ACTIFS.includes(v.secteur || "bassin-de-thau"))
+  .map((v) => ({ ...v, secteur: v.secteur || "bassin-de-thau", slug: slug(v.nom), path: `/couvreur/${slug(v.nom)}` }));
+// Communes voisines : les 6 plus proches à vol d'oiseau.
+const distanceKm = (a, b) => {
+  const r = Math.PI / 180;
+  const h = Math.sin(((b.lat - a.lat) * r) / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(((b.lng - a.lng) * r) / 2) ** 2;
+  return 12742 * Math.asin(Math.sqrt(h));
+};
+for (const v of VILLES_PAGES) v.voisines = VILLES_PAGES.filter((w) => w !== v).sort((x, y) => distanceKm(v, x) - distanceKm(v, y)).slice(0, 6);
+const VILLES_THAU = VILLES_PAGES.filter((v) => v.secteur === "bassin-de-thau");
+const HERAULT = { "@type": "AdministrativeArea", name: "Hérault", containedInPlace: { "@type": "AdministrativeArea", name: "Occitanie" } };
+const zoneDesservie = () => [HERAULT, ...VILLES_PAGES.map((v) => ({ "@type": "City", name: v.nom }))];
 // Libellés de la case « Type de travaux » du formulaire de devis (pré-remplissage ?travaux=).
 const DEVIS_LIBELLES = ["Réparation / fuite", "Réfection de toiture", "Remplacement de tuiles", "Faîtage et rives", "Fenêtre de toit", "Isolation de toiture", "Étanchéité de toit terrasse", "Démoussage / traitement", "Zinguerie / gouttières", "Charpente", "Autre"];
 const DEVIS_SERVICE = { "refection-toiture": "Réfection de toiture", "recherche-de-fuite": "Réparation / fuite", "demoussage-toiture": "Démoussage / traitement", "zinguerie-gouttieres": "Zinguerie / gouttières", charpente: "Charpente", "bachage-urgence": "Réparation / fuite" };
@@ -310,7 +327,7 @@ function pied() {
     <div class="conteneur pied__grille">
       <div class="pied__marque">
         ${logo(true)}
-        <p>${esc(S.activite)} à ${esc(a.ville)}. ${esc(S.slogan)} pour les particuliers et les professionnels du secteur de Frontignan et de l'étang de Thau.</p>
+        <p>${esc(S.activite)} à ${esc(a.ville)}, intervention dans tout l'Hérault. ${esc(S.slogan)} pour les particuliers, les syndics et les professionnels.</p>
       </div>
       <div>
         <h2>Nous joindre</h2>
@@ -331,7 +348,8 @@ function pied() {
       <div>
         <h2><a href="/zone-intervention">Zone d'intervention</a></h2>
         <ul class="pied__villes">
-          ${VILLES_PAGES.map((v) => `<li><a href="${v.path}">Couvreur ${esc(v.nom)}</a></li>`).join("\n          ")}
+          ${SECTEURS_PAGES.map((x) => `<li><a href="${x.path}">Couvreur ${esc(x.nom)}</a></li>`).join("\n          ")}
+          ${["Frontignan", "Sète", "Montpellier", "Béziers"].map((n) => VILLES_PAGES.find((v) => v.nom === n)).filter(Boolean).map((v) => `<li><a href="${v.path}">Couvreur à ${esc(v.nom)}</a></li>`).join("\n          ")}
         </ul>
       </div>
     </div>
@@ -404,7 +422,7 @@ function ldEntreprise() {
       addressCountry: a.pays,
     },
     geo: fiable("adresse.latitude") && fiable("adresse.longitude") ? { "@type": "GeoCoordinates", latitude: a.latitude, longitude: a.longitude } : undefined,
-    areaServed: VILLES_PAGES.map((v) => ({ "@type": "City", name: v.nom })),
+    areaServed: zoneDesservie(),
     openingHoursSpecification: fiable("horaires.texte")
       ? [{ "@type": "OpeningHoursSpecification", dayOfWeek: S.horaires.jours, opens: S.horaires.ouverture, closes: S.horaires.fermeture }]
       : undefined,
@@ -473,7 +491,7 @@ function ldService(nom, path, zone) {
     serviceType: nom,
     url: urlPage(path),
     provider: { "@id": ENTREPRISE_ID },
-    areaServed: zone ? { "@type": "City", name: zone } : VILLES_PAGES.map((v) => ({ "@type": "City", name: v.nom })),
+    areaServed: zone ? { "@type": "City", name: zone } : zoneDesservie(),
   };
 }
 
@@ -751,7 +769,7 @@ function cartesServices(exclure) {
 
 function listeVilles(exclure) {
   return `<ul class="villes">
-          ${VILLES_PAGES.filter((v) => v.nom !== exclure)
+          ${VILLES_THAU.filter((v) => v.nom !== exclure)
             .map((v) => `<li><a href="${v.path}">Couvreur à ${esc(v.nom)}</a></li>`)
             .join("\n          ")}
         </ul>`;
@@ -971,8 +989,8 @@ ${avisHtml()}
       <div class="conteneur zone">
         <div>
           <h2 id="titre-zone">Votre couvreur à Frontignan et dans les communes voisines</h2>
-          <p class="texte">Installés à Frontignan, nous intervenons rapidement à Sète, Balaruc-les-Bains, Balaruc-le-Vieux, Vic-la-Gardiole, Mireval, Gigean, Poussan, Villeneuve-lès-Maguelone et Montbazin. Frontignan-Plage et La Peyrade comprises.</p>
-          <a class="lien-fleche" href="/zone-intervention">Voir toute la zone d'intervention ${ico("fleche")}</a>
+          <p class="texte">Installés à Frontignan, nous intervenons chaque jour autour de l'étang de Thau, de Sète à Mèze et Villeneuve-lès-Maguelone. Plus loin, à Montpellier, Béziers, Agde ou Lunel, nous venons sur rendez-vous, partout dans l'Hérault.</p>
+          <a class="lien-fleche" href="/zone-intervention">Voir les secteurs de l'Hérault ${ico("fleche")}</a>
         </div>
         ${listeVilles()}
       </div>
@@ -1155,8 +1173,8 @@ for (const s of SERVICES_PAGES) {
         </div>
         <aside class="article__cote">
           <div class="cote-carte">
-            <h2>Intervention à</h2>
-            <ul class="villes villes--compact">${VILLES_PAGES.map((v) => `<li><a href="${v.path}">${ico("pin")}${esc(v.nom)}</a></li>`).join("")}</ul>
+            <h2>Intervention dans l'Hérault</h2>
+            <ul class="villes villes--compact">${SECTEURS_PAGES.map((x) => `<li><a href="${x.path}">${ico("pin")}${esc(x.nom)}</a></li>`).join("")}</ul>
           </div>
           <div class="cote-carte cote-carte--orange" data-commun>
             <h2>Une urgence ?</h2>
@@ -1186,7 +1204,8 @@ ${bandeauCta()}` +
 
 for (const v of VILLES_PAGES) {
   const photosV = photosDe({ commune: v.slug });
-  const ar = filAriane([{ nom: "Zone d'intervention", path: "/zone-intervention" }, { nom: `Couvreur ${v.nom}`, path: v.path }]);
+  const secV = SECTEURS_PAGES.find((x) => x.slug === v.secteur);
+  const ar = filAriane([{ nom: "Hérault", path: "/zone-intervention" }, ...(secV ? [{ nom: secV.nom, path: secV.path }] : []), { nom: `Couvreur à ${v.nom}`, path: v.path }]);
   const p = {
     id: "zone",
     path: v.path,
@@ -1229,7 +1248,8 @@ for (const v of VILLES_PAGES) {
         <aside class="article__cote">
           <div class="cote-carte">
             <h2>Communes voisines</h2>
-            ${listeVilles(v.nom).replace('class="villes"', 'class="villes villes--compact"')}
+            <ul class="villes villes--compact">${v.voisines.map((w) => `<li><a href="${w.path}">Couvreur à ${esc(w.nom)}</a></li>`).join("")}</ul>
+            ${(() => { const sec = SECTEURS_PAGES.find((x) => x.slug === v.secteur); return sec ? `<a class="lien-fleche" href="${sec.path}">Le secteur ${esc(sec.nom)} ${ico("fleche")}</a>` : ""; })()}
           </div>
           <div class="cote-carte cote-carte--orange" data-commun>
             <h2>Urgence à ${esc(v.nom)} ?</h2>
@@ -1248,32 +1268,178 @@ ${bandeauCta(`Votre couvreur à ${v.nom}`, `Réparation, réfection, démoussage
   ecrire(`couvreur/${v.slug}.html`, html, { path: v.path, priorite: v.nom === "Frontignan" ? "0.9" : "0.8", images: photosV });
 }
 
-/* --- Zone d'intervention --- */
+/* --- Secteurs de l'Hérault --- */
+
+function pageSecteur(sec) {
+  const ar = filAriane([{ nom: "Zone d'intervention", path: "/zone-intervention" }, { nom: sec.nom, path: sec.path }]);
+  const villes = VILLES_PAGES.filter((v) => v.secteur === sec.slug);
+  const avecPage = new Map(villes.map((v) => [v.nom, v]));
+  const communesTexte = sec.communes.map((c) => (avecPage.has(c) ? `<a href="${avecPage.get(c).path}">${esc(c)}</a>` : esc(c)));
+  const p = {
+    id: "zone",
+    path: sec.path,
+    title: sec.title,
+    description: sec.description,
+    og: { titre: sec.h1, type: "Secteur d'intervention" },
+    jsonld: [
+      ldEntreprise(),
+      nettoyer({ ...ldService(`Couverture et zinguerie, ${sec.nom}`, sec.path), areaServed: [{ "@type": "AdministrativeArea", name: sec.nom }, ...villes.map((v) => ({ "@type": "City", name: v.nom }))] }),
+      ar.ld,
+      ldFaq(sec.faq),
+    ],
+  };
+  const html =
+    head(p) +
+    enTetePage({ h1: sec.h1, chapo: sec.chapo, ariane: ar.html }) +
+    `
+    <section class="section section--claire">
+      <div class="conteneur article">
+        <div class="article__corps">
+          ${sec.texte.map((t) => `<p>${riche(t)}</p>`).join("\n          ")}
+          <h2>Les communes du secteur ${esc(sec.nom)}</h2>
+          <p>Nous intervenons à ${enumerer(communesTexte)}.</p>
+          <ul class="liste-liens liste-liens--simple">
+            ${villes.map((v) => `<li><a href="${v.path}">${ico("pin")}<span>Couvreur à ${esc(v.nom)}</span></a></li>`).join("\n            ")}
+          </ul>
+          <h2>Les toitures que l'on rencontre ici</h2>
+          <ul class="liste-coches">${sec.toitures.map((t) => `<li>${ico("coche")}${riche(t)}</li>`).join("")}</ul>
+          <h2>Nos services, ${esc(sec.nom)}</h2>
+          <ul class="liste-liens liste-liens--simple">
+            <li><a href="/depannage-toiture">${ico("alerte")}<span>Dépannage de toiture</span></a></li>
+            ${SERVICES_PAGES.map((s) => `<li><a href="${s.path}">${ico("coche")}<span>${esc(s.court)}</span></a></li>`).join("\n            ")}
+          </ul>
+          <div class="encart-cta" data-commun>
+            <p><strong>Un problème de toiture dans le secteur ?</strong> Décrivez-le en ligne, on organise la visite avec vous.</p>
+            <div class="actions">
+              <a class="bouton bouton--orange" href="/devis-toiture" data-track="devis">${ico("devis")}Demander un devis</a>
+              <a class="bouton bouton--contour" href="/rendez-vous" data-track="rdv">${ico("agenda")}Prendre rendez-vous</a>
+            </div>
+          </div>
+        </div>
+        <aside class="article__cote">
+          <div class="cote-carte">
+            <h2>Les autres secteurs</h2>
+            <ul class="liste-liens">${SECTEURS_PAGES.filter((x) => x !== sec).map((x) => `<li><a href="${x.path}">Couvreur, ${esc(x.nom)}</a></li>`).join("")}</ul>
+          </div>
+          <div class="cote-carte cote-carte--orange" data-commun>
+            <h2>Une urgence ?</h2>
+            <p>Fuite active ou tuiles envolées, faites une demande de dépannage.</p>
+            <a class="bouton bouton--orange" href="/depannage-toiture" data-track="depannage">${ico("alerte")}Dépannage</a>
+          </div>
+        </aside>
+      </div>
+    </section>
+${faqHtml(sec.faq, `${sec.nom}, vos questions`)}
+${bandeauCta()}` +
+    pied() +
+    FIN_PAGE(false);
+  ecrire(`secteur/${sec.slug}.html`, html, { path: sec.path, priorite: "0.7" });
+}
+
+/* Carte schématique de l'Hérault : chaque point du département est rattaché à la commune desservie
+   la plus proche (cellules de Voronoï), et les cellules prennent la couleur de leur secteur. */
+function carteHerault() {
+  const W = 640, H = 460;
+  const LAT0 = 43.18, LAT1 = 44.0, LNG0 = 2.55, LNG1 = 4.22;
+  const kx = Math.cos((43.6 * Math.PI) / 180);
+  const echelle = Math.min((W - 30) / ((LNG1 - LNG0) * kx), (H - 30) / (LAT1 - LAT0));
+  const proj = ([lat, lng]) => [15 + (lng - LNG0) * kx * echelle, 15 + (LAT1 - lat) * echelle];
+  // Contour simplifié du département (sens horaire depuis l'embouchure de l'Aude).
+  const contour = [
+    [43.212, 3.24], [43.245, 3.3], [43.27, 3.36], [43.276, 3.512], [43.315, 3.555], [43.36, 3.62], [43.395, 3.7], [43.43, 3.77], [43.505, 3.875], [43.527, 3.93],
+    [43.545, 3.98], [43.56, 4.08], [43.555, 4.12], [43.6, 4.15], [43.665, 4.18], [43.7, 4.16], [43.76, 4.08], [43.8, 4.03], [43.85, 3.97], [43.9, 3.84], [43.95, 3.75],
+    [43.97, 3.65], [43.95, 3.52], [43.97, 3.42], [43.93, 3.33], [43.86, 3.24], [43.79, 3.1], [43.72, 2.97], [43.69, 2.84], [43.66, 2.66], [43.58, 2.6], [43.5, 2.6],
+    [43.44, 2.67], [43.39, 2.73], [43.33, 2.79], [43.3, 2.92], [43.29, 3.03], [43.26, 3.1], [43.235, 3.16],
+  ].map(proj);
+  const villes = VILLES_PAGES.map((v) => ({ v, p: proj([v.lat, v.lng]) }));
+  // Découpe d'un polygone par le demi-plan des points plus proches de a que de b (Sutherland–Hodgman).
+  const couper = (poly, a, b) => {
+    const m = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], n = [b[0] - a[0], b[1] - a[1]];
+    const dedans = (q) => (q[0] - m[0]) * n[0] + (q[1] - m[1]) * n[1] <= 0;
+    const inter = (q, r) => { const dq = (q[0] - m[0]) * n[0] + (q[1] - m[1]) * n[1], dr = (r[0] - m[0]) * n[0] + (r[1] - m[1]) * n[1], t = dq / (dq - dr); return [q[0] + t * (r[0] - q[0]), q[1] + t * (r[1] - q[1])]; };
+    const out = [];
+    poly.forEach((q, k) => { const r = poly[(k + 1) % poly.length], iq = dedans(q), ir = dedans(r); if (iq) out.push(q); if (iq !== ir) out.push(inter(q, r)); });
+    return out;
+  };
+  const cellules = villes.map((c) => ({ ...c, poly: villes.reduce((poly, o) => (o === c || poly.length < 3 ? poly : couper(poly, c.p, o.p)), contour) }));
+  const aire = (poly) => poly.reduce((t, q, k) => { const r = poly[(k + 1) % poly.length]; return t + q[0] * r[1] - r[0] * q[1]; }, 0) / 2;
+  const centre = (poly) => { const A = aire(poly); let x = 0, y = 0; poly.forEach((q, k) => { const r = poly[(k + 1) % poly.length], f = q[0] * r[1] - r[0] * q[1]; x += (q[0] + r[0]) * f; y += (q[1] + r[1]) * f; }); return [x / (6 * A), y / (6 * A)]; };
+  const chemin = (poly) => "M" + poly.map((q) => q.map((n) => n.toFixed(1)).join(" ")).join("L") + "Z";
+  const ETIQUETTES = { "bassin-de-thau": ["Bassin", "de Thau"], "montpellier-metropole": ["Montpellier", "Métropole"], "agde-pezenas": ["Agde et", "Pézenas"], "clermontais-lodevois": ["Clermontais", "et Lodévois"], "hauts-cantons": ["Hauts", "cantons"] };
+  const zones = SECTEURS_PAGES.map((sec) => {
+    const cs = cellules.filter((c) => c.v.secteur === sec.slug && c.poly.length > 2);
+    if (!cs.length) return "";
+    const A = cs.reduce((t, c) => t + Math.abs(aire(c.poly)), 0);
+    let [x, y] = cs.reduce((t, c) => { const [cx, cy] = centre(c.poly), w = Math.abs(aire(c.poly)) / A; return [t[0] + cx * w, t[1] + cy * w]; }, [0, 0]);
+    if (sec.slug === "bassin-de-thau") { const [fx, fy] = proj([43.47, 3.62]); x = fx; y = fy; } // au-dessus de l'étang
+    const lignes = ETIQUETTES[sec.slug] || [sec.nom];
+    const ton = { "bassin-de-thau": "base", "montpellier-metropole": "b", "hauts-cantons": "b", "agde-pezenas": "c" }[sec.slug] || "a";
+    return `<a href="${sec.path}" class="carte__zone carte__zone--${ton}" aria-label="Couvreur, secteur ${esc(sec.nom)}">
+          ${cs.map((c) => `<path d="${chemin(c.poly)}"/>`).join("")}
+          <text x="${x.toFixed(1)}" y="${(y - (lignes.length - 1) * 8).toFixed(1)}">${lignes.map((l, k) => `<tspan x="${x.toFixed(1)}" dy="${k ? "1.1em" : 0}">${esc(l)}</tspan>`).join("")}</text>
+        </a>`;
+  }).join("\n        ");
+  const points = villes.map(({ v, p: [x, y] }) => `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${v.nom === S.adresse.ville ? 6 : 2.6}"${v.nom === S.adresse.ville ? ' class="carte__base"' : ""}/>`).join("");
+  const [fx, fy] = proj([S.adresse.latitude, S.adresse.longitude]);
+  const [mx, my] = proj([43.3, 3.8]);
+  return `<figure class="carte">
+        <svg viewBox="0 0 ${W} ${H}" role="group" aria-labelledby="titre-carte">
+          <title id="titre-carte">Carte schématique de l'Hérault et des secteurs d'intervention d'ARVÉO</title>
+          ${zones}
+          <path class="carte__dept" d="${chemin(contour)}"/>
+          <g class="carte__villes" aria-hidden="true">${points}</g>
+          <text class="carte__frontignan" x="${(fx + 9).toFixed(1)}" y="${(fy + 16).toFixed(1)}" aria-hidden="true">Frontignan</text>
+          <text class="carte__mer" x="${mx.toFixed(0)}" y="${my.toFixed(0)}" aria-hidden="true">Mer Méditerranée</text>
+        </svg>
+        <figcaption>Carte schématique. Touchez un secteur pour voir ses communes.</figcaption>
+      </figure>`;
+}
+
+for (const sec of SECTEURS_PAGES) pageSecteur(sec);
+
+/* --- Zone d'intervention : couvreur dans l'Hérault --- */
 {
-  const ar = filAriane([{ nom: "Zone d'intervention", path: "/zone-intervention" }]);
+  const ar = filAriane([{ nom: "Couvreur dans l'Hérault", path: "/zone-intervention" }]);
   const p = {
     id: "zone",
     path: "/zone-intervention",
     title: "Couvreur dans l'Hérault, zone d'intervention | ARVÉO",
-    description: "Couvreur à Frontignan, ARVÉO intervient à Sète, Balaruc, Vic-la-Gardiole, Mireval, Gigean, Poussan, Villeneuve-lès-Maguelone et Montbazin.",
-    jsonld: [ldEntreprise(), ar.ld],
+    description: "Couvreur à Frontignan, ARVÉO intervient dans tout l'Hérault, du Bassin de Thau à Montpellier, Béziers, Agde, Lunel, Clermont-l'Hérault et Bédarieux.",
+    og: { titre: "Couvreur dans l'Hérault", type: "Zone d'intervention" },
+    jsonld: [ldEntreprise(), nettoyer({ ...ldService("Couverture, zinguerie et dépannage de toiture", "/zone-intervention"), areaServed: [HERAULT, ...SECTEURS_PAGES.map((x) => ({ "@type": "AdministrativeArea", name: x.nom }))] }), ar.ld],
   };
   const html =
     head(p) +
-    enTetePage({ surTitre: "Zone d'intervention", h1: "Couvreur à Frontignan et dans les communes voisines", chapo: "Installés à Frontignan, on intervient rapidement dans tout le secteur, entre l'étang de Thau, le massif de la Gardiole et le littoral.", ariane: ar.html }) +
+    enTetePage({ h1: "Couvreur dans l'Hérault", chapo: "Couvreur à Frontignan, intervention dans tout l'Hérault. Autour de l'étang de Thau au quotidien, plus loin sur rendez-vous, en organisant chaque déplacement avec vous.", ariane: ar.html }) +
     `
-    <section class="section section--claire">
-      <div class="conteneur">
-        <ul class="villes-cartes">
-          ${VILLES_PAGES.map((v) => `<li><a href="${v.path}"><span class="mono">${v.cp}</span><h2>Couvreur ${esc(v.nom)}</h2><p>${fr(v.accent)}</p><span class="lien-fleche">Voir la page ${ico("fleche")}</span></a></li>`).join("\n          ")}
-        </ul>
-        <p class="texte">Votre commune n'est pas dans la liste ? Appelez-nous, on vous dit tout de suite si on peut intervenir.</p>
+    <section class="section section--claire" aria-labelledby="titre-secteurs">
+      <div class="conteneur hub">
+        ${carteHerault()}
+        <div class="hub__liste">
+          <h2 id="titre-secteurs">Nos secteurs d'intervention</h2>
+          <ul class="secteurs-liste">
+            ${SECTEURS_PAGES.map((x) => {
+              const villes = VILLES_PAGES.filter((v) => v.secteur === x.slug);
+              return `<li>
+              <h3><a href="${x.path}">Couvreur, ${esc(x.nom)}</a></h3>
+              <p>${enumerer(villes.map((v) => `<a href="${v.path}">${esc(v.nom)}</a>`))}${x.communes.length > villes.length ? ` et ${x.communes.length - villes.length} autres communes` : ""}</p>
+            </li>`;
+            }).join("\n            ")}
+          </ul>
+        </div>
+      </div>
+    </section>
+    <section class="section" aria-labelledby="titre-organisation">
+      <div class="conteneur conteneur--etroit">
+        <h2 id="titre-organisation">Comment nous organisons nos déplacements</h2>
+        <p class="texte">Notre atelier est à Frontignan. Autour de l'étang de Thau, entre Sète, Mèze et Villeneuve-lès-Maguelone, nous passons très souvent et pouvons intervenir vite pour une fuite. Pour Montpellier et ses environs, le Biterrois, le Lunellois, le Clermontais, le Lodévois ou les Hauts cantons, nous fixons un rendez-vous et regroupons les visites d'un même secteur. Cela évite de vous facturer un déplacement trop lourd.</p>
+        <p class="texte">Votre commune n'apparaît pas sur cette page ? Décrivez votre projet, nous vous disons franchement si nous pouvons venir.</p>
       </div>
     </section>
 ${bandeauCta()}` +
     pied() +
     FIN_PAGE(false);
-  ecrire("zone-intervention.html", html, { path: "/zone-intervention", priorite: "0.7" });
+  ecrire("zone-intervention.html", html, { path: "/zone-intervention", priorite: "0.8" });
 }
 
 /* --- Dépannage --- */

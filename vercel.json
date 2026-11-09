@@ -18,6 +18,11 @@
       "permanent": true
     },
     {
+      "source": "/couvreur-herault",
+      "destination": "/zone-intervention",
+      "permanent": true
+    },
+    {
       "source": "/couvreur-:ville",
       "destination": "/couvreur/:ville",
       "permanent": true
