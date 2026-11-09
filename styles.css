@@ -967,7 +967,7 @@ main { position: relative; z-index: 1; }
   /* téléphone : une illustration par zone remplace la 3D pendant la visite */
   .visite__fiches { order: 3; align-self: stretch; position: absolute; left: var(--marge); right: var(--marge); top: calc(var(--entete) + 126px); bottom: calc(var(--barre) + 20px); width: auto; min-height: 0; }
   .fiche { top: 0; bottom: 0; transform: none; padding: 0; display: flex; flex-direction: column; justify-content: flex-end; }
-  .fiche__image { display: block; flex: 1 1 auto; min-height: 0; width: 100%; height: auto; margin-bottom: 18px; border-radius: var(--r-m); object-fit: cover; background: var(--ardoise-fonce); }
+  .fiche__image { display: block; flex: 1 1 auto; min-height: 0; width: calc(100% + 2 * var(--marge)); max-width: none; height: auto; margin: 0 calc(-1 * var(--marge)) 18px; border-radius: 0; object-fit: cover; background: var(--ardoise); }
   .fiche__num { margin-bottom: 8px; font-size: 0.75rem; }
   .fiche h3 { font-size: 1.4rem; margin-bottom: 8px; }
   .fiche p { margin-bottom: 16px; font-size: 0.94rem; line-height: 1.5; }

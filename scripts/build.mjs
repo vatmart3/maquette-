@@ -763,23 +763,6 @@ const ZONES_VISITE = [
       </div>
     </section>
 
-    <section class="section section--claire urgence-bloc" aria-labelledby="titre-urgence">
-      <div class="conteneur urgence-bloc__grille">
-        <div>
-          <h2 id="titre-urgence">Fuite ou tuiles arrachées après un coup de vent${" "}?</h2>
-          <p class="chapeau-sombre">On met votre toiture hors d'eau (bâchage), on trouve l'origine de la fuite, puis on répare. Décrivez le problème en ligne ou appelez-nous, on vous rappelle au plus vite.</p>
-          <div class="actions">
-            <a class="bouton bouton--orange" href="/depannage-toiture" data-track="depannage">${ico("alerte")}Faire une demande de dépannage</a>
-          </div>
-        </div>
-        <ol class="etapes-urgence">
-          <li><span class="mono">01</span><strong>Vous signalez le problème</strong> Par téléphone ou avec le formulaire en ligne, photos à l'appui.</li>
-          <li><span class="mono">02</span><strong>On sécurise</strong> Bâchage et mise hors d'eau si la pluie menace.</li>
-          <li><span class="mono">03</span><strong>On répare</strong> Après avoir trouvé l'origine de la fuite, avec un prix annoncé avant.</li>
-        </ol>
-      </div>
-    </section>
-
     <section class="section" aria-labelledby="titre-services">
       <div class="conteneur services-bloc">
         <div class="services-bloc__intro">
