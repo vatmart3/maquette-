@@ -21,6 +21,11 @@
       "source": "/couvreur-:ville",
       "destination": "/couvreur/:ville",
       "permanent": true
+    },
+    {
+      "source": "/services",
+      "destination": "/#services",
+      "permanent": true
     }
   ],
   "headers": [

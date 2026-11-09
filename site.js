@@ -103,17 +103,39 @@
       document.dispatchEvent(new CustomEvent("arv:zone", { detail: { zone: i } }));
     };
 
+    var mqTel = window.matchMedia("(max-width: 859px)");
+    var rail = visite.querySelector(".visite__fiches");
+
+    // Ordinateur : la zone suit le défilement vertical (section collante).
     var depuisScroll = function () {
+      if (mqTel.matches) return;
       var course = visite.offsetHeight - window.innerHeight;
       var p = (window.scrollY - visite.offsetTop) / Math.max(1, course);
       activer(p < -0.02 || p > 1 ? -1 : Math.min(n - 1, Math.max(0, Math.floor(p * n))));
     };
     window.addEventListener("scroll", depuisScroll, { passive: true });
     window.addEventListener("resize", depuisScroll);
-    depuisScroll();
+
+    // Téléphone : carrousel à faire glisser, la zone suit le glissement horizontal.
+    var depuisRail = function () {
+      if (!mqTel.matches) return;
+      activer(Math.min(n - 1, Math.max(0, Math.round(rail.scrollLeft / Math.max(1, rail.clientWidth)))));
+    };
+    rail.addEventListener("scroll", depuisRail, { passive: true });
+    var initialiser = function () {
+      zone = -2;
+      if (mqTel.matches) depuisRail();
+      else depuisScroll();
+    };
+    mqTel.addEventListener("change", initialiser);
+    initialiser();
 
     reperes.forEach(function (r, k) {
       r.addEventListener("click", function () {
+        if (mqTel.matches) {
+          rail.scrollTo({ left: rail.clientWidth * k, behavior: reduit ? "auto" : "smooth" });
+          return;
+        }
         var course = visite.offsetHeight - window.innerHeight;
         window.scrollTo({ top: visite.offsetTop + course * ((k + 0.5) / n), behavior: reduit ? "auto" : "smooth" });
       });

@@ -77,7 +77,7 @@ const ico = (n, cls = "ico") => `<svg class="${cls}" viewBox="0 0 24 24" aria-hi
 /* ------------------------------------------------------------------ */
 
 const NAV = [
-  { id: "services", href: "/services", texte: "Services" },
+  { id: "services", href: "/#services", texte: "Services" },
   { id: "depannage", href: "/depannage-toiture", texte: "Dépannage" },
   { id: "apropos", href: "/a-propos", texte: "À propos" },
   { id: "contact", href: "/contact", texte: "Contact" },
@@ -167,8 +167,9 @@ function entete(id) {
     <div class="menu" id="menu" hidden>
       <div class="conteneur">
         <nav aria-label="Navigation mobile"><ul>
-          <li><a href="/">Accueil</a></li>${liens}
-          <li><a href="/devis-toiture">Devis gratuit</a></li>
+          <li><a href="/"${id === "accueil" ? ' aria-current="page"' : ""}>Accueil</a></li>
+          <li><a href="/a-propos"${id === "apropos" ? ' aria-current="page"' : ""}>À propos</a></li>
+          <li><a href="/contact"${id === "contact" ? ' aria-current="page"' : ""}>Contact</a></li>
         </ul></nav>
         <p class="menu__horaires">${esc(S.horaires.texte)}</p>
       </div>
@@ -724,7 +725,7 @@ const ZONES_VISITE = [
   };
   const fiches = ZONES_VISITE.map(
     (z, i) => `<article class="fiche" aria-labelledby="titre-zone-${i}">
-              <img class="fiche__image" src="/img/toiture-zone-${i + 1}-480.webp" srcset="/img/toiture-zone-${i + 1}-480.webp 480w, /img/toiture-zone-${i + 1}.webp 800w" sizes="(max-width: 859px) calc(100vw - 32px), 1px" alt="${esc(z.titre)} : la zone concernée est en orange sur le schéma de la toiture" width="800" height="600" loading="lazy" decoding="async">
+              <img class="fiche__image" src="/img/toiture-zone-${i + 1}-480.webp" srcset="/img/toiture-zone-${i + 1}-480.webp 480w, /img/toiture-zone-${i + 1}.webp 800w" sizes="(max-width: 859px) 100vw, 1px" alt="${esc(z.titre)} : la zone concernée est en orange sur le schéma de la toiture" width="800" height="600" loading="lazy" decoding="async">
               <span class="fiche__num mono">${String(i + 1).padStart(2, "0")} / ${String(ZONES_VISITE.length).padStart(2, "0")}</span>
               <h3 id="titre-zone-${i}">${esc(z.titre)}</h3>
               <p>${fr(z.texte)}</p>
@@ -754,6 +755,7 @@ const ZONES_VISITE = [
         <div class="conteneur visite__grille">
           <div class="visite__tete">
             <h2 id="titre-visite">Du faîtage à la gouttière, on s'occupe de tout.</h2>
+            <p class="visite__glisser" aria-hidden="true">Faites glisser pour voir chaque zone ${ico("fleche")}</p>
           </div>
           <div class="visite__fiches">
             ${fiches}
@@ -763,7 +765,7 @@ const ZONES_VISITE = [
       </div>
     </section>
 
-    <section class="section" aria-labelledby="titre-services">
+    <section class="section" id="services" aria-labelledby="titre-services">
       <div class="conteneur services-bloc">
         <div class="services-bloc__intro">
           <h2 id="titre-services">Tous les travaux de toiture, à Frontignan et alentours</h2>
@@ -810,7 +812,7 @@ ${bandeauCta()}` +
 /* --- Pages services --- */
 
 for (const s of SERVICES_PAGES) {
-  const ar = filAriane([{ nom: "Services", path: "/services" }, { nom: s.court, path: s.path }]);
+  const ar = filAriane([{ nom: s.court, path: s.path }]);
   const p = { id: "services", path: s.path, title: s.title, description: s.description, jsonld: [ldEntreprise(), ldService(s.nom, s.path), ar.ld, ldFaq(s.faq)] };
   const corps = s.sections
     .map(
@@ -861,30 +863,6 @@ ${bandeauCta()}` +
   ecrire(`services/${s.slug}.html`, html, { path: s.path, priorite: "0.8" });
 }
 
-/* --- Hub services --- */
-{
-  const ar = filAriane([{ nom: "Services", path: "/services" }]);
-  const p = {
-    id: "services",
-    path: "/services",
-    title: "Travaux de toiture à Frontignan, nos services | ARVÉO couvreur",
-    description: "Dépannage, réparation de fuite, réfection de toiture, démoussage, zinguerie et charpente à Frontignan, Sète et alentours. Couvreur zingueur, devis gratuit.",
-    jsonld: [ldEntreprise(), ar.ld],
-  };
-  const html =
-    head(p) +
-    enTetePage({ surTitre: "Nos services", h1: "Travaux de couverture et de zinguerie", chapo: "De la tuile cassée à la réfection complète, un seul artisan pour toute votre toiture, à Frontignan et dans les communes voisines.", ariane: ar.html }) +
-    `
-    <section class="section section--claire">
-      <div class="conteneur">
-        ${cartesServices()}
-      </div>
-    </section>
-${bandeauCta()}` +
-    pied() +
-    FIN_PAGE(false);
-  ecrire("services.html", html, { path: "/services", priorite: "0.8" });
-}
 
 /* --- Pages communes --- */
 
