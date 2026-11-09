@@ -1100,3 +1100,31 @@ main { position: relative; z-index: 1; }
 .photos figcaption { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--filet); color: var(--texte-2); font-size: .92rem; }
 @media (max-width: 1023px) { .photos { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 639px) { .photos { grid-template-columns: 1fr; gap: 20px; } }
+
+.filtres { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px 24px; margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid var(--filet); }
+.filtres .champ { min-width: 220px; }
+.filtres__compte { margin: 0 0 10px; color: var(--texte-2); font-size: .92rem; }
+.chantiers { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px 28px; }
+.chantiers li[hidden] { display: none; }
+.chantiers a { display: block; color: inherit; text-decoration: none; border-top: 2px solid var(--ardoise); padding-top: 14px; }
+.chantiers img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 6px; margin-bottom: 14px; }
+.chantiers h3 { margin: 6px 0 8px; }
+.chantiers a:hover h3 { color: var(--orange-action); }
+.chantiers p { margin: 0; color: var(--texte-2); }
+@media (max-width: 1023px) { .chantiers { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 639px) { .chantiers { grid-template-columns: 1fr; } }
+
+.bon { border: 1px solid var(--filet); border-top: 4px solid var(--orange); border-radius: 6px; background: var(--blanc); padding: clamp(20px, 3vw, 36px); }
+.bon__tete { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 20px; padding-bottom: 14px; border-bottom: 1px solid var(--filet); }
+.bon__tete h2 { margin: 0; font-size: var(--t-h3); }
+.bon__tete p { margin: 0; color: var(--texte-2); }
+.bon__infos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 28px; margin: 0 0 8px; }
+.bon__infos div { padding: 12px 0; border-bottom: 1px solid var(--filet); }
+.bon__infos dt { color: var(--texte-2); font-family: var(--donnees); font-size: .82rem; }
+.bon__infos dd { margin: 2px 0 0; font-weight: 600; }
+.bon h3 { display: flex; gap: 12px; align-items: baseline; margin: 26px 0 8px; }
+.bon h3 .mono { color: var(--orange-texte); font-size: .9rem; }
+.temoignage { margin: 32px 0 0; padding-left: 20px; border-left: 3px solid var(--orange); }
+.temoignage blockquote { margin: 0; font-size: 1.1rem; }
+.temoignage figcaption { margin-top: 8px; color: var(--texte-2); }
+@media (max-width: 639px) { .bon__infos { grid-template-columns: 1fr; } }

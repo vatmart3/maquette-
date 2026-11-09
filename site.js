@@ -142,6 +142,28 @@
     });
   }
 
+  /* ---------- Filtres des réalisations ---------- */
+
+  var filtres = document.querySelector("[data-filtres]");
+  if (filtres) {
+    var cartes = document.querySelectorAll(".chantiers li");
+    var compte = filtres.querySelector("[data-compte]");
+    var filtrer = function () {
+      var choix = {};
+      filtres.querySelectorAll("[data-filtre]").forEach(function (s) { choix[s.getAttribute("data-filtre")] = s.value; });
+      var n = 0;
+      cartes.forEach(function (li) {
+        var ok = (!choix.service || li.dataset.service === choix.service) && (!choix.commune || li.dataset.commune === choix.commune);
+        li.hidden = !ok;
+        if (ok) n++;
+      });
+      if (compte) compte.textContent = n + (n > 1 ? " chantiers" : " chantier");
+    };
+    filtres.addEventListener("change", filtrer);
+    filtres.addEventListener("submit", function (e) { e.preventDefault(); });
+    filtrer();
+  }
+
   /* ---------- Pré-remplissage depuis l'URL (?travaux=…) ---------- */
 
   var params = new URLSearchParams(location.search);

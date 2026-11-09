@@ -11,6 +11,7 @@ import vm from "node:vm";
 import { fileURLToPath } from "node:url";
 import { SERVICES, VILLES, FAQ_ACCUEIL, FAQ_DEPANNAGE } from "./contenu.mjs";
 import { controler } from "./qa.mjs";
+import { CHANTIERS } from "./chantiers.mjs";
 
 const RACINE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const ctx = { window: {} };
@@ -137,6 +138,8 @@ const NAV = [
   { id: "contact", href: "/contact", texte: "Contact" },
 ];
 const avecAvis = S.avis.length > 0 || !!S.liens.googleBusiness;
+const avecRealisations = CHANTIERS.length > 0;
+if (avecRealisations) NAV.splice(1, 0, { id: "realisations", href: "/realisations", texte: "Réalisations" });
 if (avecAvis) NAV.splice(3, 0, { id: "avis", href: "/avis", texte: "Avis" });
 
 function logo(clair = false) {
@@ -322,6 +325,7 @@ function pied() {
         <li><a href="/rendez-vous">Rendez-vous</a></li>
         <li><a href="/contact">Contact</a></li>
         <li><a href="/zone-intervention">Zone d'intervention</a></li>
+        ${avecRealisations ? '<li><a href="/realisations">Réalisations</a></li>' : ""}
         <li><a href="/mentions-legales">Mentions légales</a></li>
         <li><a href="/confidentialite">Confidentialité</a></li>
       </ul>
@@ -811,6 +815,27 @@ const ldImages = (photos, ville) =>
     })
   );
 
+/* --- Réalisations --- */
+
+const MOIS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+const REALISATIONS = CHANTIERS.map((c) => ({ ...c, path: `/realisations/${c.slug}`, date: `${MOIS[c.mois - 1]} ${c.annee}` })).sort(
+  (a, b) => b.annee - a.annee || b.mois - a.mois
+);
+const titreChantier = (c) => `${nomService(c.service)} à ${nomCommune(c.commune)}`;
+
+function listeRealisations(liste, titre, idTitre = "titre-realisations") {
+  if (!liste.length) return "";
+  return `
+    <section class="section" aria-labelledby="${idTitre}">
+      <div class="conteneur">
+        <h2 id="${idTitre}">${fr(titre)}</h2>
+        <ul class="liste-liens liste-liens--simple">
+          ${liste.map((c) => `<li><a href="${c.path}">${ico("coche")}<span>${esc(titreChantier(c))}, ${esc(c.date)}</span></a></li>`).join("\n          ")}
+        </ul>
+      </div>
+    </section>`;
+}
+
 /* ------------------------------------------------------------------ */
 /* Pages                                                               */
 /* ------------------------------------------------------------------ */
@@ -974,6 +999,7 @@ for (const s of SERVICES_PAGES) {
       </div>
     </section>
 ${galerie(photosS, `${s.court}, photos de nos chantiers`)}
+${listeRealisations(REALISATIONS.filter((c) => c.service === s.slug), `${s.court}, nos réalisations`)}
 ${faqHtml(s.faq, `Vos questions sur ${s.court.toLowerCase() === "charpente" ? "la charpente" : "ce service"}`)}
     <section class="section section--claire" aria-labelledby="titre-autres">
       <div class="conteneur">
@@ -1046,6 +1072,7 @@ for (const v of VILLES_PAGES) {
       </div>
     </section>
 ${galerie(photosV, `Nos chantiers à ${v.nom} en photos`)}
+${listeRealisations(REALISATIONS.filter((c) => c.commune === v.slug), `Nos réalisations à ${v.nom}`)}
 ${faqHtml(v.faq, `Couvreur à ${v.nom}, vos questions`)}
 ${bandeauCta(`Votre couvreur à ${v.nom}`, `Réparation, réfection, démoussage ou urgence. Appelez-nous ou faites votre demande en ligne.`)}` +
     pied() +
@@ -1310,6 +1337,132 @@ ${bandeauCta()}` +
 } else {
   fs.rmSync(path.join(RACINE, "avis.html"), { force: true });
   avertissements.push("Page Avis non générée : ajoutez de vrais avis dans config.avis ou le lien de la fiche Google.");
+}
+
+/* --- Réalisations (seulement s'il existe de vrais chantiers) --- */
+if (avecRealisations) {
+  const ar = filAriane([{ nom: "Réalisations", path: "/realisations" }]);
+  const services = [...new Set(REALISATIONS.map((c) => c.service))];
+  const communes = [...new Set(REALISATIONS.map((c) => c.commune))];
+  const p = {
+    id: "realisations",
+    path: "/realisations",
+    title: "Réalisations, chantiers de toiture dans l'Hérault | ARVÉO",
+    description: `Les chantiers de couverture réalisés par ARVÉO, couvreur à Frontignan, avec le problème constaté, les travaux et le résultat. ${REALISATIONS.length} fiche(s) à consulter.`,
+    jsonld: [ldEntreprise(), ar.ld],
+  };
+  const html =
+    head(p) +
+    enTetePage({ h1: "Nos réalisations de toiture", chapo: "Chaque fiche décrit un vrai chantier, le problème constaté, les travaux réalisés et le résultat.", ariane: ar.html }) +
+    `
+    <section class="section section--claire" aria-labelledby="titre-liste-chantiers">
+      <div class="conteneur">
+        <h2 id="titre-liste-chantiers" class="sr">Liste des chantiers</h2>
+        <form class="filtres" data-filtres aria-label="Filtrer les réalisations">
+          <div class="champ"><label for="filtre-service">Service</label><select id="filtre-service" data-filtre="service"><option value="">Tous les services</option>${services.map((x) => `<option value="${x}">${esc(nomService(x))}</option>`).join("")}</select></div>
+          <div class="champ"><label for="filtre-commune">Commune</label><select id="filtre-commune" data-filtre="commune"><option value="">Toutes les communes</option>${communes.map((x) => `<option value="${x}">${esc(nomCommune(x))}</option>`).join("")}</select></div>
+          <p class="filtres__compte" aria-live="polite" data-compte></p>
+        </form>
+        <ul class="chantiers">
+          ${REALISATIONS.map((c) => {
+            const ph = photosDe({ liste: c.photos || [] })[0];
+            return `<li data-service="${c.service}" data-commune="${c.commune}"><a href="${c.path}">
+            ${ph ? `<img src="${ph.versions[480].src}" width="${ph.versions[480].largeur}" height="${ph.versions[480].hauteur}" alt="${esc(altPhoto(ph))}" loading="lazy" decoding="async">` : ""}
+            <span class="mono">${esc(c.date)}</span>
+            <h3>${esc(titreChantier(c))}</h3>
+            <p>${fr(c.probleme)}</p>
+          </a></li>`;
+          }).join("\n          ")}
+        </ul>
+      </div>
+    </section>
+${bandeauCta()}` +
+    pied() +
+    FIN_PAGE(false);
+  ecrire("realisations.html", html, { path: "/realisations", priorite: "0.6" });
+
+  for (const c of REALISATIONS) {
+    const ville = nomCommune(c.commune);
+    const service = SERVICES_PAGES.find((x) => x.slug === c.service);
+    const servicePath = c.service === "depannage-toiture" ? "/depannage-toiture" : service?.path;
+    const villePath = VILLES_PAGES.find((v) => v.slug === c.commune)?.path;
+    const photosC = photosDe({ liste: c.photos || [] });
+    const arc = filAriane([{ nom: "Réalisations", path: "/realisations" }, { nom: titreChantier(c), path: c.path }]);
+    const desc = `${titreChantier(c)} en ${c.date}. ${c.probleme}`;
+    const pc = {
+      id: "realisations",
+      path: c.path,
+      title: titreCourt([`${titreChantier(c)}, ${c.date} | ARVÉO`, `${titreChantier(c)} | ARVÉO`]),
+      description: (() => {
+        let d = desc.length < 120 ? `${desc} Chantier réalisé par ARVÉO, couvreur zingueur à Frontignan.` : desc;
+        return d.length > 158 ? d.slice(0, 155).replace(/\s+\S*$/, "") + "…" : d;
+      })(),
+      jsonld: [
+        nettoyer({
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          name: `${titreChantier(c)}, ${c.date}`,
+          url: urlPage(c.path),
+          about: { "@type": "Service", name: nomService(c.service), url: servicePath && urlPage(servicePath), provider: { "@id": ENTREPRISE_ID } },
+          contentLocation: { "@type": "City", name: ville },
+          image: ldImages(photosC, ville).map(({ "@context": _, ...img }) => img),
+        }),
+        arc.ld,
+      ],
+    };
+    const ligne = (k, v) => (v ? `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>` : "");
+    const htmlC =
+      head(pc) +
+      enTetePage({ h1: `${titreChantier(c)}, ${c.date}`, chapo: c.resultat, ariane: arc.html }) +
+      `
+    <section class="section section--claire">
+      <div class="conteneur article">
+        <div class="article__corps">
+          <article class="bon" aria-labelledby="titre-bon">
+            <header class="bon__tete">
+              <h2 id="titre-bon">Bon d'intervention</h2>
+              <p class="mono">Réf. ${esc(c.slug.toUpperCase().slice(0, 24))}</p>
+            </header>
+            <dl class="bon__infos">
+              ${ligne("Commune", ville)}${ligne("Service", nomService(c.service))}${ligne("Date", c.date)}${ligne("Durée", c.duree)}${ligne("Maison", c.maison)}${ligne("Matériaux", (c.materiaux || []).join(", "))}
+            </dl>
+            <h3><span class="mono">01</span>Problème constaté</h3>
+            <p>${fr(c.probleme)}</p>
+            <h3><span class="mono">02</span>Travaux réalisés</h3>
+            <ul class="liste-coches">${(c.travaux || []).map((t) => `<li>${ico("coche")}${fr(t)}</li>`).join("")}</ul>
+            <h3><span class="mono">03</span>Résultat</h3>
+            <p>${fr(c.resultat)}</p>
+          </article>
+          ${c.temoignage ? `<figure class="temoignage"><blockquote><p>« ${fr(c.temoignage.texte)} »</p></blockquote><figcaption>${esc(c.temoignage.auteur)}, ${esc(ville)}</figcaption></figure>` : ""}
+          <div class="encart-cta" data-commun>
+            <p><strong>Un chantier comparable chez vous ?</strong> Le diagnostic et le devis sont gratuits.</p>
+            <div class="actions">
+              <a class="bouton bouton--orange" href="/devis-toiture" data-track="devis">${ico("devis")}Demander un devis</a>
+              <a class="bouton bouton--contour" href="/rendez-vous" data-track="rdv">${ico("agenda")}Prendre rendez-vous</a>
+            </div>
+          </div>
+        </div>
+        <aside class="article__cote">
+          <div class="cote-carte">
+            <h2>Voir aussi</h2>
+            <ul class="liste-liens">
+              ${servicePath ? `<li><a href="${servicePath}">${esc(nomService(c.service))} en détail</a></li>` : ""}
+              ${villePath ? `<li><a href="${villePath}">Couvreur à ${esc(ville)}</a></li>` : ""}
+              <li><a href="/realisations">Toutes nos réalisations</a></li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </section>
+${galerie(photosC, `Le chantier en photos`)}
+${bandeauCta()}` +
+      pied() +
+      FIN_PAGE(false);
+    ecrire(`realisations/${c.slug}.html`, htmlC, { path: c.path, priorite: "0.5", images: photosC });
+  }
+} else {
+  fs.rmSync(path.join(RACINE, "realisations.html"), { force: true });
+  fs.rmSync(path.join(RACINE, "realisations"), { recursive: true, force: true });
 }
 
 /* --- Pages légales --- */
