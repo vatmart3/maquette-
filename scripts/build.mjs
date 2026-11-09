@@ -29,6 +29,11 @@ const AUJOURDHUI = new Date().toISOString().slice(0, 10);
 const OG_DISPO = await import("sharp").then(() => true, () => false);
 const OG_A_GENERER = [];
 const avertissements = [];
+// Version de chaque fichier (empreinte du contenu) ajoutée à son adresse : à chaque modification,
+// le navigateur télécharge la nouvelle version au lieu de resservir une copie en cache.
+const VERSION = Object.fromEntries(
+  ["styles.css", "site.js", "config.js", "scene.js"].map((f) => [f, crypto.createHash("sha1").update(fs.readFileSync(path.join(RACINE, f))).digest("hex").slice(0, 10)])
+);
 
 /* ------------------------------------------------------------------ */
 /* Valeurs provisoires                                                 */
@@ -245,7 +250,7 @@ function head(p) {
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <link rel="preload" href="/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/styles.min.css">
+  <link rel="stylesheet" href="/styles.min.css?v=${VERSION["styles.css"]}">
   <meta property="og:type" content="${p.article ? "article" : "website"}">
   <meta property="og:locale" content="fr_FR">
   <meta property="og:site_name" content="${esc(S.nom)}">
@@ -260,8 +265,8 @@ function head(p) {
   <meta property="article:modified_time" content="${p.article.maj || p.article.publie}">` : ""}
   <meta name="twitter:card" content="summary_large_image">${scene}
 ${ld}
-  <script src="/config.js" defer></script>
-  <script src="/site.js" defer></script>${statistiques()}
+  <script src="/config.js?v=${VERSION["config.js"]}" defer></script>
+  <script src="/site.js?v=${VERSION["site.js"]}" defer></script>${statistiques()}
 </head>
 <body data-page="${p.id}"${p.sombre ? ' class="page-sombre"' : ""}>
   <a class="evitement" href="#contenu">Aller au contenu</a>
@@ -418,7 +423,7 @@ const FIN_PAGE = (scene) => `${scene ? `
     // quelques secondes après le chargement (l'intro se joue alors si l'on est en haut de page) ;
     // l'aperçu image, rendu de la même scène, s'affiche en attendant.
     let fait = false;
-    const charger = () => { if (fait) return; fait = true; import("/scene.js"); };
+    const charger = () => { if (fait) return; fait = true; import("/scene.js?v=${VERSION["scene.js"]}"); };
     if (matchMedia("(min-width: 860px)").matches) charger();
     else {
       ["touchstart", "scroll", "pointerdown", "keydown"].forEach((e) => addEventListener(e, charger, { once: true, passive: true }));
@@ -998,7 +1003,7 @@ const ZONES_VISITE = [
             <h2 id="titre-visite">Du faîtage à la gouttière, on s'occupe de tout.</h2>
             <p class="visite__glisser" aria-hidden="true">Faites glisser pour voir chaque zone ${ico("fleche")}</p>
           </div>
-          <div class="visite__scene" data-scene-visite aria-hidden="true"><img class="visite__apercu" src="/img/toiture-zone-1-480.webp" srcset="/img/toiture-zone-1-480.webp 480w, /img/toiture-zone-1.webp 800w" sizes="100vw" alt="" role="presentation" width="800" height="600" loading="lazy" decoding="async"></div>
+          <div class="visite__scene" data-scene-visite aria-hidden="true"><picture><source media="(min-width: 860px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="><img class="visite__apercu" src="/img/toiture-zone-1-480.webp" srcset="/img/toiture-zone-1-480.webp 480w, /img/toiture-zone-1.webp 800w" sizes="100vw" alt="" role="presentation" width="800" height="600" loading="lazy" decoding="async"></picture></div>
           <div class="visite__fiches">
             ${fiches}
           </div>
