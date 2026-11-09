@@ -376,6 +376,10 @@ const BUREAU = {
   large: P([-34, 30, 42], [0, 4, 2], 0.15, 0),
 };
 
+// Téléphone, visite : une seconde vue 3D dans un cadre 4:3 au-dessus des fiches, même caméra que
+// sur ordinateur pour chaque zone, recentrée et un peu reculée pour le format de l'écran.
+const ATELIER = BUREAU.zones.map((z) => ({ ...loin(z, 1.12), ox: 0, oy: 0 }));
+
 const PLANS = mobile
   ? {
       intro: P([0, 3.4, 90], [0, 3.4, 0], 0, -0.2),
@@ -408,8 +412,25 @@ if (racine) {
 }
 
 function demarrer() {
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "low-power" });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 2 : 1.5));
+  const dpr = window.devicePixelRatio || 1;
+  // Téléphone : densité plafonnée à 2 ; au-delà de 2 l'écran lisse déjà les traits, l'anticrénelage
+  // matériel est alors coupé pour garder 60 images par seconde.
+  const optionsRendu = { antialias: !mobile || dpr < 2, alpha: true, powerPreference: mobile ? "high-performance" : "low-power" };
+  const renderer = new THREE.WebGLRenderer(optionsRendu);
+  renderer.setPixelRatio(Math.min(dpr, mobile ? 2 : 1.5));
+  // Téléphone sans accélération graphique (rendu logiciel, très lent) : la scène est dessinée
+  // sans animation pour ne pas bloquer la page. Tous les téléphones récents ont un GPU.
+  const logiciel = mobile && (() => {
+    try {
+      const gl = renderer.getContext();
+      const ext = gl.getExtension("WEBGL_debug_renderer_info");
+      const nom = String(gl.getParameter(ext ? ext.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
+      return /swiftshader|llvmpipe|softpipe|software/i.test(nom);
+    } catch (e) {
+      return false;
+    }
+  })();
+  const sansAnimation = reduit || logiciel;
   renderer.setClearColor(0x000000, 0);
   renderer.domElement.setAttribute("aria-hidden", "true");
   racine.appendChild(renderer.domElement);
@@ -521,6 +542,62 @@ function demarrer() {
   let visible = !document.hidden;
   let derniereAncre = "";
 
+  /* --- Téléphone : seconde vue pour la visite des zones --- */
+  const cadre = mobile ? document.querySelector("[data-scene-visite]") : null;
+  let atelier = null;
+  // Créée seulement à l'approche de la section, pour alléger le chargement de la page.
+  function creerAtelier() {
+    const r2 = new THREE.WebGLRenderer(optionsRendu);
+    r2.setPixelRatio(Math.min(dpr, 2));
+    r2.setClearColor(0x000000, 0);
+    r2.domElement.setAttribute("aria-hidden", "true");
+    cadre.appendChild(r2.domElement);
+    const depart = ATELIER[Math.max(0, etat.zoneActive)];
+    atelier = {
+      renderer: r2,
+      camera: new THREE.PerspectiveCamera(32, 1, 0.1, 500),
+      pos: depart.pos.clone(),
+      cible: depart.cible.clone(),
+      largeur: 1,
+      hauteur: 1,
+      visible: true,
+      rendu: false,
+    };
+    const taille = () => {
+      const w = Math.max(1, cadre.clientWidth), h = Math.max(1, cadre.clientHeight);
+      if (w === atelier.largeur && h === atelier.hauteur) return;
+      atelier.largeur = w;
+      atelier.hauteur = h;
+      r2.setSize(w, h, false);
+      r2.domElement.style.width = w + "px";
+      r2.domElement.style.height = h + "px";
+      atelier.camera.aspect = w / h;
+      atelier.camera.updateProjectionMatrix();
+      atelier.rendu = false;
+      relancer();
+    };
+    if ("ResizeObserver" in window) new ResizeObserver(taille).observe(cadre);
+    window.addEventListener("resize", taille);
+    taille();
+  }
+  if (cadre) {
+    new IntersectionObserver((e) => {
+      const vu = e[0].isIntersecting;
+      if (vu && !atelier) creerAtelier();
+      if (atelier) atelier.visible = vu;
+      if (vu) relancer();
+    }, { rootMargin: "400px 0px" }).observe(cadre);
+  }
+  // La vue d'accueil n'est dessinée que lorsqu'elle est à l'écran.
+  let accueilVisible = true;
+  if (mobile && "IntersectionObserver" in window) {
+    new IntersectionObserver((e) => {
+      accueilVisible = e[0].isIntersecting;
+      if (accueilVisible) relancer();
+    }).observe(racine);
+  }
+
+
   let largeurConnue = 0;
   function redimensionner(e) {
     const w = window.innerWidth;
@@ -554,6 +631,13 @@ function demarrer() {
 
   function calculerCible() {
     const y = window.scrollY, vh = window.innerHeight, o = cibleC;
+    // Téléphone : la vue d'accueil défile avec la page (aucun calcul lié au défilement) ;
+    // la visite a sa propre vue (atelier).
+    if (mobile) {
+      melanger(PLANS.hero, PLANS.hero, 0, o);
+      o.opacite = 1;
+      return o;
+    }
     // Sans section de visite : vue d'ensemble seulement. Avec « réduire les animations »,
     // la caméra suit quand même les zones, mais par simples changements de vue (a = 1).
     if (!visite) {
@@ -590,6 +674,12 @@ function demarrer() {
     return o;
   }
 
+  // La zone a pu être choisie avant le chargement de la 3D (carrousel du téléphone).
+  {
+    const fiches = [...document.querySelectorAll("[data-visite] .fiche")];
+    const k = fiches.findIndex((f) => f.classList.contains("est-active"));
+    if (mobile && k >= 0) etat.zoneActive = k;
+  }
   document.addEventListener("arv:zone", (e) => {
     etat.zoneActive = e.detail.zone;
     derniereAncre = "";
@@ -734,35 +824,68 @@ function demarrer() {
       if (ecart > 1e-5 || Math.abs(c.opacite - etat.opacite) > 0.002) bouge = true;
     }
 
-    const az = reduit ? 1 : 1 - Math.exp(-dt * 6);
+    let bougeVue = false; // couleurs ou inclinaison modifiées : la vue de la visite est à redessiner
+    const az = sansAnimation ? 1 : 1 - Math.exp(-dt * 6);
     for (let i = 0; i < NZ; i++) {
       const but = i === etat.zoneActive ? 1 : 0;
+      const avant = etat.zones[i];
       etat.zones[i] += (but - etat.zones[i]) * az;
       if (Math.abs(but - etat.zones[i]) > 0.003) bouge = true;
       else etat.zones[i] = but;
+      if (etat.zones[i] !== avant) bougeVue = true;
     }
 
     if (!reduit) {
       etat.lissee.lerp(etat.souris, 1 - Math.exp(-dt * 3));
       groupe.rotation.y = etat.lissee.x * 0.05;
       groupe.rotation.x = etat.lissee.y * 0.025;
-      if (etat.lissee.distanceToSquared(etat.souris) > 1e-6) bouge = true;
+      if (etat.lissee.distanceToSquared(etat.souris) > 1e-6) { bouge = true; bougeVue = true; }
     }
 
     geo.instanceCount = Math.max(1, Math.round(n * etat.trace));
     majCouleurs();
 
-    camera.position.copy(etat.pos);
-    camera.lookAt(etat.cible);
-    const dist = etat.pos.distanceTo(etat.cible);
-    scene.fog.near = dist * 0.8;
-    scene.fog.far = dist * 2.1;
     const w = etat.largeur, h = etat.hauteur;
-    camera.setViewOffset(w, h, -etat.ox * w, -etat.oy * h, w, h);
-    racine.style.opacity = etat.opacite.toFixed(3);
-    renderer.render(scene, camera);
+    if (!mobile || accueilVisible || intro) {
+      camera.position.copy(etat.pos);
+      camera.lookAt(etat.cible);
+      const dist = etat.pos.distanceTo(etat.cible);
+      scene.fog.near = dist * 0.8;
+      scene.fog.far = dist * 2.1;
+      camera.setViewOffset(w, h, -etat.ox * w, -etat.oy * h, w, h);
+      racine.style.opacity = etat.opacite.toFixed(3);
+      if (atelier) mat.resolution.set(w, h);
+      renderer.render(scene, camera);
+    }
 
-    if (etat.zoneActive >= 0 && !intro) {
+    // Téléphone : la caméra de la visite rejoint la zone choisie avec le même amorti que sur ordinateur.
+    if (atelier) {
+      const but = ATELIER[Math.max(0, etat.zoneActive)];
+      const a = sansAnimation ? 1 : 1 - Math.exp(-dt * 4.5);
+      const ecart = atelier.pos.distanceToSquared(but.pos) + atelier.cible.distanceToSquared(but.cible);
+      if (ecart > 1e-5) {
+        atelier.pos.lerp(but.pos, a);
+        atelier.cible.lerp(but.cible, a);
+        atelier.rendu = false;
+        bouge = true;
+      }
+      if (atelier.visible && (!atelier.rendu || bougeVue)) {
+        const cam = atelier.camera;
+        cam.position.copy(atelier.pos);
+        cam.lookAt(atelier.cible);
+        // la zone est remontée d'un dixième du cadre pour équilibrer le vide au-dessus du toit
+        cam.setViewOffset(atelier.largeur, atelier.hauteur, 0, atelier.hauteur * 0.1, atelier.largeur, atelier.hauteur);
+        const d = atelier.pos.distanceTo(atelier.cible);
+        scene.fog.near = d * 0.8;
+        scene.fog.far = d * 2.1;
+        mat.resolution.set(atelier.largeur, atelier.hauteur);
+        atelier.renderer.render(scene, cam);
+        if (!atelier.rendu) cadre.classList.add("est-pret");
+        atelier.rendu = true;
+      }
+    }
+
+    if (!mobile && etat.zoneActive >= 0 && !intro) {
       v3.copy(ANCRES[etat.zoneActive]).applyMatrix4(groupe.matrixWorld).project(camera);
       const x = Math.round((v3.x * 0.5 + 0.5) * w), y = Math.round((-v3.y * 0.5 + 0.5) * h);
       const cle = x + "," + y;
@@ -778,8 +901,8 @@ function demarrer() {
 
   window.addEventListener("resize", redimensionner);
   window.addEventListener("orientationchange", () => setTimeout(() => redimensionner(), 250));
-  window.addEventListener("scroll", relancer, { passive: true });
-  if (!reduit) {
+  if (!mobile) window.addEventListener("scroll", relancer, { passive: true });
+  if (!sansAnimation) {
     if (!mobile) {
       window.addEventListener("pointermove", (e) => {
         if (e.pointerType !== "mouse") return;
@@ -804,7 +927,11 @@ function demarrer() {
   racine.classList.add("scene--prete");
 
   const html = document.documentElement;
-  if (html.classList.contains("intro") && !reduit && performance.now() < 1900 && window.scrollY < 40) {
+  let introVue = false;
+  try { introVue = !!sessionStorage.getItem("arv-intro"); } catch (e) {}
+  // Téléphone : l'intro au cordeau se joue dès que la 3D est prête, si l'on est encore en haut de page.
+  const introMobile = mobile && !sansAnimation && !introVue && window.scrollY < 40;
+  if (introMobile || (html.classList.contains("intro") && !reduit && performance.now() < 1900 && window.scrollY < 40)) {
     lancerIntro();
   } else {
     html.classList.remove("intro");

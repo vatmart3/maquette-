@@ -414,14 +414,17 @@ function pied() {
 
 const FIN_PAGE = (scene) => `${scene ? `
   <script type="module">
-    // Ordinateur : la 3D se charge tout de suite (intro). Téléphone : au premier geste
-    // ou après quelques secondes, pour que la page soit utilisable immédiatement.
+    // Ordinateur : la 3D se charge tout de suite (intro). Téléphone : au premier geste ou
+    // quelques secondes après le chargement (l'intro se joue alors si l'on est en haut de page) ;
+    // l'aperçu image, rendu de la même scène, s'affiche en attendant.
     let fait = false;
     const charger = () => { if (fait) return; fait = true; import("/scene.js"); };
     if (matchMedia("(min-width: 860px)").matches) charger();
     else {
       ["touchstart", "scroll", "pointerdown", "keydown"].forEach((e) => addEventListener(e, charger, { once: true, passive: true }));
-      addEventListener("load", () => setTimeout(() => (window.requestIdleCallback || setTimeout)(charger), 3500), { once: true });
+      const ensuite = () => setTimeout(() => (window.requestIdleCallback ? requestIdleCallback(charger, { timeout: 1000 }) : charger()), 3000);
+      if (document.readyState === "complete") ensuite();
+      else addEventListener("load", ensuite, { once: true });
     }
   </script>` : ""}
 </body>
@@ -963,7 +966,6 @@ const ZONES_VISITE = [
   };
   const fiches = ZONES_VISITE.map(
     (z, i) => `<article class="fiche" aria-labelledby="titre-zone-${i}">
-              <img class="fiche__image" src="/img/toiture-zone-${i + 1}-480.webp" srcset="/img/toiture-zone-${i + 1}-480.webp 480w, /img/toiture-zone-${i + 1}.webp 800w" sizes="(max-width: 859px) 100vw, 1px" alt="${esc(z.titre)} : la zone concernée est en orange sur le schéma de la toiture" width="800" height="600" loading="lazy" decoding="async">
               <span class="fiche__num mono">${String(i + 1).padStart(2, "0")} / ${String(ZONES_VISITE.length).padStart(2, "0")}</span>
               <h3 id="titre-zone-${i}">${esc(z.titre)}</h3>
               <p>${fr(z.texte)}</p>
@@ -996,6 +998,7 @@ const ZONES_VISITE = [
             <h2 id="titre-visite">Du faîtage à la gouttière, on s'occupe de tout.</h2>
             <p class="visite__glisser" aria-hidden="true">Faites glisser pour voir chaque zone ${ico("fleche")}</p>
           </div>
+          <div class="visite__scene" data-scene-visite aria-hidden="true"><img class="visite__apercu" src="/img/toiture-zone-1-480.webp" srcset="/img/toiture-zone-1-480.webp 480w, /img/toiture-zone-1.webp 800w" sizes="100vw" alt="" role="presentation" width="800" height="600" loading="lazy" decoding="async"></div>
           <div class="visite__fiches">
             ${fiches}
           </div>

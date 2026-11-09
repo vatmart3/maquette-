@@ -100,9 +100,16 @@
     var n = fiches.length;
     var zone = -1;
 
+    var cadre3d = visite.querySelector("[data-scene-visite]");
+    var apercu = cadre3d && cadre3d.querySelector("img");
     var activer = function (i) {
       if (i === zone) return;
       zone = i;
+      // Téléphone : tant que la 3D n'est pas prête (ou sans WebGL), l'aperçu suit la zone.
+      if (apercu && i >= 0) {
+        apercu.src = "/img/toiture-zone-" + (i + 1) + "-480.webp";
+        apercu.srcset = "/img/toiture-zone-" + (i + 1) + "-480.webp 480w, /img/toiture-zone-" + (i + 1) + ".webp 800w";
+      }
       fiches.forEach(function (f, k) { f.classList.toggle("est-active", k === i); });
       reperes.forEach(function (r, k) { r.setAttribute("aria-current", k === i ? "true" : "false"); });
       document.dispatchEvent(new CustomEvent("arv:zone", { detail: { zone: i } }));
@@ -127,6 +134,19 @@
       activer(Math.min(n - 1, Math.max(0, Math.round(rail.scrollLeft / Math.max(1, rail.clientWidth)))));
     };
     rail.addEventListener("scroll", depuisRail, { passive: true });
+    // Téléphone : glisser sur la scène 3D fait aussi passer d'une zone à l'autre.
+    if (cadre3d) {
+      var x0 = null, y0 = 0;
+      cadre3d.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+      cadre3d.addEventListener("touchend", function (e) {
+        if (x0 === null) return;
+        var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+        x0 = null;
+        if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
+        var k = Math.min(n - 1, Math.max(0, zone + (dx < 0 ? 1 : -1)));
+        rail.scrollTo({ left: rail.clientWidth * k, behavior: reduit ? "auto" : "smooth" });
+      }, { passive: true });
+    }
     var initialiser = function () {
       zone = -2;
       if (mqTel.matches) depuisRail();

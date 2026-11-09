@@ -432,7 +432,10 @@ main { position: relative; z-index: 1; }
 .scene--prete .scene__apercu, .scene--svg .scene__apercu { opacity: 0; }
 @media (max-width: 859px) {
   .scene:not(.scene--prete):not(.scene--svg) { opacity: 1; }
+  /* Téléphone : la scène d'accueil défile avec la page, sans calcul pendant le défilement. */
+  .scene { position: absolute; height: 100vh; height: 100svh; }
 }
+.visite__scene { display: none; }
 @media (min-width: 860px) {
   .scene__apercu { display: none; }
 }
@@ -510,7 +513,6 @@ main { position: relative; z-index: 1; }
   transition: opacity 0.35s ease, visibility 0.35s, transform 0.35s ease;
 }
 .fiche.est-active { opacity: 1; visibility: visible; }
-.fiche__image { display: none; }
 .visite__glisser { display: none; }
 .fiche__num { display: block; margin-bottom: 14px; color: var(--orange-clair); font-size: 0.85rem; letter-spacing: 0.04em; }
 .fiche h3 { font-size: clamp(1.7rem, 1.3rem + 1.3vw, 2.4rem); line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 14px; color: #fff; }
@@ -1005,7 +1007,10 @@ main { position: relative; z-index: 1; }
     transition: none;
   }
   .fiche { width: 100vw; }
-  .fiche__image { display: block; width: calc(100% + 2 * var(--marge)); max-width: none; height: auto; aspect-ratio: 4 / 3; margin: 0 calc(-1 * var(--marge)) 18px; border-radius: 0; object-fit: cover; background: var(--ardoise-fonce); }
+  .visite__scene { order: 3; position: relative; display: block; width: 100vw; max-width: 100vw; aspect-ratio: 4 / 3; margin: 0 calc(-1 * var(--marge)) 18px; overflow: hidden; background: var(--ardoise); touch-action: pan-y; }
+  .visite__scene img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 0.4s ease; }
+  .visite__scene canvas { position: absolute; inset: 0; display: block; }
+  .visite__scene.est-pret img { opacity: 0; }
   .fiche__num { margin-bottom: 8px; font-size: 0.75rem; }
   .fiche h3 { font-size: 1.4rem; margin-bottom: 8px; }
   .fiche p { margin-bottom: 16px; font-size: 0.94rem; line-height: 1.5; }

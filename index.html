@@ -90,9 +90,9 @@
             <h2 id="titre-visite">Du faîtage à la gouttière, on s'occupe de tout.</h2>
             <p class="visite__glisser" aria-hidden="true">Faites glisser pour voir chaque zone <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></p>
           </div>
+          <div class="visite__scene" data-scene-visite aria-hidden="true"><img class="visite__apercu" src="/img/toiture-zone-1-480.webp" srcset="/img/toiture-zone-1-480.webp 480w, /img/toiture-zone-1.webp 800w" sizes="100vw" alt="" role="presentation" width="800" height="600" loading="lazy" decoding="async"></div>
           <div class="visite__fiches">
             <article class="fiche" aria-labelledby="titre-zone-0">
-              <img class="fiche__image" src="/img/toiture-zone-1-480.webp" srcset="/img/toiture-zone-1-480.webp 480w, /img/toiture-zone-1.webp 800w" sizes="(max-width: 859px) 100vw, 1px" alt="Couverture et tuiles : la zone concernée est en orange sur le schéma de la toiture" width="800" height="600" loading="lazy" decoding="async">
               <span class="fiche__num mono">01 / 05</span>
               <h3 id="titre-zone-0">Couverture et tuiles</h3>
               <p>Tuiles canal, romanes ou mécaniques, faîtage, rives et génoises. On répare un pan ou on refait toute la couverture.</p>
@@ -103,7 +103,6 @@
               </div>
             </article>
             <article class="fiche" aria-labelledby="titre-zone-1">
-              <img class="fiche__image" src="/img/toiture-zone-2-480.webp" srcset="/img/toiture-zone-2-480.webp 480w, /img/toiture-zone-2.webp 800w" sizes="(max-width: 859px) 100vw, 1px" alt="Charpente : la zone concernée est en orange sur le schéma de la toiture" width="800" height="600" loading="lazy" decoding="async">
               <span class="fiche__num mono">02 / 05</span>
               <h3 id="titre-zone-1">Charpente</h3>
               <p>Chevrons, pannes et liteaux portent vos tuiles. On les contrôle et on les renforce.</p>
@@ -114,7 +113,6 @@
               </div>
             </article>
             <article class="fiche" aria-labelledby="titre-zone-2">
-              <img class="fiche__image" src="/img/toiture-zone-3-480.webp" srcset="/img/toiture-zone-3-480.webp 480w, /img/toiture-zone-3.webp 800w" sizes="(max-width: 859px) 100vw, 1px" alt="Zinguerie : la zone concernée est en orange sur le schéma de la toiture" width="800" height="600" loading="lazy" decoding="async">
               <span class="fiche__num mono">03 / 05</span>
               <h3 id="titre-zone-2">Zinguerie</h3>
               <p>Gouttières, descentes et noues en zinc éloignent l&#39;eau de vos murs et de vos façades.</p>
@@ -125,7 +123,6 @@
               </div>
             </article>
             <article class="fiche" aria-labelledby="titre-zone-3">
-              <img class="fiche__image" src="/img/toiture-zone-4-480.webp" srcset="/img/toiture-zone-4-480.webp 480w, /img/toiture-zone-4.webp 800w" sizes="(max-width: 859px) 100vw, 1px" alt="Fuites et étanchéité : la zone concernée est en orange sur le schéma de la toiture" width="800" height="600" loading="lazy" decoding="async">
               <span class="fiche__num mono">04 / 05</span>
               <h3 id="titre-zone-3">Fuites et étanchéité</h3>
               <p>Solin de cheminée, fenêtre de toit, tuile cassée. On trouve d&#39;où vient l&#39;eau avant de réparer.</p>
@@ -136,7 +133,6 @@
               </div>
             </article>
             <article class="fiche" aria-labelledby="titre-zone-4">
-              <img class="fiche__image" src="/img/toiture-zone-5-480.webp" srcset="/img/toiture-zone-5-480.webp 480w, /img/toiture-zone-5.webp 800w" sizes="(max-width: 859px) 100vw, 1px" alt="Démoussage et entretien : la zone concernée est en orange sur le schéma de la toiture" width="800" height="600" loading="lazy" decoding="async">
               <span class="fiche__num mono">05 / 05</span>
               <h3 id="titre-zone-4">Démoussage et entretien</h3>
               <p>Un nettoyage et un traitement contre mousses et lichens prolongent la vie de la toiture.</p>
@@ -348,14 +344,17 @@
   </nav>
 
   <script type="module">
-    // Ordinateur : la 3D se charge tout de suite (intro). Téléphone : au premier geste
-    // ou après quelques secondes, pour que la page soit utilisable immédiatement.
+    // Ordinateur : la 3D se charge tout de suite (intro). Téléphone : au premier geste ou
+    // quelques secondes après le chargement (l'intro se joue alors si l'on est en haut de page) ;
+    // l'aperçu image, rendu de la même scène, s'affiche en attendant.
     let fait = false;
     const charger = () => { if (fait) return; fait = true; import("/scene.js"); };
     if (matchMedia("(min-width: 860px)").matches) charger();
     else {
       ["touchstart", "scroll", "pointerdown", "keydown"].forEach((e) => addEventListener(e, charger, { once: true, passive: true }));
-      addEventListener("load", () => setTimeout(() => (window.requestIdleCallback || setTimeout)(charger), 3500), { once: true });
+      const ensuite = () => setTimeout(() => (window.requestIdleCallback ? requestIdleCallback(charger, { timeout: 1000 }) : charger()), 3000);
+      if (document.readyState === "complete") ensuite();
+      else addEventListener("load", ensuite, { once: true });
     }
   </script>
 </body>
