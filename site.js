@@ -100,16 +100,9 @@
     var n = fiches.length;
     var zone = -1;
 
-    var cadre3d = visite.querySelector("[data-scene-visite]");
-    var apercu = cadre3d && cadre3d.querySelector("img");
     var activer = function (i) {
       if (i === zone) return;
       zone = i;
-      // Téléphone : tant que la 3D n'est pas prête (ou sans WebGL), l'aperçu suit la zone.
-      if (apercu && i >= 0) {
-        apercu.src = "/img/toiture-zone-" + (i + 1) + "-480.webp";
-        apercu.srcset = "/img/toiture-zone-" + (i + 1) + "-480.webp 480w, /img/toiture-zone-" + (i + 1) + ".webp 800w";
-      }
       fiches.forEach(function (f, k) { f.classList.toggle("est-active", k === i); });
       reperes.forEach(function (r, k) { r.setAttribute("aria-current", k === i ? "true" : "false"); });
       document.dispatchEvent(new CustomEvent("arv:zone", { detail: { zone: i } }));

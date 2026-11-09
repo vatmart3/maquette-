@@ -432,10 +432,7 @@ main { position: relative; z-index: 1; }
 .scene--prete .scene__apercu, .scene--svg .scene__apercu { opacity: 0; }
 @media (max-width: 859px) {
   .scene:not(.scene--prete):not(.scene--svg) { opacity: 1; }
-  /* Téléphone : la scène d'accueil défile avec la page, sans calcul pendant le défilement. */
-  .scene { position: absolute; height: 100vh; height: 100svh; }
 }
-.visite__scene { display: none; }
 @media (min-width: 860px) {
   .scene__apercu { display: none; }
 }
@@ -967,8 +964,8 @@ main { position: relative; z-index: 1; }
 
   /* visite : comme sur ordinateur, la section reste en place et le défilement fait passer
      d'une zone à l'autre ; la 3D occupe toute la largeur, la fiche de la zone s'affiche dessous */
-  .visite { height: 440svh; padding: 0; background: var(--ardoise); }
-  .visite__collant { position: sticky; top: var(--entete); height: calc(100svh - var(--entete) - var(--barre)); overflow: hidden; background: var(--ardoise); }
+  .visite { height: 440svh; padding: 0; }
+  .visite__collant { position: sticky; top: var(--entete); height: calc(100svh - var(--entete) - var(--barre)); overflow: hidden; }
   .visite__collant::before { display: none; }
   .visite__grille { display: flex; flex-direction: column; height: 100%; padding: 14px 0 12px; }
   .visite__tete { margin: 0; padding: 0 0 10px; background: none; }
@@ -976,14 +973,10 @@ main { position: relative; z-index: 1; }
   .visite__glisser { display: none; }
   .visite__reperes { order: 2; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; margin: 0; padding: 0; background: none; }
   .visite__reperes button { min-width: 0; min-height: 40px; padding: 4px 0 6px; gap: 6px; font-size: 0.72rem; line-height: 1.15; }
-  .visite__scene { position: absolute; inset: 0; z-index: 0; display: block; overflow: hidden; }
-  .visite__scene img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 0.4s ease; }
-  .visite__scene canvas { position: absolute; inset: 0; display: block; }
-  .visite__scene.est-pret img { opacity: 0; }
   .visite__grille { position: relative; z-index: 1; pointer-events: none; }
   .visite__tete, .visite__reperes, .visite__fiches { pointer-events: auto; }
   .visite__tete, .visite__reperes { margin-inline: calc(-1 * var(--marge)); padding-inline: var(--marge); }
-  .visite__tete { margin-top: -14px; padding-top: 14px; background: var(--ardoise); }
+  .visite__tete { margin-top: -14px; padding-top: 14px; background: linear-gradient(to bottom, rgb(36 55 70 / 0.92), rgb(36 55 70 / 0.85)); }
   .visite__reperes { padding-bottom: 22px; background: linear-gradient(to bottom, var(--ardoise) 60%, rgb(36 55 70 / 0)); }
   .visite__fiches { order: 4; position: relative; display: grid; width: auto; min-height: 0; margin: auto calc(-1 * var(--marge)) 0; padding: 40px var(--marge) 0; background: linear-gradient(to bottom, rgb(36 55 70 / 0), var(--ardoise) 38px); }
   .fiche {

@@ -1003,7 +1003,6 @@ const ZONES_VISITE = [
             <h2 id="titre-visite">Du faîtage à la gouttière, on s'occupe de tout.</h2>
             <p class="visite__glisser" aria-hidden="true">Faites glisser pour voir chaque zone ${ico("fleche")}</p>
           </div>
-          <div class="visite__scene" data-scene-visite aria-hidden="true"><picture><source media="(min-width: 860px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="><img class="visite__apercu" src="/img/toiture-zone-1-480.webp" srcset="/img/toiture-zone-1-480.webp 480w, /img/toiture-zone-1.webp 800w" sizes="100vw" alt="" role="presentation" width="800" height="600" loading="lazy" decoding="async"></picture></div>
           <div class="visite__fiches">
             ${fiches}
           </div>
