@@ -11,7 +11,6 @@ envoie les formulaires par e-mail. Réalisé par MJAGENCY.
 | `scripts/contenu.mjs` | Services, 10 communes du Bassin de Thau, FAQ. |
 | `scripts/communes-herault.mjs` | 21 communes du reste de l'Hérault. |
 | `scripts/secteurs.mjs` | 7 secteurs (`/secteur/…`). |
-| `scripts/prix.mjs` | Prix indicatifs (`/prix-toiture`, `/prix/…`), tous À CONFIRMER, `valide: false`. |
 | `scripts/articles.mjs` | Articles conseils (`/conseils/…`). |
 | `scripts/chantiers.mjs` | Réalisations : vide tant qu'il n'y a pas de vrai chantier. |
 | `scripts/build.mjs` | Génère toutes les pages, `sitemap.xml`, `robots.txt`, données structurées, images de partage, puis lance le contrôle SEO. |
@@ -119,7 +118,7 @@ en ligne. Après une mise en ligne sur `https://arveo.fr` (jamais sur l'adresse 
 node scripts/indexnow.mjs
 ```
 
-envoie toutes les URL du sitemap ; `node scripts/indexnow.mjs /prix-toiture /couvreur/sete`
+envoie toutes les URL du sitemap ; `node scripts/indexnow.mjs /zone-intervention /couvreur/sete`
 n'envoie que ces pages. Google n'utilise pas IndexNow : pour Google, soumettez le sitemap dans la
 Search Console.
 

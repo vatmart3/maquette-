@@ -80,7 +80,7 @@ export const SERVICES = [
         h2: "Isolation, démarches et budget",
         p: [
           "Une couverture déposée est le meilleur moment pour [isoler la toiture par l'extérieur](/services/isolation-toiture), puisque les chevrons sont déjà à nu. Si le projet modifie l'aspect du toit, matériau, couleur ou hauteur, une démarche en mairie peut être demandée, et les abords d'un monument historique peuvent imposer des conditions. Notre page sur les [démarches d'urbanisme avant des travaux de toiture](/conseils/travaux-toiture-autorisation-urbanisme) résume les cas courants.",
-          "Pour un ordre de grandeur, la page [prix d'une réfection de toiture](/prix/refection-toiture) explique ce qui fait varier le montant. Le chiffrage précis vient après la visite, avec un [devis écrit poste par poste](/devis-toiture).",
+          "Le montant dépend de la surface, de la tuile, de l'accès et de l'état de la charpente. Le chiffrage précis vient après la visite, avec un [devis écrit poste par poste](/devis-toiture).",
         ],
       },
     ],
@@ -162,7 +162,7 @@ export const SERVICES = [
         h2: "En attendant notre passage, et pour le budget",
         p: [
           "Quelques gestes simples limitent les dégâts avant la réparation. Ils sont détaillés dans notre fiche [fuite de toiture, que faire tout de suite](/conseils/fuite-toiture-que-faire). Si l'eau coule franchement dans une pièce, passez par notre [dépannage de toiture](/depannage-toiture), on vous rappelle dans la journée.",
-          "Le coût d'une recherche dépend de l'accès au toit, de sa hauteur et du nombre de points suspects. La page [prix d'une recherche de fuite](/prix/recherche-de-fuite) donne les repères utiles. Quand la réparation peut se faire dans la foulée, elle figure sur une ligne à part que vous validez avant.",
+          "Le coût d'une recherche dépend de l'accès au toit, de sa hauteur et du nombre de points suspects. Quand la réparation peut se faire dans la foulée, elle figure sur une ligne à part que vous validez avant.",
         ],
       },
     ],
@@ -241,7 +241,7 @@ export const SERVICES = [
         h2: "Un démoussage, l'occasion de faire le point",
         p: [
           "Pendant le nettoyage, on voit la couverture de près. Faîtage fissuré, tuiles feuilletées, liteaux qui fléchissent sous le pas, on vous signale tout ce qui mérite attention, photos à l'appui. Si le toit est trop usé pour qu'un traitement ait du sens, on vous le dit et on parle plutôt de [réfection de toiture](/services/refection-toiture).",
-          "Pour un budget indicatif selon la surface et l'accès, consultez la page [prix d'un démoussage de toiture](/prix/demoussage-toiture).",
+          "Pour connaître le budget selon la surface et l'accès, [demandez un devis gratuit](/devis-toiture).",
         ],
       },
     ],
@@ -475,7 +475,7 @@ export const SERVICES = [
         h2: "Quand quelques tuiles ne suffisent plus",
         p: [
           "Remplacer trois ou quatre tuiles est un geste d'entretien normal. En revanche, si elles se brisent dès qu'on les touche, si la mousse a envahi le versant ou si les liteaux plient sous la main, on vous le dira franchement. Il vaut alors mieux envisager un [démoussage de la toiture](/services/demoussage-toiture), la reprise d'un pan ou une [réfection complète de la couverture](/services/refection-toiture).",
-          "Pour avoir une première idée du budget avant notre visite, consultez la page [prix du remplacement de tuiles](/prix/remplacement-tuiles). Le montant exact dépend de l'accès, du type de tuile et du nombre de pièces à changer.",
+          "Pour connaître le budget, [demandez votre devis gratuit](/devis-toiture), nous passons voir la toiture avant de chiffrer. Le montant exact dépend de l'accès, du type de tuile et du nombre de pièces à changer.",
         ],
       },
       {

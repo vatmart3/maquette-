@@ -110,7 +110,7 @@ export const ARTICLES = [
             p: "Pour une intervention rapide, passez par notre page [dépannage de toiture](/depannage-toiture). On vous rappelle dans la journée pour faire le point et on organise le déplacement au plus vite selon les conditions météo et votre secteur.",
           },
           {
-            p: "La réparation définitive vient ensuite, une fois l'origine identifiée. Pour vous faire une idée du budget d'un diagnostic, consultez la page [prix d'une recherche de fuite](/prix/recherche-de-fuite).",
+            p: "La réparation définitive vient ensuite, une fois l'origine identifiée.",
           },
         ],
       },
@@ -264,7 +264,7 @@ export const ARTICLES = [
             ],
           },
           {
-            p: "Ces travaux relèvent de notre service [faîtage et rives](/services/faitage-rives) et du [remplacement de tuiles abîmées](/services/remplacement-tuiles). Pour estimer le budget, la page [tarifs de remplacement de tuiles](/prix/remplacement-tuiles) donne des repères. Nous intervenons autour de l'étang dans tout le [bassin de Thau](/secteur/bassin-de-thau), où le vent souffle souvent fort.",
+            p: "Ces travaux relèvent de notre service [faîtage et rives](/services/faitage-rives) et du [remplacement de tuiles abîmées](/services/remplacement-tuiles). Nous intervenons autour de l'étang dans tout le [bassin de Thau](/secteur/bassin-de-thau), où le vent souffle souvent fort.",
           },
         ],
       },
@@ -389,7 +389,7 @@ export const ARTICLES = [
             p: "La teinte mérite enfin un moment de réflexion. Les tuiles rouges unies, les nuances paille ou les mélanges vieillis ne rendent pas pareil sous la lumière du Midi. Demandez à voir des échantillons posés à plat au soleil, et regardez les toits voisins avant de trancher.",
           },
           {
-            p: "Si toute la couverture doit être reprise, notre service [réfection de toiture](/services/refection-toiture) présente les étapes, de la dépose au faîtage. La page [prix d'une réfection de toiture](/prix/refection-toiture) donne des ordres de grandeur selon la tuile choisie. Pour un projet chiffré sur votre maison, demandez un [devis de couverture gratuit](/devis-toiture), avec plusieurs options de tuiles si la toiture le permet.",
+            p: "Si toute la couverture doit être reprise, notre service [réfection de toiture](/services/refection-toiture) présente les étapes, de la dépose au faîtage. Pour un projet chiffré sur votre maison, demandez un [devis de couverture gratuit](/devis-toiture), avec plusieurs options de tuiles si la toiture le permet.",
           },
         ],
       },
@@ -418,7 +418,7 @@ export const ARTICLES = [
             p: "Beaucoup de désordres sont localisés. Une tuile fendue par une branche, un faîtage dont le mortier a lâché sur deux mètres, un solin décollé au pied de la cheminée. Dans ces situations, une intervention ciblée suffit et la couverture repart pour des années.",
           },
           {
-            p: "Le [remplacement de tuiles cassées](/services/remplacement-tuiles), la reprise d'une rive ou d'une noue, le changement d'une gouttière percée relèvent de la réparation. Ils coûtent peu au regard d'une réfection et ne touchent pas à la structure. La page [tarifs du remplacement de tuiles](/prix/remplacement-tuiles) donne des repères.",
+            p: "Le [remplacement de tuiles cassées](/services/remplacement-tuiles), la reprise d'une rive ou d'une noue, le changement d'une gouttière percée relèvent de la réparation. Ils coûtent peu au regard d'une réfection et ne touchent pas à la structure.",
           },
           {
             p: "Une révision générale entre aussi dans cette catégorie. Le couvreur parcourt la toiture, recale les tuiles qui ont glissé, change celles qui sont fêlées, vérifie les solins et nettoie les noues. Sur une couverture encore saine, ce passage régulier repousse nettement l'échéance d'une réfection.",
@@ -532,7 +532,7 @@ export const ARTICLES = [
             p: "Le diagnostic se fait sur place, par temps sec de préférence. Autour de Frontignan et de l'étang de Thau, la visite s'organise facilement. Pour une maison du Biterrois, du Lunellois ou des hauts cantons, nous planifions le déplacement sur rendez-vous et regroupons les visites d'un même secteur.",
           },
           {
-            p: "Lorsqu'un doute subsiste, faites chiffrer les deux options, réparation ciblée et [réfection complète de toiture](/services/refection-toiture). La page [prix d'une réfection de toiture](/prix/refection-toiture) aide à situer les montants. Le choix de la tuile entre aussi en jeu, notre guide [tuile canal, romane ou mécanique](/conseils/tuile-canal-romane-mecanique) vous aide à y voir clair. Pour un bilan sur votre maison, demandez un [devis toiture sans engagement](/devis-toiture).",
+            p: "Lorsqu'un doute subsiste, faites chiffrer les deux options, réparation ciblée et [réfection complète de toiture](/services/refection-toiture). Le choix de la tuile entre aussi en jeu, notre guide [tuile canal, romane ou mécanique](/conseils/tuile-canal-romane-mecanique) vous aide à y voir clair. Pour un bilan sur votre maison, demandez un [devis toiture sans engagement](/devis-toiture).",
           },
         ],
       },
@@ -787,7 +787,7 @@ export const ARTICLES = [
             p: "Un démoussage confié à un couvreur, c'est aussi une inspection de la couverture. Tuiles fêlées, faîtage fissuré, solin décollé, tout se voit mieux une fois la mousse retirée. On vous signale ce qui mérite attention, sans travaux imposés.",
           },
           {
-            p: "Le coût dépend de la surface, de la pente, de l'accès et de la quantité de végétation. La page [prix du démoussage de toiture](/prix/demoussage-toiture) en donne les repères. Pour une proposition chiffrée sur votre maison, demandez un [devis de démoussage](/devis-toiture), nous fixons ensemble une date adaptée à la saison et à la météo.",
+            p: "Le coût dépend de la surface, de la pente, de l'accès et de la quantité de végétation. Pour une proposition chiffrée sur votre maison, demandez un [devis de démoussage](/devis-toiture), nous fixons ensemble une date adaptée à la saison et à la météo.",
           },
         ],
       },

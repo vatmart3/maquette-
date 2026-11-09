@@ -4,7 +4,7 @@
  * Seznam, Naver… ; Google ne l'utilise pas, pour Google passez par la Search Console).
  *
  *   node scripts/indexnow.mjs              → envoie toutes les URL du sitemap
- *   node scripts/indexnow.mjs /prix-toiture /couvreur/sete   → envoie seulement ces chemins
+ *   node scripts/indexnow.mjs /zone-intervention /couvreur/sete   → envoie seulement ces chemins
  *
  * À lancer APRÈS la mise en ligne sur le domaine définitif (arveo.fr), jamais sur une adresse
  * *.vercel.app. La clé est le fichier <clé>.txt à la racine du site, qui doit être en ligne.
