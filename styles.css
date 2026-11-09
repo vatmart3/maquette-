@@ -1133,3 +1133,48 @@ main { position: relative; z-index: 1; }
 .fiche__aussi a { color: var(--orange-clair); text-underline-offset: 3px; }
 .fiche__aussi a:hover { color: var(--blanc); }
 @media (max-width: 859px) { .fiche p.fiche__aussi { margin: -8px 0 14px; font-size: .88rem; } }
+
+/* Prix */
+.prix-carte__titre { margin: 0 0 6px; color: var(--texte-clair); font-size: .95rem; }
+.prix-carte__montant { margin: 0; color: var(--blanc); font-size: clamp(1.9rem, 1.4rem + 1.6vw, 2.6rem); line-height: 1.1; letter-spacing: -.01em; }
+.prix-carte__unite { margin: 6px 0 14px; color: var(--orange-clair); font-family: var(--titres); font-weight: 700; }
+.prix-carte__mention { margin: 0; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.18); color: var(--texte-clair); font-size: .88rem; }
+.mention-prix { color: var(--texte-2) !important; font-size: .9rem; }
+.tarifs { list-style: none; margin: 0 0 8px; padding: 0; border-top: 1px solid var(--filet); }
+.tarifs li { border-bottom: 1px solid var(--filet); }
+.tarifs a { display: grid; grid-template-columns: 1fr auto 20px; gap: 16px; align-items: center; padding: 16px 0; color: var(--texte); text-decoration: none; }
+.tarifs__nom { font-family: var(--titres); font-weight: 700; }
+.tarifs__montant { color: var(--orange-texte); }
+.tarifs .ico { width: 18px; height: 18px; }
+.tarifs a:hover .tarifs__nom { color: var(--orange-action); }
+.tableau-defile { overflow-x: auto; margin: 0 0 10px; }
+.tableau-prix { width: 100%; border-collapse: collapse; font-size: .95rem; }
+.tableau-prix th, .tableau-prix td { padding: 14px 12px 14px 0; border-bottom: 1px solid var(--filet); text-align: left; vertical-align: top; }
+.tableau-prix thead th { padding-top: 0; color: var(--texte-2); font-family: var(--donnees); font-size: .8rem; font-weight: 500; border-bottom-color: var(--ardoise); }
+.tableau-prix tbody th { font-family: var(--titres); font-weight: 700; width: 34%; }
+.tableau-prix td.mono { white-space: nowrap; color: var(--orange-texte); }
+.tableau-prix td { color: var(--texte-2); }
+.facteurs { margin: 0; border-top: 1px solid var(--filet); }
+.facteurs div { display: grid; grid-template-columns: minmax(150px, 30%) 1fr; gap: 20px; padding: 14px 0; border-bottom: 1px solid var(--filet); }
+.facteurs dt { font-family: var(--titres); font-weight: 700; }
+.facteurs dd { margin: 0; color: var(--texte-2); }
+.inclus { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.inclus h3 { margin-top: 0; }
+.liste-tirets { margin: 0; padding: 0; list-style: none; }
+.liste-tirets li { position: relative; padding: 6px 0 6px 22px; color: var(--texte-2); }
+.liste-tirets li::before { content: ""; position: absolute; left: 2px; top: 1.05em; width: 10px; height: 2px; background: var(--texte-2); }
+.combien { margin: 40px 0 0; padding: 22px 0 4px; border-top: 2px solid var(--ardoise); }
+.combien h2 { margin-top: 0 !important; }
+.combien__montant { font-size: 1.15rem; color: var(--texte) !important; }
+.combien__montant .mono { color: var(--orange-texte); font-size: 1.35rem; }
+@media (max-width: 639px) {
+  .tableau-prix thead { display: none; }
+  .tableau-prix, .tableau-prix tbody, .tableau-prix tr, .tableau-prix th, .tableau-prix td { display: block; width: auto !important; }
+  .tableau-prix tr { padding: 14px 0; border-bottom: 1px solid var(--filet); }
+  .tableau-prix th, .tableau-prix td { padding: 2px 0; border: 0; }
+  .tableau-prix td.mono { white-space: normal; margin: 4px 0; }
+  .facteurs div { grid-template-columns: 1fr; gap: 4px; }
+  .inclus { grid-template-columns: 1fr; gap: 8px; }
+  .tarifs a { grid-template-columns: 1fr 20px; }
+  .tarifs__montant { grid-column: 1; grid-row: 2; }
+}

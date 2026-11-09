@@ -12,6 +12,7 @@ import { fileURLToPath } from "node:url";
 import { SERVICES, VILLES, FAQ_ACCUEIL, FAQ_DEPANNAGE } from "./contenu.mjs";
 import { controler } from "./qa.mjs";
 import { CHANTIERS } from "./chantiers.mjs";
+import { PRIX, PRIX_HUB } from "./prix.mjs";
 
 const RACINE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const ctx = { window: {} };
@@ -148,6 +149,7 @@ const ico = (n, cls = "ico") => `<svg class="${cls}" viewBox="0 0 24 24" aria-hi
 const NAV = [
   { id: "services", href: "/#services", texte: "Services" },
   { id: "depannage", href: "/depannage-toiture", texte: "Dépannage" },
+  { id: "prix", href: "/prix-toiture", texte: "Prix" },
   { id: "apropos", href: "/a-propos", texte: "À propos" },
   { id: "contact", href: "/contact", texte: "Contact" },
 ];
@@ -339,6 +341,7 @@ function pied() {
         <li><a href="/rendez-vous">Rendez-vous</a></li>
         <li><a href="/contact">Contact</a></li>
         <li><a href="/zone-intervention">Zone d'intervention</a></li>
+        <li><a href="/prix-toiture">Prix</a></li>
         ${avecRealisations ? '<li><a href="/realisations">Réalisations</a></li>' : ""}
         <li><a href="/mentions-legales">Mentions légales</a></li>
         <li><a href="/confidentialite">Confidentialité</a></li>
@@ -981,6 +984,151 @@ ${bandeauCta()}` +
   ecrire("index.html", html, { path: "/", priorite: "1.0" });
 }
 
+/* --- Prix indicatifs --- */
+
+const uniteTexte = (u) => (u === "m²" ? "le m²" : u === "intervention" ? "l'intervention" : u === "ml" ? "le mètre linéaire" : `par ${u}`);
+const euros = (n) => new Intl.NumberFormat("fr-FR").format(n).replace(/ | /g, " ");
+const fourchette = (x) => `${euros(x.bas)} à ${euros(x.haut)} €`;
+const PRIX_PAGES = PRIX.filter((x) => x.service === "depannage-toiture" || serviceActif(x.service)).map((x) => ({ ...x, path: `/prix/${x.slug}` }));
+const MENTION_PRIX = "Prix indicatifs TTC, main-d'œuvre comprise, à confirmer après visite et devis écrit.";
+
+function ldPrix(x) {
+  const service = SERVICES_PAGES.find((s) => s.slug === x.service);
+  return nettoyer({
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: x.nom,
+    serviceType: x.nom,
+    url: urlPage(x.path),
+    provider: { "@id": ENTREPRISE_ID },
+    areaServed: { "@type": "AdministrativeArea", name: "Hérault" },
+    isRelatedTo: service ? { "@type": "Service", name: service.nom, url: urlPage(service.path) } : undefined,
+    // Aucun prix publié pour Google tant que la fourchette n'est pas validée par ARVÉO.
+    offers: x.valide
+      ? {
+          "@type": "Offer",
+          priceCurrency: "EUR",
+          priceSpecification: { "@type": "PriceSpecification", minPrice: x.bas, maxPrice: x.haut, priceCurrency: "EUR", valueAddedTaxIncluded: true },
+        }
+      : undefined,
+  });
+}
+
+function blocPrixService(s) {
+  const x = PRIX_PAGES.find((y) => y.service === s.slug);
+  if (!x) return "";
+  return `<div class="combien">
+            <h2>Combien ça coûte ?</h2>
+            <p class="combien__montant"><span class="mono">${fourchette(x)}</span> ${uniteTexte(x.unite)}</p>
+            <p>${MENTION_PRIX} Le prix exact dépend de l'accès, de l'état de la toiture et des matériaux.</p>
+            <a class="lien-fleche" href="${x.path}">Le détail des prix, ${esc(x.nom.toLowerCase())} ${ico("fleche")}</a>
+          </div>`;
+}
+
+{
+  const H = PRIX_HUB;
+  const ar = filAriane([{ nom: "Prix", path: "/prix-toiture" }]);
+  const p = { id: "prix", path: "/prix-toiture", title: H.title, description: H.description, jsonld: [ldEntreprise(), ar.ld, ldFaq(H.faq)] };
+  const html =
+    head(p) +
+    enTetePage({ h1: H.h1, chapo: H.chapo, ariane: ar.html }) +
+    `
+    <section class="section section--claire">
+      <div class="conteneur article">
+        <div class="article__corps">
+          <h2>Les prix par type de travaux</h2>
+          <ul class="tarifs">
+            ${PRIX_PAGES.map((x) => `<li><a href="${x.path}"><span class="tarifs__nom">Prix ${esc(x.nom.toLowerCase())}</span><span class="tarifs__montant mono">${fourchette(x)} ${uniteTexte(x.unite)}</span>${ico("fleche")}</a></li>`).join("\n            ")}
+          </ul>
+          <p class="mention-prix">${MENTION_PRIX}</p>
+          ${sectionsHtml(H.sections)}
+          <div class="encart-cta" data-commun>
+            <p><strong>Un prix pour votre toiture ?</strong> Le diagnostic et le devis sont gratuits.</p>
+            <div class="actions">
+              <a class="bouton bouton--orange" href="/devis-toiture" data-track="devis">${ico("devis")}Demander un devis</a>
+              <a class="bouton bouton--contour" href="/rendez-vous" data-track="rdv">${ico("agenda")}Prendre rendez-vous</a>
+            </div>
+          </div>
+        </div>
+        <aside class="article__cote">
+          <div class="cote-carte">
+            <h2>Les services</h2>
+            <ul class="liste-liens">${SERVICES_PAGES.map((s) => `<li><a href="${s.path}">${esc(s.court)}</a></li>`).join("")}</ul>
+          </div>
+        </aside>
+      </div>
+    </section>
+${faqHtml(H.faq, "Vos questions sur les prix")}
+${bandeauCta()}` +
+    pied() +
+    FIN_PAGE(false);
+  ecrire("prix-toiture.html", html, { path: "/prix-toiture", priorite: "0.7" });
+}
+
+for (const x of PRIX_PAGES) {
+  const service = SERVICES_PAGES.find((s) => s.slug === x.service);
+  const ar = filAriane([{ nom: "Prix", path: "/prix-toiture" }, { nom: x.nom, path: x.path }]);
+  const p = { id: "prix", path: x.path, title: x.title, description: x.description, og: { titre: x.h1, type: "Prix indicatifs" }, jsonld: [ldEntreprise(), ldPrix(x), ar.ld, ldFaq(x.faq)] };
+  const carte = `<p class="prix-carte__titre">Fourchette indicative</p>
+          <p class="prix-carte__montant mono">${fourchette(x)}</p>
+          <p class="prix-carte__unite">${uniteTexte(x.unite)}, TTC</p>
+          <p class="prix-carte__mention">${MENTION_PRIX}</p>`;
+  const html =
+    head(p) +
+    enTetePage({ h1: x.h1, chapo: x.chapo, ariane: ar.html, rappel: carte }) +
+    `
+    <section class="section section--claire">
+      <div class="conteneur article">
+        <div class="article__corps">
+          <h2>Prix des cas les plus courants</h2>
+          <div class="tableau-defile" role="region" aria-label="Tableau des prix indicatifs" tabindex="0">
+          <table class="tableau-prix">
+            <thead><tr><th scope="col">Situation</th><th scope="col">Fourchette TTC</th><th scope="col">Ce que ça comprend</th></tr></thead>
+            <tbody>
+              ${x.cas.map((c) => `<tr><th scope="row">${fr(c.cas)}</th><td class="mono">${fr(c.fourchette)}</td><td>${riche(c.detail)}</td></tr>`).join("\n              ")}
+            </tbody>
+          </table>
+          </div>
+          <p class="mention-prix">${MENTION_PRIX}</p>
+          <h2>Ce qui fait varier le prix</h2>
+          <dl class="facteurs">
+            ${x.facteurs.map((f) => `<div><dt>${fr(f.titre)}</dt><dd>${riche(f.texte)}</dd></div>`).join("\n            ")}
+          </dl>
+          <h2>Ce que comprend le prix</h2>
+          <div class="inclus">
+            <div><h3>Compris en général</h3><ul class="liste-coches">${x.inclus.map((t) => `<li>${ico("coche")}${riche(t)}</li>`).join("")}</ul></div>
+            <div><h3>Chiffré à part</h3><ul class="liste-tirets">${x.exclus.map((t) => `<li>${riche(t)}</li>`).join("")}</ul></div>
+          </div>
+          <h2>Comment lire un devis de ${esc(x.nom.toLowerCase())}</h2>
+          ${x.lecture.map((t) => `<p>${riche(t)}</p>`).join("\n          ")}
+          ${sectionsHtml(x.sections)}
+          <div class="encart-cta" data-commun>
+            <p><strong>Un prix précis pour votre maison ?</strong> On passe voir la toiture et on vous remet un devis écrit, gratuit.</p>
+            <div class="actions">
+              <a class="bouton bouton--orange" href="/devis-toiture?travaux=${encodeURIComponent(service?.devis || "")}" data-track="devis">${ico("devis")}Demander un devis gratuit</a>
+              <a class="bouton bouton--contour" href="/rendez-vous" data-track="rdv">${ico("agenda")}Prendre rendez-vous</a>
+            </div>
+          </div>
+        </div>
+        <aside class="article__cote">
+          <div class="cote-carte">
+            <h2>Voir aussi</h2>
+            <ul class="liste-liens">
+              ${service ? `<li><a href="${service.path}">${esc(service.nom)}, le service</a></li>` : ""}
+              ${PRIX_PAGES.filter((y) => y !== x).map((y) => `<li><a href="${y.path}">Prix ${esc(y.nom.toLowerCase())}</a></li>`).join("")}
+              <li><a href="/prix-toiture">Tous les prix de toiture</a></li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </section>
+${faqHtml(x.faq, `Vos questions sur le prix`)}
+${bandeauCta()}` +
+    pied() +
+    FIN_PAGE(false);
+  ecrire(`prix/${x.slug}.html`, html, { path: x.path, priorite: "0.7" });
+}
+
 /* --- Pages services --- */
 
 for (const s of SERVICES_PAGES) {
@@ -996,6 +1144,7 @@ for (const s of SERVICES_PAGES) {
       <div class="conteneur article">
         <div class="article__corps">
           ${corps}
+          ${blocPrixService(s)}
           <div class="encart-cta" data-commun>
             <p><strong>Besoin d'un avis sur votre toiture ?</strong> Le diagnostic et le devis sont gratuits.</p>
             <div class="actions">
