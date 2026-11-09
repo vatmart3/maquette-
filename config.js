@@ -99,6 +99,11 @@ window.SITE = {
     "hauts-cantons",
   ],
 
+  // Mesure d'audience sans cookie (pas de bandeau nécessaire). Laisser vide pour ne rien mesurer.
+  // Plausible : { fournisseur: "plausible", domaine: "arveo.fr" }
+  // Umami     : { fournisseur: "umami", id: "identifiant-du-site" }
+  statistiques: { fournisseur: "", domaine: "", id: "" }, // À CONFIRMER
+
   // Informations complémentaires pour Google (omises tant qu'elles sont vides ou à confirmer).
   fondation: "", // À CONFIRMER : année de création, ex. "2021"
   gammePrix: "", // À CONFIRMER : ex. "€€"

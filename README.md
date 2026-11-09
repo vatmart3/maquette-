@@ -7,20 +7,42 @@ envoie les formulaires par e-mail. Réalisé par MJAGENCY.
 
 | Fichier | Rôle |
 | --- | --- |
-| `config.js` | **Toutes les infos de l'entreprise** (téléphone, adresse, horaires, SIRET, liens Google…). Valeurs `// À CONFIRMER` à vérifier. |
-| `scripts/contenu.mjs` | Textes des pages services, des 10 pages communes et des FAQ. |
-| `scripts/build.mjs` | Génère les 26 pages HTML, `sitemap.xml`, `robots.txt` et les données structurées. |
+| `config.js` | **Toutes les infos de l'entreprise** (téléphone, adresse, horaires, SIRET, liens Google, services actifs, secteurs, statistiques). Les lignes `// À CONFIRMER` ne sont jamais envoyées à Google. |
+| `scripts/contenu.mjs` | Services, 10 communes du Bassin de Thau, FAQ. |
+| `scripts/communes-herault.mjs` | 21 communes du reste de l'Hérault. |
+| `scripts/secteurs.mjs` | 7 secteurs (`/secteur/…`). |
+| `scripts/prix.mjs` | Prix indicatifs (`/prix-toiture`, `/prix/…`), tous À CONFIRMER, `valide: false`. |
+| `scripts/articles.mjs` | Articles conseils (`/conseils/…`). |
+| `scripts/chantiers.mjs` | Réalisations : vide tant qu'il n'y a pas de vrai chantier. |
+| `scripts/build.mjs` | Génère toutes les pages, `sitemap.xml`, `robots.txt`, données structurées, images de partage, puis lance le contrôle SEO. |
+| `scripts/qa.mjs` | Contrôle SEO : title, description, h1, titres, liens, alt, sitemap, canonical, similarité. |
+| `scripts/photos.mjs` | Prépare les photos de chantier (voir plus bas). |
+| `scripts/og.mjs` | Images de partage 1200 × 630 par page (polices TTF dans `scripts/og-polices/`). |
+| `scripts/indexnow.mjs` | Signale les pages à Bing et aux moteurs IndexNow. |
 | `api/demande.js` | Reçoit les formulaires et envoie l'e-mail au client (Resend). |
 | `scene.js` | Animation 3D de la toiture (accueil). |
 | `site.js`, `styles.css` | Script et styles communs. |
+| `docs/SEO-hors-site.md` | Feuille de route hors site : fiche Google, annuaires, avis, liens, suivi, calendrier. |
 
-Après toute modification de `config.js` ou `scripts/contenu.mjs` :
+Après toute modification de `config.js` ou d'un fichier de `scripts/` :
 
 ```bash
 node scripts/build.mjs
 ```
 
-Le script liste ce qui reste à compléter avant la mise en ligne.
+La première fois, installez l'outil d'images (images de partage et photos) :
+
+```bash
+npm install --prefix scripts
+```
+
+Le build affiche le contrôle SEO (il doit indiquer 0 erreur), les 10 paires de pages les plus
+proches (similarité, seuil 25 %) et la liste « À compléter avant la mise en ligne ».
+`node scripts/build.mjs --rapport` écrit aussi le détail dans `scripts/.rapport-seo.json`.
+
+Pour la mise en ligne définitive, passez `production: true` dans `config.js` : le build refuse
+alors de générer le site si le téléphone, l'e-mail, l'adresse ou les mentions légales sont encore
+provisoires.
 
 ## Mise en ligne (Vercel)
 
@@ -61,7 +83,7 @@ Fait dans le site :
 - `sitemap.xml`, `robots.txt`, URLs propres, canonical, Open Graph, balises géographiques.
 - Site rapide (pas de framework ; la 3D se charge après le contenu, uniquement sur l'accueil).
 
-**À faire par le client ou l'agence, indispensable pour être visible localement :**
+**À faire par le client ou l'agence (détail complet dans `docs/SEO-hors-site.md`) :**
 1. **Fiche Google Business Profile** catégorie « Couvreur » à Frontignan : même nom, adresse et
    téléphone que sur le site (NAP identique), horaires, zone desservie, photos de chantiers.
    C'est le facteur n°1 du « pack local » Google Maps. Mettre son lien dans `config.liens.googleBusiness`.
@@ -87,6 +109,30 @@ Uniquement de **vraies** photos de chantiers ARVÉO. Sans photo, aucune section 
    structurées et balises `image:image` dans le sitemap). Commitez `img/chantiers/` et poussez.
 
 Le dossier `photos/` n'est jamais mis en ligne (exclu par `.vercelignore`).
+
+## IndexNow (Bing et moteurs compatibles)
+
+Le fichier `298d470ed7091f950d7e4da02b1d32ee.txt` à la racine est la clé IndexNow : il doit rester
+en ligne. Après une mise en ligne sur `https://arveo.fr` (jamais sur l'adresse `*.vercel.app`) :
+
+```bash
+node scripts/indexnow.mjs
+```
+
+envoie toutes les URL du sitemap ; `node scripts/indexnow.mjs /prix-toiture /couvreur/sete`
+n'envoie que ces pages. Google n'utilise pas IndexNow : pour Google, soumettez le sitemap dans la
+Search Console.
+
+## Statistiques de visite (sans cookie)
+
+Renseignez `config.statistiques` :
+- Plausible : `{ fournisseur: "plausible", domaine: "arveo.fr" }`
+- Umami : `{ fournisseur: "umami", id: "identifiant-du-site" }`
+
+Le script est ajouté à toutes les pages. Les clics « Appeler », « Dépannage », « Devis »,
+« Rendez-vous » (attributs `data-track`) et l'envoi réussi d'un formulaire (`arv_form_submit`)
+remontent comme événements personnalisés. Ces outils ne déposent pas de cookie : aucun bandeau
+n'est nécessaire, la page Confidentialité s'adapte toute seule.
 
 ## Identité visuelle
 

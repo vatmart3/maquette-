@@ -16,6 +16,8 @@ import { PRIX, PRIX_HUB } from "./prix.mjs";
 import { SECTEURS } from "./secteurs.mjs";
 import { VILLES_HERAULT } from "./communes-herault.mjs";
 import { ARTICLES } from "./articles.mjs";
+import { genererOG } from "./og.mjs";
+import crypto from "node:crypto";
 
 const RACINE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const ctx = { window: {} };
@@ -24,6 +26,9 @@ const S = ctx.window.SITE;
 if (process.env.ARVEO_PRODUCTION === "1") S.production = true; // test du mode production sans modifier config.js
 const BASE = S.siteUrl.replace(/\/$/, "");
 const AUJOURDHUI = new Date().toISOString().slice(0, 10);
+// sharp (npm install --prefix scripts) sert aux images de partage ; sans lui, og.png commun.
+const OG_DISPO = await import("sharp").then(() => true, () => false);
+const OG_A_GENERER = [];
 const avertissements = [];
 
 /* ------------------------------------------------------------------ */
@@ -187,7 +192,38 @@ function logo(clair = false) {
       </a>`;
 }
 
+// Image de partage propre à la page (services, communes, secteurs, prix, conseils, hub).
+function imageOG(p) {
+  const types = [
+    [/^\/services\//, "Service"],
+    [/^\/couvreur\//, "Couvreur dans l'Hérault"],
+    [/^\/secteur\//, "Secteur d'intervention"],
+    [/^\/prix/, "Prix indicatifs"],
+    [/^\/conseils\/./, "Conseil de couvreur"],
+    [/^\/zone-intervention$/, "Zone d'intervention"],
+  ];
+  const t = types.find(([re]) => re.test(p.path));
+  const titre = p.og?.titre || p.title.replace(/\s*\|\s*ARVÉO$/, "");
+  if (!t || !OG_DISPO || p.noindex) return { url: `${BASE}/og.png`, alt: "ARVÉO, couvreur à Frontignan, réparation, réfection et dépannage de toiture" };
+  const nom = ogNom(p.path);
+  OG_A_GENERER.push({ nom, titre, type: p.og?.type || t[1], sousTitre: "Couvreur zingueur à Frontignan, dans tout l'Hérault", pied: new URL(BASE).host });
+  return { url: `${BASE}/img/og/${nom}.png`, alt: `${titre}, ARVÉO couvreur zingueur à Frontignan` };
+}
+
+// Mesure d'audience sans cookie (config.statistiques), injectée seulement si elle est renseignée.
+function statistiques() {
+  const st = S.statistiques || {};
+  if (st.fournisseur === "plausible" && st.domaine)
+    return `
+  <script defer data-domain="${esc(st.domaine)}" src="${esc(st.script || "https://plausible.io/js/script.js")}"></script>
+  <script>window.plausible=window.plausible||function(){(window.plausible.q=window.plausible.q||[]).push(arguments)}</script>`;
+  if (st.fournisseur === "umami" && st.id) return `
+  <script defer src="${esc(st.script || "https://cloud.umami.is/script.js")}" data-website-id="${esc(st.id)}"></script>`;
+  return "";
+}
+
 function head(p) {
+  const og = imageOG(p);
   const ld = p.jsonld.map((o) => `  <script type="application/ld+json">${JSON.stringify(o)}</script>`).join("\n");
   const scene = p.scene
     ? `
@@ -215,20 +251,22 @@ function head(p) {
   <link rel="preload" href="/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/styles.min.css">
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="${p.article ? "article" : "website"}">
   <meta property="og:locale" content="fr_FR">
   <meta property="og:site_name" content="${esc(S.nom)}">
   <meta property="og:title" content="${esc(p.ogTitle || p.title)}">
   <meta property="og:description" content="${esc(p.description)}">
   <meta property="og:url" content="${urlPage(p.path)}">
-  <meta property="og:image" content="${BASE}/og.png">
+  <meta property="og:image" content="${og.url}">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="ARVÉO, couvreur à Frontignan : réparation, réfection et dépannage de toiture">
+  <meta property="og:image:alt" content="${esc(og.alt)}">${p.article ? `
+  <meta property="article:published_time" content="${p.article.publie}">
+  <meta property="article:modified_time" content="${p.article.maj || p.article.publie}">` : ""}
   <meta name="twitter:card" content="summary_large_image">${scene}
 ${ld}
   <script src="/config.js" defer></script>
-  <script src="/site.js" defer></script>
+  <script src="/site.js" defer></script>${statistiques()}
 </head>
 <body data-page="${p.id}"${p.sombre ? ' class="page-sombre"' : ""}>
   <a class="evitement" href="#contenu">Aller au contenu</a>
@@ -1167,7 +1205,7 @@ ${bandeauCta()}` +
 for (const s of SERVICES_PAGES) {
   const ar = filAriane([{ nom: s.court, path: s.path }]);
   const photosS = photosDe({ service: s.slug });
-  const p = { id: "services", path: s.path, title: s.title, description: s.description, jsonld: [ldEntreprise(), ldService(s.nom, s.path), ar.ld, ldFaq(s.faq), ...ldImages(photosS)] };
+  const p = { id: "services", path: s.path, title: s.title, description: s.description, og: { titre: s.nom, type: "Service de couverture" }, jsonld: [ldEntreprise(), ldService(s.nom, s.path), ar.ld, ldFaq(s.faq), ...ldImages(photosS)] };
   const corps = sectionsHtml(s.sections);
   const html =
     head(p) +
@@ -1224,6 +1262,7 @@ for (const v of VILLES_PAGES) {
   const p = {
     id: "zone",
     path: v.path,
+    og: { titre: `Couvreur à ${v.nom}`, type: `Commune · ${v.cp}` },
     title: titreCourt([`Couvreur à ${v.nom} (${v.cp}), réparation de toiture | ARVÉO`, `Couvreur à ${v.nom} (${v.cp}), toiture | ARVÉO`, `Couvreur à ${v.nom} (${v.cp}) | ARVÉO`]),
     description: v.description || `Couvreur à ${v.nom} (${v.cp}) pour fuites, tuiles cassées, réfection, démoussage et gouttières. Artisan de Frontignan, devis gratuit.`,
     jsonld: [
@@ -1919,7 +1958,7 @@ ${bandeauCta()}` +
 
 for (const a of ARTICLES_PAGES) {
   const ar = filAriane([{ nom: "Conseils", path: "/conseils" }, { nom: a.titre, path: a.path }]);
-  const p = { id: "conseils", path: a.path, title: a.title, description: a.description, og: { titre: a.titre, type: "Conseil de couvreur" }, jsonld: [ldEntreprise(), ldArticle(a), ar.ld] };
+  const p = { id: "conseils", path: a.path, title: a.title, description: a.description, article: a, og: { titre: a.titre, type: "Conseil de couvreur" }, jsonld: [ldEntreprise(), ldArticle(a), ar.ld] };
   const ids = new Map();
   const idDe = (t) => { let i = slug(t).slice(0, 60); while (ids.has(i)) i += "-2"; ids.set(i, t); return i; };
   const sections = a.sections.map((s) => ({ ...s, id: idDe(s.h2) }));
@@ -2030,7 +2069,7 @@ ${bandeauCta()}` +
         <h2>Vos droits</h2>
         <p>Vous pouvez accéder à vos données, les rectifier ou demander leur suppression en écrivant à <a href="mailto:${esc(S.email)}">${esc(S.email)}</a>. Vous pouvez aussi saisir la CNIL (cnil.fr).</p>
         <h2>Cookies</h2>
-        <p>Ce site n'utilise pas de cookie publicitaire ni de mesure d'audience. Le stockage local du navigateur sert seulement à ne pas rejouer l'animation d'accueil.</p>`
+        <p>${S.statistiques?.fournisseur ? `Ce site n'utilise aucun cookie. La fréquentation est mesurée de façon anonyme avec ${S.statistiques.fournisseur === "plausible" ? "Plausible" : "Umami"}, un outil sans cookie qui ne suit pas les visiteurs d'un site à l'autre.` : "Ce site n'utilise ni cookie ni mesure d'audience."} Le stockage local du navigateur sert seulement à ne pas rejouer l'animation d'accueil.</p>`
     ),
     { path: "/confidentialite", priorite: "0.2" }
   );
@@ -2074,6 +2113,20 @@ ${bandeauCta()}` +
 
 /* --- Sitemap et robots --- */
 
+// Date de dernière modification réelle : elle ne change que si le contenu de la page change
+// (empreinte du HTML conservée dans scripts/.lastmod.json, à committer).
+const LASTMOD = (() => {
+  const f = path.join(RACINE, "scripts", ".lastmod.json");
+  const avant = fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, "utf8")) : {};
+  const apres = {};
+  for (const g of GENERES.filter((x) => x.indexable)) {
+    const empreinte = crypto.createHash("sha1").update(g.html.replace(/© \d{4}/, "")).digest("hex").slice(0, 16);
+    apres[g.path] = avant[g.path]?.empreinte === empreinte ? avant[g.path] : { empreinte, date: AUJOURDHUI };
+  }
+  fs.writeFileSync(f, JSON.stringify(apres, null, 1) + "\n");
+  return apres;
+})();
+
 fs.writeFileSync(
   path.join(RACINE, "sitemap.xml"),
   `<?xml version="1.0" encoding="UTF-8"?>
@@ -2081,7 +2134,7 @@ fs.writeFileSync(
 ${pages
   .map(
     (p) =>
-      `  <url><loc>${urlPage(p.path)}</loc><lastmod>${AUJOURDHUI}</lastmod><priority>${p.priorite}</priority>${(p.images || [])
+      `  <url><loc>${urlPage(p.path)}</loc><lastmod>${LASTMOD[p.path]?.date || AUJOURDHUI}</lastmod><priority>${p.priorite}</priority>${(p.images || [])
         .map((ph) => `<image:image><image:loc>${BASE}${ph.versions[1280].src}</image:loc></image:image>`)
         .join("")}</url>`
   )
@@ -2090,6 +2143,11 @@ ${pages
 `
 );
 fs.writeFileSync(path.join(RACINE, "robots.txt"), `User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: ${BASE}/sitemap.xml\n`);
+
+/* --- Images de partage --- */
+
+if (OG_DISPO) await genererOG(OG_A_GENERER);
+else avertissements.push("Images de partage par page non générées : lancez npm install --prefix scripts (sharp).");
 
 /* --- Contrôle qualité SEO --- */
 

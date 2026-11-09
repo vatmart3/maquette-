@@ -28,6 +28,11 @@
     var ev = { event: "arv_" + String(nom).replace(/-/g, "_"), page: location.pathname };
     if (details) for (var k in details) ev[k] = details[k];
     window.dataLayer.push(ev);
+    // Événements personnalisés pour Plausible ou Umami s'ils sont activés dans config.js.
+    try {
+      if (window.plausible) window.plausible(ev.event, { props: details || {} });
+      if (window.umami && window.umami.track) window.umami.track(ev.event, details || {});
+    } catch (e) {}
   }
   document.addEventListener("click", function (e) {
     var a = e.target.closest("[data-track]");
