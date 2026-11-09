@@ -70,6 +70,22 @@ window.SITE = {
   // Exemple : { auteur: "Martine R.", ville: "Frontignan", note: 5, texte: "…", date: "2026-10" }
   avis: [],
 
+  // Services proposés : seuls ceux-ci ont une page et apparaissent dans les menus et les listes.
+  // Retirez un slug pour masquer un service que l'entreprise ne propose pas.
+  servicesActifs: [ // À CONFIRMER : liste des services réellement proposés
+    "refection-toiture",
+    "recherche-de-fuite",
+    "remplacement-tuiles",
+    "faitage-rives",
+    "demoussage-toiture",
+    "zinguerie-gouttieres",
+    "fenetre-de-toit",
+    "etancheite-toit-terrasse",
+    "isolation-toiture",
+    "charpente",
+    "bachage-urgence",
+  ],
+
   // Communes desservies : chaque commune a sa page « Couvreur à … » (contenu dans scripts/contenu.mjs).
   villes: [
     "Frontignan",

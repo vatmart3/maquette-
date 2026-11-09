@@ -34,7 +34,12 @@ const A_CONFIRMER = (() => {
   const pile = [];
   for (const ligne of fs.readFileSync(path.join(RACINE, "config.js"), "utf8").split("\n")) {
     const ouvre = ligne.match(/^\s*([\w$]+):\s*[[{]\s*(?:\/\/.*)?$/);
-    if (ouvre) { pile.push(ouvre[1]); continue; }
+    if (ouvre) {
+      const note = ligne.match(/\/\/\s*À CONFIRMER\s*:?\s*(.*)$/);
+      if (note) cles.set([...pile, ouvre[1]].filter((k) => k !== "SITE").join("."), note[1].trim());
+      pile.push(ouvre[1]);
+      continue;
+    }
     if (/^\s*[\]}],?\s*$/.test(ligne)) { pile.pop(); continue; }
     const m = ligne.match(/^\s*([\w$]+):.*\/\/\s*À CONFIRMER\s*:?\s*(.*)$/);
     if (m) cles.set([...pile, m[1]].filter((k) => k !== "SITE").join("."), m[2].trim());
@@ -103,7 +108,16 @@ const PHOTOS = (() => {
 })();
 
 const VILLES_PAGES = VILLES.map((v) => ({ ...v, slug: slug(v.nom), path: `/couvreur/${slug(v.nom)}` }));
-const SERVICES_PAGES = SERVICES.map((s) => ({ ...s, path: `/services/${s.slug}` }));
+// Libellés de la case « Type de travaux » du formulaire de devis (pré-remplissage ?travaux=).
+const DEVIS_LIBELLES = ["Réparation / fuite", "Réfection de toiture", "Remplacement de tuiles", "Faîtage et rives", "Fenêtre de toit", "Isolation de toiture", "Étanchéité de toit terrasse", "Démoussage / traitement", "Zinguerie / gouttières", "Charpente", "Autre"];
+const DEVIS_SERVICE = { "refection-toiture": "Réfection de toiture", "recherche-de-fuite": "Réparation / fuite", "demoussage-toiture": "Démoussage / traitement", "zinguerie-gouttieres": "Zinguerie / gouttières", charpente: "Charpente", "bachage-urgence": "Réparation / fuite" };
+// Seuls les services listés dans config.servicesActifs sont générés et liés.
+const ACTIFS = Array.isArray(S.servicesActifs) && S.servicesActifs.length ? S.servicesActifs : SERVICES.map((s) => s.slug);
+const SERVICES_PAGES = SERVICES.filter((s) => ACTIFS.includes(s.slug)).map((s) => {
+  const devis = DEVIS_SERVICE[s.slug] || s.devis;
+  return { ...s, path: `/services/${s.slug}`, devis: DEVIS_LIBELLES.includes(devis) ? devis : "Autre" };
+}).sort((a, b) => ACTIFS.indexOf(a.slug) - ACTIFS.indexOf(b.slug));
+const serviceActif = (slug) => SERVICES_PAGES.some((s) => s.slug === slug);
 
 /* ------------------------------------------------------------------ */
 /* Icônes (trait 1,75 px)                                              */
@@ -395,7 +409,7 @@ function ldEntreprise() {
     foundingDate: fiable("fondation"),
     priceRange: fiable("gammePrix"),
     paymentAccepted: fiable("paiements") && S.paiements.join(", "),
-    knowsAbout: ["Couverture", "Zinguerie", "Charpente", "Recherche de fuite", "Démoussage de toiture", "Tuiles canal", "Gouttières en zinc"],
+    knowsAbout: ["Couverture", "Zinguerie", "Charpente", "Tuiles canal", "Gouttières en zinc", ...SERVICES_PAGES.map((s) => s.nom)],
     knowsLanguage: "fr",
     currenciesAccepted: "EUR",
     hasOfferCatalog: {
@@ -586,7 +600,7 @@ function formDevis() {
           <h2 class="sr">Formulaire de demande de devis</h2>
           ${piege}
           ${bloc("01", "Votre projet", `
-            ${choix({ legende: "Type de travaux", name: "travaux", options: ["Réparation / fuite", "Réfection de toiture", "Démoussage / traitement", "Zinguerie / gouttières", "Charpente", "Autre"], requis: true, message: "Cochez au moins un type de travaux.", colonnes: "2" })}
+            ${choix({ legende: "Type de travaux", name: "travaux", options: DEVIS_LIBELLES, requis: true, message: "Cochez au moins un type de travaux.", colonnes: "2" })}
             ${choix({ legende: "Type de couverture", name: "couverture", type: "radio", options: ["Tuiles canal", "Tuiles romanes ou mécaniques", "Ardoise", "Bac acier", "Toit plat / terrasse", "Je ne sais pas"], colonnes: "2" })}
             ${champ({ label: "Surface approximative", name: "surface", type: "select", options: ["Moins de 50 m²", "50 à 100 m²", "100 à 150 m²", "Plus de 150 m²", "Je ne sais pas"] })}
             ${champ({ label: "Délai souhaité", name: "delai", type: "select", options: ["Dès que possible", "Dans le mois", "Dans les 3 mois", "Pas pressé"] })}
@@ -676,6 +690,16 @@ const APRES_DEMANDE = `<div class="cote-carte" data-commun>
             <a class="lien-fleche" href="/depannage-toiture" data-track="depannage">Demande de dépannage ${ico("fleche")}</a>
           </div>`;
 
+// Sections de texte {h2, p: [], liste: []}, liens internes autorisés.
+const sectionsHtml = (sections = []) =>
+  sections
+    .map(
+      (sec) => `<h2>${fr(sec.h2)}</h2>
+          ${(sec.p || []).map((t) => `<p>${riche(t)}</p>`).join("\n          ")}
+          ${sec.liste ? `<ul class="liste-coches">${sec.liste.map((t) => `<li>${ico("coche")}${riche(t)}</li>`).join("")}</ul>` : ""}`
+    )
+    .join("\n          ");
+
 function faqHtml(liste, titre = "Vos questions") {
   return `
     <section class="section" aria-labelledby="titre-faq">
@@ -711,12 +735,12 @@ const RESUMES = {
 function cartesServices(exclure) {
   const lignes = [
     { cle: "depannage", path: "/depannage-toiture", nom: "Dépannage de toiture", urgent: true },
-    ...SERVICES_PAGES.map((s) => ({ cle: s.slug, path: s.path, nom: s.nom })),
+    ...SERVICES_PAGES.map((s) => ({ cle: s.slug, path: s.path, nom: s.nom, resume: s.resume })),
   ].filter((c) => c.path !== exclure);
   return `<ul class="prestations">
           ${lignes
             .map(
-              (c) => `<li class="prestation${c.urgent ? " prestation--urgent" : ""}"><a href="${c.path}"><span class="prestation__nom">${esc(c.nom)}</span><span class="prestation__resume">${fr(RESUMES[c.cle])}</span>${ico("fleche", "ico prestation__fleche")}</a></li>`
+              (c) => `<li class="prestation${c.urgent ? " prestation--urgent" : ""}"><a href="${c.path}"><span class="prestation__nom">${esc(c.nom)}</span><span class="prestation__resume">${fr(c.resume || RESUMES[c.cle])}</span>${ico("fleche", "ico prestation__fleche")}</a></li>`
             )
             .join("\n          ")}
         </ul>`;
@@ -853,10 +877,10 @@ const ecrire = (fichier, html, meta) => {
 /* --- Accueil --- */
 
 const ZONES_VISITE = [
-  { titre: "Couverture et tuiles", texte: "Tuiles canal, romanes ou mécaniques, faîtage, rives et génoises. On répare un pan ou on refait toute la couverture.", lien: "/services/refection-toiture", devis: "Réfection de toiture" },
-  { titre: "Charpente", texte: "Chevrons, pannes et liteaux portent vos tuiles. On les contrôle et on les renforce.", lien: "/services/charpente", devis: "Charpente" },
+  { titre: "Couverture et tuiles", aussi: ["remplacement-tuiles", "faitage-rives"], texte: "Tuiles canal, romanes ou mécaniques, faîtage, rives et génoises. On répare un pan ou on refait toute la couverture.", lien: "/services/refection-toiture", devis: "Réfection de toiture" },
+  { titre: "Charpente", aussi: ["isolation-toiture"], texte: "Chevrons, pannes et liteaux portent vos tuiles. On les contrôle et on les renforce.", lien: "/services/charpente", devis: "Charpente" },
   { titre: "Zinguerie", texte: "Gouttières, descentes et noues en zinc éloignent l'eau de vos murs et de vos façades.", lien: "/services/zinguerie-gouttieres", devis: "Zinguerie / gouttières" },
-  { titre: "Fuites et étanchéité", texte: "Solin de cheminée, fenêtre de toit, tuile cassée. On trouve d'où vient l'eau avant de réparer.", lien: "/services/recherche-de-fuite", devis: "Réparation / fuite" },
+  { titre: "Fuites et étanchéité", aussi: ["fenetre-de-toit", "etancheite-toit-terrasse", "bachage-urgence"], texte: "Solin de cheminée, fenêtre de toit, tuile cassée. On trouve d'où vient l'eau avant de réparer.", lien: "/services/recherche-de-fuite", devis: "Réparation / fuite" },
   { titre: "Démoussage et entretien", texte: "Un nettoyage et un traitement contre mousses et lichens prolongent la vie de la toiture.", lien: "/services/demoussage-toiture", devis: "Démoussage / traitement" },
 ];
 
@@ -876,6 +900,7 @@ const ZONES_VISITE = [
               <span class="fiche__num mono">${String(i + 1).padStart(2, "0")} / ${String(ZONES_VISITE.length).padStart(2, "0")}</span>
               <h3 id="titre-zone-${i}">${esc(z.titre)}</h3>
               <p>${fr(z.texte)}</p>
+              ${(z.aussi || []).filter(serviceActif).length ? `<p class="fiche__aussi">Voir aussi ${enumerer(z.aussi.filter(serviceActif).map((k) => { const x = SERVICES_PAGES.find((y) => y.slug === k); return `<a href="${x.path}">${esc(x.court.toLowerCase())}</a>`; }))}</p>` : ""}
               <div class="fiche__actions">
                 <a class="bouton bouton--orange bouton--petit" href="/devis-toiture?travaux=${encodeURIComponent(z.devis)}" data-track="devis">Devis pour ça</a>
                 <a class="lien-fleche" href="${z.lien}">En savoir plus ${ico("fleche")}</a>
@@ -962,13 +987,7 @@ for (const s of SERVICES_PAGES) {
   const ar = filAriane([{ nom: s.court, path: s.path }]);
   const photosS = photosDe({ service: s.slug });
   const p = { id: "services", path: s.path, title: s.title, description: s.description, jsonld: [ldEntreprise(), ldService(s.nom, s.path), ar.ld, ldFaq(s.faq), ...ldImages(photosS)] };
-  const corps = s.sections
-    .map(
-      (sec) => `<h2>${fr(sec.h2)}</h2>
-          ${(sec.p || []).map((t) => `<p>${fr(t)}</p>`).join("\n          ")}
-          ${sec.liste ? `<ul class="liste-coches">${sec.liste.map((t) => `<li>${ico("coche")}${fr(t)}</li>`).join("")}</ul>` : ""}`
-    )
-    .join("\n          ");
+  const corps = sectionsHtml(s.sections);
   const html =
     head(p) +
     enTetePage({ surTitre: `${S.activite} · Frontignan`, h1: s.h1, chapo: s.chapo, ariane: ar.html }) +
@@ -980,7 +999,7 @@ for (const s of SERVICES_PAGES) {
           <div class="encart-cta" data-commun>
             <p><strong>Besoin d'un avis sur votre toiture ?</strong> Le diagnostic et le devis sont gratuits.</p>
             <div class="actions">
-              <a class="bouton bouton--orange" href="/devis-toiture?travaux=${encodeURIComponent(ZONES_VISITE.find((z) => z.lien === s.path)?.devis || "")}" data-track="devis">${ico("devis")}Demander un devis</a>
+              <a class="bouton bouton--orange" href="/devis-toiture?travaux=${encodeURIComponent(s.devis)}" data-track="devis">${ico("devis")}Demander un devis</a>
               <a class="bouton bouton--contour" href="/rendez-vous" data-track="rdv">${ico("agenda")}Prendre rendez-vous</a>
             </div>
           </div>
@@ -1001,7 +1020,7 @@ for (const s of SERVICES_PAGES) {
 ${galerie(photosS, `${s.court}, photos de nos chantiers`)}
 ${listeRealisations(REALISATIONS.filter((c) => c.service === s.slug), `${s.court}, nos réalisations`)}
 ${faqHtml(s.faq, `Vos questions sur ${s.court.toLowerCase() === "charpente" ? "la charpente" : "ce service"}`)}
-    <section class="section section--claire" aria-labelledby="titre-autres">
+    <section class="section section--claire" aria-labelledby="titre-autres" data-commun>
       <div class="conteneur">
         <h2 id="titre-autres">Les autres travaux de toiture</h2>
         ${cartesServices(s.path)}
@@ -1140,6 +1159,7 @@ ${bandeauCta()}` +
               <li>${ico("coche")}Ne montez pas sur le toit</li>
               <li>${ico("coche")}Prenez des photos pour votre assurance</li>
             </ul>
+            ${serviceActif("bachage-urgence") ? `<a class="lien-fleche" href="/services/bachage-urgence">Bâchage de toiture en urgence ${ico("fleche")}</a>` : ""}
           </div>
         </aside>
       </div>

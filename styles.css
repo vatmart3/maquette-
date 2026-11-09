@@ -1128,3 +1128,8 @@ main { position: relative; z-index: 1; }
 .temoignage blockquote { margin: 0; font-size: 1.1rem; }
 .temoignage figcaption { margin-top: 8px; color: var(--texte-2); }
 @media (max-width: 639px) { .bon__infos { grid-template-columns: 1fr; } }
+
+.fiche p.fiche__aussi { margin: -14px 0 20px; font-size: .95rem; }
+.fiche__aussi a { color: var(--orange-clair); text-underline-offset: 3px; }
+.fiche__aussi a:hover { color: var(--blanc); }
+@media (max-width: 859px) { .fiche p.fiche__aussi { margin: -8px 0 14px; font-size: .88rem; } }

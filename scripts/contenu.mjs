@@ -76,9 +76,9 @@ export const SERVICES = [
     nom: "Recherche de fuite et réparation",
     court: "Fuite de toiture",
     zone: 3,
-    title: "Recherche de fuite et réparation de toiture à Frontignan | ARVÉO",
+    title: "Recherche de fuite et réparation à Frontignan | ARVÉO",
     description:
-      "Tache au plafond, goutte qui tombe ? Recherche de fuite et réparation de toiture à Frontignan, Sète et Balaruc, sur tuiles, solins, cheminées et fenêtres de toit.",
+      "Tache au plafond, goutte qui tombe ? Recherche de fuite et réparation de toiture à Frontignan, Sète et Balaruc, sur tuiles, solins et cheminées.",
     h1: "Recherche de fuite et réparation de toiture",
     chapo:
       "Une tache au plafond n'est pas toujours sous la tuile cassée, car l'eau chemine. On trouve l'origine de la fuite avant de réparer, pour ne pas payer deux fois.",
@@ -174,7 +174,7 @@ export const SERVICES = [
     nom: "Zinguerie et gouttières",
     court: "Zinguerie",
     zone: 2,
-    title: "Zinguerie et gouttières à Frontignan | Couvreur zingueur ARVÉO",
+    title: "Zinguerie et gouttières à Frontignan | ARVÉO",
     description:
       "Pose et réparation de gouttières en zinc, descentes, noues, solins et abergements à Frontignan, Sète et alentours. Nettoyage de gouttières. Devis gratuit.",
     h1: "Zinguerie et gouttières",
@@ -261,6 +261,483 @@ export const SERVICES = [
       {
         q: "Comment savoir si ma charpente est attaquée ?",
         r: "Sciure au sol des combles, petits trous dans le bois, bois qui s'effrite sous la pointe d'un tournevis sont des signes à faire vérifier.",
+      },
+    ],
+  },
+
+  /* ---------------------------------------------------------------- */
+  {
+    slug: "remplacement-tuiles",
+    nom: "Remplacement de tuiles cassées",
+    court: "Remplacement de tuiles",
+    zone: 0,
+    title: "Remplacement de tuiles cassées à Frontignan | ARVÉO",
+    description:
+      "Tuile fendue, glissée ou envolée ? Remplacement de tuiles canal, romanes ou mécaniques à Frontignan et autour de l'étang de Thau, avec révision du pan.",
+    h1: "Remplacement de tuiles cassées à Frontignan",
+    chapo:
+      "Une seule tuile fendue suffit à laisser passer la pluie d'automne. On remplace les tuiles abîmées par des modèles compatibles, on recale celles qui ont bougé et on vérifie le reste du pan avant de redescendre.",
+    resume: "Tuiles fendues, glissées ou envolées remplacées par des modèles compatibles.",
+    devis: "Remplacement de tuiles",
+    sections: [
+      {
+        h2: "Pourquoi une tuile casse",
+        p: [
+          "Sur nos toits, la casse vient rarement de l'âge seul. Un coup de tramontane soulève une tuile mal tenue, qui retombe et se fend. Une branche de pin tombe sur le versant. Un antenniste ou un voisin pressé marche au mauvais endroit. Avec les années, le soleil et le sel du littoral rendent aussi la terre cuite plus cassante.",
+          "Le danger est discret. Une tuile fêlée reste en place et rien ne se voit depuis la rue. L'eau passe pourtant à chaque averse, mouille les liteaux, puis finit par tacher un plafond plusieurs mètres plus bas. Si une trace est déjà apparente, une [recherche de fuite](/services/recherche-de-fuite) permet de confirmer que la tuile est bien en cause.",
+        ],
+        liste: [
+          "Tuile fendue en travers ou écornée en bas",
+          "Tuile glissée qui laisse un jour entre deux rangs",
+          "Tuile de couvert déplacée sur une couverture en canal",
+          "Morceaux de terre cuite retrouvés dans la gouttière ou au jardin",
+        ],
+      },
+      {
+        h2: "Retrouver une tuile qui s'accorde avec votre toit",
+        p: [
+          "C'est souvent la vraie difficulté. Les maisons anciennes du centre de Frontignan et de Sète sont couvertes de tuiles canal patinées par des décennies de soleil. Une tuile neuve, bien rouge, se remarque tout de suite. On privilégie donc des tuiles de réemploi de même teinte et de même galbe, ou des modèles vieillis.",
+          "Les pavillons construits entre les années soixante et quatre-vingt posent un autre problème. Leurs tuiles mécaniques ou romanes ne sont parfois plus fabriquées. On cherche alors un modèle dont l'emboîtement correspond, ou on récupère quelques tuiles sur un pan moins visible pour les placer côté rue. Notre guide sur la [tuile canal, romane ou mécanique](/conseils/tuile-canal-romane-mecanique) aide à reconnaître votre couverture.",
+        ],
+      },
+      {
+        h2: "Comment se passe l'intervention",
+        liste: [
+          "Accès sécurisé au toit, avec échafaudage ou nacelle si la hauteur l'impose",
+          "Dépose des tuiles cassées sans abîmer les voisines",
+          "Contrôle des liteaux et de l'écran sous-toiture à l'endroit ouvert",
+          "Pose des tuiles de remplacement, fixées par crochet ou collées selon le modèle",
+          "Recalage des tuiles glissées sur le reste du versant",
+          "Photos avant et après pour que vous voyiez le résultat sans monter",
+        ],
+      },
+      {
+        h2: "Quand quelques tuiles ne suffisent plus",
+        p: [
+          "Remplacer trois ou quatre tuiles est un geste d'entretien normal. En revanche, si elles se brisent dès qu'on les touche, si la mousse a envahi le versant ou si les liteaux plient sous la main, on vous le dira franchement. Il vaut alors mieux envisager un [démoussage de la toiture](/services/demoussage-toiture), la reprise d'un pan ou une [réfection complète de la couverture](/services/refection-toiture).",
+          "Pour avoir une première idée du budget avant notre visite, consultez la page [prix du remplacement de tuiles](/prix/remplacement-tuiles). Le montant exact dépend de l'accès, du type de tuile et du nombre de pièces à changer.",
+        ],
+      },
+      {
+        h2: "Autour de Frontignan, un passage simple à organiser",
+        p: [
+          "Ce type de petite réparation se fait le plus souvent en une demi-journée. Pour les maisons de Frontignan, de [Vic-la-Gardiole](/couvreur/vic-la-gardiole) ou de [Balaruc-les-Bains](/couvreur/balaruc-les-bains), on regroupe volontiers la visite et la réparation quand les tuiles nécessaires sont disponibles. Envoyez-nous une photo prise depuis le sol avec votre [demande de devis](/devis-toiture), elle nous aide à prévoir le bon modèle.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "Puis-je remplacer une tuile moi-même ?",
+        r: "Sur un abri de jardin bas, c'est envisageable. Sur une maison, marcher sur des tuiles canal ou romanes en casse d'autres et le risque de chute est réel. Un couvreur sait où poser le pied et dispose du matériel de sécurité.",
+      },
+      {
+        q: "Une tuile neuve se verra-t-elle sur mon toit ancien ?",
+        r: "On fait en sorte que non. Sur les couvertures anciennes, on utilise des tuiles de récupération patinées. Sur les tuiles plus récentes, on choisit un coloris proche, qui se fond vite après quelques saisons.",
+      },
+      {
+        q: "Faut-il vérifier tout le toit pour une seule tuile cassée ?",
+        r: "On jette au moins un œil sur le pan concerné et sur le faîtage. Une tuile cassée par le vent en annonce souvent d'autres qui ont bougé sans se briser, et autant les recaler pendant qu'on est sur place.",
+      },
+    ],
+  },
+
+  /* ---------------------------------------------------------------- */
+  {
+    slug: "faitage-rives",
+    nom: "Faîtage et rives",
+    court: "Faîtage et rives",
+    zone: 0,
+    title: "Faîtage et rives de toiture à Frontignan | ARVÉO",
+    description:
+      "Faîtières descellées, mortier qui s'effrite, rives arrachées par la tramontane ? Réfection du faîtage, des rives et des arêtiers à Frontignan et alentours.",
+    h1: "Réfection du faîtage et des rives de toiture",
+    chapo:
+      "Le faîtage et les rives sont les points du toit les plus exposés au vent. Quand le mortier se fend ou qu'une faîtière bouge, on reprend ces lignes de la couverture avant que la pluie ne s'y engouffre.",
+    resume: "Faîtières, rives et arêtiers rescellés ou reposés à sec, face au vent et au sel.",
+    devis: "Faîtage et rives",
+    sections: [
+      {
+        h2: "Le faîtage et les rives, de quoi parle-t-on ?",
+        p: [
+          "Le faîtage est la ligne haute du toit, là où deux versants se rejoignent. Il est couvert de faîtières, des tuiles arrondies posées à cheval. Les rives sont les bords latéraux de la couverture, du côté des pignons. Sur une maison à quatre pentes, les arêtiers jouent le même rôle sur les angles inclinés.",
+          "Ces trois lignes protègent les extrémités des tuiles. Si elles lâchent, le vent passe sous la couverture et l'eau entre directement sur les liteaux et la charpente.",
+        ],
+      },
+      {
+        h2: "Ce que la tramontane et le sel font au mortier",
+        p: [
+          "Autour de l'étang de Thau, la tramontane souffle fort et longtemps depuis le nord-ouest. Elle frappe en premier le faîtage et la rive exposée, qui se trouvent en saillie. À côté de cela, le vent marin dépose du sel, et les écarts de température entre une journée d'août et une nuit d'hiver font travailler le mortier.",
+          "Résultat, le scellement des faîtières se fissure, puis s'effrite par morceaux. Les tuiles de rive se soulèvent et certaines finissent dans le jardin. Après un gros coup de vent, notre article sur la [toiture après la tramontane](/conseils/toiture-apres-tramontane) indique quoi regarder depuis le sol.",
+        ],
+        liste: [
+          "Morceaux de mortier gris ou ocre au pied des murs",
+          "Faîtière décalée, qui ne suit plus la ligne du toit",
+          "Tuile de rive soulevée ou absente sur le pignon",
+          "Jour visible entre les faîtières en regardant contre le ciel",
+          "Coulures sur le haut du pignon après la pluie",
+        ],
+      },
+      {
+        h2: "Faîtage scellé ou faîtage à sec",
+        p: [
+          "Sur les maisons anciennes à tuiles canal, le faîtage traditionnel est scellé au mortier de chaux, d'une teinte proche des enduits de la région. On le refait dans le même esprit, en purgeant l'ancien mortier jusqu'au sain et en reposant les faîtières alignées.",
+          "Sur une couverture en tuiles romanes ou mécaniques, on peut aussi poser un faîtage à sec. Les faîtières sont alors vissées sur une lisse de faîtage, avec un closoir ventilé dessous. Cette solution laisse respirer les combles et ne craint pas la fissuration. On vous présente les deux options selon votre toit et l'aspect recherché.",
+        ],
+      },
+      {
+        h2: "Les rives, côté pignon",
+        p: [
+          "Une rive se traite de plusieurs façons. Tuiles de rive à rabat emboîtées, rive scellée au mortier sur les toits en canal, ou bande de rive en zinc qui coiffe l'extrémité des tuiles. Le zinc tient très bien au vent et protège aussi le haut de l'enduit, un point utile sur les pignons tournés vers le nord-ouest.",
+          "Pour les habillages métalliques et les raccords avec les gouttières, ce travail rejoint notre activité de [zinguerie et gouttières](/services/zinguerie-gouttieres).",
+        ],
+      },
+      {
+        h2: "Notre façon de reprendre un faîtage",
+        liste: [
+          "Dépose des faîtières et des tuiles de rive fragilisées",
+          "Purge complète du vieux mortier, sans laisser de parties creuses",
+          "Remplacement des tuiles de rang supérieur abîmées, voir notre service de [remplacement de tuiles](/services/remplacement-tuiles)",
+          "Contrôle de la panne faîtière et des liteaux en tête de versant",
+          "Repose au mortier ou à sec, alignée au cordeau",
+          "Fixation renforcée des tuiles de rive sur les façades exposées au vent",
+        ],
+        p: [
+          "Si la couverture entière est fatiguée, reprendre seulement le faîtage serait un pansement. Dans ce cas, on vous oriente vers une [réfection de la toiture](/services/refection-toiture), qui inclut faîtage et rives neufs.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "Combien de temps tient un faîtage refait ?",
+        r: "Un faîtage bien purgé et correctement scellé, ou posé à sec avec des fixations adaptées, tient de nombreuses années. Sa durée dépend surtout de l'exposition au vent et de l'entretien général du toit.",
+      },
+      {
+        q: "Peut-on simplement reboucher les fissures du mortier ?",
+        r: "Un rebouchage en surface tient rarement. Le mortier neuf n'accroche pas sur un support qui s'effrite. Il faut retirer l'ancien scellement et refaire proprement, au moins sur les longueurs fissurées.",
+      },
+      {
+        q: "Le faîtage à sec est-il adapté aux tuiles canal ?",
+        r: "Des systèmes existent, mais sur les maisons anciennes en canal on garde le plus souvent un faîtage maçonné. Il respecte l'aspect d'origine, ce qui compte aussi dans les centres anciens.",
+      },
+    ],
+  },
+
+  /* ---------------------------------------------------------------- */
+  {
+    slug: "fenetre-de-toit",
+    nom: "Pose et remplacement de fenêtre de toit",
+    court: "Fenêtre de toit",
+    zone: 3,
+    title: "Fenêtre de toit à Frontignan, pose et remplacement | ARVÉO",
+    description:
+      "Pose ou remplacement de fenêtre de toit à Frontignan et dans l'Hérault, avec abergement et raccord d'étanchéité adaptés à vos tuiles. Devis gratuit.",
+    h1: "Pose et remplacement de fenêtre de toit",
+    chapo:
+      "Une fenêtre de toit apporte de la lumière dans des combles ou une chambre sous les pentes. Sa durée de vie dépend surtout de son raccord avec la couverture. C'est ce travail de couvreur que nous faisons avec soin.",
+    resume: "Fenêtre de toit posée ou remplacée, avec un abergement adapté à vos tuiles.",
+    devis: "Fenêtre de toit",
+    sections: [
+      {
+        h2: "Remplacer une ancienne fenêtre de toit",
+        p: [
+          "Beaucoup de fenêtres de toit posées il y a vingt ou trente ans arrivent en fin de course. Le vitrage s'opacifie, les joints durcissent, les charnières grippent, surtout près de la mer où le sel attaque les parties métalliques. Le remplacement à dimension identique est la solution la plus simple. La nouvelle fenêtre de toit (type Velux) reprend l'ouverture existante dans la charpente, sans toucher aux chevrons.",
+          "On dépose l'ancien châssis, on vérifie l'état du bois autour et de l'écran sous-toiture, puis on pose la fenêtre neuve avec un abergement neuf. Réutiliser l'ancien raccord est une fausse économie, car c'est lui qui assure l'étanchéité.",
+        ],
+        liste: [
+          "Infiltrations au bas de la fenêtre après chaque grosse pluie",
+          "Buée persistante entre les deux vitres",
+          "Ouvrant qui ferme mal ou laisse passer l'air",
+          "Traces noires de moisissure sur l'habillage intérieur",
+        ],
+      },
+      {
+        h2: "L'abergement, la pièce qui fait l'étanchéité",
+        p: [
+          "L'abergement est l'ensemble de pièces qui entoure la fenêtre à l'extérieur et raccorde la couverture au châssis. Il renvoie l'eau de la partie haute vers les côtés, puis par-dessus les tuiles du bas. Son modèle dépend du profil de vos tuiles. Une tuile canal, très galbée, demande un abergement pour tuiles à fort relief, avec une bavette souple qui épouse les ondulations.",
+          "On soigne aussi le raccord d'étanchéité avec l'écran sous-toiture, à l'aide d'une collerette et d'une gouttière de déviation au-dessus de la fenêtre. Sans ce détail, l'eau qui passe parfois sous les tuiles lors d'un épisode méditerranéen finit par couler dans la pièce. Si une fenêtre de toit fuit déjà chez vous, une [recherche de fuite](/services/recherche-de-fuite) permet de savoir si le problème vient du châssis ou du raccord.",
+        ],
+      },
+      {
+        h2: "Créer une nouvelle ouverture dans le toit",
+        p: [
+          "Ajouter une fenêtre de toit là où il n'y en avait pas demande davantage de travail. On découpe la couverture et les liteaux, puis on crée un chevêtre pour reprendre les efforts du ou des chevrons coupés. Ce travail de structure fait partie de notre activité de [charpente](/services/charpente).",
+          "La création d'une ouverture modifie l'aspect extérieur de la maison. Une déclaration préalable peut alors être demandée, et les abords d'un monument historique peuvent imposer des conditions particulières. Renseignez-vous en mairie avant de lancer les travaux. Notre article sur les [autorisations d'urbanisme pour une toiture](/conseils/travaux-toiture-autorisation-urbanisme) fait le point sur les cas courants.",
+        ],
+      },
+      {
+        h2: "Penser à la chaleur de l'été",
+        p: [
+          "Dans l'Hérault, une pièce sous les toits peut devenir étouffante de juin à septembre. Une fenêtre de toit orientée plein sud ou plein ouest laisse entrer beaucoup de soleil. On vous conseille sur l'emplacement, la taille et l'équipement, pour profiter de la lumière sans transformer la chambre en serre.",
+        ],
+        liste: [
+          "Store extérieur ou volet roulant, qui arrête la chaleur avant le vitrage",
+          "Vitrage adapté à l'exposition de la pièce",
+          "Ouverture à rotation ou à projection selon la hauteur et l'usage",
+          "Position permettant une ventilation traversante la nuit",
+          "Reprise de l'isolant autour du châssis, en lien avec l'[isolation de toiture](/services/isolation-toiture)",
+        ],
+      },
+      {
+        h2: "Préparer votre projet",
+        p: [
+          "Pour un remplacement, notez si possible les références inscrites sur la plaque du châssis, visibles une fois la fenêtre ouverte. Pour une création, une photo de la pièce et du toit vu de l'extérieur nous aide déjà beaucoup. Joignez-les à votre [demande de devis](/devis-toiture). Pour les communes plus éloignées de Frontignan, on fixe un rendez-vous de visite planifié avant de commander le matériel.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "Peut-on remplacer une fenêtre de toit sans abîmer l'intérieur ?",
+        r: "Dans la plupart des cas, oui. Le remplacement à dimension identique se fait depuis l'extérieur et l'habillage intérieur reste en place. Si l'ancien châssis a laissé passer l'eau longtemps, il peut falloir reprendre un peu de plâtre autour.",
+      },
+      {
+        q: "Une fenêtre de toit peut-elle se poser sur des tuiles canal ?",
+        r: "Oui, avec un abergement prévu pour les tuiles à fort galbe. On ajuste aussi les tuiles autour du cadre pour que l'eau soit bien renvoyée sur les côtés et en partie basse.",
+      },
+      {
+        q: "Faut-il une autorisation pour changer une fenêtre de toit ?",
+        r: "Un remplacement à l'identique, même taille et même aspect, ne demande en général aucune démarche. Pour une création ou un agrandissement, une déclaration préalable est souvent nécessaire. Votre mairie vous le confirmera.",
+      },
+    ],
+  },
+
+  /* ---------------------------------------------------------------- */
+  {
+    slug: "isolation-toiture",
+    nom: "Isolation de toiture",
+    court: "Isolation de toiture",
+    zone: 1,
+    title: "Isolation de toiture à Frontignan | ARVÉO",
+    description:
+      "Isolation de toiture par l'extérieur lors d'une réfection, isolation des combles, pare-vapeur et ventilation. Confort d'hiver et d'été à Frontignan.",
+    h1: "Isolation de toiture à Frontignan et alentours",
+    chapo:
+      "Une grande partie des pertes de chaleur passe par le toit, et c'est aussi par lui que la chaleur entre l'été. Isoler la toiture rend la maison plus agréable toute l'année, à condition de traiter aussi la ventilation et l'humidité.",
+    resume: "Combles ou isolation par l'extérieur, pour une maison plus vivable été comme hiver.",
+    devis: "Isolation de toiture",
+    sections: [
+      {
+        h2: "Dans l'Hérault, l'été compte autant que l'hiver",
+        p: [
+          "On pense d'abord au froid, mais autour de Frontignan le vrai inconfort arrive souvent en juillet. Les tuiles chauffent en plein soleil, la chaleur traverse la charpente et les pièces sous les pentes restent chaudes jusque tard dans la nuit. Une isolation bien pensée doit freiner cette chaleur, pas seulement retenir celle du chauffage.",
+          "Pour cela, l'épaisseur ne fait pas tout. Les isolants denses, comme la fibre de bois, ralentissent davantage le passage de la chaleur que des isolants très légers. On parle de déphasage, c'est-à-dire du temps que met la chaleur de l'après-midi pour atteindre l'intérieur. Plus il est long, plus la pièce reste vivable.",
+        ],
+      },
+      {
+        h2: "Isoler par l'extérieur lors d'une réfection",
+        p: [
+          "Si votre couverture doit de toute façon être refaite, c'est le meilleur moment pour isoler. La technique dite du sarking consiste à poser des panneaux isolants rigides par-dessus les chevrons, avant de remettre contre-liteaux, liteaux et tuiles. L'isolant forme une enveloppe continue, sans les coupures que laissent les chevrons dans une isolation intérieure.",
+          "Autre avantage, la charpente apparente reste visible depuis l'intérieur et vous ne perdez pas de hauteur sous plafond. Le toit, lui, gagne quelques centimètres d'épaisseur. Il faut donc reprendre les rives, le faîtage et les raccords de zinguerie, ce que l'on fait dans le même chantier de [réfection de toiture](/services/refection-toiture). Cette surélévation peut aussi relever d'une démarche en mairie, voir notre article sur les [autorisations d'urbanisme](/conseils/travaux-toiture-autorisation-urbanisme).",
+        ],
+      },
+      {
+        h2: "Isoler les combles",
+        p: [
+          "Quand la couverture est en bon état, on travaille par l'intérieur. Le choix dépend de l'usage de l'espace sous le toit.",
+        ],
+        liste: [
+          "Combles perdus, non habitables, isolés par soufflage d'un isolant en vrac sur le plancher",
+          "Combles aménagés, isolés en rampant entre et sous les chevrons, sous un parement",
+          "Trappe d'accès isolée et étanche, souvent oubliée",
+          "Contrôle préalable de la charpente, avec reprise par notre service de [charpente](/services/charpente) si un bois est attaqué",
+        ],
+      },
+      {
+        h2: "Pare-vapeur et ventilation, les deux points qu'on ne néglige pas",
+        p: [
+          "La vapeur d'eau produite dans la maison, par la cuisine, la douche ou la respiration, cherche à sortir par le haut. Si elle atteint un isolant froid, elle condense et le mouille. On place donc un pare-vapeur ou une membrane hygrorégulante du côté chauffé, avec des raccords et des passages de gaines bien scotchés.",
+          "Côté extérieur, la couverture doit rester ventilée. Une lame d'air sous les tuiles, des entrées d'air en bas de pente et une sortie au faîtage évacuent l'humidité et une partie de la chaleur d'été. Près de l'étang de Thau, où l'air est souvent humide, ce point est particulièrement surveillé.",
+        ],
+      },
+      {
+        h2: "Les aides à la rénovation",
+        p: [
+          "Des aides publiques existent pour les travaux d'isolation, mais leurs conditions évoluent souvent et dépendent de vos revenus, de votre logement et de l'entreprise retenue. Nous ne donnons pas de montant. Le site officiel france-renov.gouv.fr présente les dispositifs en vigueur et les conseillers du réseau public qui peuvent vous accompagner gratuitement. Vérifiez votre éligibilité avant de signer un devis, certaines aides devant être demandées avant le début des travaux.",
+          "Si vous hésitez entre isoler maintenant ou attendre de refaire le toit, notre guide pour savoir s'il faut [refaire ou réparer sa toiture](/conseils/refaire-ou-reparer-toiture) aide à trancher. On peut ensuite venir voir votre maison et vous remettre un [devis de toiture](/devis-toiture) détaillé.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "Vaut-il mieux isoler par l'intérieur ou par l'extérieur ?",
+        r: "Par l'extérieur, l'isolation est plus continue et protège mieux de la chaleur d'été, mais elle a du sens surtout quand la couverture doit être refaite. Si vos tuiles sont saines, l'isolation des combles par l'intérieur est souvent plus raisonnable.",
+      },
+      {
+        q: "Quel isolant choisir pour le confort d'été ?",
+        r: "Les isolants denses, comme la fibre de bois, freinent mieux la chaleur de l'après-midi. Leur choix dépend aussi de l'épaisseur disponible et de l'usage des combles. On en discute lors de la visite.",
+      },
+      {
+        q: "Pourquoi parler de ventilation pour une isolation ?",
+        r: "Un isolant humide n'isole plus et peut abîmer la charpente. La ventilation sous les tuiles et le pare-vapeur côté intérieur évitent que l'eau ne s'accumule dans la paroi.",
+      },
+    ],
+  },
+
+  /* ---------------------------------------------------------------- */
+  {
+    slug: "etancheite-toit-terrasse",
+    nom: "Étanchéité de toit terrasse",
+    court: "Toit terrasse",
+    zone: 3,
+    title: "Étanchéité de toit terrasse à Frontignan | ARVÉO",
+    description:
+      "Réfection et réparation d'étanchéité de toit terrasse, membrane bitumineuse ou EPDM, relevés et évacuations, pour villas et maisons récentes de l'Hérault.",
+    h1: "Étanchéité de toit terrasse",
+    chapo:
+      "Un toit plat ne pardonne pas les détails. Une membrane fendue, un relevé décollé ou une évacuation bouchée suffisent pour que l'eau stagne et s'infiltre. On répare ou on refait l'étanchéité, avec une attention particulière aux points singuliers.",
+    resume: "Membrane bitumineuse ou EPDM, relevés et évacuations remis en état.",
+    devis: "Étanchéité de toit terrasse",
+    sections: [
+      {
+        h2: "Des toits terrasses de plus en plus nombreux",
+        p: [
+          "Les villas contemporaines et les maisons des quartiers récents, à Frontignan comme dans les lotissements autour de Montpellier, ont souvent un toit terrasse, en totalité ou sur une extension. Garage accolé, chambre ajoutée au rez-de-chaussée, terrasse accessible au-dessus d'un séjour, ces surfaces plates se sont multipliées.",
+          "Elles vieillissent différemment d'un toit en tuiles. Le soleil méditerranéen dégrade les membranes exposées, les écarts de température font travailler les jonctions, et les orages d'automne testent d'un coup toute la surface. Une étanchéité qui tenait depuis quinze ans peut lâcher lors d'un seul épisode méditerranéen.",
+        ],
+      },
+      {
+        h2: "Les signes d'une étanchéité fatiguée",
+        liste: [
+          "Flaques qui restent plusieurs jours après la pluie",
+          "Cloques, plis ou fissures visibles sur la membrane",
+          "Relevé décollé au pied d'un muret ou d'un acrotère",
+          "Végétation qui pousse dans les angles ou sur les gravillons",
+          "Taches au plafond de la pièce située juste en dessous",
+          "Évacuation qui déborde lors des fortes averses",
+        ],
+      },
+      {
+        h2: "Membrane bitumineuse ou EPDM",
+        p: [
+          "La membrane bitumineuse est la solution la plus répandue. Elle se pose en général en deux couches soudées au chalumeau, la seconde étant autoprotégée par des paillettes minérales quand le toit n'est pas recouvert. Elle se répare bien et se raccorde facilement aux anciennes étanchéités du même type.",
+          "L'EPDM est une membrane en caoutchouc synthétique, posée le plus souvent en une seule pièce découpée aux dimensions du toit et collée sur son support. Elle supporte bien les rayons du soleil et les dilatations. On la choisit volontiers pour les petites surfaces, les extensions et les toits où l'usage du chalumeau est délicat.",
+          "Le choix dépend du support, de l'accessibilité de la terrasse et de l'étanchéité existante. On vous explique les options après la visite.",
+        ],
+      },
+      {
+        h2: "Relevés et évacuations, là où tout se joue",
+        p: [
+          "La plupart des infiltrations ne viennent pas du milieu du toit mais de ses bords. Les relevés d'étanchéité remontent le long des acrotères, des murets et des seuils de porte. Ils doivent monter assez haut et être protégés en tête par une bande de solin ou une couvertine, faute de quoi l'eau passe derrière.",
+          "Les évacuations demandent la même rigueur. Naissance raccordée à la membrane, crapaudine pour arrêter les feuilles, trop-plein pour éviter la mise en charge en cas d'orage. Sous les pins, les aiguilles bouchent vite ces orifices. Pour les descentes et le zinc autour de la terrasse, on s'appuie sur notre activité de [zinguerie et gouttières](/services/zinguerie-gouttieres).",
+        ],
+      },
+      {
+        h2: "Réparer ponctuellement ou refaire",
+        p: [
+          "Une fissure localisée ou un relevé décollé se reprennent souvent par une pièce de renfort. Quand les défauts se multiplient ou que l'isolant sous la membrane est gorgé d'eau, une réfection complète est plus sûre. C'est aussi l'occasion d'améliorer l'[isolation de la toiture](/services/isolation-toiture) en posant un isolant neuf sous la nouvelle étanchéité.",
+          "Si l'origine d'une tache reste incertaine, on commence par une [recherche de fuite](/services/recherche-de-fuite) avant de proposer quoi que ce soit.",
+        ],
+        liste: [
+          "Nettoyage du support et dépose des protections, gravillons ou dalles",
+          "Reprise ou remplacement de la membrane",
+          "Réfection des relevés et des protections en tête",
+          "Remise en état des naissances, crapaudines et trop-pleins",
+          "Remise en place des protections ou des dalles sur plots",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "Un toit terrasse doit-il avoir une pente ?",
+        r: "Oui, une légère pente oriente l'eau vers les évacuations. Un toit parfaitement plat garde des flaques qui fatiguent la membrane. Lors d'une réfection, on peut corriger les zones en creux.",
+      },
+      {
+        q: "Peut-on poser une membrane neuve sur l'ancienne ?",
+        r: "Parfois, si l'ancienne est bien adhérente et sèche, et que le support le permet. Si elle est cloquée ou si l'isolant dessous est mouillé, il faut déposer. On décide après avoir sondé le complexe.",
+      },
+      {
+        q: "Comment entretenir un toit terrasse ?",
+        r: "Deux passages par an suffisent souvent, au printemps et avant l'automne, pour retirer feuilles et aiguilles, vérifier les évacuations et repérer une cloque ou un relevé qui se décolle.",
+      },
+      {
+        q: "Intervenez-vous loin de Frontignan ?",
+        r: "Oui, dans tout l'Hérault, sur rendez-vous. Pour les secteurs éloignés, on planifie la visite et on regroupe les déplacements. Consultez notre [zone d'intervention](/zone-intervention).",
+      },
+    ],
+  },
+
+  /* ---------------------------------------------------------------- */
+  {
+    slug: "bachage-urgence",
+    nom: "Bâchage de toiture en urgence",
+    court: "Bâchage d'urgence",
+    zone: 3,
+    title: "Bâchage de toiture en urgence à Frontignan | ARVÉO",
+    description:
+      "Toit ouvert après une tempête, une tramontane ou une chute de branche ? Bâchage d'urgence et mise hors d'eau temporaire à Frontignan et dans l'Hérault.",
+    h1: "Bâchage de toiture en urgence",
+    chapo:
+      "Quand le vent arrache des tuiles ou qu'une branche perce le toit, la priorité est d'arrêter l'eau. Dans le cadre de notre service de dépannage, on pose une bâche solidement tenue, puis on prévoit la réparation définitive.",
+    resume: "Mise hors d'eau temporaire après tempête, tramontane ou chute de branche.",
+    devis: "Bâchage d'urgence",
+    sections: [
+      {
+        h2: "Une mise hors d'eau en attendant la réparation",
+        p: [
+          "Le bâchage est une mesure provisoire. Il protège l'intérieur de la maison, l'isolant et la charpente le temps de préparer les travaux, de commander les tuiles ou d'obtenir l'accord de l'assurance. Il fait partie de notre [dépannage de toiture](/depannage-toiture), au même titre que les petites réparations immédiates.",
+          "Une bâche bien posée tient plusieurs semaines si elle est correctement lestée et fixée. Une bâche mal tenue, au contraire, claque au premier coup de vent, arrache d'autres tuiles et laisse l'eau passer par les côtés.",
+        ],
+      },
+      {
+        h2: "Les situations qui demandent un bâchage",
+        liste: [
+          "Tuiles envolées sur une grande surface après une tempête",
+          "Faîtage ou rive arrachés par un coup de tramontane",
+          "Chute d'un arbre ou de grosses branches de pin sur la couverture",
+          "Toit percé par la grêle ou par un objet projeté",
+          "Réparation qui ne peut pas être faite tout de suite, faute de matériaux ou de météo favorable",
+        ],
+        p: [
+          "Les pins parasols, très présents autour de Frontignan, de Sète et sur le littoral, ont un bois cassant. Lors des grands vents, des branches entières tombent sur les toits voisins. Le dégât dépasse alors souvent les tuiles et touche les liteaux, voire un chevron.",
+        ],
+      },
+      {
+        h2: "Votre sécurité d'abord",
+        p: [
+          "Ne montez pas sur le toit, ni pendant la tempête ni juste après. Les tuiles mouillées glissent, certaines sont instables et une couverture percée peut céder sous le poids. Une branche encore accrochée peut aussi tomber sans prévenir.",
+          "À l'intérieur, coupez l'électricité des pièces où l'eau coule, protégez les meubles et placez des récipients sous les gouttes. Notre article sur la [fuite de toiture et ce qu'il faut faire](/conseils/fuite-toiture-que-faire) détaille ces gestes. Ensuite, appelez-nous. On vous rappelle dans la journée et on organise le déplacement au plus vite selon la météo et les demandes en cours.",
+        ],
+      },
+      {
+        h2: "Photos et assurance",
+        p: [
+          "Avant toute intervention, prenez des photos depuis le sol, de la toiture, du jardin et des dégâts intérieurs. Elles serviront à votre déclaration de sinistre. De notre côté, on photographie la couverture de près avant de bâcher, puis après la pose.",
+          "Vous recevez ces photos avec un descriptif des dégâts et, dès que possible, un devis pour la réparation définitive. La prise en charge dépend de votre contrat et des circonstances. Renseignez-vous auprès de votre assureur, qui demande souvent ces éléments.",
+        ],
+      },
+      {
+        h2: "Comment on pose une bâche",
+        liste: [
+          "Mise en sécurité de la zone et dégagement des branches ou débris",
+          "Bâche épaisse et résistante aux UV, plus large que la zone ouverte",
+          "Débord par-dessus le faîtage pour que l'eau ne passe pas en tête",
+          "Fixation sur des liteaux ou lestage, sans percer les tuiles saines",
+          "Contrôle de la tenue au vent, surtout côté nord-ouest",
+        ],
+      },
+      {
+        h2: "Après le bâchage, la réparation définitive",
+        p: [
+          "Une bâche ne reste jamais en place indéfiniment. Selon les dégâts, la suite peut être un [remplacement de tuiles](/services/remplacement-tuiles), une reprise de [charpente](/services/charpente) si un chevron a été touché, ou une [recherche de fuite](/services/recherche-de-fuite) si l'eau a cheminé ailleurs. Après un coup de vent, notre guide sur la [toiture après la tramontane](/conseils/toiture-apres-tramontane) aide à faire le tour des points à vérifier.",
+          "Pour toute autre urgence sur votre toit, consultez notre page [dépannage de toiture en urgence](/depannage-toiture).",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "Combien de temps une bâche peut-elle rester sur le toit ?",
+        r: "Quelques semaines si elle est bien fixée et surveillée après chaque coup de vent. L'objectif reste de faire la réparation définitive dès que les matériaux et la météo le permettent.",
+      },
+      {
+        q: "Puis-je poser une bâche moi-même ?",
+        r: "On le déconseille. Monter sur un toit endommagé, sous la pluie ou dans le vent, expose à une chute grave. Une bâche mal lestée peut aussi s'envoler et causer d'autres dégâts.",
+      },
+      {
+        q: "Le bâchage est-il pris en charge par l'assurance ?",
+        r: "Souvent, les mesures conservatoires après un sinistre sont prises en compte, mais cela dépend de votre contrat. Gardez la facture et les photos, et renseignez-vous auprès de votre assureur.",
+      },
+      {
+        q: "Intervenez-vous dans tout l'Hérault ?",
+        r: "Oui. Autour de Frontignan et du bassin de Thau, le déplacement est simple à organiser. Pour les secteurs plus éloignés, on planifie l'intervention selon la météo et les urgences déjà prises en charge.",
       },
     ],
   },
@@ -508,6 +985,7 @@ export const FAQ_DEPANNAGE = [
   {
     q: "Pouvez-vous bâcher la toiture ?",
     r: "Oui. En cas de fuite importante ou de tuiles arrachées, on pose une bâche de protection pour mettre la maison hors d'eau, puis on programme la réparation.",
+    lien: { href: "/services/bachage-urgence", texte: "Le bâchage d'urgence en détail" },
   },
   {
     q: "Mon assurance habitation peut-elle prendre en charge les dégâts ?",
