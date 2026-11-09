@@ -170,7 +170,9 @@ const NAV = [
   { id: "apropos", href: "/a-propos", texte: "À propos" },
   { id: "contact", href: "/contact", texte: "Contact" },
 ];
-const avecAvis = S.avis.length > 0 || !!S.liens.googleBusiness;
+// Seuls les vrais avis complets sont publiés : texte exact, auteur, date et source Google.
+const AVIS = (S.avis || []).filter((a) => a.texte && a.auteur && /^\d{4}-\d{2}(-\d{2})?$/.test(a.date || "") && a.source === "Google" && a.note >= 1 && a.note <= 5);
+const avecAvis = AVIS.length > 0;
 const avecRealisations = CHANTIERS.length > 0;
 if (avecRealisations) NAV.splice(1, 0, { id: "realisations", href: "/realisations", texte: "Réalisations" });
 if (avecAvis) NAV.splice(3, 0, { id: "avis", href: "/avis", texte: "Avis" });
@@ -444,9 +446,17 @@ function ldEntreprise() {
   };
   const sameAs = ["googleBusiness", "facebook", "instagram", "pagesJaunes"].map((k) => fiable("liens." + k)).filter(Boolean);
   if (sameAs.length) o.sameAs = sameAs;
-  if (S.avis.length) {
-    const moy = S.avis.reduce((t, a) => t + (a.note || 5), 0) / S.avis.length;
-    o.aggregateRating = { "@type": "AggregateRating", ratingValue: moy.toFixed(1), reviewCount: S.avis.length, bestRating: 5 };
+  if (AVIS.length) {
+    const moy = AVIS.reduce((t, a) => t + a.note, 0) / AVIS.length;
+    o.aggregateRating = { "@type": "AggregateRating", ratingValue: moy.toFixed(1), reviewCount: AVIS.length, bestRating: 5, worstRating: 1 };
+    o.review = AVIS.slice(0, 10).map((a) => ({
+      "@type": "Review",
+      author: { "@type": "Person", name: a.auteur },
+      datePublished: a.date,
+      reviewBody: a.texte,
+      reviewRating: { "@type": "Rating", ratingValue: a.note, bestRating: 5, worstRating: 1 },
+      publisher: { "@type": "Organization", name: "Google" },
+    }));
   }
   return nettoyer(o);
 }
@@ -776,19 +786,19 @@ function listeVilles(exclure) {
 }
 
 function avisHtml() {
-  if (!S.avis.length) return "";
+  if (!AVIS.length) return "";
   return `
     <section class="section section--claire" aria-labelledby="titre-avis">
       <div class="conteneur">
         <h2 id="titre-avis">Ce que disent nos clients</h2>
         <ul class="avis">
-          ${S.avis
+          ${AVIS
             .slice(0, 6)
             .map(
               (a) => `<li class="avis__carte">
             <p class="avis__note" aria-label="${a.note || 5} sur 5">${"★".repeat(a.note || 5)}</p>
             <blockquote><p>« ${esc(a.texte)} »</p></blockquote>
-            <p class="avis__auteur">${esc(a.auteur)}${a.ville ? `, <span>${esc(a.ville)}</span>` : ""}</p>
+            <p class="avis__auteur">${esc(a.auteur)}${a.ville ? `, <span>${esc(a.ville)}</span>` : ""} · <time datetime="${a.date}">${esc(a.date.split("-").reverse().join("/"))}</time>, avis Google</p>
           </li>`
             )
             .join("\n          ")}
@@ -1651,12 +1661,12 @@ if (avecAvis) {
     id: "avis",
     path: "/avis",
     title: "Avis clients d'ARVÉO, couvreur à Frontignan",
-    description: "Les avis Google des clients d'ARVÉO, couvreur zingueur à Frontignan et alentours.",
+    description: "Les avis Google laissés par les clients d'ARVÉO, couvreur zingueur à Frontignan, après une réparation, une réfection ou un dépannage de toiture.",
     jsonld: [ldEntreprise(), ar.ld],
   };
   const html =
     head(p) +
-    enTetePage({ surTitre: "Avis clients", h1: "Ce que disent nos clients", chapo: "Les avis laissés par nos clients sur notre fiche Google.", ariane: ar.html }) +
+    enTetePage({ h1: "Ce que disent nos clients", chapo: "Les avis laissés par nos clients sur notre fiche Google, publiés tels quels, sans tri.", ariane: ar.html }) +
     avisHtml() +
     `
     <section class="section">
@@ -1671,7 +1681,40 @@ ${bandeauCta()}` +
   ecrire("avis.html", html, { path: "/avis", priorite: "0.5" });
 } else {
   fs.rmSync(path.join(RACINE, "avis.html"), { force: true });
-  avertissements.push("Page Avis non générée : ajoutez de vrais avis dans config.avis ou le lien de la fiche Google.");
+  avertissements.push("Page Avis non générée : ajoutez de vrais avis Google dans config.avis (texte exact, auteur, date, source « Google »).");
+}
+
+/* --- /avis/laisser : lien court pour les cartes NFC et les QR codes --- */
+{
+  const lien = fiable("liens.avisGoogle");
+  const fv = path.join(RACINE, "vercel.json");
+  const v = JSON.parse(fs.readFileSync(fv, "utf8"));
+  v.redirects = v.redirects.filter((r) => r.source !== "/avis/laisser");
+  if (lien) {
+    // Redirection temporaire : le lien Google peut changer, les cartes déjà imprimées restent valables.
+    v.redirects.unshift({ source: "/avis/laisser", destination: lien, permanent: false });
+    fs.rmSync(path.join(RACINE, "avis", "laisser.html"), { force: true });
+  } else {
+    const p = { id: "avis", path: "/avis/laisser", noindex: true, title: `Laisser un avis | ${S.nom}`, description: "Laisser un avis sur ARVÉO, couvreur zingueur à Frontignan.", jsonld: [] };
+    ecrire(
+      "avis/laisser.html",
+      head(p) +
+        `
+    <section class="tete-page">
+      <div class="conteneur tete-page__grille tete-page__grille--seule">
+        <div class="tete-page__texte">
+          <h1>Merci de penser à nous</h1>
+          <p class="chapeau">Notre page d'avis Google arrive bientôt. En attendant, dites-nous directement ce que vous avez pensé de notre intervention, cela nous aide à progresser.</p>
+          ${actions({ clair: true, secondaire: { href: "/contact", texte: "Nous écrire", icone: "mail", track: "contact" } })}
+        </div>
+      </div>
+    </section>` +
+        pied() +
+        FIN_PAGE(false)
+    );
+    avertissements.push("/avis/laisser affiche une page d'attente : renseignez config.liens.avisGoogle pour rediriger vers Google.");
+  }
+  fs.writeFileSync(fv, JSON.stringify(v, null, 2) + "\n");
 }
 
 /* --- Réalisations (seulement s'il existe de vrais chantiers) --- */

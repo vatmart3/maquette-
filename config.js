@@ -67,7 +67,8 @@ window.SITE = {
   },
 
   // Vrais avis Google à afficher (ne jamais publier d'avis inventés).
-  // Exemple : { auteur: "Martine R.", ville: "Frontignan", note: 5, texte: "…", date: "2026-10" }
+  // Copier le texte exact de l'avis Google, sans le modifier. Pas de tri : publiez aussi les avis mitigés.
+  // Exemple : { auteur: "Martine R.", ville: "Frontignan", note: 5, texte: "…", date: "2026-10-14", source: "Google" }
   avis: [],
 
   // Services proposés : seuls ceux-ci ont une page et apparaissent dans les menus et les listes.

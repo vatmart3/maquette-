@@ -1209,3 +1209,5 @@ main { position: relative; z-index: 1; }
   .carte { position: static; }
 }
 @media (max-width: 639px) { .carte__zone text { font-size: 23px; } .carte__frontignan, .carte__mer { font-size: 17px; } }
+
+.formulaire__avis { margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(29,107,63,.25); color: var(--texte-2); font-size: .9rem; }
