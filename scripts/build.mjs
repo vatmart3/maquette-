@@ -32,7 +32,7 @@ const avertissements = [];
 // Version de chaque fichier (empreinte du contenu) ajoutée à son adresse : à chaque modification,
 // le navigateur télécharge la nouvelle version au lieu de resservir une copie en cache.
 const VERSION = Object.fromEntries(
-  ["styles.css", "site.js", "config.js", "scene.js"].map((f) => [f, crypto.createHash("sha1").update(fs.readFileSync(path.join(RACINE, f))).digest("hex").slice(0, 10)])
+  ["styles.css", "site.js", "config.js", "scene.js", "img/toiture-mobile.webp"].map((f) => [f, crypto.createHash("sha1").update(fs.readFileSync(path.join(RACINE, f))).digest("hex").slice(0, 10)])
 );
 
 /* ------------------------------------------------------------------ */
@@ -270,7 +270,7 @@ ${ld}
 </head>
 <body data-page="${p.id}"${p.sombre ? ' class="page-sombre"' : ""}>
   <a class="evitement" href="#contenu">Aller au contenu</a>
-${p.scene ? '  <div class="scene" data-scene aria-hidden="true"><picture><source media="(min-width: 860px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="><img class="scene__apercu" src="/img/toiture-mobile.webp" alt="" width="780" height="304" decoding="async"></picture></div>\n' : ""}${bandeauUrgence()}
+${p.scene ? '  <div class="scene" data-scene aria-hidden="true"><picture><source media="(min-width: 860px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="><img class="scene__apercu" src="/img/toiture-mobile.webp?v=${VERSION["img/toiture-mobile.webp"]}" alt="" width="780" height="304" decoding="async"></picture></div>\n' : ""}${bandeauUrgence()}
 ${entete(p.id)}
   <main id="contenu">
 `;
