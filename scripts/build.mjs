@@ -15,6 +15,7 @@ import { CHANTIERS } from "./chantiers.mjs";
 import { PRIX, PRIX_HUB } from "./prix.mjs";
 import { SECTEURS } from "./secteurs.mjs";
 import { VILLES_HERAULT } from "./communes-herault.mjs";
+import { ARTICLES } from "./articles.mjs";
 
 const RACINE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const ctx = { window: {} };
@@ -102,6 +103,8 @@ S.telephone = TEL_NATIONAL;
 const TEL = `tel:${tel}`;
 const urlPage = (p) => BASE + (p === "/" ? "/" : p);
 // Premier titre de la liste qui tient dans les 60 caractères recommandés.
+// Nom de l'image de partage d'une page (img/og/<nom>.png).
+const ogNom = (p) => (p === "/" ? "accueil" : p.slice(1).replace(/\//g, "-"));
 const titreCourt = (variantes) => variantes.find((t) => [...t].length <= 60) || variantes[variantes.length - 1];
 
 /* Photos de chantier (préparées par scripts/photos.mjs ; manifeste vide = aucune section photo). */
@@ -362,6 +365,7 @@ function pied() {
         <li><a href="/contact">Contact</a></li>
         <li><a href="/zone-intervention">Zone d'intervention</a></li>
         <li><a href="/prix-toiture">Prix</a></li>
+        <li><a href="/conseils">Conseils</a></li>
         ${avecRealisations ? '<li><a href="/realisations">Réalisations</a></li>' : ""}
         <li><a href="/mentions-legales">Mentions légales</a></li>
         <li><a href="/confidentialite">Confidentialité</a></li>
@@ -808,7 +812,7 @@ function avisHtml() {
     </section>`;
 }
 
-function enTetePage({ surTitre, h1, chapo, ariane, rappel, illustration = true, ancre = "" }) {
+function enTetePage({ h1, chapo, ariane, rappel, illustration = true, ancre = "", apres = "" }) {
   return `
     <section class="tete-page">
       ${illustration ? '<img class="tete-page__dessin" src="/img/toiture.svg" alt="" width="1440" height="900" aria-hidden="true">' : ""}
@@ -817,6 +821,7 @@ function enTetePage({ surTitre, h1, chapo, ariane, rappel, illustration = true, 
           ${ariane}
           <h1>${fr(h1)}</h1>
           <p class="chapeau">${fr(chapo)}</p>
+          ${apres}
           ${actions({ clair: true, ancre })}
           ${coches(CONFIANCE, true)}
         </div>
@@ -1166,7 +1171,7 @@ for (const s of SERVICES_PAGES) {
   const corps = sectionsHtml(s.sections);
   const html =
     head(p) +
-    enTetePage({ surTitre: `${S.activite} · Frontignan`, h1: s.h1, chapo: s.chapo, ariane: ar.html }) +
+    enTetePage({ h1: s.h1, chapo: s.chapo, ariane: ar.html }) +
     `
     <section class="section section--claire">
       <div class="conteneur article">
@@ -1231,7 +1236,7 @@ for (const v of VILLES_PAGES) {
   };
   const html =
     head(p) +
-    enTetePage({ surTitre: `Couvreur ${v.nom} · ${v.cp}`, h1: `Couvreur à ${v.nom}`, chapo: v.intro, ariane: ar.html }) +
+    enTetePage({ h1: `Couvreur à ${v.nom}`, chapo: v.intro, ariane: ar.html }) +
     `
     <section class="section section--claire">
       <div class="conteneur article">
@@ -1464,7 +1469,7 @@ ${bandeauCta()}` +
   };
   const html =
     head(p) +
-    enTetePage({ surTitre: "Dépannage de toiture", h1: "Demande de dépannage toiture en ligne", chapo: "Fuite, tuile cassée ou gouttière arrachée ? Remplissez la demande, nous la recevons immédiatement et vous rappelons au plus vite.", ariane: ar.html, ancre: "#formulaire" }) +
+    enTetePage({ h1: "Demande de dépannage toiture en ligne", chapo: "Fuite, tuile cassée ou gouttière arrachée ? Remplissez la demande, nous la recevons immédiatement et vous rappelons au plus vite.", ariane: ar.html, ancre: "#formulaire" }) +
     `
     <section class="section section--claire" id="formulaire" aria-label="Formulaire de dépannage">
       <div class="conteneur formulaire-page">
@@ -1508,7 +1513,7 @@ ${bandeauCta()}` +
   };
   const html =
     head(p) +
-    enTetePage({ surTitre: "Devis gratuit", h1: "Votre devis de toiture gratuit", chapo: "Décrivez votre projet en deux minutes. Nous vous rappelons pour organiser la visite et vous remettre un devis écrit et détaillé.", ariane: ar.html }) +
+    enTetePage({ h1: "Votre devis de toiture gratuit", chapo: "Décrivez votre projet en deux minutes. Nous vous rappelons pour organiser la visite et vous remettre un devis écrit et détaillé.", ariane: ar.html }) +
     `
     <section class="section section--claire" id="formulaire" aria-label="Formulaire de devis">
       <div class="conteneur formulaire-page">
@@ -1546,7 +1551,7 @@ ${bandeauCta()}` +
   };
   const html =
     head(p) +
-    enTetePage({ surTitre: "Rendez-vous", h1: "Prendre rendez-vous pour un diagnostic", chapo: "Choisissez une date et un créneau, nous vous rappelons pour confirmer l'heure. Le diagnostic et le devis sont gratuits.", ariane: ar.html }) +
+    enTetePage({ h1: "Prendre rendez-vous pour un diagnostic", chapo: "Choisissez une date et un créneau, nous vous rappelons pour confirmer l'heure. Le diagnostic et le devis sont gratuits.", ariane: ar.html }) +
     `
     <section class="section section--claire" id="formulaire" aria-label="Formulaire de rendez-vous">
       <div class="conteneur formulaire-page">
@@ -1585,7 +1590,7 @@ ${bandeauCta()}` +
   };
   const html =
     head(p) +
-    enTetePage({ surTitre: "Contact", h1: "Contactez votre couvreur à Frontignan", chapo: "Une question, un projet ou une urgence ? Choisissez le moyen le plus simple pour vous, nous répondons dans la journée.", ariane: ar.html }) +
+    enTetePage({ h1: "Contactez votre couvreur à Frontignan", chapo: "Une question, un projet ou une urgence ? Choisissez le moyen le plus simple pour vous, nous répondons dans la journée.", ariane: ar.html }) +
     `
     <section class="section section--claire">
       <div class="conteneur">
@@ -1624,7 +1629,7 @@ ${bandeauCta()}` +
   };
   const html =
     head(p) +
-    enTetePage({ surTitre: "À propos", h1: "Un couvreur d'ici, pour les toitures d'ici", chapo: "ARVÉO est une entreprise de couverture et de zinguerie installée à Frontignan. Notre métier, garder votre maison au sec durablement.", ariane: ar.html }) +
+    enTetePage({ h1: "Un couvreur d'ici, pour les toitures d'ici", chapo: "ARVÉO est une entreprise de couverture et de zinguerie installée à Frontignan. Notre métier, garder votre maison au sec durablement.", ariane: ar.html }) +
     `
     <section class="section section--claire">
       <div class="conteneur article">
@@ -1841,6 +1846,133 @@ ${bandeauCta()}` +
 } else {
   fs.rmSync(path.join(RACINE, "realisations.html"), { force: true });
   fs.rmSync(path.join(RACINE, "realisations"), { recursive: true, force: true });
+}
+
+/* --- Conseils (articles) --- */
+
+const dateLongue = (iso) => { const [a, m, j] = iso.split("-").map(Number); return `${j === 1 ? "1er" : j} ${MOIS[m - 1]} ${a}`; };
+const texteArticle = (a) => [a.chapo, ...a.sections.flatMap((s) => [s.h2, ...s.blocs.map((b) => b.p || b.h3 || (b.liste || []).join(" "))])].join(" ").replace(/\[([^\]]+)\]\([^)]+\)/g, "$1");
+const ARTICLES_PAGES = ARTICLES.map((a) => ({
+  ...a,
+  path: `/conseils/${a.slug}`,
+  lecture: Math.max(1, Math.round(texteArticle(a).split(/\s+/).length / 220)),
+}));
+
+function besoinCouvreur(a, fin = false) {
+  const s = (a.services || []).map((k) => SERVICES_PAGES.find((x) => x.slug === k)).filter(Boolean)[0];
+  return `<aside class="besoin" data-commun aria-label="Besoin d'un couvreur">
+            <p class="besoin__titre">Besoin d'un couvreur ?</p>
+            <p>${fin ? "On passe voir votre toiture, on vous explique ce qu'on constate et le devis est gratuit." : "Une fuite ou un doute sur votre toiture, décrivez la situation, on vous rappelle dans la journée."}</p>
+            <div class="actions">
+              <a class="bouton bouton--orange" href="/depannage-toiture" data-track="depannage">${ico("alerte")}Demande de dépannage</a>
+              <a class="bouton bouton--contour" href="/devis-toiture${s ? `?travaux=${encodeURIComponent(s.devis)}` : ""}" data-track="devis">${ico("devis")}Devis gratuit</a>
+            </div>
+          </aside>`;
+}
+
+const ldArticle = (a) =>
+  nettoyer({
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: a.titre,
+    description: a.description,
+    datePublished: a.publie,
+    dateModified: a.maj || a.publie,
+    inLanguage: "fr-FR",
+    mainEntityOfPage: urlPage(a.path),
+    image: `${BASE}/img/og/${ogNom(a.path)}.png`,
+    author: { "@id": ENTREPRISE_ID, "@type": "Organization", name: S.nom, url: BASE + "/" },
+    publisher: { "@id": ENTREPRISE_ID, "@type": "Organization", name: S.nom, logo: { "@type": "ImageObject", url: BASE + "/img/logo-arveo.png" } },
+    about: (a.services || []).map((k) => SERVICES_PAGES.find((x) => x.slug === k)).filter(Boolean).map((x) => ({ "@type": "Service", name: x.nom, url: urlPage(x.path) })),
+  });
+
+{
+  const ar = filAriane([{ nom: "Conseils", path: "/conseils" }]);
+  const p = {
+    id: "conseils",
+    path: "/conseils",
+    title: "Conseils toiture d'un couvreur de l'Hérault | ARVÉO",
+    description: "Fuite, tramontane, choix des tuiles, démoussage, autorisations de travaux. Les conseils pratiques d'ARVÉO, couvreur zingueur à Frontignan, pour votre toiture.",
+    jsonld: [ldEntreprise(), ar.ld, nettoyer({ "@context": "https://schema.org", "@type": "CollectionPage", name: "Conseils toiture", url: urlPage("/conseils"), hasPart: ARTICLES_PAGES.map((a) => ({ "@type": "Article", headline: a.titre, url: urlPage(a.path) })) })],
+  };
+  const html =
+    head(p) +
+    enTetePage({ h1: "Conseils pour votre toiture", chapo: "Des réponses concrètes aux questions qu'on nous pose sur les chantiers, de la fuite à surveiller au choix des tuiles.", ariane: ar.html }) +
+    `
+    <section class="section section--claire" aria-labelledby="titre-articles">
+      <div class="conteneur">
+        <h2 id="titre-articles" class="sr">Tous les articles</h2>
+        <ul class="articles">
+          ${ARTICLES_PAGES.map((a) => `<li><a href="${a.path}">
+            <p class="articles__meta mono"><time datetime="${a.publie}">${dateLongue(a.publie)}</time> · ${a.lecture} min de lecture</p>
+            <h3>${fr(a.titre)}</h3>
+            <p>${fr(a.chapo)}</p>
+          </a></li>`).join("\n          ")}
+        </ul>
+      </div>
+    </section>
+${bandeauCta()}` +
+    pied() +
+    FIN_PAGE(false);
+  ecrire("conseils.html", html, { path: "/conseils", priorite: "0.6" });
+}
+
+for (const a of ARTICLES_PAGES) {
+  const ar = filAriane([{ nom: "Conseils", path: "/conseils" }, { nom: a.titre, path: a.path }]);
+  const p = { id: "conseils", path: a.path, title: a.title, description: a.description, og: { titre: a.titre, type: "Conseil de couvreur" }, jsonld: [ldEntreprise(), ldArticle(a), ar.ld] };
+  const ids = new Map();
+  const idDe = (t) => { let i = slug(t).slice(0, 60); while (ids.has(i)) i += "-2"; ids.set(i, t); return i; };
+  const sections = a.sections.map((s) => ({ ...s, id: idDe(s.h2) }));
+  const milieu = Math.ceil(sections.length / 2);
+  const corps = sections
+    .map((s, i) => `${i === milieu ? besoinCouvreur(a) + "\n          " : ""}<h2 id="${s.id}">${fr(s.h2)}</h2>
+          ${s.blocs.map((b) => (b.h3 ? `<h3>${fr(b.h3)}</h3>` : b.liste ? `<ul class="liste-coches">${b.liste.map((t) => `<li>${ico("coche")}${riche(t)}</li>`).join("")}</ul>` : `<p>${riche(b.p)}</p>`)).join("\n          ")}`)
+    .join("\n          ");
+  const proches = ARTICLES_PAGES.filter((x) => x !== a)
+    .map((x) => ({ x, n: (x.services || []).filter((k) => (a.services || []).includes(k)).length }))
+    .sort((u, v) => v.n - u.n)
+    .slice(0, 3)
+    .map((y) => y.x);
+  const services = (a.services || []).map((k) => SERVICES_PAGES.find((x) => x.slug === k)).filter(Boolean);
+  const html =
+    head(p) +
+    enTetePage({
+      h1: a.titre,
+      chapo: a.chapo,
+      ariane: ar.html,
+      apres: `<p class="article-meta mono">Publié le <time datetime="${a.publie}">${dateLongue(a.publie)}</time>${a.maj && a.maj !== a.publie ? `, mis à jour le <time datetime="${a.maj}">${dateLongue(a.maj)}</time>` : ""} · ${a.lecture} min de lecture</p>`,
+    }) +
+    `
+    <section class="section section--claire">
+      <div class="conteneur article article--conseil">
+        <div class="article__corps">
+          ${corps}
+          ${besoinCouvreur(a, true)}
+        </div>
+        <aside class="article__cote">
+          <nav class="cote-carte sommaire" aria-labelledby="titre-sommaire">
+            <h2 id="titre-sommaire">Sommaire</h2>
+            <ol>${sections.map((s) => `<li><a href="#${s.id}">${fr(s.h2)}</a></li>`).join("")}</ol>
+          </nav>
+          ${services.length ? `<div class="cote-carte">
+            <h2>Nos services liés</h2>
+            <ul class="liste-liens">${services.map((s) => `<li><a href="${s.path}">${esc(s.nom)}</a></li>`).join("")}</ul>
+          </div>` : ""}
+        </aside>
+      </div>
+    </section>
+    <section class="section" aria-labelledby="titre-lire-aussi" data-commun>
+      <div class="conteneur">
+        <h2 id="titre-lire-aussi">À lire aussi</h2>
+        <ul class="articles">
+          ${proches.map((x) => `<li><a href="${x.path}"><p class="articles__meta mono">${x.lecture} min de lecture</p><h3>${fr(x.titre)}</h3><p>${fr(x.chapo)}</p></a></li>`).join("\n          ")}
+        </ul>
+      </div>
+    </section>
+${bandeauCta()}` +
+    pied() +
+    FIN_PAGE(false);
+  ecrire(`conseils/${a.slug}.html`, html, { path: a.path, priorite: "0.6" });
 }
 
 /* --- Pages légales --- */
