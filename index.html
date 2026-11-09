@@ -16,7 +16,7 @@
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <link rel="preload" href="/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/styles.min.css?v=abbcb3aa31">
+  <link rel="stylesheet" href="/styles.min.css?v=c25cc76658">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="fr_FR">
   <meta property="og:site_name" content="ARVÉO">
@@ -36,7 +36,7 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"ARVÉO","url":"https://arveo.fr/","inLanguage":"fr-FR","publisher":{"@id":"https://arveo.fr/#entreprise"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Intervenez-vous en urgence après une fuite ou un coup de vent ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Appelez-nous ou remplissez la demande de dépannage en ligne. On vous rappelle au plus vite et on met la toiture hors d'eau avant la réparation définitive."}},{"@type":"Question","name":"Le devis est-il gratuit ?","acceptedAnswer":{"@type":"Answer","text":"Oui. On passe voir la toiture, on vous remet un devis écrit et détaillé, et vous décidez ensuite. Rien n'est facturé sans votre accord."}},{"@type":"Question","name":"Ma toiture doit-elle être refaite ou simplement réparée ?","acceptedAnswer":{"@type":"Answer","text":"Tout dépend de l'état des tuiles, des liteaux et de la charpente. Après un diagnostic sur place, on vous dit franchement si une réparation suffit."}},{"@type":"Question","name":"Faut-il démousser sa toiture ?","acceptedAnswer":{"@type":"Answer","text":"La mousse retient l'eau et soulève les tuiles. Un démoussage tous les quatre à six ans selon l'exposition suffit le plus souvent."}},{"@type":"Question","name":"Êtes-vous assuré ?","acceptedAnswer":{"@type":"Answer","text":"Nos travaux de couverture sont couverts par une assurance décennale. Ses références figurent sur chaque devis et dans les mentions légales."}},{"@type":"Question","name":"Dans quelles communes intervenez-vous ?","acceptedAnswer":{"@type":"Answer","text":"Nous sommes installés à Frontignan et intervenons dans tout l'Hérault. Autour de l'étang de Thau au quotidien, et sur rendez-vous à Montpellier, Béziers, Agde, Pézenas, Lunel, Clermont-l'Hérault, Lodève ou Bédarieux."}}]}</script>
   <script src="/config.js?v=dbc1fc5901" defer></script>
-  <script src="/site.js?v=1054887b9d" defer></script>
+  <script src="/site.js?v=2d501a9025" defer></script>
 </head>
 <body data-page="accueil">
   <a class="evitement" href="#contenu">Aller au contenu</a>
@@ -347,11 +347,28 @@
     // quelques secondes après le chargement (l'intro se joue alors si l'on est en haut de page) ;
     // l'aperçu image, rendu de la même scène, s'affiche en attendant.
     let fait = false;
-    const charger = () => { if (fait) return; fait = true; import("/scene.js?v=b663f6b460"); };
+    const charger = () => { if (fait) return; fait = true; import("/scene.js?v=189cd57741"); };
     if (matchMedia("(min-width: 860px)").matches) charger();
     else {
       ["touchstart", "scroll", "pointerdown", "keydown"].forEach((e) => addEventListener(e, charger, { once: true, passive: true }));
-      const ensuite = () => setTimeout(() => (window.requestIdleCallback ? requestIdleCallback(charger, { timeout: 1000 }) : charger()), 3000);
+      // Téléphone avec puce graphique : la 3D se prépare tout de suite, avant que l'on fasse défiler
+      // (sinon elle se construirait pendant le premier défilement et provoquerait un à-coup).
+      // Sans accélération graphique (rendu logiciel, très lent) : chargement différé.
+      const gpu = (() => {
+        try {
+          const gl = document.createElement("canvas").getContext("webgl");
+          if (!gl) return false;
+          const ext = gl.getExtension("WEBGL_debug_renderer_info");
+          const nom = String(gl.getParameter(ext ? ext.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
+          const ok = !/swiftshader|llvmpipe|softpipe|software/i.test(nom);
+          const perte = gl.getExtension("WEBGL_lose_context");
+          if (perte) perte.loseContext();
+          return ok;
+        } catch (e) { return false; }
+      })();
+      const ensuite = gpu
+        ? () => (window.requestIdleCallback ? requestIdleCallback(charger, { timeout: 500 }) : setTimeout(charger, 200))
+        : () => setTimeout(() => (window.requestIdleCallback ? requestIdleCallback(charger, { timeout: 1000 }) : charger()), 3000);
       if (document.readyState === "complete") ensuite();
       else addEventListener("load", ensuite, { once: true });
     }

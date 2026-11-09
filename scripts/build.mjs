@@ -427,7 +427,24 @@ const FIN_PAGE = (scene) => `${scene ? `
     if (matchMedia("(min-width: 860px)").matches) charger();
     else {
       ["touchstart", "scroll", "pointerdown", "keydown"].forEach((e) => addEventListener(e, charger, { once: true, passive: true }));
-      const ensuite = () => setTimeout(() => (window.requestIdleCallback ? requestIdleCallback(charger, { timeout: 1000 }) : charger()), 3000);
+      // Téléphone avec puce graphique : la 3D se prépare tout de suite, avant que l'on fasse défiler
+      // (sinon elle se construirait pendant le premier défilement et provoquerait un à-coup).
+      // Sans accélération graphique (rendu logiciel, très lent) : chargement différé.
+      const gpu = (() => {
+        try {
+          const gl = document.createElement("canvas").getContext("webgl");
+          if (!gl) return false;
+          const ext = gl.getExtension("WEBGL_debug_renderer_info");
+          const nom = String(gl.getParameter(ext ? ext.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
+          const ok = !/swiftshader|llvmpipe|softpipe|software/i.test(nom);
+          const perte = gl.getExtension("WEBGL_lose_context");
+          if (perte) perte.loseContext();
+          return ok;
+        } catch (e) { return false; }
+      })();
+      const ensuite = gpu
+        ? () => (window.requestIdleCallback ? requestIdleCallback(charger, { timeout: 500 }) : setTimeout(charger, 200))
+        : () => setTimeout(() => (window.requestIdleCallback ? requestIdleCallback(charger, { timeout: 1000 }) : charger()), 3000);
       if (document.readyState === "complete") ensuite();
       else addEventListener("load", ensuite, { once: true });
     }

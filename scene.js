@@ -414,7 +414,7 @@ function demarrer() {
   // matériel est alors coupé pour garder 60 images par seconde.
   const optionsRendu = { antialias: !mobile || dpr < 2, alpha: true, powerPreference: mobile ? "high-performance" : "low-power" };
   const renderer = new THREE.WebGLRenderer(optionsRendu);
-  renderer.setPixelRatio(Math.min(dpr, mobile ? 2 : 1.5));
+  renderer.setPixelRatio(Math.min(dpr, mobile ? 1.75 : 1.5));
   // Téléphone sans accélération graphique (rendu logiciel, très lent) : la scène est dessinée
   // sans animation pour ne pas bloquer la page. Tous les téléphones récents ont un GPU.
   const logiciel = mobile && (() => {
@@ -538,6 +538,7 @@ function demarrer() {
   let enCours = false;
   let visible = !document.hidden;
   let derniereAncre = "";
+  let derniereOpacite = "";
 
   /* --- Téléphone : la maison entière tient entre l'en-tête et le titre de l'accueil --- */
   // Le cadrage est calculé sur l'écran réel (hauteur variable d'un téléphone à l'autre) :
@@ -636,6 +637,21 @@ function demarrer() {
   const visite = document.querySelector("[data-visite]");
   const cibleC = { pos: new THREE.Vector3(), cible: new THREE.Vector3(), ox: 0, oy: 0, opacite: 1 };
 
+  let mesures = null;
+  function mesurer() {
+    const collant = visite && visite.querySelector(".visite__collant");
+    if (!collant) return;
+    mesures = {
+      haut: visite.offsetTop - (parseFloat(getComputedStyle(collant).top) || 0),
+      course: Math.max(1, visite.offsetHeight - collant.offsetHeight),
+    };
+  }
+  if (mobile && visite && "ResizeObserver" in window) {
+    const ro = new ResizeObserver(() => { mesures = null; relancer(); });
+    ro.observe(visite);
+    ro.observe(document.body);
+  }
+
   function calculerCible() {
     const y = window.scrollY, vh = window.innerHeight, o = cibleC;
     // Sans section de visite : vue d'ensemble seulement. Avec « réduire les animations »,
@@ -647,9 +663,16 @@ function demarrer() {
     }
     // Téléphone : la section collante démarre sous l'en-tête et ne fait pas toute la hauteur
     // de l'écran ; sur ordinateur, haut = début de la section et hauteur = écran.
-    const collant = mobile ? visite.querySelector(".visite__collant") : null;
-    const haut = visite.offsetTop - (collant ? parseFloat(getComputedStyle(collant).top) || 0 : 0);
-    const course = Math.max(1, visite.offsetHeight - (collant ? collant.offsetHeight : vh));
+    let haut, course;
+    if (mobile) {
+      // mesures mises en cache (aucun calcul de mise en page pendant le défilement)
+      if (!mesures) mesurer();
+      haut = mesures.haut;
+      course = mesures.course;
+    } else {
+      haut = visite.offsetTop;
+      course = Math.max(1, visite.offsetHeight - vh);
+    }
     const fin = haut + course;
     if (y <= haut) {
       melanger(PLANS.hero, PLANS.zones[0], lisse(c01(y / Math.max(1, haut))), o);
@@ -736,11 +759,14 @@ function demarrer() {
     poudre.visible = false;
     document.documentElement.classList.remove("intro");
     document.documentElement.classList.add("intro-finie");
-    const c = calculerCible();
-    etat.pos.copy(c.pos);
-    etat.cible.copy(c.cible);
-    etat.ox = c.ox;
-    etat.oy = c.oy;
+    // Téléphone : la caméra rejoint sa place en douceur (pas de saut au premier toucher).
+    if (!mobile) {
+      const c = calculerCible();
+      etat.pos.copy(c.pos);
+      etat.cible.copy(c.cible);
+      etat.ox = c.ox;
+      etat.oy = c.oy;
+    }
     relancer();
   }
 
@@ -843,7 +869,8 @@ function demarrer() {
     scene.fog.far = dist * 2.1;
     const w = etat.largeur, h = etat.hauteur;
     camera.setViewOffset(w, h, -etat.ox * w, -etat.oy * h, w, h);
-    racine.style.opacity = etat.opacite.toFixed(3);
+    const op = etat.opacite.toFixed(3);
+    if (op !== derniereOpacite) { racine.style.opacity = op; derniereOpacite = op; }
     renderer.render(scene, camera);
 
     if (!mobile && etat.zoneActive >= 0 && !intro) {

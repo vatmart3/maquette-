@@ -110,18 +110,27 @@
 
     // Ordinateur et téléphone : la section reste en place et la zone suit le défilement vertical.
     var collant = visite.querySelector(".visite__collant");
+    // Mesures gardées en mémoire : rien n'est recalculé dans la page pendant le défilement.
+    var mesure = null;
     var position = function () {
-      var haut = parseFloat(getComputedStyle(collant).top) || 0;
-      var course = Math.max(1, visite.offsetHeight - collant.offsetHeight);
-      return { debut: visite.offsetTop - haut, course: course };
+      if (!mesure) {
+        var haut = parseFloat(getComputedStyle(collant).top) || 0;
+        mesure = { debut: visite.offsetTop - haut, course: Math.max(1, visite.offsetHeight - collant.offsetHeight) };
+      }
+      return mesure;
     };
+    if ("ResizeObserver" in window) {
+      var ro = new ResizeObserver(function () { mesure = null; });
+      ro.observe(visite);
+      ro.observe(document.body);
+    }
     var depuisScroll = function () {
       var q = position();
       var p = (window.scrollY - q.debut) / q.course;
       activer(p < -0.02 || p > 1 ? -1 : Math.min(n - 1, Math.max(0, Math.floor(p * n))));
     };
     window.addEventListener("scroll", depuisScroll, { passive: true });
-    window.addEventListener("resize", depuisScroll);
+    window.addEventListener("resize", function () { mesure = null; depuisScroll(); });
     depuisScroll();
 
     reperes.forEach(function (r, k) {
