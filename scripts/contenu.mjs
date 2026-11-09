@@ -26,6 +26,7 @@ export const SERVICES = [
         h2: "Quand faut-il refaire sa toiture ?",
         p: [
           "Une toiture en tuiles bien entretenue dure longtemps, mais elle finit par s'user. Les tuiles deviennent poreuses et gélives, les liteaux pourrissent, le mortier du faîtage se fissure. Sous le soleil et les embruns du littoral, ce vieillissement est plus rapide côté mer.",
+          "Une tuile cassée isolée ne justifie pas de tout refaire. Un [remplacement de tuiles](/services/remplacement-tuiles) suffit alors. Notre guide pour décider s'il vaut mieux [refaire ou réparer sa toiture](/conseils/refaire-ou-reparer-toiture) aide à faire la différence avant même la visite.",
         ],
         liste: [
           "Des fuites qui reviennent malgré les réparations",
@@ -41,7 +42,7 @@ export const SERVICES = [
         ],
         liste: [
           "Dépose des tuiles et des anciens liteaux, évacuation des gravats",
-          "Contrôle et, si besoin, remplacement des chevrons abîmés",
+          "Contrôle et, si besoin, remplacement des chevrons abîmés par notre service de [charpente](/services/charpente)",
           "Pose d'un écran sous-toiture respirant (HPV) contre les infiltrations",
           "Nouveaux liteaux et contre-liteaux traités",
           "Couverture en tuiles canal, romanes ou mécaniques selon votre maison",
@@ -50,16 +51,43 @@ export const SERVICES = [
         ],
       },
       {
+        h2: "Tuiles canal des vieux quartiers, tuiles mécaniques des lotissements",
+        p: [
+          "Dans le centre historique de Frontignan, autour de l'église Saint-Paul, comme dans les ruelles de Balaruc-le-Vieux ou du quartier haut de Sète, les maisons portent des tuiles canal posées en courant et en couvert. On garde de préférence les anciennes tuiles patinées en couvert, la rangée visible, et on place les neuves en courant, là où elles disparaissent sous les autres. Le toit conserve ainsi sa teinte d'origine, ce qui compte dans ces rues où chaque terrasse voit le toit du voisin.",
+          "Les pavillons bâtis à partir des années soixante-dix, à Frontignan-Plage, à la Peyrade ou au pied du massif de la Gardiole, sont plutôt couverts de tuiles mécaniques ou romanes à emboîtement. Ces modèles acceptent des pentes plus faibles et se fixent plus facilement contre le vent. Pour savoir ce qui couvre votre maison, consultez notre comparatif [tuile canal, romane ou mécanique](/conseils/tuile-canal-romane-mecanique).",
+        ],
+      },
+      {
         h2: "Des matériaux adaptés au climat méditerranéen",
         p: [
           "Entre la tramontane, le vent marin chargé de sel et les épisodes méditerranéens d'automne, une couverture autour de l'étang de Thau doit être bien fixée et bien ventilée. On choisit avec vous le type de tuile, la fixation (crochets, colle, vis) et l'écran adaptés à l'exposition de votre toit.",
+          "Près de l'eau, l'air humide et salé attaque l'acier ordinaire, d'où le choix de crochets et de pointes en inox. Sur les versants tournés vers le nord-ouest, on renforce la tenue des rives et des rangs de bas de pente, ceux que la tramontane soulève en premier.",
+        ],
+      },
+      {
+        h2: "Un chantier mené pan par pan",
+        p: [
+          "Une réfection se conduit par sections, pour que la maison ne reste jamais découverte. Chaque matin, on ouvre la surface que l'on sait refermer avant le soir. En fin de journée, l'écran sous-toiture est posé et une bâche protège les zones en attente. En automne, quand un orage peut éclater en quelques heures, on suit la météo de près et on adapte le découpage du chantier.",
+        ],
+        liste: [
+          "Échafaudage avec garde-corps et protection des abords, jardin, piscine ou trottoir",
+          "Évacuation des gravats au fur et à mesure, sans stock sur la toiture",
+          "Photos des étapes cachées, écran et liteaux, avant qu'elles soient recouvertes",
+          "Nettoyage des gouttières et visite de fin de chantier avec vous",
+        ],
+      },
+      {
+        h2: "Isolation, démarches et budget",
+        p: [
+          "Une couverture déposée est le meilleur moment pour [isoler la toiture par l'extérieur](/services/isolation-toiture), puisque les chevrons sont déjà à nu. Si le projet modifie l'aspect du toit, matériau, couleur ou hauteur, une démarche en mairie peut être demandée, et les abords d'un monument historique peuvent imposer des conditions. Notre page sur les [démarches d'urbanisme avant des travaux de toiture](/conseils/travaux-toiture-autorisation-urbanisme) résume les cas courants.",
+          "Pour un ordre de grandeur, la page [prix d'une réfection de toiture](/prix/refection-toiture) explique ce qui fait varier le montant. Le chiffrage précis vient après la visite, avec un [devis écrit poste par poste](/devis-toiture).",
         ],
       },
     ],
     faq: [
       {
         q: "Combien de temps dure une réfection de toiture ?",
-        r: "Pour une maison individuelle, comptez généralement de quelques jours à deux semaines selon la surface, l'accès et la météo. La durée exacte est indiquée sur le devis.",
+        r: "Cela dépend de la surface, du nombre de pans, de l'accès et de la météo. La durée prévue est indiquée sur le devis, et on vous prévient si la pluie oblige à décaler une étape.",
       },
       {
         q: "Peut-on refaire un seul pan de toit ?",
@@ -68,6 +96,10 @@ export const SERVICES = [
       {
         q: "Faut-il une autorisation pour refaire sa toiture ?",
         r: "À l'identique, une déclaration préalable n'est en général pas nécessaire. Si vous changez de matériau, de couleur ou de pente, ou en secteur protégé, renseignez-vous en mairie. On vous aide à préparer le dossier.",
+      },
+      {
+        q: "Peut-on réutiliser mes anciennes tuiles canal ?",
+        r: "Souvent en partie. On les trie une à une au sol. Celles qui sonnent clair et ne sont ni fendues ni feuilletées repartent en couvert. Les autres sont remplacées par des tuiles de réemploi ou des neuves d'une teinte proche.",
       },
     ],
   },
@@ -88,17 +120,31 @@ export const SERVICES = [
         liste: [
           "Tuile cassée, glissée ou soulevée par le vent",
           "Solin fissuré au pied d'une cheminée ou d'un mur",
-          "Abergement de fenêtre de toit mal raccordé",
+          "Abergement de [fenêtre de toit](/services/fenetre-de-toit) mal raccordé",
           "Noue encrassée ou zinc percé",
           "Faîtage dont le mortier s'est désagrégé",
           "Gouttière bouchée qui déborde sous la génoise",
         ],
       },
       {
+        h2: "Pourquoi la tache n'est pas sous le trou",
+        p: [
+          "L'eau qui passe sous une tuile tombe rarement à la verticale. Elle suit la pente sur l'écran sous-toiture, glisse le long d'un chevron ou d'une gaine électrique, puis s'arrête sur un point bas du plafond. Une auréole dans l'angle d'une chambre peut ainsi venir d'un solin situé deux mètres plus haut. Changer la tuile juste au-dessus de la tache, sans chercher plus loin, ne règle souvent rien.",
+          "Sur les maisons anciennes sans écran, l'eau imbibe d'abord le mortier, la volige ou les canisses avant d'apparaître. La trace visible peut donc dater d'une pluie précédente, ce qui brouille encore les pistes.",
+        ],
+      },
+      {
         h2: "Notre méthode",
         p: [
           "On inspecte d'abord les combles pour repérer les traces d'eau, puis la couverture depuis l'extérieur. Au besoin, on arrose la zone suspecte pour reproduire la fuite. Vous recevez un compte rendu avec photos et un prix avant toute réparation.",
-          "Si la pluie menace, on met d'abord la toiture hors d'eau (bâchage), puis on revient faire la réparation définitive.",
+          "Si la pluie menace, on met d'abord la toiture hors d'eau par un [bâchage provisoire](/services/bachage-urgence), puis on revient faire la réparation définitive.",
+        ],
+      },
+      {
+        h2: "Les pluies poussées par le vent marin",
+        p: [
+          "Autour de Frontignan, beaucoup de fuites se déclarent par vent marin. Ce vent de sud-est arrive de la mer chargé d'humidité et plaque la pluie contre les versants exposés. L'eau remonte alors sous des tuiles canal trop peu recouvertes, passe derrière un solin ou contourne le cadre d'une fenêtre de toit. Par temps calme, le même toit reste parfaitement sec.",
+          "La tramontane, elle, est un vent sec. Elle ne fait pas entrer l'eau mais déplace les tuiles et fissure les faîtages. La fuite apparaît donc à la pluie suivante, parfois des semaines plus tard. Lors des épisodes méditerranéens d'automne, ces défauts se révèlent tous en même temps, avec des gouttières qui débordent en plus.",
         ],
       },
       {
@@ -106,20 +152,36 @@ export const SERVICES = [
         liste: [
           "Remplacement de tuiles et révision d'un pan",
           "Réfection de solins et d'abergements",
-          "Reprise du faîtage et des rives",
+          "Reprise du [faîtage et des rives](/services/faitage-rives)",
           "Changement d'une noue en zinc",
           "Étanchéité autour des sorties de toit et des fenêtres de toit",
+          "Reprise d'un relevé ou d'une membrane sur un [toit terrasse](/services/etancheite-toit-terrasse)",
+        ],
+      },
+      {
+        h2: "En attendant notre passage, et pour le budget",
+        p: [
+          "Quelques gestes simples limitent les dégâts avant la réparation. Ils sont détaillés dans notre fiche [fuite de toiture, que faire tout de suite](/conseils/fuite-toiture-que-faire). Si l'eau coule franchement dans une pièce, passez par notre [dépannage de toiture](/depannage-toiture), on vous rappelle dans la journée.",
+          "Le coût d'une recherche dépend de l'accès au toit, de sa hauteur et du nombre de points suspects. La page [prix d'une recherche de fuite](/prix/recherche-de-fuite) donne les repères utiles. Quand la réparation peut se faire dans la foulée, elle figure sur une ligne à part que vous validez avant.",
         ],
       },
     ],
     faq: [
       {
         q: "Mon assurance peut-elle prendre en charge la réparation ?",
-        r: "Après une tempête ou un orage, souvent oui. On vous remet des photos et un devis détaillé à joindre à votre déclaration de sinistre.",
+        r: "Après une tempête ou un orage, c'est souvent le cas, selon votre contrat. On vous remet des photos et un devis détaillé à joindre à votre déclaration de sinistre. Renseignez-vous auprès de votre assureur sur les conditions.",
       },
       {
         q: "Que faire en attendant votre passage ?",
         r: "Placez une bassine sous la goutte, éloignez les objets de valeur et coupez l'électricité de la pièce si l'eau approche d'un luminaire. Ne montez pas sur le toit.",
+      },
+      {
+        q: "Ma fuite n'apparaît que par certains vents, est-ce normal ?",
+        r: "C'est fréquent ici. Si l'eau n'entre que par vent marin, le défaut se trouve souvent sur le côté exposé au sud-est, au niveau d'un solin, d'une rive ou d'un recouvrement de tuiles insuffisant. Notez le jour, le vent et l'endroit de la goutte, ces indices nous aident beaucoup.",
+      },
+      {
+        q: "Intervenez-vous sur les maisons de ville mitoyennes ?",
+        r: "Oui. Dans les rues étroites du centre de Frontignan ou de Sète, l'eau vient parfois du raccord avec le toit voisin. On examine alors la jonction des deux couvertures et on vous dit honnêtement de quel côté se situe le défaut.",
       },
     ],
   },
@@ -133,28 +195,53 @@ export const SERVICES = [
       "Démoussage et traitement hydrofuge de toiture autour de Frontignan. Mousses, lichens et tuiles poreuses traités sans haute pression agressive. Devis gratuit.",
     h1: "Démoussage et traitement hydrofuge de toiture",
     chapo:
-      "La mousse retient l'eau, soulève les tuiles et bouche les gouttières. Un démoussage régulier prolonge nettement la durée de vie de votre couverture.",
+      "La mousse retient l'eau, soulève les tuiles et bouche les gouttières. Un démoussage soigné, complété si besoin d'un traitement hydrofuge, prolonge nettement la durée de vie de votre couverture.",
     sections: [
       {
         h2: "Pourquoi démousser ?",
         p: [
           "Les versants nord, les toits ombragés par les pins et ceux qui regardent l'étang restent humides plus longtemps, et les mousses et lichens s'y installent. Leurs racines s'infiltrent sous les tuiles, gardent l'humidité et favorisent la casse au moindre gel.",
+          "Les embruns et des décennies de soleil rendent aussi la surface de la terre cuite plus rugueuse. Une tuile qui a perdu sa peau boit davantage, sèche moins vite, et les lichens s'y accrochent d'autant mieux.",
+        ],
+      },
+      {
+        h2: "Pins, garrigue et aiguilles, le cas des maisons boisées",
+        p: [
+          "Au pied du massif de la Gardiole, à [Vic-la-Gardiole](/couvreur/vic-la-gardiole) ou dans les quartiers plantés de pins de Frontignan, les toits reçoivent chaque année leur lot d'aiguilles. Elles s'entassent dans les noues, derrière les souches de cheminée et dans les gouttières, puis se décomposent en un terreau noir. Les mousses y prospèrent et l'eau ne s'écoule plus.",
+          "Sur ces maisons, démousser les tuiles sans vider les noues ni curer la [zinguerie et les gouttières](/services/zinguerie-gouttieres) ne règle que la moitié du problème. On traite donc l'ensemble lors du même passage.",
         ],
       },
       {
         h2: "Comment on procède",
+        p: [
+          "La haute pression décape la surface des tuiles, ouvre leurs pores et pousse de l'eau sous la couverture. Elle donne un toit propre le jour même et des tuiles plus fragiles pour la suite. On préfère un brossage soigneux, puis un produit qui termine le travail au fil des pluies.",
+        ],
         liste: [
           "Brossage manuel des mousses, sans haute pression qui abîme les tuiles",
           "Application d'un traitement anti-mousse qui agit plusieurs mois",
-          "Remplacement des tuiles cassées repérées pendant le nettoyage",
+          "Remplacement des [tuiles cassées](/services/remplacement-tuiles) repérées pendant le nettoyage",
           "Nettoyage des gouttières et des descentes",
           "En option, traitement hydrofuge pour limiter la porosité des tuiles",
+        ],
+      },
+      {
+        h2: "Protéger l'étang, le jardin et la piscine",
+        p: [
+          "Autour de l'étang de Thau, une partie des eaux de pluie rejoint les fossés, les canaux puis la lagune, où travaillent les conchyliculteurs. On choisit donc des produits adaptés à cet usage, appliqués par temps sec et sans excès, et on ne rince pas le toit au jet derrière. Les massifs au pied des murs, la piscine et les dallages clairs sont protégés pendant l'application.",
         ],
       },
       {
         h2: "À quelle fréquence ?",
         p: [
           "Selon l'exposition, un traitement tous les quatre à six ans suffit le plus souvent. On vous dit honnêtement s'il est utile ou s'il peut attendre.",
+          "La saison compte aussi. Un produit posé juste avant une grosse averse part dans les descentes sans avoir agi, et la forte chaleur d'été le fait sécher trop vite. On évite donc les semaines d'épisodes méditerranéens et le plein été. Notre article sur la [meilleure saison pour démousser](/conseils/demoussage-toiture-saison) détaille ces repères.",
+        ],
+      },
+      {
+        h2: "Un démoussage, l'occasion de faire le point",
+        p: [
+          "Pendant le nettoyage, on voit la couverture de près. Faîtage fissuré, tuiles feuilletées, liteaux qui fléchissent sous le pas, on vous signale tout ce qui mérite attention, photos à l'appui. Si le toit est trop usé pour qu'un traitement ait du sens, on vous le dit et on parle plutôt de [réfection de toiture](/services/refection-toiture).",
+          "Pour un budget indicatif selon la surface et l'accès, consultez la page [prix d'un démoussage de toiture](/prix/demoussage-toiture).",
         ],
       },
     ],
@@ -166,6 +253,14 @@ export const SERVICES = [
       {
         q: "Peut-on démousser soi-même ?",
         r: "C'est possible sur un petit appentis accessible, mais la circulation sur une toiture est dangereuse et casse facilement les tuiles. Pour une maison, faites appel à un couvreur équipé.",
+      },
+      {
+        q: "Les taches noires disparaissent-elles le jour même ?",
+        r: "Pas toujours. Les lichens noirs et gris s'accrochent fort. Le brossage en retire une bonne partie, puis le produit les fait pâlir progressivement avec les pluies. Le résultat complet se juge après quelques semaines.",
+      },
+      {
+        q: "Faut-il démousser des tuiles mécaniques récentes ?",
+        r: "Rarement les premières années. Un coup d'œil depuis le sol suffit le plus souvent. Si des plaques vertes apparaissent sur le versant nord ou sous un arbre, un nettoyage localisé évite qu'elles ne s'étendent.",
       },
     ],
   },
@@ -179,7 +274,7 @@ export const SERVICES = [
       "Pose et réparation de gouttières en zinc, descentes, noues, solins et abergements à Frontignan, Sète et alentours. Nettoyage de gouttières. Devis gratuit.",
     h1: "Zinguerie et gouttières",
     chapo:
-      "Gouttières, descentes, noues et solins conduisent l'eau loin de vos murs. Quand elle fatigue, ce sont les façades et les fondations qui prennent.",
+      "Gouttières, descentes, noues et solins conduisent l'eau de pluie loin de vos murs. Quand la zinguerie fatigue, ce sont les façades, les génoises et les fondations qui prennent l'eau.",
     sections: [
       {
         h2: "Nos travaux de zinguerie",
@@ -187,24 +282,44 @@ export const SERVICES = [
           "Gouttières pendantes en zinc, aluminium ou PVC",
           "Descentes d'eaux pluviales, coudes et dauphins",
           "Noues et chéneaux en zinc",
-          "Solins et bandes de rive",
-          "Abergements de cheminée et de fenêtre de toit",
+          "Solins et bandes de rive, en lien avec le [faîtage et les rives](/services/faitage-rives)",
+          "Abergements de cheminée et de [fenêtre de toit](/services/fenetre-de-toit)",
           "Nettoyage et débouchage des gouttières",
         ],
       },
       {
         h2: "Les signes qui doivent alerter",
+        p: [
+          "Une gouttière qui déborde mouille la génoise, puis le haut de la façade. L'enduit cloque, se décolle, et l'humidité finit par gagner les murs intérieurs. Si une tache est déjà apparue au plafond, une [recherche de fuite](/services/recherche-de-fuite) permet de savoir si la zinguerie est en cause ou si l'eau passe par la couverture.",
+          "Après un coup de vent, un crochet tordu ou une descente déboîtée se repèrent souvent depuis le sol. Notre guide sur l'[état du toit après la tramontane](/conseils/toiture-apres-tramontane) liste les points à regarder.",
+        ],
         liste: [
           "De l'eau qui déborde en coulée sur la façade",
           "Une gouttière qui penche ou se décroche",
           "Des traces vertes ou noires sous la génoise",
           "Une descente qui goutte aux raccords",
+          "Une flaque qui revient au pied du mur après chaque averse",
         ],
       },
       {
         h2: "Le zinc, le bon choix près de la mer",
         p: [
-          "Le zinc vieillit bien, se répare et se soude. Près du littoral, on soigne les fixations et la pente des gouttières pour que l'eau et le sable n'y stagnent pas.",
+          "Le zinc vieillit bien, se répare et se soude. Avec les années, il se couvre d'une patine grise qui le protège. Près du littoral, à Frontignan-Plage comme sur le lido de Sète, on soigne les fixations et la pente des gouttières pour que l'eau et le sable n'y stagnent pas. On évite aussi tout contact avec le cuivre ou l'acier non protégé, qui le font se corroder.",
+          "L'aluminium laqué reste une bonne alternative, sans soudure et disponible en de nombreuses teintes. Le PVC convient aux petites longueurs abritées, car il se déforme et devient cassant au soleil du Midi.",
+        ],
+      },
+      {
+        h2: "Épisodes méditerranéens, des gouttières à la hauteur",
+        p: [
+          "En automne, il peut tomber en une soirée autant d'eau qu'en plusieurs mois ordinaires. Une gouttière trop étroite ou une seule descente pour un long versant débordent alors en cascade. Lors d'un remplacement, on vérifie la section de la gouttière, le nombre de descentes et leur position par rapport à la surface du toit.",
+          "On regarde aussi où va l'eau en bas. Regard, caniveau ou réseau pluvial, elle doit partir loin des fondations et ne pas inonder la terrasse du voisin.",
+        ],
+      },
+      {
+        h2: "Génoises, chéneaux et maisons de ville",
+        p: [
+          "Beaucoup de maisons anciennes de Frontignan, de [Mireval](/couvreur/mireval) ou de Sète ont une génoise, ces rangs de tuiles en encorbellement sous l'égout du toit. Les crochets de gouttière s'y fixent avec précaution, sans fendre les tuiles ni casser le mortier. Sur les façades alignées du centre ancien, la descente passe souvent au ras d'une porte ou d'une vitrine, et un dauphin en fonte protège le bas du tuyau des chocs.",
+          "Les chéneaux encaissés et les vieilles noues en zinc finissent par se percer sous les dépôts d'aiguilles et de feuilles. On les refait en zinc neuf, avec des joints de dilatation, car le métal travaille entre les nuits d'hiver et les après-midi d'août. Envoyez-nous une photo prise depuis la rue avec votre [demande de devis de zinguerie](/devis-toiture).",
         ],
       },
     ],
@@ -216,6 +331,14 @@ export const SERVICES = [
       {
         q: "Réparer ou remplacer une gouttière ?",
         r: "Un joint ou un crochet se répare. Une gouttière percée sur plusieurs mètres ou mal pentée se remplace. On vous montre l'état réel en photos.",
+      },
+      {
+        q: "Faut-il une grille contre les aiguilles de pin ?",
+        r: "Sous des pins, une grille ou une crapaudine en tête de descente évite les bouchons. Elle ne dispense pas du nettoyage, car les aiguilles se tassent dessus, mais elle rend l'entretien plus simple et protège la descente.",
+      },
+      {
+        q: "Zinc, aluminium ou PVC, que choisir ?",
+        r: "Le zinc reste la référence pour durer et se réparer. L'aluminium laqué convient quand on veut une teinte assortie aux menuiseries. Le PVC supporte mal le plein soleil sur les façades exposées au sud.",
       },
     ],
   },
@@ -239,6 +362,21 @@ export const SERVICES = [
           "Les liteaux et voliges sous la couverture",
           "La présence d'insectes (capricornes, vrillettes) ou de champignons",
           "Les traces d'eau et d'humidité",
+          "Les appuis des pannes dans les murs et les ancrages en tête de mur",
+        ],
+      },
+      {
+        h2: "Maisons de village et pavillons, deux charpentes différentes",
+        p: [
+          "Dans les maisons de village de Frontignan, de [Gigean](/couvreur/gigean) ou de Poussan, la charpente est le plus souvent traditionnelle. Des pannes en bois massif reposent sur les murs de refend, et les chevrons portent les tuiles canal, parfois posées sur des voliges jointives ou des canisses en roseau. Ces vieux bois restent souvent sains au cœur. Leurs appuis noyés dans la maçonnerie, en revanche, pourrissent là où l'eau a coulé pendant des années.",
+          "Les pavillons plus récents reposent pour la plupart sur des fermettes industrielles, assemblées par des connecteurs métalliques. Elles sont légères et fiables tant qu'on ne les modifie pas. Couper une fermette pour gagner de la place dans les combles affaiblit tout l'ensemble. Un aménagement ou l'ouverture d'une [fenêtre de toit](/services/fenetre-de-toit) demande donc un renfort étudié au préalable.",
+        ],
+      },
+      {
+        h2: "Insectes, humidité et vent, les ennemis du bois ici",
+        p: [
+          "Le capricorne des maisons et les vrillettes s'attaquent aux résineux et aux bois anciens non traités. Leurs larves creusent pendant des années avant que les trous de sortie ne se voient. Des termites sont également signalés dans une partie de l'Hérault. Votre mairie sait si un arrêté préfectoral concerne votre commune.",
+          "L'humidité fait le reste. Une infiltration ancienne, l'absence d'écran ou des combles mal ventilés près de l'étang favorisent les champignons. Si des traces d'eau marquent le bois, une [recherche de fuite](/services/recherche-de-fuite) s'impose avant toute reprise. Enfin, la tramontane exerce de fortes poussées sur les toits exposés. Un chevron mal fixé ou une panne qui a perdu son appui finit par bouger, et la couverture se déforme.",
         ],
       },
       {
@@ -247,13 +385,23 @@ export const SERVICES = [
           "Remplacement ou doublage de chevrons",
           "Renforcement de pannes affaissées",
           "Traitement préventif et curatif du bois",
-          "Reprise de la charpente lors d'une réfection de toiture",
+          "Reprise des appuis de pannes dans la maçonnerie",
+          "Création d'un chevêtre autour d'une nouvelle ouverture",
+          "Reprise de la charpente lors d'une [réfection de toiture](/services/refection-toiture)",
         ],
       },
       {
         h2: "Charpente et couverture, un seul interlocuteur",
         p: [
           "Une charpente abîmée se découvre souvent en refaisant le toit. Comme on gère les deux, vous n'attendez pas un second artisan. Le chantier continue et la maison reste hors d'eau.",
+          "Même logique après la chute d'une grosse branche de pin. Si un chevron a cédé, on met d'abord la maison à l'abri avec un [bâchage d'urgence](/services/bachage-urgence), puis on remplace la pièce cassée avant de recouvrir.",
+        ],
+      },
+      {
+        h2: "Réparer, renforcer ou remplacer",
+        p: [
+          "Un chevron fendu se double, une panne qui fléchit se soulage par une jambe de force, un bois attaqué en surface se traite. Le remplacement complet n'a de sens que si les pièces maîtresses sont atteintes en profondeur. On sonde le bois, on mesure la déformation et on vous montre les photos avant de proposer une solution. Notre guide pour choisir entre [refaire ou réparer une toiture](/conseils/refaire-ou-reparer-toiture) aborde aussi cette question.",
+          "Une fois la structure saine et sèche, c'est le bon moment pour penser à l'[isolation de la toiture](/services/isolation-toiture), sans risque d'enfermer un bois humide.",
         ],
       },
     ],
@@ -261,6 +409,18 @@ export const SERVICES = [
       {
         q: "Comment savoir si ma charpente est attaquée ?",
         r: "Sciure au sol des combles, petits trous dans le bois, bois qui s'effrite sous la pointe d'un tournevis sont des signes à faire vérifier.",
+      },
+      {
+        q: "Faut-il traiter une charpente sans insectes visibles ?",
+        r: "Un traitement préventif a du sens sur des bois neufs non traités, ou lors d'une réfection quand la charpente est à nu. Sur une charpente ancienne saine et sèche, une surveillance régulière des combles suffit souvent.",
+      },
+      {
+        q: "Peut-on aménager des combles sur fermettes ?",
+        r: "Pas sans reprendre la structure. Les fermettes occupent le volume et chaque pièce travaille avec les autres. On vous dit franchement si le projet est réaliste et ce qu'il implique avant tout engagement.",
+      },
+      {
+        q: "Une panne qui fléchit est-elle dangereuse ?",
+        r: "Une légère flèche ancienne et stable est courante sur les vieilles maisons. Une déformation qui s'accentue, des fissures dans le plafond ou des tuiles qui se déplacent doivent en revanche être vérifiées sans attendre.",
       },
     ],
   },
