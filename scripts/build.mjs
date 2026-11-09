@@ -270,7 +270,7 @@ ${ld}
 </head>
 <body data-page="${p.id}"${p.sombre ? ' class="page-sombre"' : ""}>
   <a class="evitement" href="#contenu">Aller au contenu</a>
-${p.scene ? '  <div class="scene" data-scene aria-hidden="true"><picture><source media="(min-width: 860px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="><img class="scene__apercu" src="/img/toiture-mobile.webp" alt="" width="780" height="840" decoding="async"></picture></div>\n' : ""}${bandeauUrgence()}
+${p.scene ? '  <div class="scene" data-scene aria-hidden="true"><picture><source media="(min-width: 860px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="><img class="scene__apercu" src="/img/toiture-mobile.webp" alt="" width="780" height="304" decoding="async"></picture></div>\n' : ""}${bandeauUrgence()}
 ${entete(p.id)}
   <main id="contenu">
 `;

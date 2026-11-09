@@ -432,6 +432,14 @@ main { position: relative; z-index: 1; }
 .scene--prete .scene__apercu, .scene--svg .scene__apercu { opacity: 0; }
 @media (max-width: 859px) {
   .scene:not(.scene--prete):not(.scene--svg) { opacity: 1; }
+  /* Image d'attente : même cadrage que la 3D, la maison entière entre l'en-tête et le titre. */
+  .scene__apercu {
+    top: calc(var(--bandeau) + var(--entete) + 13px);
+    height: calc(max(26vh, 180px) - 28px);
+    object-fit: contain;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  }
 }
 @media (min-width: 860px) {
   .scene__apercu { display: none; }

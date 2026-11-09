@@ -539,6 +539,50 @@ function demarrer() {
   let visible = !document.hidden;
   let derniereAncre = "";
 
+  /* --- Téléphone : la maison entière tient entre l'en-tête et le titre de l'accueil --- */
+  // Le cadrage est calculé sur l'écran réel (hauteur variable d'un téléphone à l'autre) :
+  // la caméra recule jusqu'à ce que toute la maison, cheminée comprise, entre dans l'espace
+  // libre, puis la vue est recentrée dans cet espace.
+  const HERO0 = { pos: PLANS.hero.pos.clone(), cible: PLANS.hero.cible.clone() };
+  const POINTS = [];
+  for (const sg of segs) if (sg.ordre >= 1) POINTS.push(sg.a, sg.b); // la maison seule, sans le tracé au sol
+  function cadrerAccueil() {
+    if (!mobile) return;
+    const accroche = document.querySelector(".accroche");
+    const titre = accroche && accroche.querySelector("h1");
+    if (!titre) return;
+    const sy = window.scrollY;
+    const haut = accroche.getBoundingClientRect().top + sy + 12;
+    const bas = titre.getBoundingClientRect().top + sy - 16;
+    const A = bas - haut;
+    const w = etat.largeur, h = etat.hauteur;
+    if (A < 60 || w < 2 || h < 2) return;
+    const cam = new THREE.PerspectiveCamera(camera.fov, w / h, 0.1, 500);
+    const v = new THREE.Vector3();
+    const boite = (pos) => {
+      cam.position.copy(pos);
+      cam.lookAt(HERO0.cible);
+      cam.updateMatrixWorld();
+      let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+      for (const q of POINTS) {
+        v.set(q[0], q[1], q[2]).project(cam);
+        const x = (v.x * 0.5 + 0.5) * w, y = (-v.y * 0.5 + 0.5) * h;
+        if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+      }
+      return { x0, x1, y0, y1 };
+    };
+    let pos = HERO0.pos.clone();
+    for (let i = 0; i < 4; i++) {
+      const b = boite(pos);
+      const k = Math.max((b.y1 - b.y0) / A, (b.x1 - b.x0) / (w - 28));
+      pos = HERO0.cible.clone().add(pos.clone().sub(HERO0.cible).multiplyScalar(k));
+    }
+    const b = boite(pos);
+    PLANS.hero.pos.copy(pos);
+    PLANS.hero.ox = -((b.x0 + b.x1) / 2 - w / 2) / w;
+    PLANS.hero.oy = -((b.y0 + b.y1) / 2 - (haut + bas) / 2) / h;
+  }
+
   /* --- Téléphone : la zone est centrée dans l'espace libre entre les repères et la fiche --- */
   function cadrerMobile() {
     if (!mobile) return;
@@ -574,6 +618,7 @@ function demarrer() {
     camera.updateProjectionMatrix();
     mat.resolution.set(w, h);
     cordeauMat.resolution.set(w, h);
+    cadrerAccueil();
     cadrerMobile();
     relancer();
   }
