@@ -16,7 +16,7 @@
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <link rel="preload" href="/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/styles.min.css?v=ab587bc0a4">
+  <link rel="stylesheet" href="/styles.min.css?v=229d327b31">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="fr_FR">
   <meta property="og:site_name" content="ARVÉO">
@@ -33,7 +33,7 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://arveo.fr/"},{"@type":"ListItem","position":2,"name":"Hérault","item":"https://arveo.fr/zone-intervention"},{"@type":"ListItem","position":3,"name":"Bassin de Thau","item":"https://arveo.fr/secteur/bassin-de-thau"},{"@type":"ListItem","position":4,"name":"Couvreur à Frontignan","item":"https://arveo.fr/couvreur/frontignan"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Intervenez-vous à Frontignan-Plage et à La Peyrade ?","acceptedAnswer":{"@type":"Answer","text":"Oui. ARVÉO est installé à Frontignan et couvre toute la commune, du centre ancien aux villas du bord de mer en passant par La Peyrade. Pour une fuite, on se déplace au plus vite. Pour un projet, on fixe ensemble un rendez-vous de diagnostic."}},{"@type":"Question","name":"Ma maison de ville partage son faîtage avec le voisin, comment se passe la réparation ?","acceptedAnswer":{"@type":"Answer","text":"On commence par regarder où l'eau entre vraiment. Si la reprise touche la partie du voisin, on vous conseille de le prévenir avant les travaux. On raccorde ensuite tuiles et mortier proprement, pour que la jonction entre les deux toits reste étanche."}},{"@type":"Question","name":"Faut-il une autorisation pour refaire un toit dans le centre de Frontignan ?","acceptedAnswer":{"@type":"Answer","text":"Selon la nature des travaux, une déclaration préalable peut être demandée, en particulier si l'aspect de la toiture change. Dans le centre ancien, la proximité d'édifices protégés peut ajouter des contraintes. Renseignez-vous en mairie avant de lancer le chantier, on vous aide à rassembler les éléments techniques."}}]}</script>
   <script src="/config.js?v=39c17f186a" defer></script>
-  <script src="/site.js?v=2d501a9025" defer></script>
+  <script src="/site.js?v=e7cbf8ee10" defer></script>
 </head>
 <body data-page="zone">
   <a class="evitement" href="#contenu">Aller au contenu</a>
@@ -195,8 +195,8 @@
           Du lundi au samedi, de 8 h à 19 h
         </address>
       </div>
-      <div>
-        <h2>Services</h2>
+      <details class="pied__groupe" open>
+        <summary><h2>Services</h2></summary>
         <ul>
           <li><a href="/depannage-toiture">Dépannage de toiture</a></li>
           <li><a href="/services/refection-toiture">Réfection de toiture</a></li>
@@ -211,9 +211,10 @@
           <li><a href="/services/charpente">Charpente</a></li>
           <li><a href="/services/bachage-urgence">Bâchage d&#39;urgence</a></li>
         </ul>
-      </div>
-      <div>
-        <h2><a href="/zone-intervention">Zone d'intervention</a></h2>
+      </details>
+      <details class="pied__groupe" open>
+        <summary><h2>Zone d'intervention</h2></summary>
+        <p class="pied__lien-zone"><a href="/zone-intervention">Toute la zone d'intervention</a></p>
         <ul class="pied__villes">
           <li><a href="/secteur/bassin-de-thau">Couvreur Bassin de Thau</a></li>
           <li><a href="/secteur/montpellier-metropole">Couvreur Montpellier Métropole</a></li>
@@ -227,7 +228,7 @@
           <li><a href="/couvreur/montpellier">Couvreur à Montpellier</a></li>
           <li><a href="/couvreur/beziers">Couvreur à Béziers</a></li>
         </ul>
-      </div>
+      </details>
     </div>
     <div class="conteneur pied__bas">
       <ul>

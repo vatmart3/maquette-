@@ -65,6 +65,26 @@
     });
   }
 
+  /* ---------- Pied de page : groupes repliés sur téléphone ---------- */
+
+  if (window.matchMedia("(max-width: 859px)").matches) {
+    document.querySelectorAll(".pied__groupe").forEach(function (d) { d.removeAttribute("open"); });
+  }
+
+  /* ---------- Léger fondu des blocs situés plus bas dans la page ---------- */
+
+  if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    var aVoir = [].filter.call(document.querySelectorAll("main .section, main .cta-final"), function (el) {
+      return el.getBoundingClientRect().top > window.innerHeight; // ce qui est déjà à l'écran reste tel quel
+    });
+    var io = new IntersectionObserver(function (entrees) {
+      entrees.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add("est-vu"); io.unobserve(e.target); }
+      });
+    }, { rootMargin: "0px 0px -8% 0px" });
+    aVoir.forEach(function (el) { el.classList.add("apparait"); io.observe(el); });
+  }
+
   /* ---------- Dates ---------- */
 
   var aujourdhui = new Date();

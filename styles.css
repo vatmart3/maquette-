@@ -1230,3 +1230,51 @@ main { position: relative; z-index: 1; }
   .etoiles-noter { flex-wrap: wrap; justify-content: center; }
   .etoiles-noter span { flex-basis: 100%; margin: 8px 0 0; }
 }
+
+/* Note Google dans l'accroche de l'accueil */
+.note-google { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; margin: 22px 0 0; color: var(--texte-2); font-size: .95rem; text-decoration: none; }
+.note-google--clair { color: var(--texte-clair); }
+.note-google__g { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: #fff; }
+.note-google__g .logo-google { width: 17px; height: 17px; margin: 0; }
+.note-google__etoiles { position: relative; display: inline-block; letter-spacing: 2px; font-size: 1.05rem; line-height: 1; }
+.note-google__etoiles span:first-child { color: rgb(255 255 255 / .25); }
+.note-google__etoiles span:last-child { position: absolute; inset: 0 auto 0 0; overflow: hidden; white-space: nowrap; color: #f4b400; }
+.note-google strong { color: #fff; font-family: var(--titres); }
+.note-google:hover span:last-of-type { text-decoration: underline; }
+.accroche .garanties { margin-top: 14px; }
+
+/* Services de l'accueil en trois familles */
+.familles { display: grid; gap: 34px; }
+.famille__tete { display: grid; grid-template-columns: 52px 1fr; gap: 16px; align-items: center; margin-bottom: 10px; }
+.famille__tete svg { width: 52px; height: 52px; fill: none; stroke: var(--ardoise); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.famille__tete svg .accent { stroke: var(--orange); }
+.famille__tete svg .fin { stroke-width: 1; opacity: .6; }
+.famille__tete h3 { margin: 0 0 2px; }
+.famille__tete p { margin: 0; color: var(--texte-2); font-size: .95rem; }
+.famille__liste { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px; border-top: 1px solid var(--filet); }
+.famille__liste li { border-bottom: 1px solid var(--filet); }
+.famille__liste a { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 0; color: var(--texte); font-family: var(--titres); font-weight: 600; text-decoration: none; }
+.famille__liste a .ico { width: 16px; height: 16px; color: var(--orange-action); flex: none; }
+.famille__liste a:hover { color: var(--orange-action); }
+@media (max-width: 639px) { .famille__liste { grid-template-columns: 1fr; } }
+
+/* Pied de page : listes repliables sur téléphone */
+.pied__groupe summary { list-style: none; cursor: default; }
+.pied__groupe summary::-webkit-details-marker { display: none; }
+.pied__lien-zone { margin: -6px 0 10px; font-size: .9rem; }
+@media (max-width: 859px) {
+  .pied .logo__marque { width: 56px; }
+  .pied .logo__nom { font-size: 1.5rem; }
+  .pied__groupe { grid-column: 1 / -1; border-top: 1px solid rgb(255 255 255 / .15); }
+  .pied__groupe + .pied__groupe { margin-top: -40px; }
+  .pied__groupe summary { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; cursor: pointer; }
+  .pied__groupe summary h2 { margin: 0; }
+  .pied__groupe summary::after { content: "+"; color: var(--orange-clair); font-size: 1.4rem; line-height: 1; }
+  .pied__groupe[open] summary::after { content: "−"; }
+  .pied__groupe ul { padding-bottom: 14px; }
+}
+
+/* Léger fondu à l'apparition des blocs plus bas dans la page */
+.apparait { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
+.apparait.est-vu { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .apparait { opacity: 1; transform: none; transition: none; } }

@@ -187,6 +187,10 @@ const AVIS = (S.avis || []).filter((a) => a.texte && a.auteur && a.source === "G
 // Données structurées (étoiles Google) : seulement si chaque avis a sa date de publication.
 const AVIS_DATES = AVIS.length > 0 && AVIS.every((a) => /^\d{4}-\d{2}(-\d{2})?$/.test(a.date || ""));
 const avecAvis = AVIS.length > 0;
+const MOYENNE = AVIS.length ? AVIS.reduce((t, a) => t + a.note, 0) / AVIS.length : 0;
+const G_LOGO = `<svg class="logo-google" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>`;
+// Note Google réelle (moyenne des avis affichés) avec lien vers la page Avis.
+const noteGoogle = (clair) => (AVIS.length ? `<a class="note-google${clair ? " note-google--clair" : ""}" href="/avis"><span class="note-google__g">${G_LOGO}</span><span class="note-google__etoiles" aria-hidden="true"><span>★★★★★</span><span style="width:${((MOYENNE / 5) * 100).toFixed(0)}%">★★★★★</span></span><strong>${MOYENNE.toFixed(1).replace(".", ",")}/5</strong><span>sur Google · ${AVIS.length} avis</span></a>` : "");
 const avecRealisations = CHANTIERS.length > 0;
 
 function logo(clair = false) {
@@ -380,20 +384,21 @@ function pied() {
           ${esc(S.horaires.texte)}
         </address>
       </div>
-      <div>
-        <h2>Services</h2>
+      <details class="pied__groupe" open>
+        <summary><h2>Services</h2></summary>
         <ul>
           <li><a href="/depannage-toiture">Dépannage de toiture</a></li>
           ${SERVICES_PAGES.map((s) => `<li><a href="${s.path}">${esc(s.court)}</a></li>`).join("\n          ")}
         </ul>
-      </div>
-      <div>
-        <h2><a href="/zone-intervention">Zone d'intervention</a></h2>
+      </details>
+      <details class="pied__groupe" open>
+        <summary><h2>Zone d'intervention</h2></summary>
+        <p class="pied__lien-zone"><a href="/zone-intervention">Toute la zone d'intervention</a></p>
         <ul class="pied__villes">
           ${SECTEURS_PAGES.map((x) => `<li><a href="${x.path}">Couvreur ${esc(x.nom)}</a></li>`).join("\n          ")}
           ${["Frontignan", "Sète", "Montpellier", "Béziers"].map((n) => VILLES_PAGES.find((v) => v.nom === n)).filter(Boolean).map((v) => `<li><a href="${v.path}">Couvreur à ${esc(v.nom)}</a></li>`).join("\n          ")}
         </ul>
-      </div>
+      </details>
     </div>
     <div class="conteneur pied__bas">
       <ul>
@@ -841,6 +846,31 @@ function cartesServices(exclure, proche) {
         </ul>`;
 }
 
+// Accueil : services regroupés en trois familles, chacune avec un petit dessin au trait.
+const PICTOS = {
+  reparer: `<svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M5 25 24 9l19 16"/><path d="M9 22v19h30V22"/><path d="M24 26c-2.6 3.4-4 5.6-4 7.4a4 4 0 0 0 8 0c0-1.8-1.4-4-4-7.4z" class="accent"/></svg>`,
+  renover: `<svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M4 30 24 12l20 18"/><path d="M10 25h28M14 21h20M18 17.5h12" class="fin"/><path d="M8 27v14h32V27"/><path d="M24 12V6h5v4" class="accent"/></svg>`,
+  entretenir: `<svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M4 20 22 7l18 13"/><path d="M8 17v12h28V17"/><path d="M3 31h38v2a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z" class="accent"/><path d="M37 36v7" class="accent"/></svg>`,
+};
+const FAMILLES = [
+  { cle: "reparer", titre: "Réparer", texte: "Fuite, tuile cassée, coup de vent.", services: ["depannage", "recherche-de-fuite", "remplacement-tuiles", "bachage-urgence"] },
+  { cle: "renover", titre: "Rénover", texte: "Refaire une couverture, reprendre la structure.", services: ["refection-toiture", "faitage-rives", "charpente", "isolation-toiture", "fenetre-de-toit"] },
+  { cle: "entretenir", titre: "Protéger et entretenir", texte: "Garder la toiture saine et l'eau loin des murs.", services: ["demoussage-toiture", "zinguerie-gouttieres", "etancheite-toit-terrasse"] },
+];
+function famillesServices() {
+  const lien = (k) => (k === "depannage" ? { path: "/depannage-toiture", nom: "Dépannage de toiture" } : SERVICES_PAGES.find((x) => x.slug === k));
+  return `<div class="familles">
+          ${FAMILLES.map((f) => {
+            const liens = f.services.map(lien).filter(Boolean);
+            if (!liens.length) return "";
+            return `<div class="famille">
+            <div class="famille__tete">${PICTOS[f.cle]}<div><h3>${f.titre}</h3><p>${fr(f.texte)}</p></div></div>
+            <ul class="famille__liste">${liens.map((x) => `<li><a href="${x.path}">${esc(x.nom)}${ico("fleche")}</a></li>`).join("")}</ul>
+          </div>`;
+          }).join("\n          ")}
+        </div>`;
+}
+
 function listeVilles(exclure) {
   return `<ul class="villes">
           ${VILLES_THAU.filter((v) => v.nom !== exclure)
@@ -1012,6 +1042,7 @@ const ZONES_VISITE = [
           <h1 id="titre-page">Couvreur à Frontignan, <span>votre toiture entre de bonnes mains.</span></h1>
           <p class="chapeau">ARVÉO répare, refait et entretient les toitures de Frontignan, de Sète et de tout le secteur de l'étang de Thau. Devis gratuit et dépannage rapide.</p>
           ${actions({ clair: true })}
+          ${noteGoogle(true)}
           ${coches(CONFIANCE, true)}
         </div>
       </div>
@@ -1040,13 +1071,13 @@ const ZONES_VISITE = [
           <p class="texte">De la tuile cassée à la couverture refaite à neuf, un seul artisan suit votre toiture du diagnostic au nettoyage du chantier.</p>
           <a class="bouton bouton--orange" href="/devis-toiture" data-track="devis">${ico("devis")}Demander un devis gratuit</a>
         </div>
-        ${cartesServices()}
+        ${famillesServices()}
       </div>
     </section>
 
     <hr class="separateur" aria-hidden="true">
 ${avisHtml()}
-    <section class="section" aria-labelledby="titre-zone">
+    <section class="section section--claire" aria-labelledby="titre-zone">
       <div class="conteneur zone">
         <div>
           <h2 id="titre-zone">Votre couvreur à Frontignan et dans les communes voisines</h2>

@@ -16,7 +16,7 @@
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <link rel="preload" href="/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/styles.min.css?v=ab587bc0a4">
+  <link rel="stylesheet" href="/styles.min.css?v=229d327b31">
   <meta property="og:type" content="article">
   <meta property="og:locale" content="fr_FR">
   <meta property="og:site_name" content="ARVÉO">
@@ -34,7 +34,7 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Quand faut-il refaire sa toiture plutôt que la réparer","description":"Réparer ou refaire sa toiture ? Signes d'usure, état des liteaux et de l'écran, réfection par pan. Les critères concrets pour décider avec votre couvreur.","datePublished":"2026-11-09","dateModified":"2026-11-09","inLanguage":"fr-FR","mainEntityOfPage":"https://arveo.fr/conseils/refaire-ou-reparer-toiture","image":"https://arveo.fr/img/og/conseils-refaire-ou-reparer-toiture.png","author":{"@id":"https://arveo.fr/#entreprise","@type":"Organization","name":"ARVÉO","url":"https://arveo.fr/"},"publisher":{"@id":"https://arveo.fr/#entreprise","@type":"Organization","name":"ARVÉO","logo":{"@type":"ImageObject","url":"https://arveo.fr/img/logo-arveo.png"}},"about":[{"@type":"Service","name":"Réfection de toiture","url":"https://arveo.fr/services/refection-toiture"},{"@type":"Service","name":"Remplacement de tuiles cassées","url":"https://arveo.fr/services/remplacement-tuiles"},{"@type":"Service","name":"Réparation et renforcement de charpente","url":"https://arveo.fr/services/charpente"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://arveo.fr/"},{"@type":"ListItem","position":2,"name":"Conseils","item":"https://arveo.fr/conseils"},{"@type":"ListItem","position":3,"name":"Quand faut-il refaire sa toiture plutôt que la réparer","item":"https://arveo.fr/conseils/refaire-ou-reparer-toiture"}]}</script>
   <script src="/config.js?v=39c17f186a" defer></script>
-  <script src="/site.js?v=2d501a9025" defer></script>
+  <script src="/site.js?v=e7cbf8ee10" defer></script>
 </head>
 <body data-page="conseils">
   <a class="evitement" href="#contenu">Aller au contenu</a>
@@ -196,8 +196,8 @@
           Du lundi au samedi, de 8 h à 19 h
         </address>
       </div>
-      <div>
-        <h2>Services</h2>
+      <details class="pied__groupe" open>
+        <summary><h2>Services</h2></summary>
         <ul>
           <li><a href="/depannage-toiture">Dépannage de toiture</a></li>
           <li><a href="/services/refection-toiture">Réfection de toiture</a></li>
@@ -212,9 +212,10 @@
           <li><a href="/services/charpente">Charpente</a></li>
           <li><a href="/services/bachage-urgence">Bâchage d&#39;urgence</a></li>
         </ul>
-      </div>
-      <div>
-        <h2><a href="/zone-intervention">Zone d'intervention</a></h2>
+      </details>
+      <details class="pied__groupe" open>
+        <summary><h2>Zone d'intervention</h2></summary>
+        <p class="pied__lien-zone"><a href="/zone-intervention">Toute la zone d'intervention</a></p>
         <ul class="pied__villes">
           <li><a href="/secteur/bassin-de-thau">Couvreur Bassin de Thau</a></li>
           <li><a href="/secteur/montpellier-metropole">Couvreur Montpellier Métropole</a></li>
@@ -228,7 +229,7 @@
           <li><a href="/couvreur/montpellier">Couvreur à Montpellier</a></li>
           <li><a href="/couvreur/beziers">Couvreur à Béziers</a></li>
         </ul>
-      </div>
+      </details>
     </div>
     <div class="conteneur pied__bas">
       <ul>

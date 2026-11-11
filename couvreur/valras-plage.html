@@ -16,7 +16,7 @@
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <link rel="preload" href="/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/styles.min.css?v=ab587bc0a4">
+  <link rel="stylesheet" href="/styles.min.css?v=229d327b31">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="fr_FR">
   <meta property="og:site_name" content="ARVÉO">
@@ -33,7 +33,7 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://arveo.fr/"},{"@type":"ListItem","position":2,"name":"Hérault","item":"https://arveo.fr/zone-intervention"},{"@type":"ListItem","position":3,"name":"Biterrois","item":"https://arveo.fr/secteur/biterrois"},{"@type":"ListItem","position":4,"name":"Couvreur à Valras-Plage","item":"https://arveo.fr/couvreur/valras-plage"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"J'habite loin, pouvez-vous gérer les travaux à Valras-Plage sans moi ?","acceptedAnswer":{"@type":"Answer","text":"Oui, si l'accès est organisé. On valide le devis à distance, on convient de la remise des clés ou d'un accès par l'extérieur, puis on vous envoie des photos avant, pendant et après le chantier. Vous suivez ainsi chaque étape sans vous déplacer."}},{"@type":"Question","name":"Ma terrasse garde des flaques après la pluie, est-ce normal ?","acceptedAnswer":{"@type":"Answer","text":"Une petite flaque qui sèche vite n'est pas alarmante. Une eau qui stagne plusieurs jours signale une pente insuffisante, une évacuation bouchée ou un affaissement. Avec le temps, cette eau use la membrane et finit par s'infiltrer. Un contrôle est conseillé."}},{"@type":"Question","name":"Quels matériaux résistent le mieux au sel à Valras-Plage ?","acceptedAnswer":{"@type":"Answer","text":"Pour la zinguerie, l'aluminium laqué et le zinc bien entretenu tiennent correctement. Les fixations en inox évitent les coulures de rouille. Pour les toits terrasses, on choisit une membrane adaptée aux UV, avec une protection en surface quand c'est possible."}}]}</script>
   <script src="/config.js?v=39c17f186a" defer></script>
-  <script src="/site.js?v=2d501a9025" defer></script>
+  <script src="/site.js?v=e7cbf8ee10" defer></script>
 </head>
 <body data-page="zone">
   <a class="evitement" href="#contenu">Aller au contenu</a>
@@ -195,8 +195,8 @@
           Du lundi au samedi, de 8 h à 19 h
         </address>
       </div>
-      <div>
-        <h2>Services</h2>
+      <details class="pied__groupe" open>
+        <summary><h2>Services</h2></summary>
         <ul>
           <li><a href="/depannage-toiture">Dépannage de toiture</a></li>
           <li><a href="/services/refection-toiture">Réfection de toiture</a></li>
@@ -211,9 +211,10 @@
           <li><a href="/services/charpente">Charpente</a></li>
           <li><a href="/services/bachage-urgence">Bâchage d&#39;urgence</a></li>
         </ul>
-      </div>
-      <div>
-        <h2><a href="/zone-intervention">Zone d'intervention</a></h2>
+      </details>
+      <details class="pied__groupe" open>
+        <summary><h2>Zone d'intervention</h2></summary>
+        <p class="pied__lien-zone"><a href="/zone-intervention">Toute la zone d'intervention</a></p>
         <ul class="pied__villes">
           <li><a href="/secteur/bassin-de-thau">Couvreur Bassin de Thau</a></li>
           <li><a href="/secteur/montpellier-metropole">Couvreur Montpellier Métropole</a></li>
@@ -227,7 +228,7 @@
           <li><a href="/couvreur/montpellier">Couvreur à Montpellier</a></li>
           <li><a href="/couvreur/beziers">Couvreur à Béziers</a></li>
         </ul>
-      </div>
+      </details>
     </div>
     <div class="conteneur pied__bas">
       <ul>
