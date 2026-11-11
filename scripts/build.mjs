@@ -179,6 +179,7 @@ const ico = (n, cls = "ico") => `<svg class="${cls}" viewBox="0 0 24 24" aria-hi
 const NAV = [
   { id: "accueil", href: "/", texte: "Accueil" },
   { id: "apropos", href: "/a-propos", texte: "À propos" },
+  { id: "avis", href: "/avis", texte: "Avis" },
   { id: "contact", href: "/contact", texte: "Contact" },
 ];
 // Seuls les vrais avis complets sont publiés : texte exact, auteur, date et source Google.
