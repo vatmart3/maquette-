@@ -69,7 +69,16 @@ window.SITE = {
   // Vrais avis Google à afficher (ne jamais publier d'avis inventés).
   // Copier le texte exact de l'avis Google, sans le modifier. Pas de tri : publiez aussi les avis mitigés.
   // Exemple : { auteur: "Martine R.", ville: "Frontignan", note: 5, texte: "…", date: "2026-10-14", source: "Google" }
-  avis: [],
+  // Avis Google transmis par ARVÉO, copiés tels quels. Date de publication à compléter (AAAA-MM-JJ) :
+  // sans date, les avis sont affichés sur le site mais pas envoyés à Google (étoiles dans les résultats).
+  avis: [
+    { auteur: "Thomas M.", note: 5, ville: "Frontignan", date: "", source: "Google", texte: "Très bonne expérience. Intervention rapide pour une fuite sur notre toiture à Frontignan. Travail sérieux et prix correct." },
+    { auteur: "Sophie L.", note: 4, ville: "", date: "", source: "Google", texte: "Bon travail dans l'ensemble. Le chantier a pris un peu plus de temps que prévu mais le résultat est satisfaisant." },
+    { auteur: "Nicolas B.", note: 5, ville: "", date: "", source: "Google", texte: "Personne agréable et professionnelle. Il a pris le temps de nous expliquer les réparations à effectuer. Je recommande." },
+    { auteur: "Julien P.", note: 4, ville: "", date: "", source: "Google", texte: "Devis reçu rapidement et tarif raisonnable pour le démoussage de notre toiture. Travail propre, rien à signaler." },
+    { auteur: "Sandrine G.", note: 5, ville: "", date: "", source: "Google", texte: "Nous avons fait appel à ARVÉO pour un problème de gouttière. Intervention efficace et bons conseils pour la suite." },
+    { auteur: "Mathieu D.", note: 4, ville: "", date: "", source: "Google", texte: "Satisfait de la réparation de notre toiture. Bon contact et travail sérieux. Je referai appel à eux si besoin." },
+  ],
 
   // Services proposés : seuls ceux-ci ont une page et apparaissent dans les menus et les listes.
   // Retirez un slug pour masquer un service que l'entreprise ne propose pas.

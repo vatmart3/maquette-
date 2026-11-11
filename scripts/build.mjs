@@ -179,11 +179,13 @@ const ico = (n, cls = "ico") => `<svg class="${cls}" viewBox="0 0 24 24" aria-hi
 const NAV = [
   { id: "accueil", href: "/", texte: "Accueil" },
   { id: "apropos", href: "/a-propos", texte: "À propos" },
-  { id: "avis", href: "/avis", texte: "Avis" },
   { id: "contact", href: "/contact", texte: "Contact" },
+  { id: "avis", href: "/avis", texte: "Avis" },
 ];
 // Seuls les vrais avis complets sont publiés : texte exact, auteur, date et source Google.
-const AVIS = (S.avis || []).filter((a) => a.texte && a.auteur && /^\d{4}-\d{2}(-\d{2})?$/.test(a.date || "") && a.source === "Google" && a.note >= 1 && a.note <= 5);
+const AVIS = (S.avis || []).filter((a) => a.texte && a.auteur && a.source === "Google" && a.note >= 1 && a.note <= 5);
+// Données structurées (étoiles Google) : seulement si chaque avis a sa date de publication.
+const AVIS_DATES = AVIS.length > 0 && AVIS.every((a) => /^\d{4}-\d{2}(-\d{2})?$/.test(a.date || ""));
 const avecAvis = AVIS.length > 0;
 const avecRealisations = CHANTIERS.length > 0;
 
@@ -505,7 +507,7 @@ function ldEntreprise() {
   };
   const sameAs = ["googleBusiness", "facebook", "instagram", "pagesJaunes"].map((k) => fiable("liens." + k)).filter(Boolean);
   if (sameAs.length) o.sameAs = sameAs;
-  if (AVIS.length) {
+  if (AVIS_DATES) {
     const moy = AVIS.reduce((t, a) => t + a.note, 0) / AVIS.length;
     o.aggregateRating = { "@type": "AggregateRating", ratingValue: moy.toFixed(1), reviewCount: AVIS.length, bestRating: 5, worstRating: 1 };
     o.review = AVIS.slice(0, 10).map((a) => ({
@@ -858,9 +860,9 @@ function avisHtml() {
             .slice(0, 6)
             .map(
               (a) => `<li class="avis__carte">
-            <p class="avis__note" aria-label="${a.note || 5} sur 5">${"★".repeat(a.note || 5)}</p>
+            <p class="avis__note" role="img" aria-label="${a.note} sur 5"><span aria-hidden="true">${"★".repeat(a.note)}<span class="avis__vide">${"★".repeat(5 - a.note)}</span></span></p>
             <blockquote><p>« ${esc(a.texte)} »</p></blockquote>
-            <p class="avis__auteur">${esc(a.auteur)}${a.ville ? `, <span>${esc(a.ville)}</span>` : ""} · <time datetime="${a.date}">${esc(a.date.split("-").reverse().join("/"))}</time>, avis Google</p>
+            <p class="avis__auteur">${esc(a.auteur)}${a.ville ? `, <span>${esc(a.ville)}</span>` : ""}<span class="avis__source">${a.date ? `<time datetime="${a.date}">${esc(a.date.split("-").reverse().join("/"))}</time>, ` : ""}avis Google</span></p>
           </li>`
             )
             .join("\n          ")}
@@ -1594,6 +1596,7 @@ ${bandeauCta()}` +
     pied() +
     FIN_PAGE(false);
   ecrire("avis.html", html, avecAvis ? { path: "/avis", priorite: "0.5" } : undefined);
+  if (avecAvis && !AVIS_DATES) avertissements.push("Avis : date de publication à compléter dans config.avis (AAAA-MM-JJ) pour afficher les étoiles dans les résultats Google.");
   if (!avecAvis) avertissements.push("Page Avis : aucun avis affiché pour l'instant. Ajoutez les vrais avis Google dans config.avis (texte exact, auteur, date, source « Google »).");
 }
 
