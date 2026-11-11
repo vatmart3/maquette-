@@ -872,7 +872,7 @@ function avisHtml() {
     </section>`;
 }
 
-function enTetePage({ h1, chapo, ariane, rappel, illustration = true, ancre = "", apres = "" }) {
+function enTetePage({ h1, chapo, ariane, rappel, illustration = true, ancre = "", apres = "", sansActions = false }) {
   return `
     <section class="tete-page">
       ${illustration ? '<img class="tete-page__dessin" src="/img/toiture.svg" alt="" width="1440" height="900" aria-hidden="true">' : ""}
@@ -882,8 +882,8 @@ function enTetePage({ h1, chapo, ariane, rappel, illustration = true, ancre = ""
           <h1>${fr(h1)}</h1>
           <p class="chapeau">${fr(chapo)}</p>
           ${apres}
-          ${actions({ clair: true, ancre })}
-          ${coches(CONFIANCE, true)}
+          ${sansActions ? "" : actions({ clair: true, ancre })}
+          ${sansActions ? "" : coches(CONFIANCE, true)}
         </div>
         ${rappel ? `<div class="tete-page__carte">${rappel}</div>` : ""}
       </div>
@@ -1581,8 +1581,8 @@ ${bandeauCta()}` +
     : `<a class="bouton bouton--orange bouton--grand" href="/avis/laisser" data-track="avis">${ico("etoile")}Laissez votre avis</a>`;
   const html =
     head(p) +
-    enTetePage({ h1: "Avis de nos clients", chapo: "Vous avez fait appel à ARVÉO pour votre toiture ? Votre avis aide les habitants de Frontignan et des alentours à choisir leur couvreur.", ariane: ar.html }) +
-    `
+    enTetePage({ h1: "Avis de nos clients", chapo: "Vous avez fait appel à ARVÉO pour votre toiture ? Votre avis aide les habitants de Frontignan et des alentours à choisir leur couvreur.", ariane: ar.html, sansActions: true }) +
+    `${avisHtml()}
     <section class="section section--claire" aria-labelledby="titre-laisser-avis">
       <div class="conteneur conteneur--etroit laisser-avis">
         <h2 id="titre-laisser-avis">Votre avis compte</h2>
@@ -1591,7 +1591,6 @@ ${bandeauCta()}` +
         ${fiable("liens.googleBusiness") ? `<p><a class="lien-fleche" href="${esc(S.liens.googleBusiness)}" target="_blank" rel="noopener">Voir notre fiche Google ${ico("fleche")}</a></p>` : ""}
       </div>
     </section>
-${avisHtml()}
 ${bandeauCta()}` +
     pied() +
     FIN_PAGE(false);
