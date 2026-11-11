@@ -1040,7 +1040,7 @@ const ZONES_VISITE = [
       </div>
     </section>
 
-    <div class="bande-tuiles" aria-hidden="true"></div>
+    <div class="bande-toitures" aria-hidden="true"></div>
     <section class="section section--claire" aria-labelledby="titre-methode">
       <div class="conteneur">
         <h2 id="titre-methode">Quatre étapes, un seul interlocuteur</h2>
@@ -1056,7 +1056,7 @@ const ZONES_VISITE = [
         </div>
       </div>
     </section>
-    <div class="bande-tuiles" aria-hidden="true"></div>
+    <div class="bande-toitures" aria-hidden="true"></div>
 ${avisHtml()}
     <section class="section" aria-labelledby="titre-zone">
       <div class="conteneur zone">
@@ -1068,7 +1068,7 @@ ${avisHtml()}
         ${listeVilles()}
       </div>
     </section>
-    <div class="bande-tuiles" aria-hidden="true"></div>
+    <div class="bande-toitures" aria-hidden="true"></div>
 ${faqHtml(FAQ_ACCUEIL)}
 ${bandeauCta()}` +
     pied() +

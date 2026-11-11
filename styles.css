@@ -1192,13 +1192,13 @@ main { position: relative; z-index: 1; }
 
 .petit-titre { margin: 0 0 10px; color: var(--orange-texte); font-family: var(--titres); font-weight: 700; font-size: 1rem; }
 
-/* Bande de tuiles canal entre deux blocs : rappel du métier */
-.bande-tuiles {
-  height: 56px;
-  background: #4f1f0b url("/img/tuiles.svg?v=1") repeat-x center / auto 70px;
-  box-shadow: inset 0 7px 9px -6px rgb(0 0 0 / 0.45), inset 0 -7px 9px -6px rgb(0 0 0 / 0.45);
-  border-block: 1px solid #3c1708;
+/* Bande « épure de toitures » entre deux blocs : ligne de toits tracée comme la 3D, posée sur
+   le cordeau orange de l'intro */
+.bande-toitures {
+  height: 80px;
+  background: var(--ardoise) url("/img/toitures.svg?v=1") repeat-x left bottom / auto 80px;
+  border-bottom: 2px solid var(--orange);
 }
 @media (max-width: 859px) {
-  .bande-tuiles { height: 40px; background-size: auto 52px; }
+  .bande-toitures { height: 56px; background-size: auto 56px; }
 }
