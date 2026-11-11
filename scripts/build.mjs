@@ -1056,6 +1056,7 @@ const ZONES_VISITE = [
         </div>
       </div>
     </section>
+    <div class="bande-tuiles" aria-hidden="true"></div>
 ${avisHtml()}
     <section class="section" aria-labelledby="titre-zone">
       <div class="conteneur zone">
