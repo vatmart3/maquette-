@@ -1194,3 +1194,8 @@ main { position: relative; z-index: 1; }
 
 /* Ligne fine de couleur entre deux blocs de l'accueil */
 .separateur { display: block; height: 0; margin: 0; border: 0; border-top: 2px solid var(--ardoise); }
+
+.laisser-avis { text-align: center; }
+.laisser-avis .texte { margin-inline: auto; max-width: 34em; }
+.laisser-avis .bouton { margin-top: 8px; }
+.laisser-avis p:last-child { margin-top: 20px; }

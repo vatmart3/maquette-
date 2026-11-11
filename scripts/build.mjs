@@ -399,6 +399,7 @@ function pied() {
         <li><a href="/contact">Contact</a></li>
         <li><a href="/zone-intervention">Zone d'intervention</a></li>
         <li><a href="/conseils">Conseils</a></li>
+        <li><a href="/avis">Avis</a></li>
         ${avecRealisations ? '<li><a href="/realisations">Réalisations</a></li>' : ""}
         <li><a href="/mentions-legales">Mentions légales</a></li>
         <li><a href="/confidentialite">Confidentialité</a></li>
@@ -1559,33 +1560,40 @@ ${bandeauCta()}` +
 }
 
 /* --- Avis --- */
-if (avecAvis) {
+// Page toujours présente : invitation à laisser un avis sur Google, puis les vrais avis
+// (config.avis) dès qu'il y en a. Sans avis, elle n'est pas proposée à Google (noindex).
+{
   const ar = filAriane([{ nom: "Avis clients", path: "/avis" }]);
+  const lienGoogle = fiable("liens.avisGoogle");
   const p = {
     id: "avis",
     path: "/avis",
+    noindex: !avecAvis,
     title: "Avis clients d'ARVÉO, couvreur à Frontignan",
     description: "Les avis Google laissés par les clients d'ARVÉO, couvreur zingueur à Frontignan, après une réparation, une réfection ou un dépannage de toiture.",
     jsonld: [ldEntreprise(), ar.ld],
   };
+  const bouton = lienGoogle
+    ? `<a class="bouton bouton--orange bouton--grand" href="${esc(lienGoogle)}" target="_blank" rel="noopener" data-track="avis">${ico("etoile")}Laissez votre avis</a>`
+    : `<a class="bouton bouton--orange bouton--grand" href="/avis/laisser" data-track="avis">${ico("etoile")}Laissez votre avis</a>`;
   const html =
     head(p) +
-    enTetePage({ h1: "Ce que disent nos clients", chapo: "Les avis laissés par nos clients sur notre fiche Google, publiés tels quels, sans tri.", ariane: ar.html }) +
-    avisHtml() +
+    enTetePage({ h1: "Avis de nos clients", chapo: "Vous avez fait appel à ARVÉO pour votre toiture ? Votre avis aide les habitants de Frontignan et des alentours à choisir leur couvreur.", ariane: ar.html }) +
     `
-    <section class="section">
-      <div class="conteneur actions actions--centre">
-        ${S.liens.avisGoogle ? `<a class="bouton bouton--orange" href="${esc(S.liens.avisGoogle)}" rel="noopener">Laisser un avis sur Google</a>` : ""}
-        ${S.liens.googleBusiness ? `<a class="bouton bouton--contour" href="${esc(S.liens.googleBusiness)}" rel="noopener">Voir notre fiche Google</a>` : ""}
+    <section class="section section--claire" aria-labelledby="titre-laisser-avis">
+      <div class="conteneur conteneur--etroit laisser-avis">
+        <h2 id="titre-laisser-avis">Votre avis compte</h2>
+        <p class="texte">Racontez votre expérience en quelques lignes sur notre fiche Google. Cela prend une minute, et nous lisons chaque avis, qu'il soit très bon ou plus mitigé.</p>
+        ${bouton}
+        ${fiable("liens.googleBusiness") ? `<p><a class="lien-fleche" href="${esc(S.liens.googleBusiness)}" target="_blank" rel="noopener">Voir notre fiche Google ${ico("fleche")}</a></p>` : ""}
       </div>
     </section>
+${avisHtml()}
 ${bandeauCta()}` +
     pied() +
     FIN_PAGE(false);
-  ecrire("avis.html", html, { path: "/avis", priorite: "0.5" });
-} else {
-  fs.rmSync(path.join(RACINE, "avis.html"), { force: true });
-  avertissements.push("Page Avis non générée : ajoutez de vrais avis Google dans config.avis (texte exact, auteur, date, source « Google »).");
+  ecrire("avis.html", html, avecAvis ? { path: "/avis", priorite: "0.5" } : undefined);
+  if (!avecAvis) avertissements.push("Page Avis : aucun avis affiché pour l'instant. Ajoutez les vrais avis Google dans config.avis (texte exact, auteur, date, source « Google »).");
 }
 
 /* --- /avis/laisser : lien court pour les cartes NFC et les QR codes --- */
