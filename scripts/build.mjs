@@ -1576,19 +1576,29 @@ ${bandeauCta()}` +
     description: "Les avis Google laissés par les clients d'ARVÉO, couvreur zingueur à Frontignan, après une réparation, une réfection ou un dépannage de toiture.",
     jsonld: [ldEntreprise(), ar.ld],
   };
-  const bouton = lienGoogle
-    ? `<a class="bouton bouton--orange bouton--grand" href="${esc(lienGoogle)}" target="_blank" rel="noopener" data-track="avis">${ico("etoile")}Laissez votre avis</a>`
-    : `<a class="bouton bouton--orange bouton--grand" href="/avis/laisser" data-track="avis">${ico("etoile")}Laissez votre avis</a>`;
+  const cible = lienGoogle ? `href="${esc(lienGoogle)}" target="_blank" rel="noopener"` : `href="/avis/laisser"`;
+  const G = `<svg class="logo-google" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>`;
+  const moyenne = AVIS.length ? AVIS.reduce((t, a) => t + a.note, 0) / AVIS.length : 0;
+  const etoile = `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.8l2.8 5.8 6.3.8-4.6 4.4 1.2 6.3L12 17.1l-5.7 3 1.2-6.3L2.9 9.4l6.3-.8z"/></svg>`;
   const html =
     head(p) +
     enTetePage({ h1: "Avis de nos clients", chapo: "Vous avez fait appel à ARVÉO pour votre toiture ? Votre avis aide les habitants de Frontignan et des alentours à choisir leur couvreur.", ariane: ar.html, sansActions: true }) +
     `${avisHtml()}
     <section class="section section--claire" aria-labelledby="titre-laisser-avis">
-      <div class="conteneur conteneur--etroit laisser-avis">
-        <h2 id="titre-laisser-avis">Votre avis compte</h2>
-        <p class="texte">Racontez votre expérience en quelques lignes sur notre fiche Google. Cela prend une minute, et nous lisons chaque avis, qu'il soit très bon ou plus mitigé.</p>
-        ${bouton}
-        ${fiable("liens.googleBusiness") ? `<p><a class="lien-fleche" href="${esc(S.liens.googleBusiness)}" target="_blank" rel="noopener">Voir notre fiche Google ${ico("fleche")}</a></p>` : ""}
+      <div class="conteneur avis-google">
+        ${AVIS.length ? `<div class="avis-google__note">
+          ${G}
+          <p class="avis-google__moyenne"><strong>${moyenne.toFixed(1).replace(".", ",")}</strong> sur 5</p>
+          <p class="avis-google__etoiles" role="img" aria-label="Note moyenne ${moyenne.toFixed(1).replace(".", ",")} sur 5"><span class="avis-google__fond">★★★★★</span><span class="avis-google__plein" style="width:${((moyenne / 5) * 100).toFixed(0)}%">★★★★★</span></p>
+          <p class="avis-google__nombre">${AVIS.length} avis sur Google</p>
+        </div>` : ""}
+        <div class="avis-google__texte laisser-avis">
+          <h2 id="titre-laisser-avis">Votre avis compte</h2>
+          <p class="texte">Une réparation, une réfection ou un dépannage avec ARVÉO ? Dites-le en quelques mots sur Google. Cela prend une minute, et c'est la meilleure façon d'aider vos voisins à trouver un couvreur de confiance.</p>
+          <a class="etoiles-noter" ${cible} data-track="avis" aria-label="Noter ARVÉO sur Google">${etoile.repeat(5)}<span>Donnez votre note</span></a>
+          <a class="bouton bouton--orange bouton--grand bouton-google" ${cible} data-track="avis"><span class="bouton-google__g">${G}</span>Laissez votre avis sur Google</a>
+          ${fiable("liens.googleBusiness") ? `<p><a class="lien-fleche" href="${esc(S.liens.googleBusiness)}" target="_blank" rel="noopener">Voir notre fiche Google ${ico("fleche")}</a></p>` : ""}
+        </div>
       </div>
     </section>
 ${bandeauCta()}` +

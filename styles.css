@@ -1200,7 +1200,33 @@ main { position: relative; z-index: 1; }
 /* Ligne fine de couleur entre deux blocs de l'accueil */
 .separateur { display: block; height: 0; margin: 0; border: 0; border-top: 2px solid var(--ardoise); }
 
-.laisser-avis { text-align: center; }
-.laisser-avis .texte { margin-inline: auto; max-width: 34em; }
-.laisser-avis .bouton { margin-top: 8px; }
+/* Bloc « Votre avis compte » : note Google à gauche, invitation à droite */
+.avis-google { display: grid; grid-template-columns: minmax(220px, 300px) minmax(0, 1fr); gap: 56px; align-items: center; max-width: 980px; }
+.avis-google__note { display: grid; justify-items: center; gap: 6px; padding: 8px 48px 8px 0; border-right: 1px solid var(--filet); text-align: center; }
+.logo-google { width: 52px; height: 52px; margin-bottom: 6px; }
+.avis-google__moyenne { margin: 0; color: var(--texte-2); }
+.avis-google__moyenne strong { color: var(--texte); font-family: var(--titres); font-size: 3rem; font-weight: 800; line-height: 1; margin-right: 4px; }
+.avis-google__etoiles { position: relative; display: inline-block; margin: 0; font-size: 1.6rem; letter-spacing: 4px; line-height: 1; }
+.avis-google__fond { color: var(--gris); }
+.avis-google__plein { position: absolute; inset: 0 auto 0 0; overflow: hidden; white-space: nowrap; color: #f4b400; }
+.avis-google__nombre { margin: 4px 0 0; color: var(--texte-2); font-size: .92rem; }
+.laisser-avis h2 { margin-top: 0; }
+.laisser-avis .texte { max-width: 34em; }
+.etoiles-noter { display: inline-flex; align-items: center; gap: 4px; margin: 6px 0 22px; color: var(--gris); text-decoration: none; }
+.etoiles-noter svg { width: 34px; height: 34px; fill: currentColor; transition: color .15s ease, transform .15s ease; }
+.etoiles-noter span { margin-left: 12px; color: var(--texte-2); font-size: .92rem; }
+.etoiles-noter svg { color: #d9dde2; }
+.etoiles-noter:hover svg, .etoiles-noter:focus-visible svg { color: #f4b400; }
+.etoiles-noter svg:hover ~ svg { color: #d9dde2; }
+.etoiles-noter:hover svg:hover { transform: scale(1.12); }
+.bouton-google { gap: 12px; padding-left: 10px; }
+.bouton-google__g { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: #fff; }
+.bouton-google__g .logo-google { width: 20px; height: 20px; margin: 0; }
 .laisser-avis p:last-child { margin-top: 20px; }
+@media (max-width: 859px) {
+  .avis-google { grid-template-columns: 1fr; gap: 28px; text-align: center; }
+  .avis-google__note { padding: 0 0 28px; border-right: 0; border-bottom: 1px solid var(--filet); }
+  .laisser-avis .texte { margin-inline: auto; }
+  .etoiles-noter { flex-wrap: wrap; justify-content: center; }
+  .etoiles-noter span { flex-basis: 100%; margin: 8px 0 0; }
+}
