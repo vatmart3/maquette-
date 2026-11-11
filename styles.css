@@ -1196,7 +1196,7 @@ main { position: relative; z-index: 1; }
    le cordeau orange de l'intro */
 .bande-toitures {
   height: 80px;
-  background: var(--ardoise) url("/img/toitures.svg?v=1") repeat-x left bottom / auto 80px;
+  background: var(--ardoise) url("/img/toitures.svg?v=2") repeat-x left bottom / auto 80px;
   border-bottom: 2px solid var(--orange);
 }
 @media (max-width: 859px) {
