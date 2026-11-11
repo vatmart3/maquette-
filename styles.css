@@ -1193,4 +1193,4 @@ main { position: relative; z-index: 1; }
 .petit-titre { margin: 0 0 10px; color: var(--orange-texte); font-family: var(--titres); font-weight: 700; font-size: 1rem; }
 
 /* Ligne fine de couleur entre deux blocs de l'accueil */
-.separateur { display: block; height: 0; margin: 0; border: 0; border-top: 2px solid var(--orange); }
+.separateur { display: block; height: 0; margin: 0; border: 0; border-top: 2px solid var(--ardoise); }

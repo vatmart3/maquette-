@@ -1041,22 +1041,6 @@ const ZONES_VISITE = [
     </section>
 
     <hr class="separateur" aria-hidden="true">
-    <section class="section section--claire" aria-labelledby="titre-methode">
-      <div class="conteneur">
-        <h2 id="titre-methode">Quatre étapes, un seul interlocuteur</h2>
-        <ol class="methode">
-          <li><span class="methode__num mono">01</span><h3>Diagnostic</h3><p>On inspecte la couverture et les combles, photos à l'appui.</p></li>
-          <li><span class="methode__num mono">02</span><h3>Devis détaillé</h3><p>Un prix écrit, poste par poste, avant tout travail. Gratuit.</p></li>
-          <li><span class="methode__num mono">03</span><h3>Travaux</h3><p>À la date convenue, avec une toiture protégée à chaque étape.</p></li>
-          <li><span class="methode__num mono">04</span><h3>Contrôle et nettoyage</h3><p>Gouttières dégagées, gravats évacués, contrôle final avec vous.</p></li>
-        </ol>
-        <div class="actions actions--centre">
-          <a class="bouton bouton--orange" href="/rendez-vous" data-track="rdv">${ico("agenda")}Prendre rendez-vous pour un diagnostic</a>
-          <a class="bouton bouton--contour" href="/devis-toiture" data-track="devis">${ico("devis")}Demander un devis</a>
-        </div>
-      </div>
-    </section>
-    <hr class="separateur" aria-hidden="true">
 ${avisHtml()}
     <section class="section" aria-labelledby="titre-zone">
       <div class="conteneur zone">
