@@ -1076,7 +1076,6 @@ const ZONES_VISITE = [
     </section>
 
     <hr class="separateur" aria-hidden="true">
-${avisHtml()}
     <section class="section section--claire" aria-labelledby="titre-zone">
       <div class="conteneur zone">
         <div>
