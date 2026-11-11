@@ -1192,13 +1192,5 @@ main { position: relative; z-index: 1; }
 
 .petit-titre { margin: 0 0 10px; color: var(--orange-texte); font-family: var(--titres); font-weight: 700; font-size: 1rem; }
 
-/* Bande « épure de toitures » entre deux blocs : ligne de toits tracée comme la 3D, posée sur
-   le cordeau orange de l'intro */
-.bande-toitures {
-  height: 80px;
-  background: var(--ardoise) url("/img/toitures.svg?v=2") repeat-x left bottom / auto 80px;
-  border-bottom: 2px solid var(--orange);
-}
-@media (max-width: 859px) {
-  .bande-toitures { height: 56px; background-size: auto 56px; }
-}
+/* Ligne fine de couleur entre deux blocs de l'accueil */
+.separateur { display: block; height: 0; margin: 0; border: 0; border-top: 2px solid var(--orange); }
