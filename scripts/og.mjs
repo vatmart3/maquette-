@@ -14,7 +14,7 @@ const ICI = path.dirname(new URL(import.meta.url).pathname);
 const RACINE = path.resolve(ICI, "..");
 const SORTIE = path.join(RACINE, "img", "og");
 const CACHE = path.join(ICI, ".og-cache.json");
-const VERSION_GABARIT = "5";
+const VERSION_GABARIT = "6";
 
 const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
@@ -34,7 +34,7 @@ function lignes(texte, max) {
 }
 
 function gabarit({ titre, sousTitre, type, pied = "arveo.fr" }) {
-  const marque = fs.readFileSync(path.join(RACINE, "img", "arveo-mark.svg"), "utf8").replace(/^<svg[^>]*>/, "").replace(/<\/svg>\s*$/, "");
+  const marque = "data:image/png;base64," + fs.readFileSync(path.join(RACINE, "img", "logo-cp34.png")).toString("base64");
   const toit = fs.readFileSync(path.join(RACINE, "img", "toiture.svg"), "utf8").replace(/^<svg[^>]*>/, "").replace(/<\/svg>\s*$/, "");
   let taille = 66;
   let tl = lignes(titre, 22);
@@ -47,8 +47,8 @@ function gabarit({ titre, sousTitre, type, pied = "arveo.fr" }) {
   <rect width="1200" height="630" fill="#243746"/>
   <svg x="600" y="150" width="680" height="420" viewBox="301 306 1028 628" opacity=".45">${toit}</svg>
   <rect x="0" y="600" width="1200" height="30" fill="#C65D28"/>
-  <svg x="72" y="62" width="98" height="52" viewBox="40 25 945 500">${marque}</svg>
-  <text x="186" y="98" font-family="ARV Titre" font-size="30" fill="#F7F5F0" letter-spacing="0.5">Couvreur Proximité 34</text>
+  <image x="72" y="56" width="120" height="55" href="${marque}"/>
+  <text x="206" y="98" font-family="ARV Titre" font-size="30" fill="#F7F5F0" letter-spacing="0.5">Couvreur Proximité 34</text>
   <text x="72" y="${yTitre - taille - 8}" font-family="ARV Mono" font-size="24" fill="#EE8E55">${esc(type)}</text>
   ${tl.map((l, i) => `<text x="72" y="${yTitre + i * taille * 1.1}" font-family="ARV Titre" font-size="${taille}" fill="#F7F5F0">${esc(l)}</text>`).join("\n  ")}
   <text x="72" y="${yTitre + (tl.length - 1) * taille * 1.1 + 64}" font-family="ARV Texte" font-size="28" fill="#D3DCE3">${esc(sousTitre)}</text>

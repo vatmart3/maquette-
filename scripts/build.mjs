@@ -195,7 +195,7 @@ const avecRealisations = CHANTIERS.length > 0;
 
 function logo(clair = false) {
   return `<a class="logo${clair ? " logo--clair" : ""}" href="/">
-        <img class="logo__marque" src="/img/arveo-mark.svg" alt="" role="presentation" width="68" height="36">
+        <img class="logo__marque" src="/img/logo-cp34.webp" alt="" role="presentation" width="68" height="31">
         <span class="logo__texte"><span class="logo__nom">${esc(S.nom)}</span><span class="logo__activite">Couvreur à ${esc(S.adresse.ville)} <span class="logo__suite">&amp; ses alentours</span></span></span>
       </a>`;
 }
@@ -426,7 +426,7 @@ function pied() {
     </div>
   </footer>
 
-  <a class="logo-fixe" href="/" aria-label="${esc(S.nom)}, retour à l'accueil"><img src="/img/arveo-mark.svg" alt="" role="presentation" width="64" height="34"></a>
+  <a class="logo-fixe" href="/" aria-label="${esc(S.nom)}, retour à l'accueil"><img src="/img/logo-cp34.webp" alt="" role="presentation" width="64" height="29"></a>
 
   <nav class="barre-actions" aria-label="Nous contacter">
     <a href="${TEL}" data-track="call">${ico("tel")}<span>Appeler</span></a>
