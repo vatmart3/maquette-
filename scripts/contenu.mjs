@@ -1,5 +1,5 @@
 /*
- * ARVÉO — contenus des pages (services, communes, FAQ).
+ * Couvreur Proximité 34 — contenus des pages (services, communes, FAQ).
  * Chaque page a un texte qui lui est propre : c'est ce qui permet à Google de
  * la positionner sur « couvreur + commune » sans contenu dupliqué.
  * Après modification : node scripts/build.mjs
@@ -15,7 +15,7 @@ export const SERVICES = [
     nom: "Réfection de toiture",
     court: "Réfection de toiture",
     zone: 0,
-    title: "Réfection de toiture à Frontignan | Couvreur ARVÉO",
+    title: "Réfection de toiture à Frontignan | Couvreur Proximité 34",
     description:
       "Réfection de toiture en tuiles canal, romanes ou mécaniques à Frontignan, Sète et alentours. Écran sous-toiture, liteaux et faîtage neufs, devis gratuit.",
     h1: "Réfection de toiture à Frontignan et alentours",
@@ -108,7 +108,7 @@ export const SERVICES = [
     nom: "Recherche de fuite et réparation",
     court: "Fuite de toiture",
     zone: 3,
-    title: "Recherche de fuite et réparation à Frontignan | ARVÉO",
+    title: "Recherche de fuite et réparation à Frontignan | Couvreur Proximité 34",
     description:
       "Tache au plafond, goutte qui tombe ? Recherche de fuite et réparation de toiture à Frontignan, Sète et Balaruc, sur tuiles, solins et cheminées.",
     h1: "Recherche de fuite et réparation de toiture",
@@ -190,7 +190,7 @@ export const SERVICES = [
     nom: "Démoussage et traitement hydrofuge",
     court: "Démoussage",
     zone: 4,
-    title: "Démoussage de toiture à Frontignan et Sète | ARVÉO",
+    title: "Démoussage de toiture à Frontignan et Sète | Couvreur Proximité 34",
     description:
       "Démoussage et traitement hydrofuge de toiture autour de Frontignan. Mousses, lichens et tuiles poreuses traités sans haute pression agressive. Devis gratuit.",
     h1: "Démoussage et traitement hydrofuge de toiture",
@@ -269,7 +269,7 @@ export const SERVICES = [
     nom: "Zinguerie et gouttières",
     court: "Zinguerie",
     zone: 2,
-    title: "Zinguerie et gouttières à Frontignan | ARVÉO",
+    title: "Zinguerie et gouttières à Frontignan | Couvreur Proximité 34",
     description:
       "Pose et réparation de gouttières en zinc, descentes, noues, solins et abergements à Frontignan, Sète et alentours. Nettoyage de gouttières. Devis gratuit.",
     h1: "Zinguerie et gouttières",
@@ -347,7 +347,7 @@ export const SERVICES = [
     nom: "Réparation et renforcement de charpente",
     court: "Charpente",
     zone: 1,
-    title: "Réparation de charpente à Frontignan | Couvreur ARVÉO",
+    title: "Réparation de charpente à Frontignan | Couvreur Proximité 34",
     description:
       "Diagnostic et réparation de charpente bois à Frontignan et alentours. Chevrons, pannes, liteaux et traitement contre insectes et champignons. Devis gratuit.",
     h1: "Réparation et renforcement de charpente",
@@ -431,7 +431,7 @@ export const SERVICES = [
     nom: "Remplacement de tuiles cassées",
     court: "Remplacement de tuiles",
     zone: 0,
-    title: "Remplacement de tuiles cassées à Frontignan | ARVÉO",
+    title: "Remplacement de tuiles cassées à Frontignan | Couvreur Proximité 34",
     description:
       "Tuile fendue, glissée ou envolée ? Remplacement de tuiles canal, romanes ou mécaniques à Frontignan et autour de l'étang de Thau, avec révision du pan.",
     h1: "Remplacement de tuiles cassées à Frontignan",
@@ -507,7 +507,7 @@ export const SERVICES = [
     nom: "Faîtage et rives",
     court: "Faîtage et rives",
     zone: 0,
-    title: "Faîtage et rives de toiture à Frontignan | ARVÉO",
+    title: "Faîtage et rives de toiture à Frontignan | Couvreur Proximité 34",
     description:
       "Faîtières descellées, mortier qui s'effrite, rives arrachées par la tramontane ? Réfection du faîtage, des rives et des arêtiers à Frontignan et alentours.",
     h1: "Réfection du faîtage et des rives de toiture",
@@ -588,7 +588,7 @@ export const SERVICES = [
     nom: "Pose et remplacement de fenêtre de toit",
     court: "Fenêtre de toit",
     zone: 3,
-    title: "Fenêtre de toit à Frontignan, pose et remplacement | ARVÉO",
+    title: "Fenêtre de toit à Frontignan, pose et remplacement | Couvreur Proximité 34",
     description:
       "Pose ou remplacement de fenêtre de toit à Frontignan et dans l'Hérault, avec abergement et raccord d'étanchéité adaptés à vos tuiles. Devis gratuit.",
     h1: "Pose et remplacement de fenêtre de toit",
@@ -666,7 +666,7 @@ export const SERVICES = [
     nom: "Isolation de toiture",
     court: "Isolation de toiture",
     zone: 1,
-    title: "Isolation de toiture à Frontignan | ARVÉO",
+    title: "Isolation de toiture à Frontignan | Couvreur Proximité 34",
     description:
       "Isolation de toiture par l'extérieur lors d'une réfection, isolation des combles, pare-vapeur et ventilation. Confort d'hiver et d'été à Frontignan.",
     h1: "Isolation de toiture à Frontignan et alentours",
@@ -738,7 +738,7 @@ export const SERVICES = [
     nom: "Étanchéité de toit terrasse",
     court: "Toit terrasse",
     zone: 3,
-    title: "Étanchéité de toit terrasse à Frontignan | ARVÉO",
+    title: "Étanchéité de toit terrasse à Frontignan | Couvreur Proximité 34",
     description:
       "Réfection et réparation d'étanchéité de toit terrasse, membrane bitumineuse ou EPDM, relevés et évacuations, pour villas et maisons récentes de l'Hérault.",
     h1: "Étanchéité de toit terrasse",
@@ -821,7 +821,7 @@ export const SERVICES = [
     nom: "Bâchage de toiture en urgence",
     court: "Bâchage d'urgence",
     zone: 3,
-    title: "Bâchage de toiture en urgence à Frontignan | ARVÉO",
+    title: "Bâchage de toiture en urgence à Frontignan | Couvreur Proximité 34",
     description:
       "Toit ouvert après une tempête, une tramontane ou une chute de branche ? Bâchage d'urgence et mise hors d'eau temporaire à Frontignan et dans l'Hérault.",
     h1: "Bâchage de toiture en urgence",
@@ -915,9 +915,9 @@ export const VILLES = [
     lng: 3.7546,
     secteur: "bassin-de-thau",
     description:
-      "Couvreur à Frontignan (34110), ARVÉO répare et refait les toitures du centre ancien, de La Peyrade et de Frontignan-Plage. Diagnostic et devis gratuits.",
+      "Couvreur à Frontignan (34110), on répare et refait les toitures du centre ancien, de La Peyrade et de Frontignan-Plage. Diagnostic et devis gratuits.",
     intro:
-      "ARVÉO est installé à Frontignan. Du cœur de ville autour de l'église Saint-Paul jusqu'à La Peyrade et Frontignan-Plage, nous connaissons les toits de la commune et nous y intervenons au plus vite.",
+      "Couvreur Proximité 34 est installé à Frontignan. Du cœur de ville autour de l'église Saint-Paul jusqu'à La Peyrade et Frontignan-Plage, nous connaissons les toits de la commune et nous y intervenons au plus vite.",
     accent: "Couvreur de proximité, sur toute la commune au plus vite",
     quartiers: ["Centre ancien", "La Peyrade", "Frontignan-Plage"],
     texte: [
@@ -936,7 +936,7 @@ export const VILLES = [
     faq: [
       {
         q: "Intervenez-vous à Frontignan-Plage et à La Peyrade ?",
-        r: "Oui. ARVÉO est installé à Frontignan et couvre toute la commune, du centre ancien aux villas du bord de mer en passant par La Peyrade. Pour une fuite, on se déplace au plus vite. Pour un projet, on fixe ensemble un rendez-vous de diagnostic.",
+        r: "Oui. Couvreur Proximité 34 est installé à Frontignan et couvre toute la commune, du centre ancien aux villas du bord de mer en passant par La Peyrade. Pour une fuite, on se déplace au plus vite. Pour un projet, on fixe ensemble un rendez-vous de diagnostic.",
       },
       {
         q: "Ma maison de ville partage son faîtage avec le voisin, comment se passe la réparation ?",
@@ -957,7 +957,7 @@ export const VILLES = [
     description:
       "Couvreur à Sète (34200) pour réparation de toiture, recherche de fuite et zinguerie face aux embruns, du quartier haut au Mont Saint-Clair et à la Corniche.",
     intro:
-      "Couvreur à Sète, ARVÉO vient de Frontignan voisine pour réparer, refaire ou entretenir votre toiture. Quartier haut, Mont Saint-Clair, Pointe Courte ou Corniche, chaque partie de la ville a ses contraintes propres.",
+      "Couvreur à Sète, Couvreur Proximité 34 vient de Frontignan voisine pour réparer, refaire ou entretenir votre toiture. Quartier haut, Mont Saint-Clair, Pointe Courte ou Corniche, chaque partie de la ville a ses contraintes propres.",
     accent: "Zinguerie et fixations pensées pour les embruns",
     quartiers: ["Quartier haut", "Mont Saint-Clair", "Pointe Courte", "La Corniche", "Île de Thau"],
     texte: [
@@ -995,9 +995,9 @@ export const VILLES = [
     lng: 3.6775,
     secteur: "bassin-de-thau",
     description:
-      "Couvreur à Balaruc-les-Bains (34540), ARVÉO répare, démousse et entretient les toits des maisons et résidences de la station thermale. Devis gratuit.",
+      "Couvreur à Balaruc-les-Bains (34540), on répare, démousse et entretient les toits des maisons et résidences de la station thermale. Devis gratuit.",
     intro:
-      "Couvreur à Balaruc-les-Bains, ARVÉO entretient et répare les toits des maisons, des résidences et des logements de curistes de la station thermale, sur la presqu'île comme dans les quartiers tournés vers l'étang.",
+      "Couvreur à Balaruc-les-Bains, Couvreur Proximité 34 entretient et répare les toits des maisons, des résidences et des logements de curistes de la station thermale, sur la presqu'île comme dans les quartiers tournés vers l'étang.",
     accent: "Travaux calés entre deux séjours de curistes",
     texte: [
       "Une bonne part des logements de Balaruc-les-Bains se loue à des curistes ou à des vacanciers. Une fuite en pleine saison, c'est une location compromise. On organise donc les réparations entre deux séjours. Si vous ne pouvez pas être présent, on vous adresse des photos une fois le travail terminé. On peut aussi convenir d'un passage d'entretien chaque année, à la même période, pour que votre logement soit prêt avant l'ouverture de la saison des cures.",
@@ -1035,7 +1035,7 @@ export const VILLES = [
     description:
       "Couvreur à Balaruc-le-Vieux (34540) pour les toits imbriqués du village circulaire et les locaux en bac acier des zones d'activité. Réparation et dépannage.",
     intro:
-      "Couvreur à Balaruc-le-Vieux, ARVÉO intervient dans le village circulaire perché au-dessus de l'étang comme dans les zones d'activité, pour la réparation, la réfection, la zinguerie et le dépannage des toitures.",
+      "Couvreur à Balaruc-le-Vieux, Couvreur Proximité 34 intervient dans le village circulaire perché au-dessus de l'étang comme dans les zones d'activité, pour la réparation, la réfection, la zinguerie et le dépannage des toitures.",
     accent: "Village circulaire et locaux professionnels",
     quartiers: ["Vieux village", "Zones d'activité"],
     texte: [
@@ -1073,9 +1073,9 @@ export const VILLES = [
     lng: 3.7967,
     secteur: "bassin-de-thau",
     description:
-      "Couvreur à Vic-la-Gardiole (34110), ARVÉO nettoie gouttières et noues, démousse et répare les toitures entre l'étang de Vic et la pinède de la Gardiole.",
+      "Couvreur à Vic-la-Gardiole (34110), on nettoie gouttières et noues, démousse et répare les toitures entre l'étang de Vic et la pinède de la Gardiole.",
     intro:
-      "Couvreur à Vic-la-Gardiole, entre l'étang de Vic et les pentes boisées du massif de la Gardiole, ARVÉO répare les toitures, nettoie les gouttières et démousse les versants exposés à l'humidité.",
+      "Couvreur à Vic-la-Gardiole, entre l'étang de Vic et les pentes boisées du massif de la Gardiole, Couvreur Proximité 34 répare les toitures, nettoie les gouttières et démousse les versants exposés à l'humidité.",
     accent: "Gouttières et noues dégagées avant l'automne",
     texte: [
       "Le village s'est installé au pied de la Gardiole, dont les pinèdes descendent jusqu'aux dernières maisons. Chaque coup de vent dépose des aiguilles de pin dans les gouttières et les noues. Elles forment un feutre qui retient l'eau, et la pluie finit par déborder sous la génoise ou par remonter sous les tuiles. Les génoises, saturées d'eau à répétition, finissent par perdre leur mortier. Le phénomène s'aggrave en automne, quand le vent du nord arrache les aiguilles sèches.",
@@ -1113,7 +1113,7 @@ export const VILLES = [
     description:
       "Couvreur à Mireval (34110) pour maisons vigneronnes, remises et maisons de village. Charpente, réparation et réfection de toiture au pays du muscat.",
     intro:
-      "Couvreur à Mireval, au pays du muscat, ARVÉO s'occupe des toitures des maisons de village, des anciennes maisons vigneronnes et des remises agricoles, de la simple réparation à la réfection complète.",
+      "Couvreur à Mireval, au pays du muscat, Couvreur Proximité 34 s'occupe des toitures des maisons de village, des anciennes maisons vigneronnes et des remises agricoles, de la simple réparation à la réfection complète.",
     accent: "Grandes toitures sur charpente traditionnelle",
     texte: [
       "Mireval s'étend entre la Gardiole et l'étang de Vic, au milieu des vignes du muscat. Beaucoup de maisons anciennes y ont abrité une activité viticole. Elles ont gardé de grandes toitures à deux pentes, posées sur une charpente traditionnelle en bois massif, avec parfois une cave ou un chai au rez-de-chaussée. Ces toitures couvrent souvent plus de surface que la façade ne le laisse deviner depuis la rue.",
@@ -1149,9 +1149,9 @@ export const VILLES = [
     lng: 3.7106,
     secteur: "bassin-de-thau",
     description:
-      "Couvreur à Gigean (34770), ARVÉO reprend faîtages, rives et closoirs exposés à la tramontane et répare les toits du centre ancien. Devis gratuit.",
+      "Couvreur à Gigean (34770), on reprend faîtages, rives et closoirs exposés à la tramontane et répare les toits du centre ancien. Devis gratuit.",
     intro:
-      "Couvreur à Gigean, au pied du massif de la Gardiole, ARVÉO répare, refait et entretient les toitures du centre ancien comme celles des quartiers résidentiels qui se sont développés autour du village.",
+      "Couvreur à Gigean, au pied du massif de la Gardiole, Couvreur Proximité 34 répare, refait et entretient les toitures du centre ancien comme celles des quartiers résidentiels qui se sont développés autour du village.",
     accent: "Faîtages et rives renforcés contre la tramontane",
     texte: [
       "Gigean a beaucoup grandi en quelques décennies. Autour du vieux centre se sont ajoutés des lotissements de maisons individuelles couvertes en tuiles romanes ou mécaniques. Ces toits sont récents, mais ils ne sont pas à l'abri. Leurs faiblesses se concentrent aux extrémités, sur le faîtage et les rives. Une faîtière qui bouge ne se voit pas toujours depuis le sol, mais elle laisse entrer l'eau à chaque pluie poussée par le vent.",
@@ -1188,9 +1188,9 @@ export const VILLES = [
     lng: 3.6714,
     secteur: "bassin-de-thau",
     description:
-      "Couvreur à Poussan (34560), ARVÉO répare les toits de tuiles canal du vieux village en réemployant les tuiles anciennes. Recherche de fuite et réfection.",
+      "Couvreur à Poussan (34560), on répare les toits de tuiles canal du vieux village en réemployant les tuiles anciennes. Recherche de fuite et réfection.",
     intro:
-      "Couvreur à Poussan, ARVÉO répare, révise et refait les toitures des maisons de pierre du vieux village et des quartiers plus récents tournés vers l'étang de Thau, de la recherche de fuite à la réfection.",
+      "Couvreur à Poussan, Couvreur Proximité 34 répare, révise et refait les toitures des maisons de pierre du vieux village et des quartiers plus récents tournés vers l'étang de Thau, de la recherche de fuite à la réfection.",
     accent: "Tuiles anciennes du vieux village réemployées",
     texte: [
       "Le centre ancien de Poussan est fait de maisons en pierre aux murs épais, serrées le long de rues étroites. Leurs toits en tuiles canal ont souvent été repris par morceaux au fil des générations. Résultat, on trouve sur un même pan des tuiles de plusieurs époques, de formes et de teintes variées. Certaines tuiles anciennes, moulées à la main, ont une forme plus irrégulière que les modèles actuels.",
@@ -1226,9 +1226,9 @@ export const VILLES = [
     lng: 3.8603,
     secteur: "bassin-de-thau",
     description:
-      "Couvreur à Villeneuve-lès-Maguelone (34750), ARVÉO répare toitures, gouttières et solins exposés à l'air marin des étangs. Démoussage et devis gratuit.",
+      "Couvreur à Villeneuve-lès-Maguelone (34750), on répare toitures, gouttières et solins exposés à l'air marin des étangs. Démoussage et devis gratuit.",
     intro:
-      "Couvreur à Villeneuve-lès-Maguelone, entre Montpellier et la mer, ARVÉO répare les toitures, reprend la zinguerie et démousse les couvertures exposées à l'humidité des étangs et au vent marin.",
+      "Couvreur à Villeneuve-lès-Maguelone, entre Montpellier et la mer, Couvreur Proximité 34 répare les toitures, reprend la zinguerie et démousse les couvertures exposées à l'humidité des étangs et au vent marin.",
     accent: "Zinguerie et entretien adaptés à l'air marin",
     texte: [
       "Villeneuve-lès-Maguelone vit au contact des étangs. Entre le village et le cordon littoral, où se dresse la cathédrale de Maguelone, s'étendent des salins et des zones humides. Cet environnement entretient une humidité presque permanente et apporte, par vent marin, un air chargé de sel jusque sur les toits du centre. Les toits proches des étangs sont aussi très fréquentés par les oiseaux, qui déplacent parfois les tuiles en nichant dessous.",
@@ -1264,9 +1264,9 @@ export const VILLES = [
     lng: 3.6967,
     secteur: "bassin-de-thau",
     description:
-      "Couvreur à Montbazin (34560), dans la vallée de la Vène, ARVÉO contrôle et répare les toitures après les orages d'automne. Réfection et isolation.",
+      "Couvreur à Montbazin (34560), dans la vallée de la Vène, on contrôle et répare les toitures après les orages d'automne. Réfection et isolation.",
     intro:
-      "Couvreur à Montbazin, dans la vallée de la Vène, ARVÉO répare, refait et entretient les toitures du village et des mas alentour, avec une attention particulière aux dégâts laissés par les orages d'automne.",
+      "Couvreur à Montbazin, dans la vallée de la Vène, Couvreur Proximité 34 répare, refait et entretient les toitures du village et des mas alentour, avec une attention particulière aux dégâts laissés par les orages d'automne.",
     accent: "Contrôle des toitures après les orages d'automne",
     texte: [
       "Montbazin s'est installé dans la vallée de la Vène, entre la Gardiole et les collines de garrigue qui montent vers le nord. Le village garde un centre ancien aux maisons de pierre, entouré de quartiers plus récents et de quelques mas au milieu des vignes et des oliviers. La Vène, souvent à sec, peut gonfler très vite lors des orages d'automne, ce qui donne une idée de la violence des pluies.",
@@ -1325,7 +1325,7 @@ export const FAQ_ACCUEIL = [
   {
     q: "Êtes-vous assuré ?",
     r: "Nos travaux de couverture sont couverts par une assurance décennale. Ses références figurent sur chaque devis et dans les mentions légales.",
-    lien: { href: "/a-propos", texte: "En savoir plus sur ARVÉO" },
+    lien: { href: "/a-propos", texte: "En savoir plus sur Couvreur Proximité 34" },
   },
   {
     q: "Dans quelles communes intervenez-vous ?",

@@ -1,5 +1,5 @@
 /*
- * ARVÉO — réalisations (chantiers terminés).
+ * Couvreur Proximité 34 — réalisations (chantiers terminés).
  * Chaque chantier ajouté ici génère une fiche /realisations/<slug> au format « bon d'intervention »,
  * la page /realisations (filtrable par service et par commune), les liens dans le menu et le pied
  * de page, et les entrées du sitemap. Tant que la liste est vide, rien de tout cela n'est publié.

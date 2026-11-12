@@ -1,12 +1,12 @@
 /*
- * ARVÉO — réception des formulaires du site (fonction Vercel, Node 18+).
+ * Couvreur Proximité 34 — réception des formulaires du site (fonction Vercel, Node 18+).
  * Envoie chaque demande par e-mail au client via l'API Resend (https://resend.com).
  *
  * Variables d'environnement à définir dans Vercel (Settings → Environment Variables) :
  *   RESEND_API_KEY   clé API Resend (obligatoire)
  *   ARVEO_EMAIL_TO   adresse qui reçoit les demandes, ex. contact@arveo.fr (obligatoire)
  *   ARVEO_EMAIL_FROM expéditeur sur un domaine vérifié chez Resend,
- *                    ex. "Site ARVÉO <site@arveo.fr>" (par défaut : onboarding@resend.dev, pour tester)
+ *                    ex. "Site Couvreur Proximité 34 <site@arveo.fr>" (par défaut : onboarding@resend.dev, pour tester)
  *   ARVEO_ACCUSE     "1" pour envoyer aussi un accusé de réception au client qui a laissé son e-mail
  */
 
@@ -108,7 +108,7 @@ function construireEmail(t, ref, corps) {
     <table role="presentation" width="640" cellpadding="0" cellspacing="0" style="max-width:640px;width:100%">
       <tr><td style="padding:22px 24px;background:#ffffff;border-radius:14px 14px 0 0">
         <table role="presentation" width="100%"><tr>
-          <td style="font:800 22px Arial,sans-serif;color:#1F2933;letter-spacing:.06em">ARVÉO<br><span style="font:11px Arial,sans-serif;color:#58616B;letter-spacing:.08em">COUVERTURE · ZINGUERIE · DÉPANNAGE</span></td>
+          <td style="font:800 22px Arial,sans-serif;color:#1F2933;letter-spacing:.06em">Couvreur Proximité 34<br><span style="font:11px Arial,sans-serif;color:#58616B;letter-spacing:.08em">COUVERTURE · ZINGUERIE · DÉPANNAGE</span></td>
           <td align="right" style="font:800 20px Arial,sans-serif;color:#243746;text-transform:uppercase">${esc(t.titre).replace(/^(\S+)/, "$1<br>").replace(/<br>(.*)$/, '<br><span style="color:#C65D28">$1</span>')}</td>
         </tr></table>
       </td></tr>
@@ -123,14 +123,14 @@ function construireEmail(t, ref, corps) {
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${blocs}
           <tr><td style="padding:18px 0 6px">
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1.5px solid #243746;border-radius:12px;background:#ffffff">
-              <tr><td style="padding:14px 18px;font:700 14px Arial,sans-serif;color:#243746;text-transform:uppercase">Suivi par ARVÉO</td></tr>
-              <tr><td style="padding:0 18px 16px;font:13px/2 Arial,sans-serif;color:#C65D28">Cadre réservé à ARVÉO<br><span style="color:#58616B">Date de rappel : ________ &nbsp; Référent : ________ &nbsp; Prochaine étape : ________</span></td></tr>
+              <tr><td style="padding:14px 18px;font:700 14px Arial,sans-serif;color:#243746;text-transform:uppercase">Suivi par Couvreur Proximité 34</td></tr>
+              <tr><td style="padding:0 18px 16px;font:13px/2 Arial,sans-serif;color:#C65D28">Cadre réservé à Couvreur Proximité 34<br><span style="color:#58616B">Date de rappel : ________ &nbsp; Référent : ________ &nbsp; Prochaine étape : ________</span></td></tr>
             </table>
           </td></tr>
         </table>
       </td></tr>
       <tr><td style="padding:16px 24px;background:#1F2933;border-radius:0 0 14px 14px;font:12px Arial,sans-serif;color:#D3DCE3">
-        Envoyé depuis le site ARVÉO (page ${esc(court(corps.page, 120))}). ${corps.photos && corps.photos.length ? corps.photos.length + " photo(s) en pièce jointe." : "Pas de photo jointe."}<br>
+        Envoyé depuis le site Couvreur Proximité 34 (page ${esc(court(corps.page, 120))}). ${corps.photos && corps.photos.length ? corps.photos.length + " photo(s) en pièce jointe." : "Pas de photo jointe."}<br>
         Le demandeur a accepté d'être recontacté au sujet de cette demande.
       </td></tr>
     </table>
@@ -199,7 +199,7 @@ module.exports = async function handler(req, res) {
       body: JSON.stringify(payload),
     });
 
-  const expediteur = process.env.ARVEO_EMAIL_FROM || "Site ARVÉO <onboarding@resend.dev>";
+  const expediteur = process.env.ARVEO_EMAIL_FROM || "Site Couvreur Proximité 34 <onboarding@resend.dev>";
   const email = court(d.email, 200);
   const emailValide = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
 
@@ -227,8 +227,8 @@ module.exports = async function handler(req, res) {
     envoyer({
       from: expediteur,
       to: [email],
-      subject: `ARVÉO : nous avons bien reçu votre ${t.titre.toLowerCase()} (${ref})`,
-      text: `Bonjour ${court(d.nom, 80)},\n\nNous avons bien reçu votre ${t.titre.toLowerCase()} (référence ${ref}). Nous vous rappelons dans la journée.\n\nPour une urgence, appelez-nous directement.\n\nARVÉO, couvreur à Frontignan`,
+      subject: `Couvreur Proximité 34 : nous avons bien reçu votre ${t.titre.toLowerCase()} (${ref})`,
+      text: `Bonjour ${court(d.nom, 80)},\n\nNous avons bien reçu votre ${t.titre.toLowerCase()} (référence ${ref}). Nous vous rappelons dans la journée.\n\nPour une urgence, appelez-nous directement.\n\nCouvreur Proximité 34, couvreur à Frontignan`,
     }).catch(() => {});
   }
 

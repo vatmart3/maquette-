@@ -1,5 +1,5 @@
 /*
- * ARVÉO — script commun (sans dépendance).
+ * Couvreur Proximité 34 — script commun (sans dépendance).
  * Menu, visite de la toiture (accueil), formulaires (dépannage, devis,
  * rendez-vous, rappel, contact) envoyés à /api/demande, mesure des actions.
  */

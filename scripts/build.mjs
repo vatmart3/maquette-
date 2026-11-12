@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
- * ARVÉO — générateur du site statique.
+ * Couvreur Proximité 34 — générateur du site statique.
  *   node scripts/build.mjs
  * Lit config.js et scripts/contenu.mjs, écrit toutes les pages HTML, le sitemap
  * et robots.txt à la racine du projet. Aucune dépendance.
@@ -210,11 +210,11 @@ function imageOG(p) {
     [/^\/zone-intervention$/, "Zone d'intervention"],
   ];
   const t = types.find(([re]) => re.test(p.path));
-  const titre = p.og?.titre || p.title.replace(/\s*\|\s*ARVÉO$/, "");
-  if (!t || !OG_DISPO || p.noindex) return { url: `${BASE}/og.png`, alt: "ARVÉO, couvreur à Frontignan, réparation, réfection et dépannage de toiture" };
+  const titre = p.og?.titre || p.title.replace(/\s*\|\s*Couvreur Proximité 34$/, "");
+  if (!t || !OG_DISPO || p.noindex) return { url: `${BASE}/og.png`, alt: "Couvreur Proximité 34, couvreur à Frontignan, réparation, réfection et dépannage de toiture" };
   const nom = ogNom(p.path);
   OG_A_GENERER.push({ nom, titre, type: p.og?.type || t[1], sousTitre: "Couvreur zingueur à Frontignan, dans tout l'Hérault", pied: new URL(BASE).host });
-  return { url: `${BASE}/img/og/${nom}.png`, alt: `${titre}, ARVÉO couvreur zingueur à Frontignan` };
+  return { url: `${BASE}/img/og/${nom}.png`, alt: `${titre}, Couvreur Proximité 34 couvreur zingueur à Frontignan` };
 }
 
 // Mesure d'audience sans cookie (config.statistiques), injectée seulement si elle est renseignée.
@@ -229,7 +229,15 @@ function statistiques() {
   return "";
 }
 
+// Titre de page : le nom de l'entreprise en fin de titre, sauf s'il ferait dépasser
+// les 60 caractères recommandés (Google l'ajoute alors de lui-même).
+const titrePage = (t) => {
+  const suffixe = new RegExp(`\\s*\\|\\s*${S.nom.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`);
+  return [...t].length > 60 ? t.replace(suffixe, "") : t;
+};
+
 function head(p) {
+  p.title = titrePage(p.title);
   const og = imageOG(p);
   const ld = p.jsonld.map((o) => `  <script type="application/ld+json">${JSON.stringify(o)}</script>`).join("\n");
   const scene = p.scene
@@ -477,7 +485,7 @@ function ldEntreprise() {
     name: S.nom,
     description: `${S.activite} à ${a.ville}. Réparation et réfection de toiture, recherche de fuite, démoussage, zinguerie, charpente et dépannage d'urgence.`,
     url: BASE + "/",
-    logo: BASE + "/img/logo-arveo.png",
+    logo: BASE + "/img/logo.png",
     image: BASE + "/og.png",
     telephone: fiable("telephone") && TEL_INTERNATIONAL,
     email: fiable("email"),
@@ -683,7 +691,7 @@ function formDepannage() {
             ${choix({ legende: "Sur place", name: "acces", options: ["Présence sur place possible", "Accès extérieur disponible"] })}
           `, "bloc--teinte")}
           </div>
-          ${consentement("J'autorise ARVÉO à me recontacter au sujet de cette demande.")}
+          ${consentement("J'autorise Couvreur Proximité 34 à me recontacter au sujet de cette demande.")}
           <div class="formulaire__envoi">
             <button class="bouton bouton--orange bouton--grand" type="submit">${ico("alerte")}Envoyer ma demande de dépannage</button>
           </div>
@@ -715,7 +723,7 @@ function formDevis() {
             ${champ({ label: "E-mail", name: "email", type: "email", attrs: 'autocomplete="email"' })}
             ${champ({ label: "Vous êtes", name: "profil", type: "select", options: ["Propriétaire", "Locataire", "Syndic / gestionnaire", "Professionnel"] })}
           `)}
-          ${consentement("J'autorise ARVÉO à me recontacter au sujet de ma demande de devis.")}
+          ${consentement("J'autorise Couvreur Proximité 34 à me recontacter au sujet de ma demande de devis.")}
           <div class="formulaire__envoi">
             <button class="bouton bouton--orange bouton--grand" type="submit">${ico("devis")}Recevoir mon devis gratuit</button>
           </div>
@@ -743,7 +751,7 @@ function formRdv() {
             ${champ({ label: "Téléphone", name: "telephone", type: "tel", requis: true, message: "Indiquez un numéro pour confirmer le rendez-vous.", attrs: 'inputmode="tel" autocomplete="tel"' })}
             ${champ({ label: "E-mail", name: "email", type: "email", attrs: 'autocomplete="email"' })}
           `)}
-          ${consentement("J'autorise ARVÉO à me recontacter pour confirmer ce rendez-vous.")}
+          ${consentement("J'autorise Couvreur Proximité 34 à me recontacter pour confirmer ce rendez-vous.")}
           <div class="formulaire__envoi">
             <button class="bouton bouton--orange bouton--grand" type="submit">${ico("agenda")}Demander ce rendez-vous</button>
             <p>On vous rappelle pour confirmer l'heure exacte.</p>
@@ -763,7 +771,7 @@ function formContact() {
             ${champ({ label: "E-mail", name: "email", type: "email", attrs: 'autocomplete="email"', large: true })}
             ${champ({ label: "Message", name: "message", type: "textarea", requis: true, message: "Écrivez votre message.", large: true })}
           `)}
-          ${consentement("J'autorise ARVÉO à me recontacter au sujet de ce message.")}
+          ${consentement("J'autorise Couvreur Proximité 34 à me recontacter au sujet de ce message.")}
           <div class="formulaire__envoi"><button class="bouton bouton--orange bouton--grand" type="submit">${ico("mail")}Envoyer mon message</button></div>
           ${retour}
         </form>`;
@@ -776,7 +784,7 @@ function formContact() {
 const APRES_DEMANDE = `<div class="cote-carte" data-commun>
             <h2>Après votre demande</h2>
             <ol class="suite-demande">
-              <li><span class="mono">01</span><span><strong>Réception immédiate</strong>Votre demande arrive directement chez ARVÉO.</span></li>
+              <li><span class="mono">01</span><span><strong>Réception immédiate</strong>Votre demande arrive directement chez Couvreur Proximité 34.</span></li>
               <li><span class="mono">02</span><span><strong>Rappel dans la journée</strong>On fait le point avec vous par téléphone.</span></li>
               <li><span class="mono">03</span><span><strong>Visite et devis</strong>Diagnostic sur place, prix écrit avant tout travail.</span></li>
             </ol>
@@ -1015,8 +1023,8 @@ const ZONES_VISITE = [
     id: "accueil",
     path: "/",
     scene: true,
-    title: "Couvreur à Frontignan, réparation de toiture | ARVÉO",
-    ogTitle: "ARVÉO, couvreur à Frontignan",
+    title: "Couvreur à Frontignan, réparation de toiture | Couvreur Proximité 34",
+    ogTitle: "Couvreur Proximité 34, couvreur à Frontignan",
     description: `Couvreur zingueur à Frontignan pour fuites, tuiles cassées, réfection de toiture, démoussage, gouttières. Dépannage rapide à Sète et Balaruc. Devis gratuit.`,
     jsonld: [ldEntreprise(), ldSite, ldFaq(FAQ_ACCUEIL)],
   };
@@ -1040,7 +1048,7 @@ const ZONES_VISITE = [
       <div class="conteneur accroche__grille">
         <div class="accroche__texte">
           <h1 id="titre-page">Couvreur à Frontignan, <span>votre toiture entre de bonnes mains.</span></h1>
-          <p class="chapeau">ARVÉO répare, refait et entretient les toitures de Frontignan, de Sète et de tout le secteur de l'étang de Thau. Devis gratuit et dépannage rapide.</p>
+          <p class="chapeau">Couvreur Proximité 34 répare, refait et entretient les toitures de Frontignan, de Sète et de tout le secteur de l'étang de Thau. Devis gratuit et dépannage rapide.</p>
           ${actions({ clair: true })}
           ${noteGoogle(true)}
           ${coches(CONFIANCE, true)}
@@ -1157,7 +1165,7 @@ for (const v of VILLES_PAGES) {
     id: "zone",
     path: v.path,
     og: { titre: `Couvreur à ${v.nom}`, type: `Commune · ${v.cp}` },
-    title: titreCourt([`Couvreur à ${v.nom} (${v.cp}), réparation de toiture | ARVÉO`, `Couvreur à ${v.nom} (${v.cp}), toiture | ARVÉO`, `Couvreur à ${v.nom} (${v.cp}) | ARVÉO`]),
+    title: titreCourt([`Couvreur à ${v.nom} (${v.cp}), réparation de toiture | Couvreur Proximité 34`, `Couvreur à ${v.nom} (${v.cp}), toiture | Couvreur Proximité 34`, `Couvreur à ${v.nom} (${v.cp}) | Couvreur Proximité 34`]),
     description: v.description || `Couvreur à ${v.nom} (${v.cp}) pour fuites, tuiles cassées, réfection, démoussage et gouttières. Artisan de Frontignan, devis gratuit.`,
     jsonld: [
       ldEntreprise(),
@@ -1332,7 +1340,7 @@ function carteHerault() {
   const [mx, my] = proj([43.3, 3.8]);
   return `<figure class="carte">
         <svg viewBox="0 0 ${W} ${H}" role="group" aria-labelledby="titre-carte">
-          <title id="titre-carte">Carte schématique de l'Hérault et des secteurs d'intervention d'ARVÉO</title>
+          <title id="titre-carte">Carte schématique de l'Hérault et des secteurs d'intervention de Couvreur Proximité 34</title>
           ${zones}
           <path class="carte__dept" d="${chemin(contour)}"/>
           <g class="carte__villes" aria-hidden="true">${points}</g>
@@ -1351,8 +1359,8 @@ for (const sec of SECTEURS_PAGES) pageSecteur(sec);
   const p = {
     id: "zone",
     path: "/zone-intervention",
-    title: "Couvreur dans l'Hérault, zone d'intervention | ARVÉO",
-    description: "Couvreur à Frontignan, ARVÉO intervient dans tout l'Hérault, du Bassin de Thau à Montpellier, Béziers, Agde, Lunel, Clermont-l'Hérault et Bédarieux.",
+    title: "Couvreur dans l'Hérault, zone d'intervention | Couvreur Proximité 34",
+    description: "Couvreur à Frontignan, on intervient dans tout l'Hérault, du Bassin de Thau à Montpellier, Béziers, Agde, Lunel, Clermont-l'Hérault et Bédarieux.",
     og: { titre: "Couvreur dans l'Hérault", type: "Zone d'intervention" },
     jsonld: [ldEntreprise(), nettoyer({ ...ldService("Couverture, zinguerie et dépannage de toiture", "/zone-intervention"), areaServed: [HERAULT, ...SECTEURS_PAGES.map((x) => ({ "@type": "AdministrativeArea", name: x.nom }))] }), ar.ld],
   };
@@ -1396,7 +1404,7 @@ ${bandeauCta()}` +
   const p = {
     id: "depannage",
     path: "/depannage-toiture",
-    title: "Dépannage de toiture à Frontignan, demande en ligne | ARVÉO",
+    title: "Dépannage de toiture à Frontignan, demande en ligne | Couvreur Proximité 34",
     description: `Fuite de toiture, tuiles arrachées, dégâts après orage à Frontignan, Sète et alentours. Faites votre demande de dépannage en ligne ou appelez le ${S.telephone}.`,
     jsonld: [ldEntreprise(), ldService("Dépannage de toiture", "/depannage-toiture"), ar.ld, ldFaq(FAQ_DEPANNAGE)],
   };
@@ -1440,7 +1448,7 @@ ${bandeauCta()}` +
   const p = {
     id: "devis",
     path: "/devis-toiture",
-    title: "Devis toiture gratuit à Frontignan | Couvreur ARVÉO",
+    title: "Devis toiture gratuit à Frontignan | Couvreur Proximité 34",
     description: "Demandez votre devis gratuit de couvreur à Frontignan et alentours pour une réfection, une réparation, un démoussage, de la zinguerie ou la charpente.",
     jsonld: [ldEntreprise(), ar.ld],
   };
@@ -1478,7 +1486,7 @@ ${bandeauCta()}` +
   const p = {
     id: "rdv",
     path: "/rendez-vous",
-    title: "Prendre rendez-vous avec un couvreur à Frontignan | ARVÉO",
+    title: "Prendre rendez-vous avec un couvreur à Frontignan | Couvreur Proximité 34",
     description: "Prenez rendez-vous pour un diagnostic de toiture gratuit à Frontignan et alentours. Choisissez une date et un créneau, nous confirmons par téléphone.",
     jsonld: [ldEntreprise(), ar.ld],
   };
@@ -1517,8 +1525,8 @@ ${bandeauCta()}` +
   const p = {
     id: "contact",
     path: "/contact",
-    title: "Contacter ARVÉO, couvreur à Frontignan",
-    description: `Contactez ARVÉO, couvreur zingueur à Frontignan, par téléphone au ${S.telephone}, par e-mail ou en ligne pour un devis, un dépannage ou un rendez-vous.`,
+    title: "Contacter Couvreur Proximité 34, couvreur à Frontignan",
+    description: `Contactez Couvreur Proximité 34 à Frontignan par téléphone au ${S.telephone}, par e-mail ou en ligne pour un devis, un dépannage ou un rendez-vous.`,
     jsonld: [ldEntreprise(), ar.ld],
   };
   const html =
@@ -1537,7 +1545,7 @@ ${bandeauCta()}` +
           ${formContact()}
           <aside class="formulaire-page__cote">
             <div class="cote-carte">
-              <h2>ARVÉO</h2>
+              <h2>Couvreur Proximité 34</h2>
               <address>${[confirme(a.rue), `${a.codePostal} ${a.ville}`].filter(Boolean).join("<br>")}<br><a href="mailto:${esc(S.email)}">${esc(S.email)}</a></address>
               <p>${esc(S.horaires.texte)}</p>
             </div>
@@ -1556,13 +1564,13 @@ ${bandeauCta()}` +
   const p = {
     id: "apropos",
     path: "/a-propos",
-    title: "À propos d'ARVÉO, couvreur zingueur à Frontignan",
-    description: "ARVÉO, couvreur zingueur installé à Frontignan. Nos engagements, notre façon de travailler et notre zone d'intervention autour de l'étang de Thau.",
+    title: "À propos de Couvreur Proximité 34, couvreur à Frontignan",
+    description: "Couvreur Proximité 34, couvreur zingueur installé à Frontignan. Nos engagements, notre façon de travailler et notre zone d'intervention dans l'Hérault.",
     jsonld: [ldEntreprise(), ar.ld],
   };
   const html =
     head(p) +
-    enTetePage({ h1: "Un couvreur d'ici, pour les toitures d'ici", chapo: "ARVÉO est une entreprise de couverture et de zinguerie installée à Frontignan. Notre métier, garder votre maison au sec durablement.", ariane: ar.html }) +
+    enTetePage({ h1: "Un couvreur d'ici, pour les toitures d'ici", chapo: "Couvreur Proximité 34 est une entreprise de couverture et de zinguerie installée à Frontignan. Notre métier, garder votre maison au sec durablement.", ariane: ar.html }) +
     `
     <section class="section section--claire">
       <div class="conteneur article">
@@ -1602,8 +1610,8 @@ ${bandeauCta()}` +
     id: "avis",
     path: "/avis",
     noindex: !avecAvis,
-    title: "Avis clients d'ARVÉO, couvreur à Frontignan",
-    description: "Les avis Google laissés par les clients d'ARVÉO, couvreur zingueur à Frontignan, après une réparation, une réfection ou un dépannage de toiture.",
+    title: "Avis clients de Couvreur Proximité 34, couvreur à Frontignan",
+    description: "Les avis Google laissés par les clients de Couvreur Proximité 34, à Frontignan, après une réparation, une réfection ou un dépannage de toiture.",
     jsonld: [ldEntreprise(), ar.ld],
   };
   const cible = lienGoogle ? `href="${esc(lienGoogle)}" target="_blank" rel="noopener"` : `href="/avis/laisser"`;
@@ -1612,7 +1620,7 @@ ${bandeauCta()}` +
   const etoile = `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.8l2.8 5.8 6.3.8-4.6 4.4 1.2 6.3L12 17.1l-5.7 3 1.2-6.3L2.9 9.4l6.3-.8z"/></svg>`;
   const html =
     head(p) +
-    enTetePage({ h1: "Avis de nos clients", chapo: "Vous avez fait appel à ARVÉO pour votre toiture ? Votre avis aide les habitants de Frontignan et des alentours à choisir leur couvreur.", ariane: ar.html, sansActions: true }) +
+    enTetePage({ h1: "Avis de nos clients", chapo: "Vous avez fait appel à Couvreur Proximité 34 pour votre toiture ? Votre avis aide les habitants de Frontignan et des alentours à choisir leur couvreur.", ariane: ar.html, sansActions: true }) +
     `${avisHtml()}
     <section class="section section--claire" aria-labelledby="titre-laisser-avis">
       <div class="conteneur avis-google">
@@ -1624,8 +1632,8 @@ ${bandeauCta()}` +
         </div>` : ""}
         <div class="avis-google__texte laisser-avis">
           <h2 id="titre-laisser-avis">Votre avis compte</h2>
-          <p class="texte">Une réparation, une réfection ou un dépannage avec ARVÉO ? Dites-le en quelques mots sur Google. Cela prend une minute, et c'est la meilleure façon d'aider vos voisins à trouver un couvreur de confiance.</p>
-          <a class="etoiles-noter" ${cible} data-track="avis" aria-label="Noter ARVÉO sur Google">${etoile.repeat(5)}<span>Donnez votre note</span></a>
+          <p class="texte">Une réparation, une réfection ou un dépannage avec Couvreur Proximité 34 ? Dites-le en quelques mots sur Google. Cela prend une minute, et c'est la meilleure façon d'aider vos voisins à trouver un couvreur de confiance.</p>
+          <a class="etoiles-noter" ${cible} data-track="avis" aria-label="Noter Couvreur Proximité 34 sur Google">${etoile.repeat(5)}<span>Donnez votre note</span></a>
           <a class="bouton bouton--orange bouton--grand bouton-google" ${cible} data-track="avis"><span class="bouton-google__g">${G}</span>Laissez votre avis sur Google</a>
           ${fiable("liens.googleBusiness") ? `<p><a class="lien-fleche" href="${esc(S.liens.googleBusiness)}" target="_blank" rel="noopener">Voir notre fiche Google ${ico("fleche")}</a></p>` : ""}
         </div>
@@ -1650,7 +1658,7 @@ ${bandeauCta()}` +
     v.redirects.unshift({ source: "/avis/laisser", destination: lien, permanent: false });
     fs.rmSync(path.join(RACINE, "avis", "laisser.html"), { force: true });
   } else {
-    const p = { id: "avis", path: "/avis/laisser", noindex: true, title: `Laisser un avis | ${S.nom}`, description: "Laisser un avis sur ARVÉO, couvreur zingueur à Frontignan.", jsonld: [] };
+    const p = { id: "avis", path: "/avis/laisser", noindex: true, title: `Laisser un avis | ${S.nom}`, description: "Laisser un avis sur Couvreur Proximité 34, couvreur zingueur à Frontignan.", jsonld: [] };
     ecrire(
       "avis/laisser.html",
       head(p) +
@@ -1680,8 +1688,8 @@ if (avecRealisations) {
   const p = {
     id: "realisations",
     path: "/realisations",
-    title: "Réalisations, chantiers de toiture dans l'Hérault | ARVÉO",
-    description: `Les chantiers de couverture réalisés par ARVÉO, couvreur à Frontignan, avec le problème constaté, les travaux et le résultat. ${REALISATIONS.length} fiche(s) à consulter.`,
+    title: "Réalisations, chantiers de toiture dans l'Hérault | Couvreur Proximité 34",
+    description: `Les chantiers de couverture réalisés par Couvreur Proximité 34, couvreur à Frontignan, avec le problème constaté, les travaux et le résultat. ${REALISATIONS.length} fiche(s) à consulter.`,
     jsonld: [ldEntreprise(), ar.ld],
   };
   const html =
@@ -1725,9 +1733,9 @@ ${bandeauCta()}` +
     const pc = {
       id: "realisations",
       path: c.path,
-      title: titreCourt([`${titreChantier(c)}, ${c.date} | ARVÉO`, `${titreChantier(c)} | ARVÉO`]),
+      title: titreCourt([`${titreChantier(c)}, ${c.date} | Couvreur Proximité 34`, `${titreChantier(c)} | Couvreur Proximité 34`]),
       description: (() => {
-        let d = desc.length < 120 ? `${desc} Chantier réalisé par ARVÉO, couvreur zingueur à Frontignan.` : desc;
+        let d = desc.length < 120 ? `${desc} Chantier réalisé par Couvreur Proximité 34, couvreur zingueur à Frontignan.` : desc;
         return d.length > 158 ? d.slice(0, 155).replace(/\s+\S*$/, "") + "…" : d;
       })(),
       jsonld: [
@@ -1832,7 +1840,7 @@ const ldArticle = (a) =>
     mainEntityOfPage: urlPage(a.path),
     image: `${BASE}/img/og/${ogNom(a.path)}.png`,
     author: { "@id": ENTREPRISE_ID, "@type": "Organization", name: S.nom, url: BASE + "/" },
-    publisher: { "@id": ENTREPRISE_ID, "@type": "Organization", name: S.nom, logo: { "@type": "ImageObject", url: BASE + "/img/logo-arveo.png" } },
+    publisher: { "@id": ENTREPRISE_ID, "@type": "Organization", name: S.nom, logo: { "@type": "ImageObject", url: BASE + "/img/logo.png" } },
     about: (a.services || []).map((k) => SERVICES_PAGES.find((x) => x.slug === k)).filter(Boolean).map((x) => ({ "@type": "Service", name: x.nom, url: urlPage(x.path) })),
   });
 
@@ -1841,8 +1849,8 @@ const ldArticle = (a) =>
   const p = {
     id: "conseils",
     path: "/conseils",
-    title: "Conseils toiture d'un couvreur de l'Hérault | ARVÉO",
-    description: "Fuite, tramontane, choix des tuiles, démoussage, autorisations de travaux. Les conseils pratiques d'ARVÉO, couvreur zingueur à Frontignan, pour votre toiture.",
+    title: "Conseils toiture d'un couvreur de l'Hérault | Couvreur Proximité 34",
+    description: "Fuite, tramontane, choix des tuiles, démoussage, autorisations de travaux. Les conseils pratiques de Couvreur Proximité 34 pour votre toiture.",
     jsonld: [ldEntreprise(), ar.ld, nettoyer({ "@context": "https://schema.org", "@type": "CollectionPage", name: "Conseils toiture", url: urlPage("/conseils"), hasPart: ARTICLES_PAGES.map((a) => ({ "@type": "Article", headline: a.titre, url: urlPage(a.path) })) })],
   };
   const html =

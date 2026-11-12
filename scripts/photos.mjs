@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
- * ARVÉO — préparation des photos de chantier.
+ * Couvreur Proximité 34 — préparation des photos de chantier.
  *   npm run photos --prefix scripts     (ou : node scripts/photos.mjs)
  *
  * Lit les originaux de photos/ (nommés commune__service__description.jpg), puis écrit dans

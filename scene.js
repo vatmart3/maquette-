@@ -1,5 +1,5 @@
 /*
- * ARVÉO — « la toiture tracée au cordeau ».
+ * Couvreur Proximité 34 — « la toiture tracée au cordeau ».
  * Épure 3D (arêtes seulement) d'une toiture méditerranéenne en L : tuiles canal,
  * faîtage, rives, génoises, noues, charpente en écorché, zinguerie, cheminée,
  * fenêtre de toit, mousses. Tracée au cordeau à l'arrivée, puis pilotée par le

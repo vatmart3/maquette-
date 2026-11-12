@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
- * ARVÉO — signale les pages nouvelles ou modifiées aux moteurs compatibles IndexNow (Bing, Yandex,
+ * Couvreur Proximité 34 — signale les pages nouvelles ou modifiées aux moteurs compatibles IndexNow (Bing, Yandex,
  * Seznam, Naver… ; Google ne l'utilise pas, pour Google passez par la Search Console).
  *
  *   node scripts/indexnow.mjs              → envoie toutes les URL du sitemap

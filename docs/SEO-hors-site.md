@@ -1,11 +1,11 @@
-# ARVÉO — référencement hors site
+# Couvreur Proximité 34 — référencement hors site
 
 Le site est prêt techniquement. Ce qui fera la différence sur Google à partir d'ici se joue surtout
 en dehors du code, à savoir la fiche Google, les avis, les citations locales et la régularité des
 publications. Ce document est la feuille de route, dans l'ordre d'importance.
 
 Règle d'or partout : **le même nom, la même adresse et le même téléphone (NAP)**, écrits exactement
-comme dans `config.js` (« ARVÉO », « 34110 Frontignan », « 06 xx xx xx xx »).
+comme dans `config.js` (« Couvreur Proximité 34 », « 34110 Frontignan », « 06 xx xx xx xx »).
 
 ---
 
@@ -56,13 +56,13 @@ du numéro entre guillemets).
 - **Jamais** d'avis inventés, achetés, ou écrits par des proches. Pas de tri non plus (le
   « review gating ») : on demande un avis à **tous** les clients, satisfaits ou non.
 - Demander l'avis **le jour de la fin du chantier**, en face à face, puis par SMS le soir même.
-- Outil sur place, une **carte ou un autocollant NFC + QR code** au nom d'ARVÉO qui ouvre
+- Outil sur place, une **carte ou un autocollant NFC + QR code** au nom de Couvreur Proximité 34 qui ouvre
   `https://arveo.fr/avis/laisser`. Cette adresse redirige vers la page Google « Laisser un avis »
   dès que `config.liens.avisGoogle` est rempli. Si le lien Google change, il suffit de modifier
   la config, les cartes déjà distribuées restent valables.
 - Modèle de SMS, à personnaliser :
   « Bonjour, merci pour votre confiance. Si vous avez deux minutes, votre avis aide beaucoup un
-  artisan local comme nous. https://arveo.fr/avis/laisser ARVÉO »
+  artisan local comme nous. https://arveo.fr/avis/laisser Couvreur Proximité 34 »
 - Répondre à **chaque** avis sous 48 h, positif ou négatif, en citant le type de travaux et la
   commune (« Merci pour votre confiance pour la réfection de votre toiture à Mèze »).
 - Les vrais avis peuvent ensuite être copiés dans `config.avis` (texte exact, prénom ou initiale,

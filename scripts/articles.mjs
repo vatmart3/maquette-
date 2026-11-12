@@ -1,5 +1,5 @@
 /*
- * ARVÉO — articles « conseils ».
+ * Couvreur Proximité 34 — articles « conseils ».
  * Chaque article a son angle propre. Liens internes au format [ancre](/chemin).
  * Après modification : node scripts/build.mjs
  */
@@ -11,7 +11,7 @@ export const ARTICLES = [
   {
     slug: "fuite-toiture-que-faire",
     titre: "Fuite de toiture, que faire en attendant le couvreur",
-    title: "Fuite de toiture, que faire en attendant | ARVÉO",
+    title: "Fuite de toiture, que faire en attendant | Couvreur Proximité 34",
     description:
       "Une fuite de toiture se déclare ? Les bons gestes en attendant le couvreur, sécurité, électricité, protection des meubles, et les infos utiles au diagnostic.",
     chapo:
@@ -142,7 +142,7 @@ export const ARTICLES = [
   {
     slug: "toiture-apres-tramontane",
     titre: "Toiture après un coup de tramontane, les points à vérifier",
-    title: "Toiture après la tramontane, que vérifier | ARVÉO",
+    title: "Toiture après la tramontane, que vérifier | Couvreur Proximité 34",
     description:
       "Après plusieurs jours de tramontane, tuiles soulevées, rives, faîtage, gouttières. Ce qu'on vérifie depuis le sol et ce qu'il faut confier à un couvreur.",
     chapo:
@@ -277,7 +277,7 @@ export const ARTICLES = [
   {
     slug: "tuile-canal-romane-mecanique",
     titre: "Tuile canal, romane ou mécanique, laquelle pour votre maison dans l'Hérault",
-    title: "Tuile canal, romane ou mécanique dans l'Hérault | ARVÉO",
+    title: "Tuile canal, romane ou mécanique dans l'Hérault | Couvreur Proximité 34",
     description:
       "Tuile canal, romane ou mécanique ? Différences de pose, de poids, d'aspect et de contraintes locales pour bien choisir la couverture de votre maison.",
     chapo:
@@ -402,7 +402,7 @@ export const ARTICLES = [
   {
     slug: "refaire-ou-reparer-toiture",
     titre: "Quand faut-il refaire sa toiture plutôt que la réparer",
-    title: "Refaire ou réparer sa toiture, comment choisir | ARVÉO",
+    title: "Refaire ou réparer sa toiture, comment choisir | Couvreur Proximité 34",
     description:
       "Réparer ou refaire sa toiture ? Signes d'usure, état des liteaux et de l'écran, réfection par pan. Les critères concrets pour décider avec votre couvreur.",
     chapo:
@@ -545,7 +545,7 @@ export const ARTICLES = [
   {
     slug: "travaux-toiture-autorisation-urbanisme",
     titre: "Travaux de toiture et autorisations d'urbanisme",
-    title: "Toiture et autorisations d'urbanisme | ARVÉO",
+    title: "Toiture et autorisations d'urbanisme | Couvreur Proximité 34",
     description:
       "Déclaration préalable, permis, PLU, abords de monuments historiques. Les repères pour savoir quelles démarches vérifier en mairie avant vos travaux de toit.",
     chapo:
@@ -665,7 +665,7 @@ export const ARTICLES = [
   {
     slug: "demoussage-toiture-saison",
     titre: "Démoussage de toiture, la bonne saison et les erreurs à éviter",
-    title: "Démoussage de toiture, quelle saison choisir | ARVÉO",
+    title: "Démoussage de toiture, quelle saison choisir | Couvreur Proximité 34",
     description:
       "Quand démousser sa toiture dans l'Hérault, automne ou printemps ? Les erreurs à éviter, haute pression, produits mal choisis, et le rôle de l'hydrofuge.",
     chapo:

@@ -1278,3 +1278,13 @@ main { position: relative; z-index: 1; }
 .apparait { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
 .apparait.est-vu { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) { .apparait { opacity: 1; transform: none; transition: none; } }
+
+/* Nom de l'entreprise sur une ligne dans l'en-tête du téléphone */
+@media (max-width: 859px) {
+  .entete .logo__nom { font-size: 1.12rem; white-space: nowrap; letter-spacing: 0; }
+}
+@media (max-width: 374px) {
+  .entete .logo__nom { font-size: 1rem; }
+  .entete .logo__marque { width: 36px; }
+  .entete__menu { font-size: 0; gap: 0; padding-inline: 11px; }
+}

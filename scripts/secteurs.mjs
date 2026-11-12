@@ -1,6 +1,6 @@
-// À CONFIRMER : secteurs desservis à valider avec ARVÉO
+// À CONFIRMER : secteurs desservis à valider avec Couvreur Proximité 34
 /*
- * ARVÉO — pages secteurs (/secteur/<slug>).
+ * Couvreur Proximité 34 — pages secteurs (/secteur/<slug>).
  * Chaque secteur a un texte propre. Les communes listées sont celles affichées
  * sur la page, communes avec page dédiée comprises.
  */
@@ -9,9 +9,9 @@ export const SECTEURS = [
   {
     slug: "bassin-de-thau",
     nom: "Bassin de Thau",
-    title: "Couvreur Bassin de Thau, de Sète à Mèze | ARVÉO",
+    title: "Couvreur Bassin de Thau, de Sète à Mèze | Couvreur Proximité 34",
     description:
-      "Couvreur dans le Bassin de Thau, ARVÉO intervient depuis Frontignan à Sète, Balaruc, Mèze, Marseillan et Poussan. Réparation, réfection et dépannage.",
+      "Couvreur dans le Bassin de Thau, on intervient depuis Frontignan à Sète, Balaruc, Mèze, Marseillan et Poussan. Réparation, réfection et dépannage.",
     h1: "Couvreur dans le Bassin de Thau",
     chapo:
       "Le Bassin de Thau est notre secteur de proximité. Installés à Frontignan, nous intervenons autour de l'étang, de Sète à Marseillan, et jusqu'aux villages de la Gardiole, pour réparer, entretenir ou refaire votre toiture.",
@@ -38,7 +38,7 @@ export const SECTEURS = [
       "L'étang de Thau dessine un paysage à part. D'un côté, le mont Saint-Clair et le port de [Sète](/couvreur/sete). De l'autre, les parcs à huîtres de Bouzigues et de [Mèze](/couvreur/meze), puis les vignes du picpoul qui s'étirent vers Pinet et Pomérols. À l'est, le massif de la Gardiole ferme l'horizon au-dessus de Gigean, de Vic-la-Gardiole et de Mireval. Marseillan, au sud-ouest, garde son port tourné vers la lagune.",
       "Le bâti reflète cette double culture, maritime et viticole. Les centres anciens alignent des maisons de pêcheurs et de vignerons couvertes de tuiles canal sur génoises. Autour, les résidences de bord d'étang et les lotissements récents ont plutôt des tuiles romanes ou mécaniques. Les zones d'activité ajoutent leurs bâtiments en bac acier. Pour les dégâts courants, notre service de [remplacement de tuiles](/services/remplacement-tuiles) traite tuiles cassées, glissées ou poreuses. Dans les villages vignerons comme Villeveyrac ou Loupian, d'anciennes caves et remises ajoutent de grandes toitures à surveiller.",
       "Le climat de la lagune impose ses règles. Le sel et l'humidité usent la zinguerie et nourrissent les mousses sur les versants nord. La tramontane soulève faîtières et rives, surtout dans les villages adossés à la Gardiole. Les pluies d'automne, enfin, révèlent la moindre faiblesse d'une noue ou d'un solin. Une révision en fin d'été reste la meilleure prévention. Sur les toits plats des résidences, ce sont les relevés et les évacuations qui demandent de l'attention.",
-      "ARVÉO est installé à [Frontignan](/couvreur/frontignan). Dans ce secteur, nous sommes chez nous. Une fuite à Balaruc, à Poussan ou à Mèze se traite au plus vite, sans attendre une tournée, et on vous rappelle dans la journée. Pour un projet, on vient faire le diagnostic à la date qui vous convient. Chaque commune a sa page, avec ses particularités, et la page [devis toiture](/devis-toiture) vous permet de décrire votre besoin.",
+      "Couvreur Proximité 34 est installé à [Frontignan](/couvreur/frontignan). Dans ce secteur, nous sommes chez nous. Une fuite à Balaruc, à Poussan ou à Mèze se traite au plus vite, sans attendre une tournée, et on vous rappelle dans la journée. Pour un projet, on vient faire le diagnostic à la date qui vous convient. Chaque commune a sa page, avec ses particularités, et la page [devis toiture](/devis-toiture) vous permet de décrire votre besoin.",
     ],
     toitures: [
       "Tuiles canal anciennes sur génoises dans les centres de Sète, Frontignan, Mèze et Poussan.",
@@ -65,12 +65,12 @@ export const SECTEURS = [
   {
     slug: "montpellier-metropole",
     nom: "Montpellier Métropole",
-    title: "Couvreur Montpellier et Métropole | ARVÉO",
+    title: "Couvreur Montpellier et Métropole | Couvreur Proximité 34",
     description:
-      "Couvreur à Montpellier, Lattes, Castelnau-le-Lez, Pérols et alentours. ARVÉO, de Frontignan, organise diagnostic et travaux de toiture sur rendez-vous.",
+      "Couvreur à Montpellier, Lattes, Castelnau-le-Lez, Pérols et alentours. Depuis Frontignan, diagnostic et travaux de toiture sur rendez-vous.",
     h1: "Couvreur à Montpellier et dans sa métropole",
     chapo:
-      "Ce secteur regroupe Montpellier, plusieurs communes de la Métropole et des communes voisines du Pays de l'Or et du Grand Pic Saint-Loup. ARVÉO s'y déplace depuis Frontignan, sur rendez-vous, pour réparer, entretenir ou refaire votre toiture.",
+      "Ce secteur regroupe Montpellier, plusieurs communes de la Métropole et des communes voisines du Pays de l'Or et du Grand Pic Saint-Loup. Couvreur Proximité 34 s'y déplace depuis Frontignan, sur rendez-vous, pour réparer, entretenir ou refaire votre toiture.",
     communes: [
       "Montpellier",
       "Lattes",
@@ -128,12 +128,12 @@ export const SECTEURS = [
   {
     slug: "lunellois",
     nom: "Lunellois",
-    title: "Couvreur à Lunel et dans le Lunellois | ARVÉO",
+    title: "Couvreur à Lunel et dans le Lunellois | Couvreur Proximité 34",
     description:
-      "Couvreur à Lunel et dans le Lunellois, ARVÉO organise depuis Frontignan diagnostic, réparation et réfection de toiture sur rendez-vous, visites groupées.",
+      "Couvreur à Lunel et dans le Lunellois, on organise depuis Frontignan diagnostic, réparation et réfection de toiture sur rendez-vous, visites groupées.",
     h1: "Couvreur dans le Lunellois",
     chapo:
-      "Entre Montpellier et la Camargue, le Lunellois a ses vignes, ses manades et son Vidourle. ARVÉO y planifie ses déplacements depuis Frontignan pour diagnostiquer, réparer ou refaire les toitures de Lunel et des villages voisins.",
+      "Entre Montpellier et la Camargue, le Lunellois a ses vignes, ses manades et son Vidourle. Couvreur Proximité 34 y planifie ses déplacements depuis Frontignan pour diagnostiquer, réparer ou refaire les toitures de Lunel et des villages voisins.",
     communes: [
       "Lunel",
       "Lunel-Viel",
@@ -176,12 +176,12 @@ export const SECTEURS = [
   {
     slug: "biterrois",
     nom: "Biterrois",
-    title: "Couvreur Béziers et Biterrois | ARVÉO",
+    title: "Couvreur Béziers et Biterrois | Couvreur Proximité 34",
     description:
-      "Couvreur à Béziers, Sérignan, Valras-Plage et dans le Biterrois. ARVÉO, basé à Frontignan, planifie diagnostic et travaux de toiture sur rendez-vous.",
+      "Couvreur à Béziers, Sérignan, Valras-Plage et dans le Biterrois. Depuis Frontignan, diagnostic et travaux de toiture planifiés sur rendez-vous.",
     h1: "Couvreur dans le Biterrois",
     chapo:
-      "De Béziers au littoral de Valras-Plage, le Biterrois réunit centres anciens, villages vignerons et stations balnéaires. ARVÉO y organise des déplacements planifiés depuis Frontignan, pour le diagnostic, la réparation et la réfection des toitures.",
+      "De Béziers au littoral de Valras-Plage, le Biterrois réunit centres anciens, villages vignerons et stations balnéaires. Couvreur Proximité 34 y organise des déplacements planifiés depuis Frontignan, pour le diagnostic, la réparation et la réfection des toitures.",
     communes: [
       "Béziers",
       "Sérignan",
@@ -231,12 +231,12 @@ export const SECTEURS = [
   {
     slug: "agde-pezenas",
     nom: "Agde et Pézenas",
-    title: "Couvreur Agde et Pézenas | ARVÉO",
+    title: "Couvreur Agde et Pézenas | Couvreur Proximité 34",
     description:
-      "Couvreur à Agde, au Cap d'Agde et à Pézenas. ARVÉO, couvreur de Frontignan, planifie diagnostic, réparation et réfection de toiture sur rendez-vous.",
+      "Couvreur à Agde, au Cap d'Agde et à Pézenas. Depuis Frontignan, diagnostic, réparation et réfection de toiture planifiés sur rendez-vous.",
     h1: "Couvreur à Agde et à Pézenas",
     chapo:
-      "D'Agde, la cité de basalte, à Pézenas et ses hôtels particuliers, ce secteur relie le littoral à la vallée de l'Hérault. ARVÉO s'y rend depuis Frontignan sur rendez-vous, avec des visites regroupées et des chantiers préparés.",
+      "D'Agde, la cité de basalte, à Pézenas et ses hôtels particuliers, ce secteur relie le littoral à la vallée de l'Hérault. Couvreur Proximité 34 s'y rend depuis Frontignan sur rendez-vous, avec des visites regroupées et des chantiers préparés.",
     communes: [
       "Agde",
       "Pézenas",
@@ -281,12 +281,12 @@ export const SECTEURS = [
   {
     slug: "clermontais-lodevois",
     nom: "Clermontais et Lodévois",
-    title: "Couvreur Clermontais et Lodévois | ARVÉO",
+    title: "Couvreur Clermontais et Lodévois | Couvreur Proximité 34",
     description:
-      "Couvreur à Clermont-l'Hérault, Lodève et autour du Salagou. ARVÉO, de Frontignan, organise diagnostic et travaux de toiture sur rendez-vous planifié.",
+      "Couvreur à Clermont-l'Hérault, Lodève et autour du Salagou. Depuis Frontignan, diagnostic et travaux de toiture sur rendez-vous planifié.",
     h1: "Couvreur dans le Clermontais et le Lodévois",
     chapo:
-      "Du lac du Salagou aux contreforts du Larzac, le Clermontais et le Lodévois ont des toitures marquées par les écarts de température et les pluies cévenoles. ARVÉO y intervient sur rendez-vous, lors de déplacements planifiés depuis Frontignan.",
+      "Du lac du Salagou aux contreforts du Larzac, le Clermontais et le Lodévois ont des toitures marquées par les écarts de température et les pluies cévenoles. Couvreur Proximité 34 y intervient sur rendez-vous, lors de déplacements planifiés depuis Frontignan.",
     communes: [
       "Clermont-l'Hérault",
       "Lodève",
@@ -332,12 +332,12 @@ export const SECTEURS = [
   {
     slug: "hauts-cantons",
     nom: "Hauts cantons",
-    title: "Couvreur Bédarieux et Hauts cantons | ARVÉO",
+    title: "Couvreur Bédarieux et Hauts cantons | Couvreur Proximité 34",
     description:
-      "Couvreur à Bédarieux et dans les Hauts cantons de l'Hérault. ARVÉO, de Frontignan, planifie diagnostic, réparation et réfection de toiture sur rendez-vous.",
+      "Couvreur à Bédarieux et dans les Hauts cantons de l'Hérault. Depuis Frontignan, diagnostic, réparation et réfection de toiture sur rendez-vous.",
     h1: "Couvreur dans les Hauts cantons de l'Hérault",
     chapo:
-      "Dans les Hauts cantons, la montagne commence. Vallée de l'Orb, Caroux, Espinouse, chaque village a son toit et son climat. ARVÉO s'y déplace depuis Frontignan sur rendez-vous planifié, pour le diagnostic, la réparation et la réfection.",
+      "Dans les Hauts cantons, la montagne commence. Vallée de l'Orb, Caroux, Espinouse, chaque village a son toit et son climat. Couvreur Proximité 34 s'y déplace depuis Frontignan sur rendez-vous planifié, pour le diagnostic, la réparation et la réfection.",
     communes: [
       "Bédarieux",
       "Lamalou-les-Bains",

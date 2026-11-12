@@ -1,5 +1,5 @@
 /*
- * ARVÉO — images de partage (Open Graph) 1200 × 630 par page.
+ * Couvreur Proximité 34 — images de partage (Open Graph) 1200 × 630 par page.
  * Gabarit SVG (fond ardoise, dessin de la toiture, logo, titre) rendu en PNG par sharp.
  * Les polices du site sont fournies en TTF dans scripts/og-polices/ (licence OFL).
  * Une image n'est régénérée que si son texte change (empreinte dans scripts/.og-cache.json).
@@ -14,7 +14,7 @@ const ICI = path.dirname(new URL(import.meta.url).pathname);
 const RACINE = path.resolve(ICI, "..");
 const SORTIE = path.join(RACINE, "img", "og");
 const CACHE = path.join(ICI, ".og-cache.json");
-const VERSION_GABARIT = "4";
+const VERSION_GABARIT = "5";
 
 const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
@@ -48,7 +48,7 @@ function gabarit({ titre, sousTitre, type, pied = "arveo.fr" }) {
   <svg x="600" y="150" width="680" height="420" viewBox="301 306 1028 628" opacity=".45">${toit}</svg>
   <rect x="0" y="600" width="1200" height="30" fill="#C65D28"/>
   <svg x="72" y="62" width="98" height="52" viewBox="40 25 945 500">${marque}</svg>
-  <text x="186" y="98" font-family="ARV Titre" font-size="34" fill="#F7F5F0" letter-spacing="1">ARVÉO</text>
+  <text x="186" y="98" font-family="ARV Titre" font-size="30" fill="#F7F5F0" letter-spacing="0.5">Couvreur Proximité 34</text>
   <text x="72" y="${yTitre - taille - 8}" font-family="ARV Mono" font-size="24" fill="#EE8E55">${esc(type)}</text>
   ${tl.map((l, i) => `<text x="72" y="${yTitre + i * taille * 1.1}" font-family="ARV Titre" font-size="${taille}" fill="#F7F5F0">${esc(l)}</text>`).join("\n  ")}
   <text x="72" y="${yTitre + (tl.length - 1) * taille * 1.1 + 64}" font-family="ARV Texte" font-size="28" fill="#D3DCE3">${esc(sousTitre)}</text>

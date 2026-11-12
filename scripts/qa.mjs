@@ -1,5 +1,5 @@
 /*
- * ARVÉO — contrôle qualité SEO, appelé à la fin de scripts/build.mjs.
+ * Couvreur Proximité 34 — contrôle qualité SEO, appelé à la fin de scripts/build.mjs.
  * Vérifie chaque page générée : title, description, h1, hiérarchie des titres, liens internes,
  * textes alternatifs, sitemap, canonical et similarité des contenus.
  * Aucune dépendance : petit analyseur de balises suffisant pour le HTML produit par le build.

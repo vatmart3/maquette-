@@ -1,4 +1,4 @@
-# ARVÉO — site du couvreur zingueur de Frontignan
+# Couvreur Proximité 34 — site du couvreur zingueur de Frontignan
 
 Site statique (HTML, CSS, JavaScript vanilla, Three.js 0.169.0 par CDN) + une fonction Vercel qui
 envoie les formulaires par e-mail. Réalisé par MJAGENCY.
@@ -60,7 +60,7 @@ bouton « Rappeler », objet marqué URGENT si besoin, adresse du client en « r
 3. Dans Vercel → Project → Settings → Environment Variables :
    - `RESEND_API_KEY` : la clé API Resend
    - `ARVEO_EMAIL_TO` : l'adresse qui reçoit les demandes (plusieurs possibles, séparées par des virgules)
-   - `ARVEO_EMAIL_FROM` : `Site ARVÉO <site@arveo.fr>`
+   - `ARVEO_EMAIL_FROM` : `Site Couvreur Proximité 34 <site@arveo.fr>`
    - `ARVEO_ACCUSE` : `1` pour envoyer un accusé de réception au demandeur (facultatif)
 4. Redéployer, puis faire une demande de test depuis le site.
 
@@ -96,7 +96,7 @@ Fait dans le site :
 
 ## Ajouter des photos de chantier
 
-Uniquement de **vraies** photos de chantiers ARVÉO. Sans photo, aucune section photo n'apparaît.
+Uniquement de **vraies** photos de chantiers Couvreur Proximité 34. Sans photo, aucune section photo n'apparaît.
 
 1. Déposez les originaux dans `photos/`, nommés `commune__service__description.jpg`
    (ex. `sete__refection-toiture__tuiles-canal-reposées.jpg`, voir `photos/LISEZMOI.md`).
@@ -135,7 +135,7 @@ n'est nécessaire, la page Confidentialité s'adapte toute seule.
 
 ## Identité visuelle
 
-Charte ARVÉO : bleu ardoise `#243746`, orange `#C65D28` (boutons en `#B9541F` pour le contraste AA
+Charte Couvreur Proximité 34 : bleu ardoise `#243746`, orange `#C65D28` (boutons en `#B9541F` pour le contraste AA
 avec le blanc), blanc cassé `#F7F5F0`, gris clair `#E5E7EB`, anthracite `#1F2933`.
 Manrope (titres), Inter (texte), DM Mono (données : téléphone, références). Logo « AV » redessiné en
 vectoriel (`img/arveo-mark.svg`) d'après la planche de charte : à remplacer par le fichier source

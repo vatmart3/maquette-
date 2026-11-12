@@ -1,6 +1,6 @@
 // Contenu SEO local des pages « Couvreur à <commune> » pour les communes de l'Hérault hors noyau Frontignan.
 // Chaque entrée alimente une page /couvreur/<slug> (chapô, texte, vigilance, FAQ, meta description).
-// À CONFIRMER : secteurs desservis à valider avec ARVÉO
+// À CONFIRMER : secteurs desservis à valider avec Couvreur Proximité 34
 
 export const VILLES_HERAULT = [
   {
@@ -10,15 +10,15 @@ export const VILLES_HERAULT = [
     lng: 3.6058,
     secteur: "bassin-de-thau",
     description:
-      "Couvreur à Mèze (34140), au bord de l'étang de Thau. ARVÉO répare tuiles canal, génoises et zinguerie des maisons du port et des quartiers récents.",
+      "Couvreur à Mèze (34140), au bord de l'étang de Thau. On répare tuiles canal, génoises et zinguerie des maisons du port et des quartiers récents.",
     intro:
-      "Mèze vit face à l'étang de Thau, entre son port, ses parcs conchylicoles et ses vignes. ARVÉO, installé à Frontignan, entretient et répare les toitures du village ancien comme celles des quartiers plus récents.",
+      "Mèze vit face à l'étang de Thau, entre son port, ses parcs conchylicoles et ses vignes. Couvreur Proximité 34, installé à Frontignan, entretient et répare les toitures du village ancien comme celles des quartiers plus récents.",
     accent: "Maisons de pêcheurs, mas viticoles et brises humides de l'étang",
     texte: [
       "Autour du port, le centre ancien aligne des maisons de pêcheurs et de vignerons serrées les unes contre les autres. Leurs toits en tuiles canal reposent souvent sur des charpentes anciennes, avec des génoises à deux ou trois rangs en bas de pente. Quand une tuile glisse ou qu'un faîtage se fissure, l'eau suit la maçonnerie et ressort parfois deux étages plus bas. On démonte alors la zone, on contrôle les liteaux et les chevrons, puis on repose les tuiles d'origine dès qu'elles sont saines. Sur les maisons de pêcheurs, les greniers sont souvent bas, ce qui oblige à travailler surtout par l'extérieur.",
       "En périphérie du village, les lotissements des dernières décennies portent surtout des tuiles romanes ou mécaniques. Ces couvertures récentes souffrent moins du temps que des détails mal finis, comme une rive ébranlée, un closoir absent ou une noue encombrée. Les anciens mas et bâtiments viticoles ont de grands versants et des chéneaux qu'il faut inspecter avec méthode, car une fuite y passe longtemps inaperçue.",
       "L'étang apporte une humidité constante. Les versants nord se couvrent de mousses et de lichens, et la zinguerie s'oxyde plus vite qu'à l'intérieur des terres. Avant l'automne, on recommande un [démoussage doux de la toiture](/services/demoussage-toiture) et le nettoyage des gouttières. Les coups de tramontane qui balaient l'étang déplacent aussi les tuiles mal scellées. Les mas conchylicoles du bord de l'étang ont souvent des hangars en bac acier ou en plaques, dont les fixations souffrent du même air salin.",
-      "Depuis Frontignan, on rejoint Mèze en contournant le nord de l'étang par Balaruc. ARVÉO intervient donc régulièrement sur la commune et dans les villages voisins, présentés sur la page [secteur Bassin de Thau](/secteur/bassin-de-thau).",
+      "Depuis Frontignan, on rejoint Mèze en contournant le nord de l'étang par Balaruc. Couvreur Proximité 34 intervient donc régulièrement sur la commune et dans les villages voisins, présentés sur la page [secteur Bassin de Thau](/secteur/bassin-de-thau).",
     ],
     vigilance: [
       "Génoises fissurées sur les maisons du centre, par où l'eau gagne les murs mitoyens.",
@@ -49,7 +49,7 @@ export const VILLES_HERAULT = [
     lng: 3.5297,
     secteur: "bassin-de-thau",
     description:
-      "Couvreur à Marseillan (34340), village et plage. ARVÉO répare tuiles, faîtages et zinguerie des maisons anciennes et des résidences exposées au sel.",
+      "Couvreur à Marseillan (34340), village et plage. On répare tuiles, faîtages et zinguerie des maisons anciennes et des résidences exposées au sel.",
     intro:
       "Entre l'étang de Thau et la mer, Marseillan a deux visages, le vieux village et son port d'un côté, Marseillan-Plage et ses résidences de l'autre. Chaque partie de la commune pose ses propres questions de couverture.",
     accent: "Du port aux résidences de la plage, deux toitures, deux méthodes",
@@ -89,9 +89,9 @@ export const VILLES_HERAULT = [
     lng: 3.8767,
     secteur: "montpellier-metropole",
     description:
-      "Couvreur à Montpellier (34000), de l'Écusson aux quartiers récents. ARVÉO, basé à Frontignan, répare toitures, zinguerie et toits terrasses.",
+      "Couvreur à Montpellier (34000), de l'Écusson aux quartiers récents. Couvreur Proximité 34, basé à Frontignan, répare toitures, zinguerie et toits terrasses.",
     intro:
-      "À Montpellier, une même rue peut aligner un immeuble du XVIIe siècle, une copropriété des années 1970 et un toit terrasse récent. ARVÉO intervient pour les particuliers et les syndics, depuis Frontignan, sur rendez-vous.",
+      "À Montpellier, une même rue peut aligner un immeuble du XVIIe siècle, une copropriété des années 1970 et un toit terrasse récent. Couvreur Proximité 34 intervient pour les particuliers et les syndics, depuis Frontignan, sur rendez-vous.",
     accent: "Écusson, copropriétés et toits terrasses dans une même ville",
     texte: [
       "Dans l'Écusson, le centre historique, les immeubles anciens et les hôtels particuliers portent des toitures en tuiles canal, souvent imbriquées les unes dans les autres. L'accès se fait par des rues étroites et parfois piétonnes, ce qui impose de prévoir le levage, l'échafaudage et les autorisations de voirie. Le secteur est protégé et l'aspect des couvertures compte. Renseignez-vous en mairie avant de lancer une réfection, notre page sur les [autorisations d'urbanisme pour une toiture](/conseils/travaux-toiture-autorisation-urbanisme) résume les démarches courantes.",
@@ -129,7 +129,7 @@ export const VILLES_HERAULT = [
     lng: 3.9014,
     secteur: "montpellier-metropole",
     description:
-      "Couvreur à Lattes (34970), Port Ariane, Boirargues, Maurin. ARVÉO répare tuiles, gouttières et étanchéité des maisons proches du Lez et des étangs.",
+      "Couvreur à Lattes (34970), Port Ariane, Boirargues, Maurin. On répare tuiles, gouttières et étanchéité des maisons proches du Lez et des étangs.",
     intro:
       "Lattes s'étend des rives du Lez aux étangs, entre Port Ariane, Boirargues et Maurin. Sur ces terres basses et humides, les toitures demandent un entretien régulier, surtout du côté des gouttières et des évacuations.",
     accent: "Terres basses, Lez et étangs, l'eau de pluie doit partir vite",
@@ -169,7 +169,7 @@ export const VILLES_HERAULT = [
     lng: 3.9019,
     secteur: "montpellier-metropole",
     description:
-      "Couvreur à Castelnau-le-Lez (34170). Réparation de toiture, zinguerie, démoussage et recherche de fuite pour villas et copropriétés, par ARVÉO.",
+      "Couvreur à Castelnau-le-Lez (34170). Réparation de toiture, zinguerie, démoussage et recherche de fuite pour villas et copropriétés, par Couvreur Proximité 34.",
     intro:
       "Collée à Montpellier, Castelnau-le-Lez domine la vallée du Lez depuis son vieux village. Villas des années 1970, résidences récentes et maisons anciennes s'y côtoient, chacune avec ses faiblesses de toiture.",
     accent: "Villas des années 1970 et copropriétés le long de la vallée du Lez",
@@ -208,7 +208,7 @@ export const VILLES_HERAULT = [
     lng: 3.9531,
     secteur: "montpellier-metropole",
     description:
-      "Couvreur à Pérols (34470), près des étangs. ARVÉO répare tuiles, gouttières et zinguerie des maisons du village, des lotissements et des locaux pros.",
+      "Couvreur à Pérols (34470), près des étangs. On répare tuiles, gouttières et zinguerie des maisons du village, des lotissements et des locaux pros.",
     intro:
       "Pérols borde les étangs, entre Montpellier et le littoral, à côté de l'aéroport et du parc des expositions. Le vieux village, les lotissements et les zones commerciales y ont des toitures très différentes, traitées chacune à sa façon.",
     accent: "Vent marin, étangs et toitures de plain-pied à surveiller",
@@ -247,7 +247,7 @@ export const VILLES_HERAULT = [
     lng: 4.0083,
     secteur: "montpellier-metropole",
     description:
-      "Couvreur à Mauguio (34130) et Carnon. ARVÉO répare tuiles, zinguerie et toits terrasses, du village circulaire aux résidences du littoral.",
+      "Couvreur à Mauguio (34130) et Carnon. On répare tuiles, zinguerie et toits terrasses, du village circulaire aux résidences du littoral.",
     intro:
       "Mauguio réunit un village ancien au plan circulaire, une vaste plaine agricole et la station de Carnon au bord de la mer. Trois environnements différents, donc trois façons d'user une toiture.",
     accent: "Du village en cercle aux résidences de Carnon face à la mer",
@@ -287,7 +287,7 @@ export const VILLES_HERAULT = [
     lng: 3.9306,
     secteur: "montpellier-metropole",
     description:
-      "Couvreur à Palavas-les-Flots (34250). ARVÉO répare zinguerie, tuiles et toits terrasses rongés par les embruns, rive gauche comme rive droite.",
+      "Couvreur à Palavas-les-Flots (34250). On répare zinguerie, tuiles et toits terrasses rongés par les embruns, rive gauche comme rive droite.",
     intro:
       "À Palavas-les-Flots, les embruns arrivent jusqu'aux toits. Rive gauche ou rive droite du Lez, petites maisons de pêcheurs ou résidences du front de mer, la corrosion est l'adversaire principal de la couverture.",
     accent: "Embruns et corrosion, la zinguerie en première ligne",
@@ -295,7 +295,7 @@ export const VILLES_HERAULT = [
       "Palavas s'est développée sur un cordon de sable, coupée en deux par le Lez qui rejoint la mer au milieu de la ville. Les anciennes maisons de pêcheurs, basses et souvent mitoyennes, ont des toitures en tuiles canal ou romanes. Les résidences et petits immeubles du front de mer portent fréquemment des toits terrasses, avec des acrotères et des garde-corps métalliques. Dans les rues étroites du centre, l'accès des échafaudages se prépare avec soin, surtout en pleine saison quand la circulation est dense.",
       "Le sel est partout. Il ronge le zinc, perce les gouttières en acier galvanisé et fait gonfler la rouille sous les fixations. Une gouttière en zinc dure moins longtemps ici qu'à l'intérieur des terres, surtout quand les dépôts de sel ne sont jamais rincés par la pluie. On privilégie donc des crochets en inox, des soudures soignées et un contrôle régulier. Notre service [zinguerie et gouttières](/services/zinguerie-gouttieres) détaille les choix de matériaux.",
       "Le vent marin et les tempêtes d'hiver projettent de l'eau salée contre les façades et les rives de toiture. Les solins en mortier se fissurent, les abergements se décollent et l'eau s'infiltre derrière les relevés. Sur les toits terrasses, la membrane vieillit vite au soleil et au sel. Une inspection annuelle permet de repérer un relevé décollé avant qu'il ne laisse passer un orage. Le sable porté par le vent bouche aussi les évacuations.",
-      "Beaucoup de logements sont des résidences secondaires, vides en hiver. On peut passer après une tempête, prendre des photos et vous les transmettre. Pour ARVÉO, Palavas relève du [secteur Montpellier et alentours](/secteur/montpellier-metropole), à une vingtaine de minutes de Frontignan en voiture, et les visites se font sur rendez-vous. Hors saison, les chantiers sont plus simples à organiser.",
+      "Beaucoup de logements sont des résidences secondaires, vides en hiver. On peut passer après une tempête, prendre des photos et vous les transmettre. Pour Couvreur Proximité 34, Palavas relève du [secteur Montpellier et alentours](/secteur/montpellier-metropole), à une vingtaine de minutes de Frontignan en voiture, et les visites se font sur rendez-vous. Hors saison, les chantiers sont plus simples à organiser.",
     ],
     quartiers: ["Rive gauche", "Rive droite"],
     vigilance: [
@@ -327,7 +327,7 @@ export const VILLES_HERAULT = [
     lng: 3.8261,
     secteur: "montpellier-metropole",
     description:
-      "Couvreur à Saint-Jean-de-Védas (34430). ARVÉO entretient et répare les toitures du village, des lotissements et des locaux d'activité, depuis Frontignan.",
+      "Couvreur à Saint-Jean-de-Védas (34430). On entretient et répare les toitures du village, des lotissements et des locaux d'activité, depuis Frontignan.",
     intro:
       "Saint-Jean-de-Védas est la porte ouest de Montpellier, sur la route de Sète. Vieux village, quartiers pavillonnaires et zones d'activité y offrent des toitures variées, des tuiles canal au bac acier.",
     accent: "Village ancien, pavillons et zones d'activité près de Montpellier",
@@ -366,7 +366,7 @@ export const VILLES_HERAULT = [
     lng: 3.8106,
     secteur: "montpellier-metropole",
     description:
-      "Couvreur à Juvignac (34990). ARVÉO répare tuiles, faîtages, gouttières et toits terrasses des villas et résidences, de Fontcaude au vieux village.",
+      "Couvreur à Juvignac (34990). On répare tuiles, faîtages, gouttières et toits terrasses des villas et résidences, de Fontcaude au vieux village.",
     intro:
       "Juvignac a beaucoup grandi en quelques décennies, à l'ouest de Montpellier, le long de la Mosson. Villas autour du golf de Fontcaude, quartiers neufs et vieux village composent un bâti varié.",
     accent: "Villas, résidences neuves et garrigue au bord de la Mosson",
@@ -406,7 +406,7 @@ export const VILLES_HERAULT = [
     lng: 3.7975,
     secteur: "montpellier-metropole",
     description:
-      "Couvreur à Grabels (34790), au nord-ouest de Montpellier. ARVÉO répare toitures en tuiles, faîtages, gouttières et zinguerie des villas de la garrigue.",
+      "Couvreur à Grabels (34790), au nord-ouest de Montpellier. On répare toitures en tuiles, faîtages, gouttières et zinguerie des villas de la garrigue.",
     intro:
       "Grabels mêle un vieux village, des quartiers pavillonnaires et des maisons dispersées dans la garrigue. Ici, les orages violents et la végétation méditerranéenne dictent l'entretien des toitures.",
     accent: "Garrigue, orages d'automne et villas sur les coteaux",
@@ -445,7 +445,7 @@ export const VILLES_HERAULT = [
     lng: 3.8058,
     secteur: "montpellier-metropole",
     description:
-      "Couvreur à Saint-Gély-du-Fesc (34980), au nord de Montpellier. ARVÉO, basé à Frontignan, répare toitures et zinguerie sur rendez-vous planifié.",
+      "Couvreur à Saint-Gély-du-Fesc (34980), au nord de Montpellier. Couvreur Proximité 34, basé à Frontignan, répare toitures et zinguerie sur rendez-vous planifié.",
     intro:
       "Au nord de Montpellier, Saint-Gély-du-Fesc s'étend dans la garrigue, sur la route du pic Saint-Loup. La commune compte surtout des villas sur terrain arboré, aux toitures exposées au soleil, aux orages et au gel.",
     accent: "Villas dans la garrigue, entre pic Saint-Loup et Montpellier",
@@ -484,7 +484,7 @@ export const VILLES_HERAULT = [
     lng: 4.1356,
     secteur: "lunellois",
     description:
-      "Couvreur à Lunel (34400) et dans le Lunellois. ARVÉO, basé à Frontignan, répare toitures et gouttières sur rendez-vous, avec déplacement planifié.",
+      "Couvreur à Lunel (34400) et dans le Lunellois. Basés à Frontignan, nous réparons toitures et gouttières sur rendez-vous, avec un déplacement planifié.",
     intro:
       "Lunel s'étend dans la plaine, entre Montpellier et Nîmes, au milieu des vignes du muscat. Centre ancien, lotissements et mas agricoles y composent un bâti que nous visitons sur rendez-vous, depuis Frontignan.",
     accent: "Plaine du Lunellois, tuiles mécaniques et déplacement planifié",
@@ -523,7 +523,7 @@ export const VILLES_HERAULT = [
     lng: 3.2158,
     secteur: "biterrois",
     description:
-      "Couvreur à Béziers (34500), du vieux centre aux quartiers récents. ARVÉO répare tuiles, zinguerie et toits terrasses, sur rendez-vous depuis Frontignan.",
+      "Couvreur à Béziers (34500), du vieux centre aux quartiers récents. On répare tuiles, zinguerie et toits terrasses, sur rendez-vous depuis Frontignan.",
     intro:
       "Béziers s'étage sur sa colline au-dessus de l'Orb, couronnée par la cathédrale Saint-Nazaire. Vieux centre, immeubles bourgeois du XIXe siècle et quartiers pavillonnaires posent chacun leurs questions de toiture.",
     accent: "Vieux centre, immeubles du XIXe siècle et étés brûlants",
@@ -562,7 +562,7 @@ export const VILLES_HERAULT = [
     lng: 3.2775,
     secteur: "biterrois",
     description:
-      "Couvreur à Sérignan (34410), du village à Sérignan-Plage. ARVÉO répare tuiles, gouttières et zinguerie des maisons et villas, sur rendez-vous.",
+      "Couvreur à Sérignan (34410), du village à Sérignan-Plage. On répare tuiles, gouttières et zinguerie des maisons et villas, sur rendez-vous.",
     intro:
       "Sérignan s'étire du vieux village, au bord de l'Orb, jusqu'à Sérignan-Plage et ses résidences de vacances. Entre collégiale, lotissements et villas près de la mer, les toitures n'ont pas les mêmes besoins.",
     accent: "De la collégiale à Sérignan-Plage, au fil de l'Orb",
@@ -602,7 +602,7 @@ export const VILLES_HERAULT = [
     lng: 3.2908,
     secteur: "biterrois",
     description:
-      "Couvreur à Valras-Plage (34350), à l'embouchure de l'Orb. ARVÉO répare zinguerie, tuiles et toits terrasses exposés au sel, sur rendez-vous planifié.",
+      "Couvreur à Valras-Plage (34350), à l'embouchure de l'Orb. On répare zinguerie, tuiles et toits terrasses exposés au sel, sur rendez-vous planifié.",
     intro:
       "À Valras-Plage, la mer et l'Orb dessinent une station où les résidences de vacances côtoient les maisons habitées à l'année. Le sel, le sable et le vent fixent les priorités d'entretien des toitures.",
     accent: "Front de mer, résidences de vacances et toitures salées",
@@ -641,7 +641,7 @@ export const VILLES_HERAULT = [
     lng: 3.4758,
     secteur: "agde-pezenas",
     description:
-      "Couvreur à Agde (34300), du centre en pierre noire au Cap d'Agde. ARVÉO répare tuiles, zinguerie et toits terrasses de maisons et résidences.",
+      "Couvreur à Agde (34300), du centre en pierre noire au Cap d'Agde. On répare tuiles, zinguerie et toits terrasses de maisons et résidences.",
     intro:
       "Le vieux centre d'Agde est bâti en pierre basaltique noire, issue du volcan du mont Saint-Loup. Entre la cité ancienne, le Grau-d'Agde, la Tamarissière et le Cap d'Agde, les toitures affrontent le sel et le vent.",
     accent: "Pierre basaltique, résidences du Cap et air salin",
@@ -681,7 +681,7 @@ export const VILLES_HERAULT = [
     lng: 3.4228,
     secteur: "agde-pezenas",
     description:
-      "Couvreur à Pézenas (34120), centre historique et hôtels particuliers. ARVÉO répare et restaure les toitures en tuiles canal, sur rendez-vous planifié.",
+      "Couvreur à Pézenas (34120), centre historique et hôtels particuliers. On répare et restaure les toitures en tuiles canal, sur rendez-vous planifié.",
     intro:
       "Pézenas est connue pour son centre historique, ses hôtels particuliers et le souvenir de Molière. Travailler sur ces toits demande de la patience, du respect pour le bâti ancien et une préparation administrative.",
     accent: "Hôtels particuliers, secteur protégé et tuile canal ancienne",
@@ -720,7 +720,7 @@ export const VILLES_HERAULT = [
     lng: 3.4322,
     secteur: "clermontais-lodevois",
     description:
-      "Couvreur à Clermont-l'Hérault (34800), cœur d'Hérault. ARVÉO répare toitures en tuiles canal et zinguerie, avec déplacement planifié depuis Frontignan.",
+      "Couvreur à Clermont-l'Hérault (34800), cœur d'Hérault. On répare toitures en tuiles canal et zinguerie, avec déplacement planifié depuis Frontignan.",
     intro:
       "Au cœur de l'Hérault, Clermont-l'Hérault s'étage au pied de son ancien château, entre oliviers, vignes et lac du Salagou. Avec un climat plus contrasté qu'au bord de la mer et un bâti ancien en pente, les toitures y vivent autrement.",
     accent: "Ruelles en pente, tuile canal et climat plus contrasté",
@@ -759,7 +759,7 @@ export const VILLES_HERAULT = [
     lng: 3.3194,
     secteur: "clermontais-lodevois",
     description:
-      "Couvreur à Lodève (34700), au pied du Larzac. ARVÉO répare toitures anciennes et zinguerie face aux pluies cévenoles, avec déplacement planifié.",
+      "Couvreur à Lodève (34700), au pied du Larzac. On répare toitures anciennes et zinguerie face aux pluies cévenoles, avec déplacement planifié.",
     intro:
       "Lodève s'est installée au confluent de la Lergue et de la Soulondres, au pied du plateau du Larzac. Pluies cévenoles, bâti ancien en pierre et toits pentus font de chaque toiture un cas particulier.",
     accent: "Pluies cévenoles, pierre et toits anciens au pied du Larzac",
@@ -798,7 +798,7 @@ export const VILLES_HERAULT = [
     lng: 3.1567,
     secteur: "hauts-cantons",
     description:
-      "Couvreur à Bédarieux (34600), dans les Hauts cantons. ARVÉO répare toitures pentues, tuiles et zinguerie, sur rendez-vous avec déplacement planifié.",
+      "Couvreur à Bédarieux (34600), dans les Hauts cantons. On répare toitures pentues, tuiles et zinguerie, sur rendez-vous avec déplacement planifié.",
     intro:
       "Bédarieux, dans la vallée de l'Orb, ouvre sur les Hauts cantons de l'Hérault. Ici, les toits sont souvent plus pentus, les hivers plus rudes, et la neige tombe parfois, ce qui change la façon d'entretenir une couverture.",
     accent: "Hauts cantons, pentes fortes et hivers plus rudes",
