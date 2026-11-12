@@ -40,7 +40,7 @@
 </head>
 <body data-page="accueil">
   <a class="evitement" href="#contenu">Aller au contenu</a>
-  <div class="scene" data-scene aria-hidden="true"><picture><source media="(min-width: 860px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="><img class="scene__apercu" src="/img/toiture-mobile.webp?v=3f44984827" alt="" width="780" height="304" decoding="async"></picture></div>
+  <div class="scene" data-scene aria-hidden="true"><picture><source media="(min-width: 860px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="><img class="scene__apercu" src="/img/toiture-mobile.webp?v=7908e144f6" alt="" width="780" height="304" decoding="async"></picture></div>
   <div class="urgence">
     <div class="conteneur urgence__ligne">
       <p><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4 2.8 19.5h18.4zM12 10v4.5M12 17.2v.1"/></svg><span><strong>Urgence <span class="urgence__toiture">toiture </span>24&nbsp;h/24</strong><span class="urgence__long">Fuite, tuiles arrachées, dégâts après intempéries</span></span></p>
@@ -332,7 +332,7 @@
     // quelques secondes après le chargement (l'intro se joue alors si l'on est en haut de page) ;
     // l'aperçu image, rendu de la même scène, s'affiche en attendant.
     let fait = false;
-    const charger = () => { if (fait) return; fait = true; import("/scene.js?v=21e5d302ff"); };
+    const charger = () => { if (fait) return; fait = true; import("/scene.js?v=5007583663"); };
     if (matchMedia("(min-width: 860px)").matches) charger();
     else {
       ["touchstart", "scroll", "pointerdown", "keydown"].forEach((e) => addEventListener(e, charger, { once: true, passive: true }));

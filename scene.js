@@ -1,9 +1,10 @@
 /*
  * Couvreur Proximité 34 — « la toiture tracée au cordeau ».
- * Épure 3D (arêtes seulement) d'une toiture méditerranéenne en L : tuiles canal,
- * faîtage, rives, génoises, noues, charpente en écorché, zinguerie, cheminée,
- * fenêtre de toit, mousses. Tracée au cordeau à l'arrivée, puis pilotée par le
- * défilement (visite en 5 zones). Three.js 0.169.0 par import map, aucun modèle.
+ * Maison méditerranéenne en L, en couleurs : murs enduits, volets, toiture en tuiles
+ * (texture tirée d'une photo de tuiles réelles), faîtage, rives, génoises, noues,
+ * charpente en écorché, zinguerie, cheminée, fenêtre de toit, mousses. Tracée au
+ * cordeau à l'arrivée, puis pilotée par le défilement (visite en 5 zones).
+ * Three.js 0.169.0 par import map, aucun modèle.
  */
 import * as THREE from "three";
 import { LineSegments2 } from "three/addons/lines/LineSegments2.js";
@@ -14,14 +15,34 @@ const racine = document.querySelector("[data-scene]");
 const mobile = window.matchMedia("(max-width: 859px)").matches;
 const reduit = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-const C_TOIT = new THREE.Color("#A8CAE4");
-const C_MUR = new THREE.Color("#5B7C96");
 const C_ORANGE = new THREE.Color("#F0915A");
 const C_SOL = new THREE.Color("#3E5A72");
+const C_TERRE = new THREE.Color("#5B7C96");
 const FOND = new THREE.Color("#243746");
-// faces pleines (donnent le volume et masquent les arêtes cachées)
-const F_TOIT = new THREE.Color("#3D5F7C");
-const F_MUR = new THREE.Color("#2C4558");
+// arêtes, selon le matériau
+const LIGNES = {
+  mur: new THREE.Color("#A8957A"),     // enduit, un ton plus foncé que le mur
+  toit: new THREE.Color("#7A3418"),    // terre cuite foncée : rives, faîtage, génoises
+  bois: new THREE.Color("#B07A45"),    // charpente
+  zinc: new THREE.Color("#7D878F"),
+  etanche: new THREE.Color("#4F575E"), // solins, abergement
+  mousse: new THREE.Color("#7E9A3C"),
+};
+// faces pleines : couleurs réelles, ombrées selon la lumière
+const TEINTES = {
+  toit: new THREE.Color("#FFFFFF"),    // multiplié par la texture des tuiles
+  mur: new THREE.Color("#EADCC2"),     // enduit sable
+  chapeau: new THREE.Color("#A64B26"), // chapeau de cheminée en terre cuite
+  zinc: new THREE.Color("#A7B0B7"),
+  vitre: new THREE.Color("#2B3F4C"),
+  volet: new THREE.Color("#7FA39A"),   // volets vert d'eau
+  porte: new THREE.Color("#7A5236"),
+  cadre: new THREE.Color("#59626A"),
+  mousse: new THREE.Color("#5F7D2C"),
+};
+const TUILE_ATTENTE = new THREE.Color("#B8643C"); // teinte du toit avant le chargement de la texture
+const TEXTURE_TUILES = "/img/tuiles-toit.webp";
+const TU = 1.7, TV = 1.6; // une répétition de la texture = 4 tuiles de large, 4 rangs de haut
 const LUMIERE = new THREE.Vector3(-0.45, 0.85, 0.55).normalize();
 
 /* ------------------------------------------------------------------ */
@@ -69,16 +90,6 @@ const ECORCHE = -1.5;   // à gauche de x = -1,5 sur le versant nord : charpente
 const CHEM = { x0: -3.4, x1: -2.6, z0: 1.2, z1: 2.0, haut: 8.4 };
 const VELUX = { x0: -1.2, x1: -0.2, z0: 2.3, z1: 3.3 };
 
-function hors(x, zA, zB, o) {
-  // portions d'une ligne de tuile (z de zA à zB) qui évitent l'ouvrage o
-  if (x < o.x0 - 0.05 || x > o.x1 + 0.05) return [[zA, zB]];
-  const lo = Math.min(zA, zB), hi = Math.max(zA, zB);
-  const res = [];
-  if (o.z0 - 0.15 > lo) res.push([lo, Math.min(hi, o.z0 - 0.15)]);
-  if (o.z1 + 0.15 < hi) res.push([Math.max(lo, o.z1 + 0.15), hi]);
-  return res;
-}
-
 function arcTuile(p0, p1, bosse) {
   // petite courbe de tuile canal entre p0 et p1, bombée selon le vecteur bosse
   const m1 = p0.map((v, i) => v + (p1[i] - v) * 0.25 + bosse[i]);
@@ -86,6 +97,7 @@ function arcTuile(p0, p1, bosse) {
   poly([p0, m1, m2, p1]);
 }
 
+const MOUSSES = [];
 function construire() {
   /* --- Sol : le cordeau devient la ligne de terre --- */
   avec([], 0, "mur", () => {
@@ -125,42 +137,12 @@ function construire() {
     L([6, H, 4], [3.5, YB, 1.5]);
   });
 
-  /* --- Tuiles canal --- */
-  // versant nord de A (hors écorché) : aussi concerné par le démoussage
+  /* --- Tuiles canal : la surface du toit est texturée, seuls les bouts de tuiles à l'égout sont tracés --- */
   avec([0, 4], 4, "toit", () => {
-    for (let x = ECORCHE + S; x < 6 - 0.05; x += S) L([x, H, -4], [x, YA, 0]);
-    for (const t of [0.25, 0.5, 0.75]) L([ECORCHE, H + 4 * K * t, -4 * (1 - t)], [6, H + 4 * K * t, -4 * (1 - t)]);
     for (let x = ECORCHE; x < 6 - S / 2; x += S) arcTuile([x, H, -4], [x + S, H, -4], [0, 0.1, -0.05]);
   });
   avec([0], 4, "toit", () => {
-    // versant sud de A, coupé par les noues et les ouvrages
-    for (let x = -6 + S; x < 6 - 0.05; x += S) {
-      let zBas = 4;
-      if (x > 1 && x <= 3.5) zBas = 5 - x;
-      else if (x > 3.5) zBas = x - 2;
-      let morceaux = hors(x, 0, zBas, CHEM);
-      morceaux = morceaux.flatMap(([a, b]) => hors(x, a, b, VELUX));
-      for (const [a, b] of morceaux) L([x, yA(a), a], [x, yA(b), b]);
-    }
-    for (const t of [0.25, 0.5, 0.75]) {
-      const z = 4 * (1 - t), y = H + 4 * K * t;
-      if (z >= 1.5) {
-        L([-6, y, z], [5 - z, y, z]);
-        L([z + 2, y, z], [6, y, z]);
-      } else L([-6, y, z], [6, y, z]);
-    }
     for (let x = -6; x < 1 - S / 2; x += S) arcTuile([x, H, 4], [x + S, H, 4], [0, 0.1, 0.05]);
-    // aile B, deux versants
-    for (let z = 1.5 + S; z < 10 - 0.05; z += S) {
-      const xg = z < 4 ? 5 - z : 1, xd = z < 4 ? z + 2 : 6;
-      L([xg, yB(xg), z], [3.5, YB, z]);
-      L([xd, yB(xd), z], [3.5, YB, z]);
-    }
-    for (const t of [0.33, 0.66]) {
-      const xg = 1 + 2.5 * t, xd = 6 - 2.5 * t, y = H + 2.5 * K * t;
-      L([xg, y, 5 - xg], [xg, y, 10]);
-      L([xd, y, xd - 2], [xd, y, 10]);
-    }
     for (let z = 4; z < 10 - S / 2; z += S) {
       arcTuile([1, H, z], [1, H, z + S], [-0.05, 0.1, 0]);
       arcTuile([6, H, z], [6, H, z + S], [0.05, 0.1, 0]);
@@ -243,9 +225,11 @@ function construire() {
   avec([3], 3, "toit", () => {
     const c = CHEM;
     const base = [[c.x0, yA(c.z0), c.z0], [c.x1, yA(c.z0), c.z0], [c.x1, yA(c.z1), c.z1], [c.x0, yA(c.z1), c.z1]];
-    poly(base, true);
-    for (const p of base) L(p, [p[0], c.haut, p[2]]);
-    poly(base.map((p) => [p[0], c.haut, p[2]]), true);
+    avec([3], 3, "mur", () => {
+      poly(base, true);
+      for (const p of base) L(p, [p[0], c.haut, p[2]]);
+      poly(base.map((p) => [p[0], c.haut, p[2]]), true);
+    });
     const r = 0.1;
     poly([[c.x0 - r, c.haut, c.z0 - r], [c.x1 + r, c.haut, c.z0 - r], [c.x1 + r, c.haut, c.z1 + r], [c.x0 - r, c.haut, c.z1 + r]], true);
     poly([[c.x0 - r, c.haut + 0.16, c.z0 - r], [c.x1 + r, c.haut + 0.16, c.z0 - r], [c.x1 + r, c.haut + 0.16, c.z1 + r], [c.x0 - r, c.haut + 0.16, c.z1 + r]], true);
@@ -280,15 +264,30 @@ function construire() {
         pts.push([x, yA(z) + 0.05, z]);
       }
       poly(pts, true);
+      MOUSSES.push(pts);
     }
   });
 }
 
 construire();
 
+// couleur d'une arête selon le matériau qu'elle dessine
+for (const sg of segs) {
+  const z = sg.zones;
+  sg.coul =
+    sg.ordre === 0 ? C_TERRE
+    : sg.ton === "mur" ? LIGNES.mur
+    : z.includes(1) ? LIGNES.bois
+    : z.length === 1 && z[0] === 2 ? LIGNES.zinc
+    : z.length === 1 && z[0] === 3 ? LIGNES.etanche
+    : z.length === 1 && z[0] === 4 ? LIGNES.mousse
+    : LIGNES.toit;
+}
+
 /* --- Faces pleines --- */
 const faces = [];
-function F(tris, zones, ton) { faces.push({ tris, zones, ton }); }
+// centre : point (x, z) intérieur au volume, pour orienter les faces verticales vers l'extérieur
+function F(tris, zones, ton, centre) { faces.push({ tris, zones, ton, centre }); }
 const quad = (a, b, c, d) => [[a, b, c], [a, c, d]];
 
 function construireFaces() {
@@ -314,17 +313,47 @@ function construireFaces() {
   // cheminée
   const ch = CHEM;
   const bas = [[ch.x0, yA(ch.z0), ch.z0], [ch.x1, yA(ch.z0), ch.z0], [ch.x1, yA(ch.z1), ch.z1], [ch.x0, yA(ch.z1), ch.z1]];
+  const cc = [(ch.x0 + ch.x1) / 2, (ch.z0 + ch.z1) / 2];
   for (let i = 0; i < 4; i++) {
     const p0 = bas[i], p1 = bas[(i + 1) % 4];
-    F(quad(p0, p1, [p1[0], ch.haut, p1[2]], [p0[0], ch.haut, p0[2]]), [3], "mur");
+    F(quad(p0, p1, [p1[0], ch.haut, p1[2]], [p0[0], ch.haut, p0[2]]), [3], "mur", cc);
   }
-  F(quad(...bas.map((p) => [p[0], ch.haut, p[2]])), [3], "toit");
+  // chapeau en terre cuite (dalle débordante)
+  const r = 0.1, yc = ch.haut, yh = ch.haut + 0.16;
+  const ch4 = (y) => [[ch.x0 - r, y, ch.z0 - r], [ch.x1 + r, y, ch.z0 - r], [ch.x1 + r, y, ch.z1 + r], [ch.x0 - r, y, ch.z1 + r]];
+  const cb = ch4(yc), ct = ch4(yh);
+  F(quad(...ct), [3], "chapeau");
+  for (let i = 0; i < 4; i++) F(quad(cb[i], cb[(i + 1) % 4], ct[(i + 1) % 4], ct[i]), [3], "chapeau", cc);
+
+  // fenêtres et volets ouverts (façade sud du corps A), porte et fenêtres du pignon de l'aile B
+  const fenetre = (x, y, l, h, z, sens) => {
+    const p = (x0, y0, x1, y1, dz) => quad([x0, y0, z + sens * dz], [x1, y0, z + sens * dz], [x1, y1, z + sens * dz], [x0, y1, z + sens * dz]);
+    F(p(x, y, x + l, y + h, 0.03), [], "vitre");
+    F(p(x - l / 2, y, x, y + h, 0.05), [], "volet");
+    F(p(x + l, y, x + l * 1.5, y + h, 0.05), [], "volet");
+    F(p(x - 0.05, y - 0.1, x + l + 0.05, y, 0.06), [], "mur"); // appui
+  };
+  for (const x of [-4.6, -2.4]) for (const y of [1, 3.4]) fenetre(x, y, 1, 1.3, 4, 1);
+  for (const x of [1.6, 4.4]) fenetre(x, 3.2, 1, 1.2, 10, 1);
+  F(quad([2.9, 0, 10.03], [4.1, 0, 10.03], [4.1, 2.3, 10.03], [2.9, 2.3, 10.03]), [], "porte");
+
+  // fenêtre de toit : cadre et vitrage
+  const v = VELUX;
+  const cadre = (m, dy) => [[v.x0 + m, yA(v.z0 + m) + dy, v.z0 + m], [v.x1 - m, yA(v.z0 + m) + dy, v.z0 + m], [v.x1 - m, yA(v.z1 - m) + dy, v.z1 - m], [v.x0 + m, yA(v.z1 - m) + dy, v.z1 - m]];
+  F(quad(...cadre(-0.02, 0.13)), [3], "cadre");
+  F(quad(...cadre(0.12, 0.15)), [3], "vitre");
+
+  // touffes de mousse
+  for (const pts of MOUSSES) {
+    const c = pts.reduce((m, q) => [m[0] + q[0] / pts.length, m[1] + q[1] / pts.length, m[2] + q[2] / pts.length], [0, 0, 0]);
+    F(pts.map((q, i) => [c, q, pts[(i + 1) % pts.length]]), [4], "mousse");
+  }
 
   // zinguerie : gouttières, descentes et noues en surfaces pleines (pour être colorées)
   const g = (a, b, d) => {
     const o = (p, k, dy) => [p[0] + d[0] * k, p[1] + dy, p[2] + d[2] * k];
-    F(quad(o(a, 0.02, -0.06), o(b, 0.02, -0.06), o(b, 0.18, -0.24), o(a, 0.18, -0.24)), [2], "toit");
-    F(quad(o(a, 0.18, -0.24), o(b, 0.18, -0.24), o(b, 0.34, -0.06), o(a, 0.34, -0.06)), [2], "toit");
+    F(quad(o(a, 0.02, -0.06), o(b, 0.02, -0.06), o(b, 0.18, -0.24), o(a, 0.18, -0.24)), [2], "zinc");
+    F(quad(o(a, 0.18, -0.24), o(b, 0.18, -0.24), o(b, 0.34, -0.06), o(a, 0.34, -0.06)), [2], "zinc");
   };
   g([-6.1, H, -4], [6.1, H, -4], [0, 0, -1]);
   g([-6.1, H, 4], [1, H, 4], [0, 0, 1]);
@@ -333,11 +362,11 @@ function construireFaces() {
   for (const [x, z, dx, dz] of [[-5.7, -4, 0, -1], [5.7, -4, 0, -1], [-5.7, 4, 0, 1], [1, 9.7, -1, 0], [6, 9.7, 1, 0]]) {
     const px = x + dx * 0.18, pz = z + dz * 0.18, w = 0.08, h = H - 0.69;
     const e = (k, y) => [px + (dz ? k : 0), y, pz + (dx ? k : 0)];
-    F(quad(e(-w, 0.35), e(w, 0.35), e(w, h), e(-w, h)), [2], "toit");
+    F(quad(e(-w, 0.35), e(w, 0.35), e(w, h), e(-w, h)), [2], "zinc");
   }
   for (const sens of [-1, 1]) {
     const xb = sens < 0 ? 1 : 6;
-    F(quad([xb, H + 0.03, 4 - 0.22], [3.5, YB + 0.03, 1.5 - 0.22], [3.5 - sens * 0.18, YB + 0.03, 1.55], [xb - sens * 0.22, H + 0.03, 4]), [2], "toit");
+    F(quad([xb, H + 0.03, 4 - 0.22], [3.5, YB + 0.03, 1.5 - 0.22], [3.5 - sens * 0.18, YB + 0.03, 1.55], [xb - sens * 0.22, H + 0.03, 4]), [2], "zinc");
   }
 }
 construireFaces();
@@ -412,7 +441,7 @@ function demarrer() {
   const dpr = window.devicePixelRatio || 1;
   // Téléphone : densité plafonnée à 2 ; au-delà de 2 l'écran lisse déjà les traits, l'anticrénelage
   // matériel est alors coupé pour garder 60 images par seconde.
-  const optionsRendu = { antialias: !mobile || dpr < 2, alpha: true, powerPreference: mobile ? "high-performance" : "low-power" };
+  const optionsRendu = { antialias: !mobile || dpr < 2, alpha: true, stencil: true, powerPreference: mobile ? "high-performance" : "low-power" };
   const renderer = new THREE.WebGLRenderer(optionsRendu);
   renderer.setPixelRatio(Math.min(dpr, mobile ? 1.75 : 1.5));
   // Téléphone sans accélération graphique (rendu logiciel, très lent) : la scène est dessinée
@@ -457,28 +486,44 @@ function demarrer() {
   const couleurs = geo.attributes.instanceColorStart.data;
   scene.fog = new THREE.Fog(FOND, 30, 90);
 
-  /* --- Faces pleines, ombrées selon la lumière --- */
-  const fPos = [], fBase = [], fZones = [];
+  /* --- Faces pleines en couleurs réelles, ombrées selon la lumière --- */
+  // Deux maillages : le toit, texturé avec la photo des tuiles, et tout le reste (enduit,
+  // menuiseries, zinc, terre cuite). Les coordonnées de texture suivent la pente de chaque
+  // versant : les rangs de tuiles partent de l'égout et montent vers le faîtage.
   const nrm = new THREE.Vector3(), u = new THREE.Vector3(), w2 = new THREE.Vector3();
+  const monte = new THREE.Vector3(), long = new THREE.Vector3();
+  const nouveauLot = () => ({ pos: [], uv: [], base: [], zones: [], toit: [] });
+  const lotToit = nouveauLot(), lotAutre = nouveauLot();
   for (const f of faces) {
+    const lot = f.ton === "toit" ? lotToit : lotAutre;
     for (const [a, b, c] of f.tris) {
       u.set(b[0] - a[0], b[1] - a[1], b[2] - a[2]);
       w2.set(c[0] - a[0], c[1] - a[1], c[2] - a[2]);
       nrm.crossVectors(u, w2).normalize();
-      const k = 0.62 + 0.5 * Math.abs(nrm.dot(LUMIERE));
-      const base = (f.ton === "mur" ? F_MUR : F_TOIT).clone().multiplyScalar(k);
+      // normale tournée vers l'extérieur : vers le ciel pour les pans, hors du volume pour les murs
+      if (Math.abs(nrm.y) > 0.3) {
+        if (nrm.y < 0) nrm.negate();
+      } else {
+        const cx = (a[0] + b[0] + c[0]) / 3, cz = (a[2] + b[2] + c[2]) / 3;
+        const ctr = f.centre || (cz > 4.1 && cx > 0.9 ? [3.5, 7] : [0, 0]);
+        if (nrm.x * (cx - ctr[0]) + nrm.z * (cz - ctr[1]) < 0) nrm.negate();
+      }
+      const k = 0.56 + 0.52 * Math.max(0, nrm.dot(LUMIERE));
+      const base = TEINTES[f.ton].clone().multiplyScalar(k * k);
+      if (f.ton === "toit") {
+        monte.set(0, 1, 0).addScaledVector(nrm, -nrm.y).normalize();
+        long.crossVectors(monte, nrm);
+      }
       for (const p of [a, b, c]) {
-        fPos.push(...p);
-        fBase.push(base);
-        fZones.push(f.zones);
+        lot.pos.push(...p);
+        lot.base.push(base);
+        lot.zones.push(f.zones);
+        lot.toit.push(f.ton === "toit" || f.ton === "mousse");
+        if (f.ton === "toit") lot.uv.push((long.x * p[0] + long.y * p[1] + long.z * p[2]) / TU, (p[1] - H) / monte.y / TV);
       }
     }
   }
-  const facesGeo = new THREE.BufferGeometry();
-  facesGeo.setAttribute("position", new THREE.Float32BufferAttribute(fPos, 3));
-  const fCol = new Float32Array(fPos.length);
-  facesGeo.setAttribute("color", new THREE.BufferAttribute(fCol, 3));
-  const facesMat = new THREE.MeshBasicMaterial({
+  const optionsFaces = {
     vertexColors: true,
     side: THREE.DoubleSide,
     transparent: true,
@@ -487,10 +532,75 @@ function demarrer() {
     polygonOffsetFactor: 1.5,
     polygonOffsetUnits: 2,
     fog: true,
+  };
+  const maillages = [];
+  for (const lot of [lotAutre, lotToit]) {
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.Float32BufferAttribute(lot.pos, 3));
+    if (lot.uv.length) g.setAttribute("uv", new THREE.Float32BufferAttribute(lot.uv, 2));
+    lot.col = new Float32Array(lot.pos.length);
+    g.setAttribute("color", new THREE.BufferAttribute(lot.col, 3));
+    lot.geo = g;
+    lot.mat = new THREE.MeshBasicMaterial(optionsFaces);
+    const m = new THREE.Mesh(g, lot.mat);
+    m.renderOrder = 0;
+    groupe.add(m);
+    maillages.push(lot);
+  }
+  // Toit : teinte terre cuite unie le temps que la photo des tuiles arrive.
+  lotToit.mat.color.copy(TUILE_ATTENTE);
+  new THREE.TextureLoader().load(TEXTURE_TUILES, (tex) => {
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+    tex.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+    lotToit.mat.map = tex;
+    lotToit.mat.color.set(0xffffff);
+    lotToit.mat.needsUpdate = true;
+    relancer();
   });
-  const volumes = new THREE.Mesh(facesGeo, facesMat);
-  volumes.renderOrder = 0;
-  groupe.add(volumes);
+
+  /* --- Ombre portée au sol --- */
+  // Projection des deux volumes (corps et aile) selon la lumière ; le pochoir évite que
+  // les deux ombres se superposent et foncent davantage là où elles se croisent.
+  const ombreMat = new THREE.MeshBasicMaterial({
+    color: 0x000000,
+    transparent: true,
+    opacity: 0.32,
+    depthWrite: false,
+    fog: true,
+    stencilWrite: true,
+    stencilRef: 1,
+    stencilFunc: THREE.NotEqualStencilFunc,
+    stencilZPass: THREE.ReplaceStencilOp,
+  });
+  const projeter = ([x, y, z]) => [x - (LUMIERE.x * y) / LUMIERE.y, z - (LUMIERE.z * y) / LUMIERE.y];
+  const enveloppe = (pts) => {
+    const p = pts.slice().sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+    const x = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+    const bas = [], haut = [];
+    for (const q of p) { while (bas.length > 1 && x(bas[bas.length - 2], bas[bas.length - 1], q) <= 0) bas.pop(); bas.push(q); }
+    for (const q of p.reverse()) { while (haut.length > 1 && x(haut[haut.length - 2], haut[haut.length - 1], q) <= 0) haut.pop(); haut.push(q); }
+    return bas.slice(0, -1).concat(haut.slice(0, -1));
+  };
+  const ombrePos = [];
+  for (const vol of [
+    [[-6, 0, -4], [6, 0, -4], [6, 0, 4], [-6, 0, 4], [-6, H, -4], [6, H, -4], [6, H, 4], [-6, H, 4], [-6, YA, 0], [6, YA, 0]],
+    [[1, 0, 4], [6, 0, 4], [6, 0, 10], [1, 0, 10], [1, H, 4], [6, H, 4], [6, H, 10], [1, H, 10], [3.5, YB, 10], [3.5, YB, 1.5]],
+  ]) {
+    const e = enveloppe(vol.map(projeter));
+    for (let i = 1; i < e.length - 1; i++) for (const q of [e[0], e[i], e[i + 1]]) ombrePos.push(q[0], 0.02, q[1]);
+  }
+  const ombreGeo = new THREE.BufferGeometry();
+  ombreGeo.setAttribute("position", new THREE.Float32BufferAttribute(ombrePos, 3));
+  const ombre = new THREE.Mesh(ombreGeo, ombreMat);
+  ombre.renderOrder = 2; // après les lignes du sol, qu'elle assombrit aussi
+  groupe.add(ombre);
+  const OPACITE_OMBRE = ombreMat.opacity;
+
+  const opaciteFaces = (o) => {
+    for (const l of maillages) l.mat.opacity = o;
+    ombreMat.opacity = OPACITE_OMBRE * o;
+  };
 
   /* --- Le cordeau de l'intro --- */
   const NB = 48;
@@ -715,33 +825,40 @@ function demarrer() {
     relancer();
   });
 
-  /* --- Couleurs : bleu ciel pour le toit, bleu sourd pour les murs, orange pour la zone --- */
+  /* --- Couleurs : chaque matériau garde sa couleur ; la zone active passe à l'orange et le reste s'estompe --- */
   const tmp = new THREE.Color();
   let signature = "";
   function majCouleurs() {
     const sig = etat.orange.toFixed(3) + etat.zones.map((z) => z.toFixed(3)).join();
     if (sig === signature) return;
     signature = sig;
+    const focus = Math.max(0, ...etat.zones);
     const arr = couleurs.array;
     for (let i = 0; i < n; i++) {
       const s = segs[i];
-      let f = etat.orange;
+      let f = 0;
       for (const z of s.zones) f = Math.max(f, etat.zones[z]);
-      tmp.copy(s.ton === "mur" ? C_MUR : s.ton === "sol" ? C_SOL : C_TOIT).lerp(C_ORANGE, s.ton === "sol" ? 0 : f);
+      if (s.ton === "sol") tmp.copy(C_SOL);
+      else tmp.copy(s.coul).multiplyScalar(1 - 0.5 * focus * (1 - f)).lerp(C_ORANGE, Math.max(f, etat.orange));
       arr[i * 6] = arr[i * 6 + 3] = tmp.r;
       arr[i * 6 + 1] = arr[i * 6 + 4] = tmp.g;
       arr[i * 6 + 2] = arr[i * 6 + 5] = tmp.b;
     }
     couleurs.needsUpdate = true;
-    for (let i = 0; i < fBase.length; i++) {
-      let f = 0;
-      for (const z of fZones[i]) f = Math.max(f, etat.zones[z]);
-      tmp.copy(fBase[i]).lerp(C_ORANGE, f * 0.62);
-      fCol[i * 3] = tmp.r;
-      fCol[i * 3 + 1] = tmp.g;
-      fCol[i * 3 + 2] = tmp.b;
+    for (const lot of maillages) {
+      for (let i = 0; i < lot.base.length; i++) {
+        let f = 0;
+        for (const z of lot.zones[i]) f = Math.max(f, etat.zones[z]);
+        tmp.copy(lot.base[i]).multiplyScalar(1 - 0.5 * focus * (1 - f));
+        // toit et mousses : ils gardent leur couleur et s'éclairent un peu ; ailleurs, teinte orangée
+        if (lot.toit[i]) tmp.multiplyScalar(1 + 0.25 * f);
+        else tmp.lerp(C_ORANGE, f * 0.35);
+        lot.col[i * 3] = tmp.r;
+        lot.col[i * 3 + 1] = tmp.g;
+        lot.col[i * 3 + 2] = tmp.b;
+      }
+      lot.geo.attributes.color.needsUpdate = true;
     }
-    facesGeo.attributes.color.needsUpdate = true;
   }
 
   /* --- Intro : le cordeau se tend, claque, la toiture se trace --- */
@@ -749,7 +866,7 @@ function demarrer() {
     intro = { debut: performance.now(), duree: 2.6 };
     etat.trace = 0;
     etat.orange = 1;
-    facesMat.opacity = 0;
+    opaciteFaces(0);
     etat.pos.copy(PLANS.intro.pos);
     etat.cible.copy(PLANS.intro.cible);
     etat.ox = PLANS.intro.ox;
@@ -766,7 +883,7 @@ function demarrer() {
     intro = null;
     etat.trace = 1;
     etat.orange = 0;
-    facesMat.opacity = 1;
+    opaciteFaces(1);
     cordeau.visible = false;
     poudre.visible = false;
     document.documentElement.classList.remove("intro");
@@ -814,7 +931,7 @@ function demarrer() {
     etat.trace = c01((t - 0.75) / 1.35);
     if (t > 0.8) cordeau.visible = false;
     etat.orange = 1 - lisse(c01((t - 2.05) / 0.55));
-    facesMat.opacity = lisse(c01((t - 1.7) / 0.7));
+    opaciteFaces(lisse(c01((t - 1.7) / 0.7)));
     const c = calculerCible();
     const m = lisse(c01((t - 1.25) / 1.35));
     etat.pos.lerpVectors(PLANS.intro.pos, c.pos, m);
