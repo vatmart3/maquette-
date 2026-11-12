@@ -831,7 +831,7 @@ function faqHtml(liste, titre = "Vos questions") {
 }
 
 const RESUMES = {
-  depannage: "Fuite, tuiles envolées, dégâts d'orage. Mise hors d'eau rapide, puis réparation.",
+  depannage: "Fuite, tuiles envolées, dégâts d'orage. Intervention 24 h/24, mise hors d'eau puis réparation.",
   "refection-toiture": "Couverture refaite en tuiles canal, romanes ou mécaniques, en totalité ou par pan.",
   "recherche-de-fuite": "On trouve d'où vient l'eau avant de réparer, pour ne pas payer deux fois.",
   "demoussage-toiture": "Brossage, traitement anti-mousse et hydrofuge, sans haute pression agressive.",
@@ -868,14 +868,18 @@ const FAMILLES = [
   { cle: "entretenir", titre: "Protéger et entretenir", texte: "Garder la toiture saine et l'eau loin des murs.", services: ["demoussage-toiture", "zinguerie-gouttieres", "etancheite-toit-terrasse"] },
 ];
 function famillesServices() {
-  const lien = (k) => (k === "depannage" ? { path: "/depannage-toiture", nom: "Dépannage de toiture" } : SERVICES_PAGES.find((x) => x.slug === k));
+  const lien = (k) => {
+    if (k === "depannage") return { path: "/depannage-toiture", nom: "Dépannage de toiture", resume: RESUMES.depannage };
+    const x = SERVICES_PAGES.find((y) => y.slug === k);
+    return x && { ...x, resume: x.resume || RESUMES[x.slug] };
+  };
   return `<div class="familles">
           ${FAMILLES.map((f) => {
             const liens = f.services.map(lien).filter(Boolean);
             if (!liens.length) return "";
             return `<div class="famille">
             <div class="famille__tete">${PICTOS[f.cle]}<div><h3>${f.titre}</h3><p>${fr(f.texte)}</p></div></div>
-            <ul class="famille__liste">${liens.map((x) => `<li><a href="${x.path}">${esc(x.nom)}${ico("fleche")}</a></li>`).join("")}</ul>
+            <ul class="famille__liste">${liens.map((x) => `<li><a href="${x.path}"><span class="famille__nom">${esc(x.nom)}</span>${x.resume ? `<span class="famille__resume">${fr(x.resume)}</span>` : ""}${ico("fleche")}</a></li>`).join("")}</ul>
           </div>`;
           }).join("\n          ")}
         </div>`;
