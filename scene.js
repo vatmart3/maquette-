@@ -439,11 +439,12 @@ if (racine) {
 
 function demarrer() {
   const dpr = window.devicePixelRatio || 1;
-  // Téléphone : densité plafonnée à 2 ; au-delà de 2 l'écran lisse déjà les traits, l'anticrénelage
-  // matériel est alors coupé pour garder 60 images par seconde.
-  const optionsRendu = { antialias: !mobile || dpr < 2, alpha: true, stencil: true, powerPreference: mobile ? "high-performance" : "low-power" };
+  // Anticrénelage partout : sur les cartes graphiques des téléphones (rendu par tuiles), il ne coûte
+  // presque rien et évite les bords en escalier des murs et du toit.
+  const optionsRendu = { antialias: true, alpha: true, stencil: true, powerPreference: mobile ? "high-performance" : "low-power" };
   const renderer = new THREE.WebGLRenderer(optionsRendu);
-  renderer.setPixelRatio(Math.min(dpr, mobile ? 1.75 : 1.5));
+  // Téléphone : densité 1,5 dès le départ (net, et deux fois moins de pixels à dessiner qu'en 2).
+  renderer.setPixelRatio(Math.min(dpr, 1.5));
   // Téléphone sans accélération graphique (rendu logiciel, très lent) : la scène est dessinée
   // sans animation pour ne pas bloquer la page. Tous les téléphones récents ont un GPU.
   const logiciel = mobile && (() => {
@@ -553,6 +554,7 @@ function demarrer() {
     tex.colorSpace = THREE.SRGBColorSpace;
     tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
     tex.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+    renderer.initTexture(tex); // envoi immédiat, pas d'à-coup à la première image qui l'utilise
     lotToit.mat.map = tex;
     lotToit.mat.color.set(0xffffff);
     lotToit.mat.needsUpdate = true;
@@ -644,6 +646,7 @@ function demarrer() {
   };
 
   let intro = null;
+  let pret = false; // shaders compilés
   let derniere = 0;
   let enCours = false;
   let visible = !document.hidden;
@@ -952,8 +955,9 @@ function demarrer() {
   }
 
   const v3 = new THREE.Vector3();
+  let derniereImage = [];
   // Téléphone : qualité adaptative. Si l'animation descend sous ~40 images par seconde de façon
-  // durable, la finesse du rendu baisse d'un cran (jamais sous 1) pour retrouver la fluidité.
+  // durable, la finesse du rendu baisse d'un cran pour retrouver la fluidité.
   const qualite = { ratio: renderer.getPixelRatio(), cumul: 0, n: 0, dernierChangement: 0 };
   function surveillerFluidite(intervalle, t0) {
     if (!mobile || intervalle <= 0 || intervalle > 100) return;
@@ -963,8 +967,9 @@ function demarrer() {
     const moyenne = qualite.cumul / qualite.n;
     qualite.cumul = 0;
     qualite.n = 0;
-    if (moyenne > 25 && qualite.ratio > 1 && t0 - qualite.dernierChangement > 1500) {
-      qualite.ratio = Math.max(1, qualite.ratio - 0.25);
+    // un seul cran (1,5 → 1,25), pour ne pas changer de résolution plusieurs fois à l'écran
+    if (moyenne > 25 && qualite.ratio > 1.25 && t0 - qualite.dernierChangement > 1500) {
+      qualite.ratio = 1.25;
       qualite.dernierChangement = t0;
       renderer.setPixelRatio(qualite.ratio);
       renderer.setSize(etat.largeur, etat.hauteur, false);
@@ -984,7 +989,7 @@ function demarrer() {
   }
 
   function boucle(t0) {
-    if (!visible) { enCours = false; return; }
+    if (!visible || !pret) { enCours = false; return; }
     const brut = derniere ? t0 - derniere : 0;
     const dt = derniere ? Math.min(0.05, brut / 1000) : 0.016;
     derniere = t0;
@@ -1045,8 +1050,22 @@ function demarrer() {
     const w = etat.largeur, h = etat.hauteur;
     camera.setViewOffset(w, h, -etat.ox * w, -etat.oy * h, w, h);
     const op = etat.opacite.toFixed(3);
-    if (op !== derniereOpacite) { racine.style.opacity = op; derniereOpacite = op; }
-    renderer.render(scene, camera);
+    if (op !== derniereOpacite) {
+      racine.style.opacity = op;
+      // invisible : le calque est retiré de l'écran, le navigateur n'a plus à le composer
+      const cache = etat.opacite < 0.004;
+      if (!cache && racine.style.visibility === "hidden") derniereImage = []; // réapparition : on redessine
+      racine.style.visibility = cache ? "hidden" : "";
+      derniereOpacite = op;
+    }
+    // On ne redessine que si l'image change vraiment (caméra, couleurs, tracé, opacité des faces).
+    const etatImage = [etat.pos.x, etat.pos.y, etat.pos.z, etat.cible.x, etat.cible.y, etat.cible.z, etat.ox, etat.oy,
+      groupe.rotation.x, groupe.rotation.y, geo.instanceCount, signature, maillages[0].mat.opacity, lotToit.mat.map ? 1 : 0, w, h, renderer.getPixelRatio()];
+    const change = !intro && etatImage.some((v, i) => v !== derniereImage[i]);
+    if (etat.opacite >= 0.004 && (intro || change)) {
+      renderer.render(scene, camera);
+      derniereImage = etatImage;
+    }
 
     if (!mobile && etat.zoneActive >= 0 && !intro) {
       v3.copy(ANCRES[etat.zoneActive]).applyMatrix4(groupe.matrixWorld).project(camera);
@@ -1072,17 +1091,12 @@ function demarrer() {
   window.addEventListener("orientationchange", () => setTimeout(() => redimensionner(), 250));
   window.addEventListener("scroll", relancer, { passive: true });
   if (!sansAnimation) {
+    // Ordinateur : la maison suit légèrement la souris. Téléphone : pas de gyroscope, la maison
+    // ne tremble pas avec la main et la carte graphique se repose dès que l'on ne fait plus défiler.
     if (!mobile) {
       window.addEventListener("pointermove", (e) => {
         if (e.pointerType !== "mouse") return;
         etat.souris.set((e.clientX / window.innerWidth) * 2 - 1, (e.clientY / window.innerHeight) * 2 - 1);
-        relancer();
-      }, { passive: true });
-    } else {
-      window.addEventListener("deviceorientation", (e) => {
-        if (e.gamma == null) return;
-        const c = (v) => Math.max(-1, Math.min(1, v));
-        etat.souris.set(c(e.gamma / 25), c((e.beta - 45) / 30));
         relancer();
       }, { passive: true });
     }
@@ -1093,24 +1107,37 @@ function demarrer() {
   });
 
   redimensionner();
-  racine.classList.add("scene--prete");
+  // Les shaders sont compilés en tâche de fond avant la première image : pas de blocage de la
+  // page au moment où la 3D apparaît ou au premier défilement.
+  const tDemarrage = performance.now();
+  cordeau.visible = poudre.visible = true;
+  const compilation = renderer.compileAsync ? renderer.compileAsync(scene, camera) : Promise.resolve();
+  compilation.catch(() => {}).then(() => {
+    cordeau.visible = poudre.visible = false;
+    pret = true;
+    afficher();
+  });
 
-  const html = document.documentElement;
-  let introVue = false;
-  try { introVue = !!sessionStorage.getItem("arv-intro"); } catch (e) {}
-  // Téléphone : l'intro au cordeau se joue dès que la 3D est prête, si l'on est encore en haut de page.
-  const introMobile = mobile && !sansAnimation && !introVue && window.scrollY < 40;
-  if (introMobile || (html.classList.contains("intro") && !reduit && performance.now() < 1900 && window.scrollY < 40)) {
-    lancerIntro();
-  } else {
-    html.classList.remove("intro");
-    const c = calculerCible();
-    etat.pos.copy(c.pos);
-    etat.cible.copy(c.cible);
-    etat.ox = c.ox;
-    etat.oy = c.oy;
-    etat.opacite = c.opacite;
-    relancer();
+  function afficher() {
+    racine.classList.add("scene--prete");
+
+    const html = document.documentElement;
+    let introVue = false;
+    try { introVue = !!sessionStorage.getItem("arv-intro"); } catch (e) {}
+    // Téléphone : l'intro au cordeau se joue dès que la 3D est prête, si l'on est encore en haut de page.
+    const introMobile = mobile && !sansAnimation && !introVue && window.scrollY < 40;
+    if (introMobile || (html.classList.contains("intro") && !reduit && tDemarrage < 1900 && window.scrollY < 40)) {
+      lancerIntro();
+    } else {
+      html.classList.remove("intro");
+      const c = calculerCible();
+      etat.pos.copy(c.pos);
+      etat.cible.copy(c.cible);
+      etat.ox = c.ox;
+      etat.oy = c.oy;
+      etat.opacite = c.opacite;
+      relancer();
+    }
   }
 
   // Outil : export SVG de la vue courante (window.__arvSVG()) pour l'image de secours.

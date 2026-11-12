@@ -332,7 +332,7 @@
     // quelques secondes après le chargement (l'intro se joue alors si l'on est en haut de page) ;
     // l'aperçu image, rendu de la même scène, s'affiche en attendant.
     let fait = false;
-    const charger = () => { if (fait) return; fait = true; import("/scene.js?v=5007583663"); };
+    const charger = () => { if (fait) return; fait = true; import("/scene.js?v=76ed1559f3"); };
     if (matchMedia("(min-width: 860px)").matches) charger();
     else {
       ["touchstart", "scroll", "pointerdown", "keydown"].forEach((e) => addEventListener(e, charger, { once: true, passive: true }));
