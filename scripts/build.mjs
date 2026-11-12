@@ -294,7 +294,7 @@ ${entete(p.id)}
 function bandeauUrgence() {
   return `  <div class="urgence">
     <div class="conteneur urgence__ligne">
-      <p>${ico("alerte")}<span><strong>Urgence toiture</strong><span class="urgence__long">Fuite, tuiles arrachées, dégâts après intempéries</span></span></p>
+      <p>${ico("alerte")}<span><strong>Urgence <span class="urgence__toiture">toiture </span>24&nbsp;h/24</strong><span class="urgence__long">Fuite, tuiles arrachées, dégâts après intempéries</span></span></p>
       <p class="urgence__actions">
         <a href="/depannage-toiture" data-track="depannage">Dépannage en ligne</a>
       </p>
@@ -315,7 +315,7 @@ function entete(id) {
     <div class="menu" id="menu" hidden>
       <div class="conteneur">
         <nav aria-label="Navigation mobile"><ul>${liens}</ul></nav>
-        <p class="menu__horaires">${esc(S.horaires.texte)}</p>
+        <p class="menu__horaires">${esc(HORAIRES)}</p>
       </div>
     </div>
   </header>`;
@@ -348,7 +348,9 @@ function coches(liste, clair = false) {
   return `<p class="garanties${clair ? " garanties--clair" : ""}" data-commun>${liste.filter(Boolean).map((t) => `<span>${esc(t)}</span>`).join("")}</p>`;
 }
 
-const CONFIANCE = [S.confiance.devisGratuit, S.confiance.rappel, confirme(S.confiance.decennale)];
+const CONFIANCE = [S.confiance.devisGratuit, S.confiance.rappel, S.horaires.urgences];
+// Horaires affichés : horaires habituels + disponibilité pour les urgences.
+const HORAIRES = [S.horaires.texte, S.horaires.urgences].filter(Boolean).join(" · ");
 
 function bandeauCta(titre = "Un problème de toiture ?", texte = "Appelez-nous, faites une demande de dépannage ou prenez rendez-vous pour un diagnostic gratuit.") {
   return `
@@ -358,7 +360,7 @@ function bandeauCta(titre = "Un problème de toiture ?", texte = "Appelez-nous, 
           <h2 id="titre-cta">${fr(titre)}</h2>
           <p class="cta-final__texte">${fr(texte)}</p>
           <a class="cta-final__tel" href="${TEL}" data-track="call">${ico("tel")}<span class="mono">${esc(S.telephone)}</span></a>
-          <p class="cta-final__horaires">${esc(S.horaires.texte)}</p>
+          <p class="cta-final__horaires">${esc(HORAIRES)}</p>
         </div>
         <ul class="cta-final__liens">
           <li><a href="/depannage-toiture" data-track="depannage"><strong>Dépannage urgent</strong><span>Fuite ou tuiles envolées, décrivez le problème en ligne.</span>${ico("fleche")}</a></li>
@@ -389,7 +391,7 @@ function pied() {
           <a class="pied__tel mono" href="${TEL}" data-track="call">${esc(S.telephone)}</a><br>
           <a href="mailto:${esc(S.email)}">${esc(S.email)}</a><br>
           ${adresse}<br>
-          ${esc(S.horaires.texte)}
+          ${esc(HORAIRES)}
         </address>
       </div>
       <details class="pied__groupe" open>
@@ -1406,20 +1408,29 @@ ${bandeauCta()}` +
     path: "/depannage-toiture",
     title: "Dépannage de toiture à Frontignan, demande en ligne | Couvreur Proximité 34",
     description: `Fuite de toiture, tuiles arrachées, dégâts après orage à Frontignan, Sète et alentours. Faites votre demande de dépannage en ligne ou appelez le ${S.telephone}.`,
-    jsonld: [ldEntreprise(), ldService("Dépannage de toiture", "/depannage-toiture"), ar.ld, ldFaq(FAQ_DEPANNAGE)],
+    jsonld: [
+      ldEntreprise(),
+      {
+        ...ldService("Dépannage de toiture", "/depannage-toiture"),
+        // urgences : 24 h/24, 7 j/7
+        hoursAvailable: { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], opens: "00:00", closes: "23:59" },
+      },
+      ar.ld,
+      ldFaq(FAQ_DEPANNAGE),
+    ],
   };
   const html =
     head(p) +
-    enTetePage({ h1: "Demande de dépannage toiture en ligne", chapo: "Fuite, tuile cassée ou gouttière arrachée ? Remplissez la demande, nous la recevons immédiatement et vous rappelons au plus vite.", ariane: ar.html, ancre: "#formulaire" }) +
+    enTetePage({ h1: "Demande de dépannage toiture en ligne", chapo: "Fuite, tuile cassée ou gouttière arrachée ? Nous intervenons 24 h/24 et 7 j/7 pour les urgences. Remplissez la demande ou appelez-nous, nous vous rappelons au plus vite.", ariane: ar.html, ancre: "#formulaire" }) +
     `
     <section class="section section--claire" id="formulaire" aria-label="Formulaire de dépannage">
       <div class="conteneur formulaire-page">
         ${formDepannage()}
         <aside class="formulaire-page__cote">
           <div class="cote-carte cote-carte--sombre">
-            <h2>Urgence immédiate</h2>
+            <h2>Urgence immédiate, 24 h/24</h2>
             <a class="cote-tel mono" href="${TEL}" data-track="call">${esc(S.telephone)}</a>
-            <p>${esc(S.horaires.texte)}</p>
+            <p>${esc(HORAIRES)}</p>
           </div>
           <div class="cote-carte">
             <h2>En attendant notre passage</h2>
@@ -1536,7 +1547,7 @@ ${bandeauCta()}` +
     <section class="section section--claire">
       <div class="conteneur">
         <ul class="cta-final__liens cta-final__liens--clair">
-          <li><a href="${TEL}" data-track="call"><strong class="mono">${esc(S.telephone)}</strong><span>${esc(S.horaires.texte)}</span>${ico("fleche")}</a></li>
+          <li><a href="${TEL}" data-track="call"><strong class="mono">${esc(S.telephone)}</strong><span>${esc(HORAIRES)}</span>${ico("fleche")}</a></li>
           <li><a href="/depannage-toiture" data-track="depannage"><strong>Dépannage urgent</strong><span>Formulaire détaillé avec photos</span>${ico("fleche")}</a></li>
           <li><a href="/devis-toiture" data-track="devis"><strong>Devis gratuit</strong><span>Décrivez votre projet</span>${ico("fleche")}</a></li>
           <li><a href="/rendez-vous" data-track="rdv"><strong>Rendez-vous</strong><span>Diagnostic de toiture</span>${ico("fleche")}</a></li>
@@ -1547,7 +1558,7 @@ ${bandeauCta()}` +
             <div class="cote-carte">
               <h2>Couvreur Proximité 34</h2>
               <address>${[confirme(a.rue), `${a.codePostal} ${a.ville}`].filter(Boolean).join("<br>")}<br><a href="mailto:${esc(S.email)}">${esc(S.email)}</a></address>
-              <p>${esc(S.horaires.texte)}</p>
+              <p>${esc(HORAIRES)}</p>
             </div>
           </aside>
         </div>
@@ -1582,7 +1593,7 @@ ${bandeauCta()}` +
           <ul class="engagements">
             <li>${ico("tel")}<div><h3>On répond et on rappelle</h3><p>Chaque demande reçoit une réponse, et un rappel dans la journée.</p></div></li>
             <li>${ico("devis")}<div><h3>Un prix avant de commencer</h3><p>Un devis écrit, détaillé et gratuit. Pas de mauvaise surprise.</p></div></li>
-            <li>${ico("bouclier")}<div><h3>Des travaux assurés</h3><p>Nos travaux de couverture sont couverts par une garantie décennale.</p></div></li>
+            <li>${ico("alerte")}<div><h3>Disponibles pour les urgences</h3><p>Fuite ou tuiles arrachées après un coup de vent, on intervient 24 h/24 et 7 j/7.</p></div></li>
             <li>${ico("toit")}<div><h3>Un chantier propre</h3><p>Gravats évacués, gouttières nettoyées, toiture contrôlée avec vous.</p></div></li>
           </ul>
         </div>
@@ -1962,8 +1973,6 @@ ${bandeauCta()}` +
       "Mentions légales",
       `<h2>Éditeur du site</h2>
         <p>${esc(L.raisonSociale)}<br>${[esc(fiable("adresse.rue")), `${esc(a.codePostal)} ${esc(a.ville)}`].filter(Boolean).join("<br>")}<br>SIRET ${esc(fiable("legal.siret") || "en cours de renseignement")}<br>Téléphone ${esc(S.telephone)}<br>E-mail ${esc(S.email)}<br>Directeur de la publication ${esc(fiable("legal.directeurPublication") || "en cours de renseignement")}</p>
-        <h2>Assurance professionnelle</h2>
-        <p>Assurance responsabilité civile décennale ${esc(fiable("legal.assuranceDecennale") || "en cours de renseignement")}. Couverture géographique, France.</p>
         <h2>Hébergement</h2>
         <p>${esc(L.hebergeur)}</p>
         <h2>Conception</h2>
@@ -2082,7 +2091,7 @@ const QA = (() => {
 /* --- Bilan --- */
 
 {
-  const LEGAL_CONTACT = ["telephone", "email", "adresse.rue", "legal.raisonSociale", "legal.siret", "legal.assuranceDecennale", "legal.directeurPublication", "siteUrl"];
+  const LEGAL_CONTACT = ["telephone", "email", "adresse.rue", "legal.raisonSociale", "legal.siret", "legal.directeurPublication", "siteUrl"];
   const bloquants = LEGAL_CONTACT.filter(provisoire);
   const lignes = [...A_CONFIRMER.entries()].map(([k, note]) => `config.${k}${note ? ` (${note})` : ""}${k === "telephone" && provisoire("telephone") ? " [numéro fictif, omis du JSON-LD]" : ""}`);
   for (const k of ["telephone", "legal.siret", "confiance.experience"]) if (provisoire(k) && !A_CONFIRMER.has(k)) lignes.push(`config.${k} (valeur bouche-trou)`);

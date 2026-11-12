@@ -34,6 +34,7 @@ window.SITE = {
 
   horaires: {
     texte: "Du lundi au samedi, de 8 h à 19 h", // À CONFIRMER
+    urgences: "Urgences 24 h/24 et 7 j/7",
     jours: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
     ouverture: "08:00",
     fermeture: "19:00",
@@ -43,7 +44,6 @@ window.SITE = {
   confiance: {
     devisGratuit: "Devis gratuit et détaillé", // À CONFIRMER
     rappel: "Rappel dans la journée", // À CONFIRMER
-    decennale: "Garantie décennale", // À CONFIRMER : nom de l'assureur à mettre dans les mentions légales
     local: "Artisan installé à Frontignan", // À CONFIRMER
     experience: "XX ans d'expérience", // À CONFIRMER : remplacer XX
   },
@@ -52,7 +52,6 @@ window.SITE = {
   legal: {
     raisonSociale: "Couvreur Proximité 34", // À CONFIRMER : forme juridique (EI, SARL…)
     siret: "000 000 000 00000", // À CONFIRMER
-    assuranceDecennale: "Nom de l'assureur, n° de contrat", // À CONFIRMER
     directeurPublication: "Nom du dirigeant", // À CONFIRMER
     hebergeur: "Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis",
   },

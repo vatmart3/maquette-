@@ -1304,7 +1304,7 @@ export const VILLES = [
 export const FAQ_ACCUEIL = [
   {
     q: "Intervenez-vous en urgence après une fuite ou un coup de vent ?",
-    r: "Oui. Appelez-nous ou remplissez la demande de dépannage en ligne. On vous rappelle au plus vite et on met la toiture hors d'eau avant la réparation définitive.",
+    r: "Oui, 24 h/24 et 7 j/7 pour les urgences. Appelez-nous ou remplissez la demande de dépannage en ligne. On met la toiture hors d'eau, puis on programme la réparation définitive.",
     lien: { href: "/depannage-toiture", texte: "Faire une demande de dépannage" },
   },
   {
@@ -1321,11 +1321,6 @@ export const FAQ_ACCUEIL = [
     q: "Faut-il démousser sa toiture ?",
     r: "La mousse retient l'eau et soulève les tuiles. Un démoussage tous les quatre à six ans selon l'exposition suffit le plus souvent.",
     lien: { href: "/services/demoussage-toiture", texte: "Le démoussage en détail" },
-  },
-  {
-    q: "Êtes-vous assuré ?",
-    r: "Nos travaux de couverture sont couverts par une assurance décennale. Ses références figurent sur chaque devis et dans les mentions légales.",
-    lien: { href: "/a-propos", texte: "En savoir plus sur Couvreur Proximité 34" },
   },
   {
     q: "Dans quelles communes intervenez-vous ?",
