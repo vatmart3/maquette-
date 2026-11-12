@@ -376,46 +376,6 @@ main { position: relative; z-index: 1; }
 .menu a[aria-current="page"] { color: var(--orange-action); }
 .menu__horaires { margin: 0; color: var(--texte-2); font-size: 0.9rem; }
 
-/* ---------- Barre d'actions mobile ---------- */
-
-.barre-actions { display: none; }
-
-@media (max-width: 1023px) {
-  :root { --barre: 66px; }
-  .barre-actions {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 60;
-    display: grid;
-    grid-template-columns: 1.3fr 1fr 1fr;
-    gap: 6px;
-    padding: 7px 8px calc(7px + env(safe-area-inset-bottom));
-    background: #fff;
-    border-top: 1px solid var(--gris);
-  }
-  .barre-actions a {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
-    min-height: 52px;
-    border-radius: var(--r-s);
-    background: #fff;
-    color: var(--ardoise);
-    box-shadow: inset 0 0 0 1px rgb(36 55 70 / 0.22);
-    font-family: var(--titres);
-    font-size: 0.78rem;
-    font-weight: 700;
-    text-decoration: none;
-  }
-  .barre-actions a:first-child { flex-direction: row; gap: 8px; background: var(--orange-action); color: #fff; box-shadow: none; font-size: 1rem; }
-  .barre-actions a:nth-child(2) { background: var(--ardoise); color: #fff; box-shadow: none; }
-  .barre-actions .ico { width: 19px; height: 19px; }
-}
-
 /* ---------- Scène 3D ---------- */
 
 .scene {
@@ -618,6 +578,12 @@ main { position: relative; z-index: 1; }
 .villes a { display: block; padding: 13px 0; color: var(--texte); font-family: var(--titres); font-weight: 700; text-decoration: none; }
 .villes a:hover { color: var(--orange-action); }
 .villes--compact { columns: 1; }
+@media (max-width: 859px) {
+  .villes:not(.villes--compact) { display: flex; flex-wrap: wrap; gap: 8px; columns: auto; border-top: 0; }
+  .villes:not(.villes--compact) li { border-bottom: 0; }
+  .villes:not(.villes--compact) a { padding: 8px 14px; border: 1px solid var(--filet); border-radius: 999px; font-size: .95rem; background: #fff; }
+  .villes:not(.villes--compact) .villes__avant { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
 .villes--compact a { padding: 9px 0; font-size: 0.95rem; }
 
 .villes-cartes { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0 40px; list-style: none; margin: 0; padding: 0; }
@@ -1245,12 +1211,17 @@ main { position: relative; z-index: 1; }
 
 /* Services de l'accueil en trois familles */
 .familles { display: grid; gap: 34px; }
-.famille__tete { display: grid; grid-template-columns: 52px 1fr; gap: 16px; align-items: center; margin-bottom: 10px; }
+.famille__tete { display: grid; grid-template-columns: 52px 1fr auto; grid-template-areas: "picto titre plus" "picto texte plus"; column-gap: 16px; align-items: center; margin-bottom: 10px; list-style: none; }
+.famille__tete::-webkit-details-marker { display: none; }
+.famille__tete svg { grid-area: picto; }
+.famille__tete h3 { grid-area: titre; align-self: end; }
+.famille__texte { grid-area: texte; align-self: start; color: var(--texte-2); font-size: .95rem; }
+.famille__plus { grid-area: plus; display: none; }
+@media (min-width: 860px) { .famille__tete { pointer-events: none; } }
 .famille__tete svg { width: 52px; height: 52px; fill: none; stroke: var(--ardoise); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .famille__tete svg .accent { stroke: var(--orange); }
 .famille__tete svg .fin { stroke-width: 1; opacity: .6; }
 .famille__tete h3 { margin: 0 0 2px; }
-.famille__tete p { margin: 0; color: var(--texte-2); font-size: .95rem; }
 .famille__liste { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px; border-top: 1px solid var(--filet); }
 .famille__liste li { border-bottom: 1px solid var(--filet); }
 .famille__liste a { display: grid; grid-template-columns: minmax(0, 1fr) 16px; gap: 4px 12px; align-items: start; padding: 14px 0 15px; color: var(--texte); text-decoration: none; }
@@ -1259,6 +1230,21 @@ main { position: relative; z-index: 1; }
 .famille__liste a .ico { grid-column: 2; grid-row: 1 / span 2; align-self: center; width: 16px; height: 16px; color: var(--orange-action); }
 .famille__liste a:hover .famille__nom { color: var(--orange-action); }
 @media (max-width: 639px) { .famille__liste { grid-template-columns: 1fr; } }
+
+/* Téléphone : les trois familles en bandeaux bien visibles, qui se déplient d'un tap */
+@media (max-width: 859px) {
+  .familles { gap: 12px; }
+  .famille__tete { grid-template-columns: 48px 1fr 28px; column-gap: 14px; margin: 0; padding: 16px 14px 16px 12px; border-radius: var(--r-s); background: var(--ardoise); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .famille__tete svg { width: 48px; height: 48px; padding: 7px; border-radius: 50%; background: #fff; }
+  .famille__tete h3 { margin: 0; color: #fff; font-size: 1.3rem; }
+  .famille__texte { color: var(--texte-clair); font-size: .88rem; line-height: 1.4; }
+  .famille__plus { display: block; position: relative; width: 28px; height: 28px; border-radius: 50%; background: var(--orange-action); }
+  .famille__plus::before, .famille__plus::after { content: ""; position: absolute; left: 8px; right: 8px; top: 13px; height: 2px; border-radius: 1px; background: #fff; transition: transform .2s ease; }
+  .famille__plus::after { transform: rotate(90deg); }
+  .famille[open] .famille__plus::after { transform: rotate(0deg); }
+  .famille__liste { border-top: 0; padding: 4px 4px 6px; }
+  .famille__liste li:last-child { border-bottom: 0; }
+}
 
 /* Pied de page : listes repliables sur téléphone */
 .pied__groupe summary { list-style: none; cursor: default; }
@@ -1295,3 +1281,11 @@ main { position: relative; z-index: 1; }
 
 .urgence__actions a, .urgence strong { white-space: nowrap; }
 @media (max-width: 399px) { .urgence__toiture { display: none; } }
+
+/* ---------- Téléphone : page allégée ---------- */
+@media (max-width: 859px) {
+  .entete .logo__activite { display: none; }
+  .logo-fixe { display: none; }
+  .accroche .actions .bouton--contour-clair { display: none; }
+  .accroche .garanties { display: none; }
+}

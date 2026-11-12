@@ -65,11 +65,16 @@
     });
   }
 
-  /* ---------- Pied de page : groupes repliés sur téléphone ---------- */
+  /* ---------- Téléphone : pied de page et familles de services repliés ---------- */
 
-  if (window.matchMedia("(max-width: 859px)").matches) {
-    document.querySelectorAll(".pied__groupe").forEach(function (d) { d.removeAttribute("open"); });
+  var petitEcran = window.matchMedia("(max-width: 859px)");
+  if (petitEcran.matches) {
+    document.querySelectorAll(".pied__groupe, .famille").forEach(function (d) { d.removeAttribute("open"); });
   }
+  // Ordinateur : les familles de services restent toujours dépliées.
+  petitEcran.addEventListener("change", function (e) {
+    if (!e.matches) document.querySelectorAll(".famille").forEach(function (d) { d.setAttribute("open", ""); });
+  });
 
   /* ---------- Léger fondu des blocs situés plus bas dans la page ---------- */
 

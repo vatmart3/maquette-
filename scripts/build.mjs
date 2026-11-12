@@ -428,11 +428,6 @@ function pied() {
 
   <a class="logo-fixe" href="/" aria-label="${esc(S.nom)}, retour à l'accueil"><img src="/img/logo-cp34.webp" alt="" role="presentation" width="64" height="29"></a>
 
-  <nav class="barre-actions" aria-label="Nous contacter">
-    <a href="${TEL}" data-track="call">${ico("tel")}<span>Appeler</span></a>
-    <a href="/depannage-toiture" data-track="depannage">${ico("alerte")}<span>Dépannage</span></a>
-    <a href="/devis-toiture" data-track="devis">${ico("devis")}<span>Devis</span></a>
-  </nav>
 `;
 }
 
@@ -877,10 +872,11 @@ function famillesServices() {
           ${FAMILLES.map((f) => {
             const liens = f.services.map(lien).filter(Boolean);
             if (!liens.length) return "";
-            return `<div class="famille">
-            <div class="famille__tete">${PICTOS[f.cle]}<div><h3>${f.titre}</h3><p>${fr(f.texte)}</p></div></div>
+            // Téléphone : chaque famille se déplie d'un tap (fermées au chargement par site.js) ; ordinateur : toujours ouvertes.
+            return `<details class="famille" open>
+            <summary class="famille__tete">${PICTOS[f.cle]}<h3>${f.titre}</h3><span class="famille__texte">${fr(f.texte)}</span><span class="famille__plus" aria-hidden="true"></span></summary>
             <ul class="famille__liste">${liens.map((x) => `<li><a href="${x.path}"><span class="famille__nom">${esc(x.nom)}</span>${x.resume ? `<span class="famille__resume">${fr(x.resume)}</span>` : ""}${ico("fleche")}</a></li>`).join("")}</ul>
-          </div>`;
+          </details>`;
           }).join("\n          ")}
         </div>`;
 }
@@ -888,7 +884,7 @@ function famillesServices() {
 function listeVilles(exclure) {
   return `<ul class="villes">
           ${VILLES_THAU.filter((v) => v.nom !== exclure)
-            .map((v) => `<li><a href="${v.path}">Couvreur à ${esc(v.nom)}</a></li>`)
+            .map((v) => `<li><a href="${v.path}"><span class="villes__avant">Couvreur à </span>${esc(v.nom)}</a></li>`)
             .join("\n          ")}
         </ul>`;
 }
