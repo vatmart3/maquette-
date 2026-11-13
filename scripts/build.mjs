@@ -853,9 +853,12 @@ function cartesServices(exclure, proche) {
 
 // Accueil : services regroupés en trois familles, chacune avec un petit dessin au trait.
 const PICTOS = {
-  reparer: `<svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M5 25 24 9l19 16"/><path d="M9 22v19h30V22"/><path d="M24 26c-2.6 3.4-4 5.6-4 7.4a4 4 0 0 0 8 0c0-1.8-1.4-4-4-7.4z" class="accent"/></svg>`,
-  renover: `<svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M4 30 24 12l20 18"/><path d="M10 25h28M14 21h20M18 17.5h12" class="fin"/><path d="M8 27v14h32V27"/><path d="M24 12V6h5v4" class="accent"/></svg>`,
-  entretenir: `<svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M4 20 22 7l18 13"/><path d="M8 17v12h28V17"/><path d="M3 31h38v2a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z" class="accent"/><path d="M37 36v7" class="accent"/></svg>`,
+  // marteau de couvreur
+  reparer: `<svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M10 41 29.5 21.5" class="manche"/><path d="M26.1 8.4 41.6 23.9 35.9 29.6 20.4 14.1z" class="plein"/></svg>`,
+  // toiture neuve en tuiles
+  renover: `<svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M24 9 42.5 25.5h-37z" class="plein"/><path d="M15.5 17.5h17M10.5 21.7h27" class="blanc"/><path d="M11 25.5V40h26V25.5"/><path d="M21 40v-7.5h6V40"/></svg>`,
+  // bouclier et goutte : l'eau reste dehors
+  entretenir: `<svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M24 6 39 11v11c0 10-7 17-15 20-8-3-15-10-15-20V11z"/><path d="M24 15c-3.5 5-5.5 8-5.5 10.5a5.5 5.5 0 0 0 11 0C29.5 23 27.5 20 24 15z" class="plein"/></svg>`,
 };
 const FAMILLES = [
   { cle: "reparer", titre: "Réparer", texte: "Fuite, tuile cassée, coup de vent.", services: ["depannage", "recherche-de-fuite", "remplacement-tuiles", "bachage-urgence"] },

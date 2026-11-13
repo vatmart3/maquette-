@@ -1046,7 +1046,7 @@ main { position: relative; z-index: 1; }
 .logo-fixe:hover { transform: scale(1.06); }
 
 @media (max-width: 1023px) {
-  .logo-fixe { right: 10px; bottom: calc(var(--barre) + 10px); width: 46px; padding: 7px 6px; border-radius: 10px; background: rgb(247 245 240 / 0.92); filter: none; box-shadow: 0 4px 14px -4px rgb(15 25 35 / 0.35); }
+  .logo-fixe { right: 10px; bottom: calc(12px + env(safe-area-inset-bottom)); width: 46px; padding: 7px 6px; border-radius: 10px; background: rgb(247 245 240 / 0.92); filter: none; box-shadow: 0 4px 14px -4px rgb(15 25 35 / 0.35); }
 }
 
 /* ------------------------------------------------------------------ */
@@ -1218,9 +1218,10 @@ main { position: relative; z-index: 1; }
 .famille__texte { grid-area: texte; align-self: start; color: var(--texte-2); font-size: .95rem; }
 .famille__plus { grid-area: plus; display: none; }
 @media (min-width: 860px) { .famille__tete { pointer-events: none; } }
-.famille__tete svg { width: 52px; height: 52px; fill: none; stroke: var(--ardoise); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-.famille__tete svg .accent { stroke: var(--orange); }
-.famille__tete svg .fin { stroke-width: 1; opacity: .6; }
+.famille__tete svg { width: 52px; height: 52px; fill: none; stroke: var(--ardoise); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.famille__tete svg .plein { fill: var(--orange); stroke: var(--orange); stroke-width: 1.5; }
+.famille__tete svg .blanc { stroke: #fff; stroke-width: 1.6; }
+.famille__tete svg .manche { stroke-width: 3.6; }
 .famille__tete h3 { margin: 0 0 2px; }
 .famille__liste { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px; border-top: 1px solid var(--filet); }
 .famille__liste li { border-bottom: 1px solid var(--filet); }
@@ -1285,7 +1286,6 @@ main { position: relative; z-index: 1; }
 /* ---------- Téléphone : page allégée ---------- */
 @media (max-width: 859px) {
   .entete .logo__activite { display: none; }
-  .logo-fixe { display: none; }
   .accroche .actions .bouton--contour-clair { display: none; }
   .accroche .garanties { display: none; }
 }
