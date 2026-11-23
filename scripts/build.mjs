@@ -195,7 +195,7 @@ const avecRealisations = CHANTIERS.length > 0;
 
 function logo(clair = false) {
   return `<a class="logo${clair ? " logo--clair" : ""}" href="/">
-        <img class="logo__marque" src="/img/logo-cp34.webp" alt="" role="presentation" width="68" height="31">
+        <img class="logo__marque" src="/img/logo-cp34-140.webp" srcset="/img/logo-cp34-140.webp 140w, /img/logo-cp34.webp 240w" sizes="66px" alt="" role="presentation" width="68" height="31">
         <span class="logo__texte"><span class="logo__nom">${esc(S.nom)}</span><span class="logo__activite">Couvreur à ${esc(S.adresse.ville)} <span class="logo__suite">&amp; ses alentours</span></span></span>
       </a>`;
 }
@@ -426,41 +426,40 @@ function pied() {
     </div>
   </footer>
 
-  <a class="logo-fixe" href="/" aria-label="${esc(S.nom)}, retour à l'accueil"><img src="/img/logo-cp34.webp" alt="" role="presentation" width="64" height="29"></a>
+  <a class="logo-fixe" href="/" aria-label="${esc(S.nom)}, retour à l'accueil"><img src="/img/logo-cp34-140.webp" srcset="/img/logo-cp34-140.webp 140w, /img/logo-cp34.webp 240w" sizes="64px" alt="" role="presentation" width="64" height="29"></a>
 
 `;
 }
 
 const FIN_PAGE = (scene) => `${scene ? `
   <script type="module">
-    // Ordinateur : la 3D se charge tout de suite (intro). Téléphone : au premier geste ou
-    // quelques secondes après le chargement (l'intro se joue alors si l'on est en haut de page) ;
-    // l'aperçu image, rendu de la même scène, s'affiche en attendant.
+    // Ordinateur : la 3D se charge tout de suite (intro). Téléphone : juste après le chargement
+    // de la page (l'intro se joue alors si l'on est en haut) ; l'aperçu image, rendu de la même
+    // scène, s'affiche en attendant. Sans puce graphique (rendu logiciel très lent, cas des robots
+    // de mesure comme PageSpeed) : la 3D attend le premier geste, pour ne jamais ralentir la page.
     let fait = false;
     const charger = () => { if (fait) return; fait = true; import("/scene.js?v=${VERSION["scene.js"]}"); };
-    if (matchMedia("(min-width: 860px)").matches) charger();
-    else {
-      ["touchstart", "scroll", "pointerdown", "keydown"].forEach((e) => addEventListener(e, charger, { once: true, passive: true }));
-      // Téléphone avec puce graphique : la 3D se prépare tout de suite, avant que l'on fasse défiler
-      // (sinon elle se construirait pendant le premier défilement et provoquerait un à-coup).
-      // Sans accélération graphique (rendu logiciel, très lent) : chargement différé.
-      const gpu = (() => {
-        try {
-          const gl = document.createElement("canvas").getContext("webgl");
-          if (!gl) return false;
-          const ext = gl.getExtension("WEBGL_debug_renderer_info");
-          const nom = String(gl.getParameter(ext ? ext.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
-          const ok = !/swiftshader|llvmpipe|softpipe|software/i.test(nom);
-          const perte = gl.getExtension("WEBGL_lose_context");
-          if (perte) perte.loseContext();
-          return ok;
-        } catch (e) { return false; }
-      })();
-      const ensuite = gpu
-        ? () => (window.requestIdleCallback ? requestIdleCallback(charger, { timeout: 500 }) : setTimeout(charger, 200))
-        : () => setTimeout(() => (window.requestIdleCallback ? requestIdleCallback(charger, { timeout: 1000 }) : charger()), 3000);
-      if (document.readyState === "complete") ensuite();
-      else addEventListener("load", ensuite, { once: true });
+    const gpu = (() => {
+      try {
+        const gl = document.createElement("canvas").getContext("webgl");
+        if (!gl) return false;
+        const ext = gl.getExtension("WEBGL_debug_renderer_info");
+        const nom = String(gl.getParameter(ext ? ext.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
+        const ok = !/swiftshader|llvmpipe|softpipe|software/i.test(nom);
+        const perte = gl.getExtension("WEBGL_lose_context");
+        if (perte) perte.loseContext();
+        return ok;
+      } catch (e) { return false; }
+    })();
+    ["touchstart", "scroll", "pointerdown", "keydown", "mousemove"].forEach((e) => addEventListener(e, charger, { once: true, passive: true }));
+    if (gpu) {
+      if (matchMedia("(min-width: 860px)").matches) charger();
+      else {
+        // la 3D se prépare avant que l'on fasse défiler (sinon à-coup au premier défilement)
+        const ensuite = () => (window.requestIdleCallback ? requestIdleCallback(charger, { timeout: 500 }) : setTimeout(charger, 200));
+        if (document.readyState === "complete") ensuite();
+        else addEventListener("load", ensuite, { once: true });
+      }
     }
   </script>` : ""}
 </body>

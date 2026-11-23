@@ -18,6 +18,7 @@
   --gris: #e5e7eb;
   --orange: #c65d28;
   --orange-action: #b9541f; /* boutons : contraste AA avec le texte blanc */
+  --orange-texte: #9a4318;  /* petit texte orange sur fond clair : contraste AA (4,5:1) */
   --orange-survol: #a2481a;
   --orange-clair: #ee8e55;  /* orange lisible sur bleu ardoise */
   --orange-pale: #f8ebe2;
@@ -302,7 +303,7 @@ main { position: relative; z-index: 1; }
   text-decoration: none;
 }
 .nav a:hover { color: var(--orange-action); background: rgb(36 55 70 / 0.05); }
-.nav a[aria-current="page"] { color: var(--orange-action); }
+.nav a[aria-current="page"] { color: var(--orange-texte); }
 
 .entete__tel {
   display: inline-flex;
@@ -373,7 +374,7 @@ main { position: relative; z-index: 1; }
 .menu ul { list-style: none; margin: 0 0 14px; padding: 0; }
 .menu li + li { border-top: 1px solid var(--gris); }
 .menu a { display: block; padding: 13px 2px; color: var(--anthracite); text-decoration: none; font-family: var(--titres); font-weight: 700; font-size: 1.15rem; }
-.menu a[aria-current="page"] { color: var(--orange-action); }
+.menu a[aria-current="page"] { color: var(--orange-texte); }
 .menu__horaires { margin: 0; color: var(--texte-2); font-size: 0.9rem; }
 
 /* ---------- Scène 3D ---------- */
