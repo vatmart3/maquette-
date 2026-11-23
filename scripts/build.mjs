@@ -245,7 +245,8 @@ function head(p) {
   <script>try{if(!sessionStorage.getItem("arv-intro")&&!matchMedia("(prefers-reduced-motion: reduce)").matches&&matchMedia("(min-width: 860px)").matches){document.documentElement.classList.add("intro");setTimeout(function(){document.documentElement.classList.remove("intro")},4200)}}catch(e){}</script>
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js" crossorigin media="(min-width: 860px)">`
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js" crossorigin media="(min-width: 860px)">
+  <link rel="preload" as="image" href="/img/toiture-mobile.webp?v=${VERSION["img/toiture-mobile.webp"]}" media="(max-width: 859px)" fetchpriority="high">`
     : "";
   return `<!doctype html>
 <html lang="fr">
@@ -285,7 +286,7 @@ ${ld}
 </head>
 <body data-page="${p.id}"${p.sombre ? ' class="page-sombre"' : ""}>
   <a class="evitement" href="#contenu">Aller au contenu</a>
-${p.scene ? `  <div class="scene" data-scene aria-hidden="true"><picture><source media="(min-width: 860px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="><img class="scene__apercu" src="/img/toiture-mobile.webp?v=${VERSION["img/toiture-mobile.webp"]}" alt="" width="780" height="304" decoding="async"></picture></div>\n` : ""}${bandeauUrgence()}
+${p.scene ? `  <div class="scene" data-scene aria-hidden="true"><picture><source media="(min-width: 860px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="><img class="scene__apercu" src="/img/toiture-mobile.webp?v=${VERSION["img/toiture-mobile.webp"]}" alt="" width="780" height="304" fetchpriority="high"></picture></div>\n` : ""}${bandeauUrgence()}
 ${entete(p.id)}
   <main id="contenu">
 `;
