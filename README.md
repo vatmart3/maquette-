@@ -139,12 +139,13 @@ avec le blanc), blanc cassé `#F7F5F0`, gris clair `#E5E7EB`, anthracite `#1F293
 Manrope (titres), Inter (texte), DM Mono (données : téléphone, références). Logo CP 34 fourni par le
 client (`img/logo-cp34.png`, déclinaisons WebP pour le site).
 
-## Accueil : photo et visite de la maison
+## Accueil : photo et maison en 3D
 
-L'accroche affiche la photo de la maison (`img/maison-*.webp`, plusieurs tailles, chargée en
-priorité). La section « Du faîtage à la gouttière » reste en place pendant le défilement : la
-caméra montre d'abord la maison entière, puis zoome tour à tour sur la couverture, la charpente,
-la zinguerie, les fuites et le démoussage (points de vue dans `ZONES_VISITE`, `scripts/build.mjs`),
-avec la fiche correspondante. L'image est une comparaison avant / après à barre déplaçable
-(`img/maison-avant-*` : version vieillie de la photo, présentée comme une illustration).
-Dès que de vraies photos de chantier avant / après existent, il suffit de remplacer ces images.
+L'accroche affiche la photo de la maison (`img/maison-*.webp`, chargée en priorité). La section
+« Du faîtage à la gouttière » montre la même maison reconstituée en 3D (`maison3d.js`, Three.js
+par import map, chargé seulement quand la section approche et sur un appareil avec puce
+graphique). La section reste en place pendant le défilement : maison entière, puis la caméra
+tourne vers la couverture, la charpente (toit rendu transparent), la zinguerie, les tuiles
+cassées et le démoussage ; la zone est signalée en orange avec une étiquette. La barre avant /
+après coupe le rendu : à gauche la maison avant travaux, à droite après (illustration).
+Sans puce graphique, les photos `img/maison-avant-*` et `img/maison-*` servent de secours.

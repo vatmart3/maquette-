@@ -32,7 +32,7 @@ const avertissements = [];
 // Version de chaque fichier (empreinte du contenu) ajoutée à son adresse : à chaque modification,
 // le navigateur télécharge la nouvelle version au lieu de resservir une copie en cache.
 const VERSION = Object.fromEntries(
-  ["styles.css", "site.js", "config.js"].map((f) => [f, crypto.createHash("sha1").update(fs.readFileSync(path.join(RACINE, f))).digest("hex").slice(0, 10)])
+  ["styles.css", "site.js", "config.js", "maison3d.js"].map((f) => [f, crypto.createHash("sha1").update(fs.readFileSync(path.join(RACINE, f))).digest("hex").slice(0, 10)])
 );
 
 /* ------------------------------------------------------------------ */
@@ -253,7 +253,8 @@ function head(p) {
   // Accueil : la photo de la maison est l'élément principal, chargée en priorité (taille adaptée à l'écran).
   const scene = p.photoAccroche
     ? `
-  <link rel="preload" as="image" href="/img/maison-960.webp" imagesrcset="${SRCSET_MAISON}" imagesizes="${SIZES_MAISON}" fetchpriority="high">`
+  <link rel="preload" as="image" href="/img/maison-960.webp" imagesrcset="${SRCSET_MAISON}" imagesizes="${SIZES_MAISON}" fetchpriority="high">
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js"}}</script>`
     : "";
   return `<!doctype html>
 <html lang="fr">
@@ -1059,7 +1060,7 @@ const ZONES_VISITE = [
               ${fiches}
             </div>
           </div>
-          <figure class="avant-apres" data-avant-apres style="--pos: 50%">
+          <figure class="avant-apres" data-avant-apres data-maison3d="/maison3d.js?v=${VERSION["maison3d.js"]}" style="--pos: 50%">
             <div class="avant-apres__cadre">
               ${imageAA("apres", "Après : toiture nettoyée et réparée, façade propre")}
               <div class="avant-apres__avant">

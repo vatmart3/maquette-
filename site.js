@@ -124,7 +124,10 @@
     var n = fiches.length;
     var zone = null;
 
+    var figure = visite.querySelector("[data-avant-apres]");
     var cadrer = function (k) {
+      // maison en 3D chargée : c'est elle qui change de point de vue (événement arv:zone)
+      if (figure && figure.classList.contains("est-3d")) return;
       var t = "none";
       if (k >= 0) {
         var v = (reperes[k].getAttribute("data-vue") || "").split(",").map(Number);
@@ -145,6 +148,7 @@
       fiches.forEach(function (el, i) { el.classList.toggle("est-active", i === f); });
       reperes.forEach(function (b, i) { b.setAttribute("aria-current", i === k ? "true" : "false"); });
       cadrer(k);
+      document.dispatchEvent(new CustomEvent("arv:zone", { detail: { zone: k } }));
     };
 
     // Mesures gardées en mémoire : rien n'est recalculé dans la page pendant le défilement.
@@ -176,6 +180,29 @@
     }, { passive: true });
     window.addEventListener("resize", function () { mesure = null; depuisScroll(); });
     depuisScroll();
+
+    // Maison 3D : chargée quand la section approche, seulement avec une vraie puce graphique
+    // (sans elle, rendu logiciel trop lent : la photo reste affichée).
+    var source3d = figure && figure.getAttribute("data-maison3d");
+    var puce = function () {
+      try {
+        var gl = document.createElement("canvas").getContext("webgl");
+        if (!gl) return false;
+        var ext = gl.getExtension("WEBGL_debug_renderer_info");
+        var nom = String(gl.getParameter(ext ? ext.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
+        var perte = gl.getExtension("WEBGL_lose_context");
+        if (perte) perte.loseContext();
+        return !/swiftshader|llvmpipe|softpipe|software/i.test(nom);
+      } catch (e) { return false; }
+    };
+    if (source3d && "IntersectionObserver" in window && HTMLScriptElement.supports && HTMLScriptElement.supports("importmap") && puce()) {
+      var obs = new IntersectionObserver(function (entrees) {
+        if (!entrees.some(function (e) { return e.isIntersecting; })) return;
+        obs.disconnect();
+        try { new Function("u", "return import(u)")(source3d).catch(function () {}); } catch (e) {}
+      }, { rootMargin: "700px 0px" });
+      obs.observe(visite);
+    }
 
     reperes.forEach(function (r, k) {
       r.addEventListener("click", function () {

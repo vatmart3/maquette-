@@ -440,6 +440,18 @@ main { position: relative; z-index: 1; }
 .avant-apres__cadre { position: relative; aspect-ratio: 3 / 2; max-height: calc(100svh - var(--entete) - 110px); margin-inline: auto; border-radius: var(--r-l); overflow: hidden; background: var(--anthracite); touch-action: pan-y; user-select: none; -webkit-user-select: none; }
 .avant-apres__cadre img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; transform-origin: 50% 50%; transition: transform 1.1s cubic-bezier(0.65, 0, 0.25, 1); will-change: transform; backface-visibility: hidden; }
 .avant-apres__avant { position: absolute; inset: 0; clip-path: inset(0 calc(100% - var(--pos)) 0 0); }
+/* maison en 3D : le canevas remplace les photos (gardées en secours) */
+.avant-apres__3d { display: none; }
+.est-3d .avant-apres__3d { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.est-3d .avant-apres__cadre img, .est-3d .avant-apres__avant { display: none; }
+/* zone signalée : point orange pulsant et étiquette */
+.repere-3d { position: absolute; top: 0; left: 0; z-index: 1; display: none; pointer-events: none; }
+.repere-3d.est-visible { display: block; }
+.repere-3d__point { position: absolute; left: -9px; top: -9px; width: 18px; height: 18px; border: 3px solid #fff; border-radius: 50%; background: var(--orange-action); box-shadow: 0 0 0 0 rgb(240 145 90 / 0.7); animation: repere-pulse 1.6s ease-out infinite; }
+.repere-3d__nom { position: absolute; left: 0; bottom: 18px; transform: translateX(-50%); padding: 5px 11px; border-radius: 999px; background: var(--orange-action); color: #fff; font-family: var(--titres); font-size: 0.82rem; font-weight: 700; white-space: nowrap; box-shadow: 0 6px 16px -6px rgb(0 0 0 / 0.5); }
+.repere-3d__nom::after { content: ""; position: absolute; left: 50%; bottom: -5px; width: 10px; height: 10px; background: inherit; transform: translateX(-50%) rotate(45deg); z-index: -1; }
+@keyframes repere-pulse { 0% { box-shadow: 0 0 0 0 rgb(240 145 90 / 0.75); } 100% { box-shadow: 0 0 0 18px rgb(240 145 90 / 0); } }
+@media (prefers-reduced-motion: reduce) { .repere-3d__point { animation: none; } }
 .avant-apres__barre { position: absolute; top: 0; bottom: 0; left: var(--pos); width: 3px; margin-left: -1.5px; background: #fff; box-shadow: 0 0 12px rgb(0 0 0 / 0.35); pointer-events: none; }
 .avant-apres__poignee { position: absolute; top: 50%; left: 50%; display: flex; align-items: center; justify-content: center; gap: 2px; width: 46px; height: 46px; border-radius: 50%; background: var(--orange-action); color: #fff; transform: translate(-50%, -50%); box-shadow: 0 6px 18px -6px rgb(0 0 0 / 0.6); }
 .avant-apres__poignee .ico { width: 15px; height: 15px; }
