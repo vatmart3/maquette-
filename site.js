@@ -101,67 +101,29 @@
     el.min = aujourdhuiIso;
   });
 
-  /* ---------- Scène 3D : image de secours si elle n'arrive pas ---------- */
+  /* ---------- Accueil : comparaison avant / après ---------- */
 
-  var scene = document.querySelector("[data-scene]");
-  // Sur téléphone, l'aperçu image sert déjà de secours : pas de remplacement.
-  if (scene && window.matchMedia("(min-width: 860px)").matches) {
-    setTimeout(function () {
-      if (!scene.classList.contains("scene--prete") && !scene.classList.contains("scene--svg")) {
-        scene.classList.add("scene--svg");
-        scene.style.opacity = "1";
-        scene.innerHTML = '<img src="/img/toiture.svg" alt="">';
-        html.classList.remove("intro");
-      }
-    }, 7000);
-  }
+  document.querySelectorAll("[data-avant-apres]").forEach(function (fig) {
+    var curseur = fig.querySelector(".avant-apres__curseur");
+    if (!curseur) return;
+    var maj = function () { fig.style.setProperty("--pos", curseur.value + "%"); };
+    curseur.addEventListener("input", maj);
+    maj();
+  });
 
-  /* ---------- Visite de la toiture (accueil) ---------- */
+  /* ---------- Accueil : nos interventions (onglets) ---------- */
 
   var visite = document.querySelector("[data-visite]");
   if (visite) {
     var fiches = visite.querySelectorAll(".fiche");
     var reperes = visite.querySelectorAll(".visite__reperes button");
-    var n = fiches.length;
-    var zone = -1;
-
-    var activer = function (i) {
-      if (i === zone) return;
-      zone = i;
-      fiches.forEach(function (f, k) { f.classList.toggle("est-active", k === i); });
-      reperes.forEach(function (r, k) { r.setAttribute("aria-current", k === i ? "true" : "false"); });
-      document.dispatchEvent(new CustomEvent("arv:zone", { detail: { zone: i } }));
-    };
-
-    // Ordinateur et téléphone : la section reste en place et la zone suit le défilement vertical.
-    var collant = visite.querySelector(".visite__collant");
-    // Mesures gardées en mémoire : rien n'est recalculé dans la page pendant le défilement.
-    var mesure = null;
-    var position = function () {
-      if (!mesure) {
-        var haut = parseFloat(getComputedStyle(collant).top) || 0;
-        mesure = { debut: visite.offsetTop - haut, course: Math.max(1, visite.offsetHeight - collant.offsetHeight) };
-      }
-      return mesure;
-    };
-    if ("ResizeObserver" in window) {
-      var ro = new ResizeObserver(function () { mesure = null; });
-      ro.observe(visite);
-      ro.observe(document.body);
-    }
-    var depuisScroll = function () {
-      var q = position();
-      var p = (window.scrollY - q.debut) / q.course;
-      activer(p < -0.02 || p > 1 ? -1 : Math.min(n - 1, Math.max(0, Math.floor(p * n))));
-    };
-    window.addEventListener("scroll", depuisScroll, { passive: true });
-    window.addEventListener("resize", function () { mesure = null; depuisScroll(); });
-    depuisScroll();
-
     reperes.forEach(function (r, k) {
       r.addEventListener("click", function () {
-        var q = position();
-        window.scrollTo({ top: q.debut + q.course * ((k + 0.5) / n), behavior: reduit ? "auto" : "smooth" });
+        fiches.forEach(function (f, i) {
+          f.hidden = i !== k;
+          f.classList.toggle("est-active", i === k);
+        });
+        reperes.forEach(function (b, i) { b.setAttribute("aria-current", i === k ? "true" : "false"); });
       });
     });
   }

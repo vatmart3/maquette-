@@ -70,7 +70,7 @@
       ]
     },
     {
-      "source": "/(styles.css|styles.min.css|site.js|scene.js|config.js|favicon.svg|og.png)",
+      "source": "/(styles.css|styles.min.css|site.js|config.js|favicon.svg|og.png)",
       "headers": [
         {
           "key": "Cache-Control",

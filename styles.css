@@ -377,49 +377,28 @@ main { position: relative; z-index: 1; }
 .menu a[aria-current="page"] { color: var(--orange-texte); }
 .menu__horaires { margin: 0; color: var(--texte-2); font-size: 0.9rem; }
 
-/* ---------- Scène 3D ---------- */
-
-.scene {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 100vh;
-  height: 100lvh;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0;
-}
-.scene canvas { display: block; position: absolute; inset: 0; }
-@media (max-width: 859px) { .scene { will-change: opacity; transform: translateZ(0); } }
-.scene__apercu { position: absolute; top: 0; left: 0; width: 100%; height: auto; transition: opacity 0.6s ease; }
-.scene--prete .scene__apercu, .scene--svg .scene__apercu { opacity: 0; }
-@media (max-width: 859px) {
-  .scene:not(.scene--prete):not(.scene--svg) { opacity: 1; }
-  /* Image d'attente : même cadrage que la 3D, la maison entière entre l'en-tête et le titre. */
-  .scene__apercu {
-    top: calc(var(--bandeau) + var(--entete) + 13px);
-    height: calc(max(26vh, 180px) - 28px);
-    object-fit: contain;
-    -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
-    mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
-  }
-}
-@media (min-width: 860px) {
-  .scene__apercu { display: none; }
-}
-.scene--svg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 75% 40%; opacity: 0.6; }
-
 /* ---------- Accueil : accroche ---------- */
 
 .accroche {
   position: relative;
+  overflow: hidden;
   color: #fff;
-  min-height: calc(100svh - var(--entete) - var(--bandeau));
+  background: var(--ardoise);
+  min-height: min(calc(100svh - var(--entete) - var(--bandeau)), 760px);
   display: grid;
   align-items: center;
   padding-block: clamp(40px, 5vw, 72px);
 }
+/* Photo de la maison : moitié droite, fondue dans le bleu ardoise côté texte */
+.accroche__photo { position: absolute; inset: 0 0 0 auto; width: 62%; }
+.accroche__photo img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 55% 55%; }
+.accroche__photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--ardoise) 0%, rgb(36 55 70 / 0.82) 18%, rgb(36 55 70 / 0.25) 42%, rgb(36 55 70 / 0) 60%);
+}
+.accroche__grille { position: relative; z-index: 1; }
 
 .accroche__grille {
   display: grid;
@@ -431,9 +410,6 @@ main { position: relative; z-index: 1; }
 .accroche h1 span { display: block; color: var(--orange-clair); }
 .accroche .chapeau { margin: 22px 0 30px; color: var(--texte-clair); max-width: 33em; }
 
-.intro .accroche h1 { opacity: 0; }
-.intro-finie .accroche h1 { animation: titre-arrive 0.55s cubic-bezier(0.2, 0.7, 0.2, 1); }
-@keyframes titre-arrive { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 
 /* Carte « être rappelé » */
 .formulaire--rappel {
@@ -450,77 +426,61 @@ main { position: relative; z-index: 1; }
 .formulaire--rappel .bouton { width: 100%; margin-top: 4px; }
 .rappel__mention { margin: 12px 0 0; color: var(--texte-2); font-size: 0.78rem; line-height: 1.45; }
 
-/* ---------- Visite de la toiture ---------- */
+/* ---------- Accueil : avant / après et interventions ---------- */
 
-.visite { position: relative; height: 500vh; color: #fff; }
+.visite { padding-block: var(--section); background: var(--ardoise); color: #fff; }
+.visite__tete { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 8px 32px; margin-bottom: 24px; }
+.visite__tete h2 { max-width: 14em; margin: 0; font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.4rem); }
+.visite__tete p { margin: 0; color: var(--texte-clair); font-size: 0.95rem; }
 
-.visite__collant { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+.avant-apres { margin: 0; }
+.avant-apres__cadre { position: relative; border-radius: var(--r-l); overflow: hidden; background: var(--anthracite); touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+.avant-apres img { display: block; width: 100%; height: auto; }
+.avant-apres__avant { position: absolute; inset: 0; clip-path: inset(0 calc(100% - var(--pos)) 0 0); }
+.avant-apres__avant img { height: 100%; object-fit: cover; }
+.avant-apres__barre { position: absolute; top: 0; bottom: 0; left: var(--pos); width: 3px; margin-left: -1.5px; background: #fff; box-shadow: 0 0 12px rgb(0 0 0 / 0.35); pointer-events: none; }
+.avant-apres__poignee { position: absolute; top: 50%; left: 50%; display: flex; align-items: center; justify-content: center; gap: 2px; width: 46px; height: 46px; border-radius: 50%; background: var(--orange-action); color: #fff; transform: translate(-50%, -50%); box-shadow: 0 6px 18px -6px rgb(0 0 0 / 0.6); }
+.avant-apres__poignee .ico { width: 15px; height: 15px; }
+.avant-apres__poignee .ico:first-child { transform: scaleX(-1); }
+.avant-apres__etiquette { position: absolute; top: 14px; padding: 5px 11px; border-radius: 999px; background: rgb(31 41 51 / 0.72); color: #fff; font-family: var(--titres); font-size: 0.82rem; font-weight: 700; pointer-events: none; }
+.avant-apres__etiquette--avant { left: 14px; }
+.avant-apres__etiquette--apres { right: 14px; }
+/* le curseur couvre toute l'image : on peut saisir la barre n'importe où */
+.avant-apres__curseur { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; -webkit-appearance: none; appearance: none; }
+.avant-apres__curseur:focus-visible { opacity: 0; }
+.avant-apres:has(.avant-apres__curseur:focus-visible) .avant-apres__poignee { outline: 3px solid #fff; outline-offset: 3px; }
+.avant-apres figcaption { margin-top: 10px; color: var(--texte-clair); font-size: 0.82rem; }
 
-.visite__grille {
-  position: relative;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  height: 100%;
-  padding-top: calc(var(--entete) + 30px);
-  padding-bottom: 36px;
-}
-
-.visite__tete h2 { max-width: 12em; font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.4rem); }
-
-.visite__fiches { position: relative; align-self: center; width: min(440px, 40vw); min-height: 300px; }
-
-.fiche {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  width: 100%;
-  padding: 0;
-  color: #fff;
-  transform: translateY(-50%);
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.35s ease, visibility 0.35s, transform 0.35s ease;
-}
-.fiche.est-active { opacity: 1; visibility: visible; }
-.visite__glisser { display: none; }
-.fiche__num { display: block; margin-bottom: 14px; color: var(--orange-clair); font-size: 0.85rem; letter-spacing: 0.04em; }
-.fiche h3 { font-size: clamp(1.7rem, 1.3rem + 1.3vw, 2.4rem); line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 14px; color: #fff; }
-.fiche p { margin: 0 0 24px; color: var(--texte-clair); font-size: 1.05rem; max-width: 30em; }
-.fiche__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; }
-.fiche .lien-fleche { color: #fff; }
-.fiche .lien-fleche:hover { color: var(--orange-clair); }
-
-/* voile sombre derrière le texte, sans bloc : la maison reste visible */
-.visite__collant::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background: linear-gradient(90deg, rgb(36 55 70 / 0.92) 0%, rgb(36 55 70 / 0.65) 30%, rgb(36 55 70 / 0) 55%);
-}
-.visite__grille { z-index: 1; }
-
-
-.visite__reperes { display: flex; gap: 8px; list-style: none; margin: 0; padding: 0; }
+.visite__zones { display: grid; grid-template-columns: minmax(0, 1fr); gap: 22px; margin-top: 34px; }
+.visite__reperes { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0; padding: 0; }
 .visite__reperes button {
-  display: grid;
-  gap: 8px;
-  min-width: 82px;
-  padding: 6px 0;
-  border: 0;
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 1px solid rgb(255 255 255 / 0.28);
+  border-radius: 999px;
   background: none;
   color: var(--texte-clair);
   font: inherit;
   font-family: var(--titres);
-  font-size: 0.82rem;
-  font-weight: 600;
-  text-align: left;
+  font-size: 0.9rem;
+  font-weight: 700;
   cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
-.visite__reperes button::before { content: ""; display: block; height: 3px; border-radius: 2px; background: rgb(255 255 255 / 0.28); }
-.visite__reperes button[aria-current="true"] { color: #fff; }
-.visite__reperes button[aria-current="true"]::before { background: var(--orange-clair); }
+.visite__reperes button:hover { border-color: #fff; color: #fff; }
+.visite__reperes button[aria-current="true"] { border-color: var(--orange-action); background: var(--orange-action); color: #fff; }
+
+.fiche { max-width: 46em; color: #fff; }
+.fiche[hidden] { display: none; }
+.fiche.est-active { animation: fiche-arrive 0.3s ease; }
+@keyframes fiche-arrive { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.fiche__num { display: block; margin-bottom: 10px; color: var(--orange-clair); font-size: 0.85rem; letter-spacing: 0.04em; }
+.fiche h3 { font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem); line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 10px; color: #fff; }
+.fiche p { margin: 0 0 20px; color: var(--texte-clair); font-size: 1.02rem; }
+.fiche__aussi a { color: #fff; }
+.fiche__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; }
+.fiche .lien-fleche { color: #fff; }
+.fiche .lien-fleche:hover { color: var(--orange-clair); }
 
 /* ---------- Urgence ---------- */
 
@@ -938,43 +898,27 @@ main { position: relative; z-index: 1; }
   .garanties--clair span::before { background: var(--orange-clair); }
   .garanties span:not(:last-child)::after { display: none; }
 
-  /* accueil */
-  .accroche { min-height: 0; padding: 0 0 40px; }
-  .accroche__grille { grid-template-columns: minmax(0, 1fr); }
-  .accroche__texte { padding-top: max(26vh, 180px); }
+  /* accueil : la photo au-dessus du titre, fondue dans le bleu ardoise */
+  .accroche { display: block; min-height: 0; padding: 0 0 40px; }
+  .accroche__photo { position: relative; inset: auto; width: 100%; height: clamp(220px, 58vw, 340px); }
+  .accroche__photo img { object-position: 50% 52%; }
+  .accroche__photo::after { background: linear-gradient(to bottom, rgb(36 55 70 / 0) 55%, var(--ardoise) 100%); }
+  .accroche__grille { grid-template-columns: minmax(0, 1fr); margin-top: -18px; }
   .accroche .chapeau { margin: 16px 0 24px; }
-  .intro .accroche h1 { opacity: 1; }
-  .intro-finie .accroche h1 { animation: none; }
 
-  /* visite : comme sur ordinateur, la section reste en place et le défilement fait passer
-     d'une zone à l'autre ; la 3D occupe toute la largeur, la fiche de la zone s'affiche dessous */
-  .visite { height: 440svh; padding: 0; }
-  .visite__collant { position: sticky; top: var(--entete); height: calc(100svh - var(--entete) - var(--barre)); overflow: hidden; }
-  .visite__collant::before { display: none; }
-  .visite__grille { display: flex; flex-direction: column; height: 100%; padding: 14px 0 12px; }
-  .visite__tete { margin: 0; padding: 0 0 10px; background: none; }
-  .visite__tete h2 { font-size: 1.3rem; }
-  .visite__glisser { display: none; }
-  .visite__reperes { order: 2; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; margin: 0; padding: 0; background: none; }
-  .visite__reperes button { min-width: 0; min-height: 40px; padding: 4px 0 6px; gap: 6px; font-size: 0.72rem; line-height: 1.15; }
-  .visite__grille { position: relative; z-index: 1; pointer-events: none; }
-  .visite__tete, .visite__reperes, .visite__fiches { pointer-events: auto; }
-  .visite__tete, .visite__reperes { margin-inline: calc(-1 * var(--marge)); padding-inline: var(--marge); }
-  .visite__tete { margin-top: -14px; padding-top: 14px; background: linear-gradient(to bottom, rgb(36 55 70 / 0.92), rgb(36 55 70 / 0.85)); }
-  .visite__reperes { padding-bottom: 22px; background: linear-gradient(to bottom, var(--ardoise) 60%, rgb(36 55 70 / 0)); }
-  .visite__fiches { order: 4; position: relative; display: grid; width: auto; min-height: 0; margin: auto calc(-1 * var(--marge)) 0; padding: 40px var(--marge) 0; background: linear-gradient(to bottom, rgb(36 55 70 / 0), var(--ardoise) 38px); }
-  .fiche {
-    grid-area: 1 / 1;
-    position: relative;
-    top: auto;
-    width: auto;
-    transform: translateY(8px);
-  }
-  .fiche.est-active { transform: none; }
-  .fiche__num { margin-bottom: 8px; font-size: 0.75rem; }
-  .fiche h3 { font-size: 1.4rem; margin-bottom: 8px; }
-  .fiche p { margin-bottom: 16px; font-size: 0.94rem; line-height: 1.5; }
-  .fiche .bouton--petit { min-height: 44px; }
+  .visite__tete { margin-bottom: 18px; }
+  .visite__tete h2 { font-size: 1.45rem; }
+  .avant-apres__cadre { border-radius: var(--r-m); }
+  .avant-apres__poignee { width: 40px; height: 40px; }
+  .avant-apres__etiquette { top: 10px; font-size: 0.75rem; }
+  .avant-apres__etiquette--avant { left: 10px; }
+  .avant-apres__etiquette--apres { right: 10px; }
+  .visite__zones { margin-top: 26px; gap: 18px; }
+  .visite__reperes { flex-wrap: nowrap; overflow-x: auto; margin-inline: calc(-1 * var(--marge)); padding: 2px var(--marge) 4px; scrollbar-width: none; }
+  .visite__reperes::-webkit-scrollbar { display: none; }
+  .visite__reperes button { flex: none; }
+  .fiche h3 { font-size: 1.4rem; }
+  .fiche p { font-size: 0.96rem; }
 
   /* grilles en une colonne */
   .urgence-bloc__grille, .zone, .cta-final__grille, .tete-page__grille, .services-bloc { grid-template-columns: minmax(0, 1fr); gap: 28px; }

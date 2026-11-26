@@ -32,7 +32,7 @@ const avertissements = [];
 // Version de chaque fichier (empreinte du contenu) ajoutée à son adresse : à chaque modification,
 // le navigateur télécharge la nouvelle version au lieu de resservir une copie en cache.
 const VERSION = Object.fromEntries(
-  ["styles.css", "site.js", "config.js", "scene.js", "img/toiture-mobile.webp"].map((f) => [f, crypto.createHash("sha1").update(fs.readFileSync(path.join(RACINE, f))).digest("hex").slice(0, 10)])
+  ["styles.css", "site.js", "config.js"].map((f) => [f, crypto.createHash("sha1").update(fs.readFileSync(path.join(RACINE, f))).digest("hex").slice(0, 10)])
 );
 
 /* ------------------------------------------------------------------ */
@@ -199,6 +199,9 @@ const G_LOGO = `<svg class="logo-google" viewBox="0 0 48 48" aria-hidden="true" 
 // Note Google réelle (moyenne des avis affichés) avec lien vers la page Avis.
 const noteGoogle = (clair) => (AVIS.length ? `<a class="note-google${clair ? " note-google--clair" : ""}" href="/avis">${AVIS_GOOGLE ? `<span class="note-google__g">${G_LOGO}</span>` : ""}<span class="note-google__etoiles" aria-hidden="true"><span>★★★★★</span><span style="width:${((MOYENNE / 5) * 100).toFixed(0)}%">★★★★★</span></span><strong>${MOYENNE.toFixed(1).replace(".", ",")}/5</strong><span>${AVIS_GOOGLE ? `sur Google · ${AVIS.length} avis` : `${AVIS.length} avis clients`}</span></a>` : "");
 const avecRealisations = CHANTIERS.length > 0;
+// Photo de l'accueil : tailles disponibles et largeur affichée (moitié droite sur ordinateur, pleine largeur sur téléphone).
+const SRCSET_MAISON = [640, 800, 960, 1400, 1900].map((w) => `/img/maison-${w}.webp ${w}w`).join(", ");
+const SIZES_MAISON = "(max-width: 859px) 100vw, 62vw";
 
 function logo(clair = false) {
   return `<a class="logo${clair ? " logo--clair" : ""}" href="/">
@@ -247,13 +250,10 @@ function head(p) {
   p.title = titrePage(p.title);
   const og = imageOG(p);
   const ld = p.jsonld.map((o) => `  <script type="application/ld+json">${JSON.stringify(o)}</script>`).join("\n");
-  const scene = p.scene
+  // Accueil : la photo de la maison est l'élément principal, chargée en priorité (taille adaptée à l'écran).
+  const scene = p.photoAccroche
     ? `
-  <script>try{if(!sessionStorage.getItem("arv-intro")&&!matchMedia("(prefers-reduced-motion: reduce)").matches&&matchMedia("(min-width: 860px)").matches){document.documentElement.classList.add("intro");setTimeout(function(){document.documentElement.classList.remove("intro")},4200)}}catch(e){}</script>
-  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js" crossorigin media="(min-width: 860px)">
-  <link rel="preload" as="image" href="/img/toiture-mobile.webp?v=${VERSION["img/toiture-mobile.webp"]}" media="(max-width: 859px)" fetchpriority="high">`
+  <link rel="preload" as="image" href="/img/maison-960.webp" imagesrcset="${SRCSET_MAISON}" imagesizes="${SIZES_MAISON}" fetchpriority="high">`
     : "";
   return `<!doctype html>
 <html lang="fr">
@@ -293,7 +293,7 @@ ${ld}
 </head>
 <body data-page="${p.id}"${p.sombre ? ' class="page-sombre"' : ""}>
   <a class="evitement" href="#contenu">Aller au contenu</a>
-${p.scene ? `  <div class="scene" data-scene aria-hidden="true"><picture><source media="(min-width: 860px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="><img class="scene__apercu" src="/img/toiture-mobile.webp?v=${VERSION["img/toiture-mobile.webp"]}" alt="" width="780" height="304" fetchpriority="high"></picture></div>\n` : ""}${bandeauUrgence()}
+${bandeauUrgence()}
 ${entete(p.id)}
   <main id="contenu">
 `;
@@ -439,37 +439,7 @@ function pied() {
 `;
 }
 
-const FIN_PAGE = (scene) => `${scene ? `
-  <script type="module">
-    // Ordinateur : la 3D se charge tout de suite (intro). Téléphone : juste après le chargement
-    // de la page (l'intro se joue alors si l'on est en haut) ; l'aperçu image, rendu de la même
-    // scène, s'affiche en attendant. Sans puce graphique (rendu logiciel très lent, cas des robots
-    // de mesure comme PageSpeed) : la 3D attend le premier geste, pour ne jamais ralentir la page.
-    let fait = false;
-    const charger = () => { if (fait) return; fait = true; import("/scene.js?v=${VERSION["scene.js"]}"); };
-    const gpu = (() => {
-      try {
-        const gl = document.createElement("canvas").getContext("webgl");
-        if (!gl) return false;
-        const ext = gl.getExtension("WEBGL_debug_renderer_info");
-        const nom = String(gl.getParameter(ext ? ext.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
-        const ok = !/swiftshader|llvmpipe|softpipe|software/i.test(nom);
-        const perte = gl.getExtension("WEBGL_lose_context");
-        if (perte) perte.loseContext();
-        return ok;
-      } catch (e) { return false; }
-    })();
-    ["touchstart", "scroll", "pointerdown", "keydown", "mousemove"].forEach((e) => addEventListener(e, charger, { once: true, passive: true }));
-    if (gpu) {
-      if (matchMedia("(min-width: 860px)").matches) charger();
-      else {
-        // la 3D se prépare avant que l'on fasse défiler (sinon à-coup au premier défilement)
-        const ensuite = () => (window.requestIdleCallback ? requestIdleCallback(charger, { timeout: 500 }) : setTimeout(charger, 200));
-        if (document.readyState === "complete") ensuite();
-        else addEventListener("load", ensuite, { once: true });
-      }
-    }
-  </script>` : ""}
+const FIN_PAGE = () => `
 </body>
 </html>
 `;
@@ -1036,14 +1006,14 @@ const ZONES_VISITE = [
   const p = {
     id: "accueil",
     path: "/",
-    scene: true,
+    photoAccroche: true,
     title: "Couvreur à Frontignan, réparation de toiture | Couvreur Proximité 34",
     ogTitle: "Couvreur Proximité 34, couvreur à Frontignan",
     description: `Couvreur zingueur à Frontignan pour fuites, tuiles cassées, réfection de toiture, démoussage, gouttières. Dépannage rapide à Sète et Balaruc. Devis gratuit.`,
     jsonld: [ldEntreprise(), ldSite, ldFaq(FAQ_ACCUEIL)],
   };
   const fiches = ZONES_VISITE.map(
-    (z, i) => `<article class="fiche" aria-labelledby="titre-zone-${i}">
+    (z, i) => `<article class="fiche${i === 0 ? " est-active" : ""}" id="fiche-${i}" aria-labelledby="titre-zone-${i}"${i === 0 ? "" : " hidden"}>
               <span class="fiche__num mono">${String(i + 1).padStart(2, "0")} / ${String(ZONES_VISITE.length).padStart(2, "0")}</span>
               <h3 id="titre-zone-${i}">${esc(z.titre)}</h3>
               <p>${fr(z.texte)}</p>
@@ -1054,11 +1024,19 @@ const ZONES_VISITE = [
               </div>
             </article>`
   ).join("\n            ");
-  const reperes = ZONES_VISITE.map((z) => `<li><button type="button" aria-current="false">${esc(z.titre.split(" ")[0])}</button></li>`).join("");
+  const reperes = ZONES_VISITE.map((z, i) => `<li><button type="button" aria-current="${i === 0 ? "true" : "false"}" aria-controls="fiche-${i}">${esc(z.titre.split(" ")[0])}</button></li>`).join("");
+  // Avant / après : même cadrage pour les deux images ; large sur ordinateur, resserré sur téléphone.
+  const imageAA = (etat, alt) => `<picture>
+                <source media="(max-width: 699px)" srcset="/img/toiture-${etat}-etroit-500.webp 500w, /img/toiture-${etat}-etroit-740.webp 740w" sizes="calc(100vw - 32px)" width="740" height="415">
+                <img src="/img/toiture-${etat}-large-900.webp" srcset="/img/toiture-${etat}-large-900.webp 900w, /img/toiture-${etat}-large-1400.webp 1400w" sizes="(max-width: 1240px) calc(100vw - 48px), 1180px" width="1400" height="453" alt="${alt}" loading="lazy" decoding="async">
+              </picture>`;
   const html =
     head(p) +
     `
     <section class="accroche" aria-labelledby="titre-page">
+      <div class="accroche__photo">
+        <img src="/img/maison-960.webp" srcset="${SRCSET_MAISON}" sizes="${SIZES_MAISON}" width="1900" height="1267" alt="Maison de plain-pied aux murs blancs, toiture en tuiles grises" fetchpriority="high" decoding="async">
+      </div>
       <div class="conteneur accroche__grille">
         <div class="accroche__texte">
           <h1 id="titre-page">Couvreur à Frontignan, <span>votre toiture entre de bonnes mains.</span></h1>
@@ -1071,16 +1049,29 @@ const ZONES_VISITE = [
     </section>
 
     <section class="visite" data-visite id="visite" aria-labelledby="titre-visite">
-      <div class="visite__collant">
-        <div class="conteneur visite__grille">
-          <div class="visite__tete">
-            <h2 id="titre-visite">Du faîtage à la gouttière, on s'occupe de tout.</h2>
-            <p class="visite__glisser" aria-hidden="true">Faites glisser pour voir chaque zone ${ico("fleche")}</p>
+      <div class="conteneur">
+        <div class="visite__tete">
+          <h2 id="titre-visite">Du faîtage à la gouttière, on s'occupe de tout.</h2>
+          <p>Faites glisser la barre pour comparer la toiture avant et après l'entretien.</p>
+        </div>
+        <figure class="avant-apres" data-avant-apres style="--pos: 50%">
+          <div class="avant-apres__cadre">
+          ${imageAA("apres", "Après : toiture nettoyée et réparée, façade propre")}
+          <div class="avant-apres__avant">
+            ${imageAA("avant", "Avant : toiture couverte de mousses et de lichens, tuiles cassées, coulures sur la façade")}
           </div>
+          <span class="avant-apres__etiquette avant-apres__etiquette--avant" aria-hidden="true">Avant</span>
+          <span class="avant-apres__etiquette avant-apres__etiquette--apres" aria-hidden="true">Après</span>
+          <span class="avant-apres__barre" aria-hidden="true"><span class="avant-apres__poignee">${ico("fleche")}${ico("fleche")}</span></span>
+          <input class="avant-apres__curseur" type="range" min="0" max="100" value="50" step="1" aria-label="Comparer avant et après : faites glisser vers la droite pour voir l'avant">
+          </div>
+          <figcaption>Illustration : la même toiture encrassée, puis démoussée, traitée et réparée.</figcaption>
+        </figure>
+        <div class="visite__zones">
+          <ol class="visite__reperes" aria-label="Nos interventions">${reperes}</ol>
           <div class="visite__fiches">
             ${fiches}
           </div>
-          <ol class="visite__reperes" aria-label="Étapes de la visite">${reperes}</ol>
         </div>
       </div>
     </section>
@@ -1112,7 +1103,7 @@ const ZONES_VISITE = [
 ${faqHtml(FAQ_ACCUEIL)}
 ${bandeauCta()}` +
     pied() +
-    FIN_PAGE(true);
+    FIN_PAGE();
   ecrire("index.html", html, { path: "/", priorite: "1.0" });
 }
 
@@ -1164,7 +1155,7 @@ ${faqHtml(s.faq, `Vos questions sur ${s.court.toLowerCase() === "charpente" ? "l
     </section>
 ${bandeauCta()}` +
     pied() +
-    FIN_PAGE(false);
+    FIN_PAGE();
   ecrire(`services/${s.slug}.html`, html, { path: s.path, priorite: "0.8", images: photosS });
 }
 
@@ -1234,7 +1225,7 @@ ${listeRealisations(REALISATIONS.filter((c) => c.commune === v.slug), `Nos réal
 ${faqHtml(v.faq, `Couvreur à ${v.nom}, vos questions`)}
 ${bandeauCta(`Votre couvreur à ${v.nom}`, `Réparation, réfection, démoussage ou urgence. Appelez-nous ou faites votre demande en ligne.`)}` +
     pied() +
-    FIN_PAGE(false);
+    FIN_PAGE();
   ecrire(`couvreur/${v.slug}.html`, html, { path: v.path, priorite: v.nom === "Frontignan" ? "0.9" : "0.8", images: photosV });
 }
 
@@ -1302,7 +1293,7 @@ function pageSecteur(sec) {
 ${faqHtml(sec.faq, `${sec.nom}, vos questions`)}
 ${bandeauCta()}` +
     pied() +
-    FIN_PAGE(false);
+    FIN_PAGE();
   ecrire(`secteur/${sec.slug}.html`, html, { path: sec.path, priorite: "0.7" });
 }
 
@@ -1408,7 +1399,7 @@ for (const sec of SECTEURS_PAGES) pageSecteur(sec);
     </section>
 ${bandeauCta()}` +
     pied() +
-    FIN_PAGE(false);
+    FIN_PAGE();
   ecrire("zone-intervention.html", html, { path: "/zone-intervention", priorite: "0.8" });
 }
 
@@ -1461,7 +1452,7 @@ ${bandeauCta()}` +
 ${faqHtml(FAQ_DEPANNAGE, "Vos questions sur le dépannage")}
 ${bandeauCta()}` +
     pied() +
-    FIN_PAGE(false);
+    FIN_PAGE();
   ecrire("depannage-toiture.html", html, { path: "/depannage-toiture", priorite: "0.9" });
 }
 
@@ -1499,7 +1490,7 @@ ${bandeauCta()}` +
     </section>
 ${bandeauCta()}` +
     pied() +
-    FIN_PAGE(false);
+    FIN_PAGE();
   ecrire("devis-toiture.html", html, { path: "/devis-toiture", priorite: "0.9" });
 }
 
@@ -1537,7 +1528,7 @@ ${bandeauCta()}` +
     </section>
 ${bandeauCta()}` +
     pied() +
-    FIN_PAGE(false);
+    FIN_PAGE();
   ecrire("rendez-vous.html", html, { path: "/rendez-vous", priorite: "0.8" });
 }
 
@@ -1577,7 +1568,7 @@ ${bandeauCta()}` +
       </div>
     </section>` +
     pied() +
-    FIN_PAGE(false);
+    FIN_PAGE();
   ecrire("contact.html", html, { path: "/contact", priorite: "0.6" });
 }
 
@@ -1619,7 +1610,7 @@ ${bandeauCta()}` +
     </section>
 ${bandeauCta()}` +
     pied() +
-    FIN_PAGE(false);
+    FIN_PAGE();
   ecrire("a-propos.html", html, { path: "/a-propos", priorite: "0.5" });
 }
 
@@ -1666,7 +1657,7 @@ ${bandeauCta()}` +
     </section>
 ${bandeauCta()}` +
     pied() +
-    FIN_PAGE(false);
+    FIN_PAGE();
   ecrire("avis.html", html, avecAvis ? { path: "/avis", priorite: "0.5" } : undefined);
   if (AVIS_GOOGLE && !AVIS_DATES) avertissements.push("Avis : date de publication à compléter dans config.avis (AAAA-MM-JJ) pour afficher les étoiles dans les résultats Google.");
   if (!avecAvis) avertissements.push("Page Avis : aucun avis affiché pour l'instant. Ajoutez les vrais avis dans config.avis (texte exact, auteur, note, source « Google » ou « Client »).");
@@ -1698,7 +1689,7 @@ ${bandeauCta()}` +
       </div>
     </section>` +
         pied() +
-        FIN_PAGE(false)
+        FIN_PAGE()
     );
     avertissements.push("/avis/laisser affiche une page d'attente : renseignez config.liens.avisGoogle pour rediriger vers Google.");
   }
@@ -1744,7 +1735,7 @@ if (avecRealisations) {
     </section>
 ${bandeauCta()}` +
     pied() +
-    FIN_PAGE(false);
+    FIN_PAGE();
   ecrire("realisations.html", html, { path: "/realisations", priorite: "0.6" });
 
   for (const c of REALISATIONS) {
@@ -1823,7 +1814,7 @@ ${bandeauCta()}` +
 ${galerie(photosC, `Le chantier en photos`)}
 ${bandeauCta()}` +
       pied() +
-      FIN_PAGE(false);
+      FIN_PAGE();
     ecrire(`realisations/${c.slug}.html`, htmlC, { path: c.path, priorite: "0.5", images: photosC });
   }
 } else {
@@ -1896,7 +1887,7 @@ const ldArticle = (a) =>
     </section>
 ${bandeauCta()}` +
     pied() +
-    FIN_PAGE(false);
+    FIN_PAGE();
   ecrire("conseils.html", html, { path: "/conseils", priorite: "0.6" });
 }
 
@@ -1954,7 +1945,7 @@ for (const a of ARTICLES_PAGES) {
     </section>
 ${bandeauCta()}` +
     pied() +
-    FIN_PAGE(false);
+    FIN_PAGE();
   ecrire(`conseils/${a.slug}.html`, html, { path: a.path, priorite: "0.6" });
 }
 
@@ -1976,7 +1967,7 @@ ${bandeauCta()}` +
       </div>
     </section>` +
       pied() +
-      FIN_PAGE(false)
+      FIN_PAGE()
     );
   };
   ecrire(
@@ -2035,7 +2026,7 @@ ${bandeauCta()}` +
       </div>
     </section>` +
       pied() +
-      FIN_PAGE(false)
+      FIN_PAGE()
   );
 }
 

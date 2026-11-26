@@ -19,7 +19,6 @@ envoie les formulaires par e-mail. Réalisé par MJAGENCY.
 | `scripts/og.mjs` | Images de partage 1200 × 630 par page (polices TTF dans `scripts/og-polices/`). |
 | `scripts/indexnow.mjs` | Signale les pages à Bing et aux moteurs IndexNow. |
 | `api/demande.js` | Reçoit les formulaires et envoie l'e-mail au client (Resend). |
-| `scene.js` | Animation 3D de la toiture (accueil). |
 | `site.js`, `styles.css` | Script et styles communs. |
 | `docs/SEO-hors-site.md` | Feuille de route hors site : fiche Google, annuaires, avis, liens, suivi, calendrier. |
 
@@ -80,7 +79,7 @@ Fait dans le site :
   services), `Service`, `FAQPage`, `BreadcrumbList`, `WebSite`.
 - Maillage interne : chaque page renvoie vers les communes, les services et les formulaires.
 - `sitemap.xml`, `robots.txt`, URLs propres, canonical, Open Graph, balises géographiques.
-- Site rapide (pas de framework ; la 3D se charge après le contenu, uniquement sur l'accueil).
+- Site rapide (pas de framework ; photo de l'accueil chargée en priorité, à la taille de l'écran).
 
 **À faire par le client ou l'agence (détail complet dans `docs/SEO-hors-site.md`) :**
 1. **Fiche Google Business Profile** catégorie « Couvreur » à Frontignan : même nom, adresse et
@@ -137,15 +136,14 @@ n'est nécessaire, la page Confidentialité s'adapte toute seule.
 
 Charte Couvreur Proximité 34 : bleu ardoise `#243746`, orange `#C65D28` (boutons en `#B9541F` pour le contraste AA
 avec le blanc), blanc cassé `#F7F5F0`, gris clair `#E5E7EB`, anthracite `#1F2933`.
-Manrope (titres), Inter (texte), DM Mono (données : téléphone, références). Logo « AV » redessiné en
-vectoriel (`img/arveo-mark.svg`) d'après la planche de charte : à remplacer par le fichier source
-officiel s'il existe.
+Manrope (titres), Inter (texte), DM Mono (données : téléphone, références). Logo CP 34 fourni par le
+client (`img/logo-cp34.png`, déclinaisons WebP pour le site).
 
-## Animation 3D
+## Accueil : photo et avant / après
 
-Épure d'une toiture méditerranéenne en L : tuiles canal, faîtage et faîtières, rives, génoises,
-noues en zinc, gouttières et descentes, cheminée avec solin, fenêtre de toit avec abergement,
-charpente en écorché (chevrons, liteaux, pannes, ferme), mousses. À l'arrivée, un cordeau orange
-claque et la toiture se trace ; au défilement, la caméra visite 5 zones (couverture, charpente,
-zinguerie, étanchéité, démoussage), chacune avec sa fiche et un bouton « Devis pour ça ».
-Image SVG de secours sans WebGL, animation coupée en `prefers-reduced-motion`.
+L'accroche affiche la photo de la maison (`img/maison-*.webp`, plusieurs tailles, chargée en
+priorité). La section « Du faîtage à la gouttière » présente une comparaison avant / après à
+barre déplaçable (`img/toiture-avant-*` et `img/toiture-apres-*`, cadrage large sur ordinateur
+et resserré sur téléphone), présentée comme une illustration, puis les 5 interventions en onglets
+(couverture, charpente, zinguerie, fuites, démoussage), chacune avec un bouton « Devis pour ça ».
+Dès que de vraies photos de chantier avant / après existent, il suffit de remplacer ces images.
