@@ -995,11 +995,11 @@ const ecrire = (fichier, html, meta) => {
 /* --- Accueil --- */
 
 const ZONES_VISITE = [
-  { titre: "Couverture et tuiles", aussi: ["remplacement-tuiles", "faitage-rives"], texte: "Tuiles canal, romanes ou mécaniques, faîtage, rives et génoises. On répare un pan ou on refait toute la couverture.", lien: "/services/refection-toiture", devis: "Réfection de toiture" },
-  { titre: "Charpente", aussi: ["isolation-toiture"], texte: "Chevrons, pannes et liteaux portent vos tuiles. On les contrôle et on les renforce.", lien: "/services/charpente", devis: "Charpente" },
-  { titre: "Zinguerie", texte: "Gouttières, descentes et noues en zinc éloignent l'eau de vos murs et de vos façades.", lien: "/services/zinguerie-gouttieres", devis: "Zinguerie / gouttières" },
-  { titre: "Fuites et étanchéité", aussi: ["fenetre-de-toit", "etancheite-toit-terrasse", "bachage-urgence"], texte: "Solin de cheminée, fenêtre de toit, tuile cassée. On trouve d'où vient l'eau avant de réparer.", lien: "/services/recherche-de-fuite", devis: "Réparation / fuite" },
-  { titre: "Démoussage et entretien", texte: "Un nettoyage et un traitement contre mousses et lichens prolongent la vie de la toiture.", lien: "/services/demoussage-toiture", devis: "Démoussage / traitement" },
+  { titre: "Couverture et tuiles", vue: { large: [66, 22, 1.5], etroit: [50, 17, 1.3] }, aussi: ["remplacement-tuiles", "faitage-rives"], texte: "Tuiles canal, romanes ou mécaniques, faîtage, rives et génoises. On répare un pan ou on refait toute la couverture.", lien: "/services/refection-toiture", devis: "Réfection de toiture" },
+  { titre: "Charpente", vue: { large: [58, 16, 2.0], etroit: [38, 9, 1.7] }, aussi: ["isolation-toiture"], texte: "Chevrons, pannes et liteaux portent vos tuiles. On les contrôle et on les renforce.", lien: "/services/charpente", devis: "Charpente" },
+  { titre: "Zinguerie", vue: { large: [43, 40, 2.0], etroit: [4, 42, 1.7] }, texte: "Gouttières, descentes et noues en zinc éloignent l'eau de vos murs et de vos façades.", lien: "/services/zinguerie-gouttieres", devis: "Zinguerie / gouttières" },
+  { titre: "Fuites et étanchéité", vue: { large: [68, 26, 2.2], etroit: [62, 22, 1.8] }, aussi: ["fenetre-de-toit", "etancheite-toit-terrasse", "bachage-urgence"], texte: "Solin de cheminée, fenêtre de toit, tuile cassée. On trouve d'où vient l'eau avant de réparer.", lien: "/services/recherche-de-fuite", devis: "Réparation / fuite" },
+  { titre: "Démoussage et entretien", vue: { large: [16, 27, 2.0], etroit: [84, 20, 1.7] }, texte: "Un nettoyage et un traitement contre mousses et lichens prolongent la vie de la toiture.", lien: "/services/demoussage-toiture", devis: "Démoussage / traitement" },
 ];
 
 {
@@ -1024,11 +1024,11 @@ const ZONES_VISITE = [
               </div>
             </article>`
   ).join("\n            ");
-  const reperes = ZONES_VISITE.map((z, i) => `<li><button type="button" aria-current="${i === 0 ? "true" : "false"}" aria-controls="fiche-${i}">${esc(z.titre.split(" ")[0])}</button></li>`).join("");
+  const reperes = ZONES_VISITE.map((z, i) => `<li><button type="button" aria-current="${i === 0 ? "true" : "false"}" aria-controls="fiche-${i}" data-vue-large="${z.vue.large}" data-vue-etroit="${z.vue.etroit}">${esc(z.titre.split(" ")[0])}</button></li>`).join("");
   // Avant / après : même cadrage pour les deux images ; large sur ordinateur, resserré sur téléphone.
   const imageAA = (etat, alt) => `<picture>
                 <source media="(max-width: 699px)" srcset="/img/toiture-${etat}-etroit-500.webp 500w, /img/toiture-${etat}-etroit-740.webp 740w" sizes="calc(100vw - 32px)" width="740" height="415">
-                <img src="/img/toiture-${etat}-large-900.webp" srcset="/img/toiture-${etat}-large-900.webp 900w, /img/toiture-${etat}-large-1400.webp 1400w" sizes="(max-width: 1240px) calc(100vw - 48px), 1180px" width="1400" height="453" alt="${alt}" loading="lazy" decoding="async">
+                <img src="/img/toiture-${etat}-large-900.webp" srcset="/img/toiture-${etat}-large-900.webp 900w, /img/toiture-${etat}-large-1400.webp 1400w, /img/toiture-${etat}-large-1760.webp 1760w" sizes="(max-width: 1240px) calc(100vw - 48px), 1180px" width="1400" height="453" alt="${alt}" loading="lazy" decoding="async">
               </picture>`;
   const html =
     head(p) +
@@ -1064,6 +1064,7 @@ const ZONES_VISITE = [
           <span class="avant-apres__etiquette avant-apres__etiquette--apres" aria-hidden="true">Après</span>
           <span class="avant-apres__barre" aria-hidden="true"><span class="avant-apres__poignee">${ico("fleche")}${ico("fleche")}</span></span>
           <input class="avant-apres__curseur" type="range" min="0" max="100" value="50" step="1" aria-label="Comparer avant et après : faites glisser vers la droite pour voir l'avant">
+          <button class="avant-apres__retour" type="button" tabindex="-1">Maison entière</button>
           </div>
           <figcaption>Illustration : la même toiture encrassée, puis démoussée, traitée et réparée.</figcaption>
         </figure>
