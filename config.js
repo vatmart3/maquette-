@@ -50,9 +50,14 @@ window.SITE = {
 
   // Mentions légales (obligatoires pour un site professionnel).
   legal: {
-    raisonSociale: "Couvreur Proximité 34", // À CONFIRMER : forme juridique (EI, SARL…)
-    siret: "000 000 000 00000", // À CONFIRMER
-    directeurPublication: "Nom du dirigeant", // À CONFIRMER
+    // Entrepreneur individuel : nom et mention « EI » obligatoires (loi du 14 février 2022).
+    raisonSociale: "Steven Medou, entrepreneur individuel (EI)",
+    // Adresse du siège enregistrée au répertoire SIRENE (obligatoire dans les mentions légales).
+    siege: "22 rue Jean Roger, 34300 Agde",
+    siret: "908 585 870 00011",
+    tva: "FR04908585870",
+    ape: "4391B, travaux de couverture par éléments",
+    directeurPublication: "Steven Medou",
     hebergeur: "Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis",
   },
 

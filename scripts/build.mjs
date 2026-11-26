@@ -490,6 +490,8 @@ function ldEntreprise() {
     description: `${S.activite} à ${a.ville}. Réparation et réfection de toiture, recherche de fuite, démoussage, zinguerie, charpente et dépannage d'urgence.`,
     url: BASE + "/",
     logo: BASE + "/img/logo.png",
+    ...(fiable("legal.siret") ? { identifier: { "@type": "PropertyValue", propertyID: "SIRET", value: S.legal.siret.replace(/\s/g, "") } } : {}),
+    ...(S.legal.tva ? { vatID: S.legal.tva } : {}),
     image: BASE + "/og.png",
     telephone: fiable("telephone") && TEL_INTERNATIONAL,
     email: fiable("email"),
@@ -1984,7 +1986,7 @@ ${bandeauCta()}` +
       "/mentions-legales",
       "Mentions légales",
       `<h2>Éditeur du site</h2>
-        <p>${esc(L.raisonSociale)}<br>${[esc(fiable("adresse.rue")), `${esc(a.codePostal)} ${esc(a.ville)}`].filter(Boolean).join("<br>")}<br>SIRET ${esc(fiable("legal.siret") || "en cours de renseignement")}<br>Téléphone ${esc(S.telephone)}<br>E-mail ${esc(S.email)}<br>Directeur de la publication ${esc(fiable("legal.directeurPublication") || "en cours de renseignement")}</p>
+        <p>${esc(fiable("legal.raisonSociale") || L.raisonSociale)}${S.nom && !String(L.raisonSociale).includes(S.nom) ? `, nom commercial ${esc(S.nom)}` : ""}<br>${L.siege ? `Siège : ${esc(L.siege)}` : [esc(fiable("adresse.rue")), `${esc(a.codePostal)} ${esc(a.ville)}`].filter(Boolean).join("<br>")}<br>SIRET ${esc(fiable("legal.siret") || "en cours de renseignement")}${L.tva ? `<br>N° de TVA intracommunautaire ${esc(L.tva)}` : ""}${L.ape ? `<br>Code APE ${esc(L.ape)}` : ""}<br>Téléphone ${esc(S.telephone)}<br>E-mail ${esc(S.email)}<br>Directeur de la publication ${esc(fiable("legal.directeurPublication") || "en cours de renseignement")}</p>
         <h2>Hébergement</h2>
         <p>${esc(L.hebergeur)}</p>
         <h2>Conception</h2>
