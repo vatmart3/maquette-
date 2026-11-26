@@ -995,11 +995,11 @@ const ecrire = (fichier, html, meta) => {
 /* --- Accueil --- */
 
 const ZONES_VISITE = [
-  { titre: "Couverture et tuiles", vue: { large: [66, 22, 1.5], etroit: [50, 17, 1.3] }, aussi: ["remplacement-tuiles", "faitage-rives"], texte: "Tuiles canal, romanes ou mécaniques, faîtage, rives et génoises. On répare un pan ou on refait toute la couverture.", lien: "/services/refection-toiture", devis: "Réfection de toiture" },
-  { titre: "Charpente", vue: { large: [58, 16, 2.0], etroit: [38, 9, 1.7] }, aussi: ["isolation-toiture"], texte: "Chevrons, pannes et liteaux portent vos tuiles. On les contrôle et on les renforce.", lien: "/services/charpente", devis: "Charpente" },
-  { titre: "Zinguerie", vue: { large: [43, 40, 2.0], etroit: [4, 42, 1.7] }, texte: "Gouttières, descentes et noues en zinc éloignent l'eau de vos murs et de vos façades.", lien: "/services/zinguerie-gouttieres", devis: "Zinguerie / gouttières" },
-  { titre: "Fuites et étanchéité", vue: { large: [68, 26, 2.2], etroit: [62, 22, 1.8] }, aussi: ["fenetre-de-toit", "etancheite-toit-terrasse", "bachage-urgence"], texte: "Solin de cheminée, fenêtre de toit, tuile cassée. On trouve d'où vient l'eau avant de réparer.", lien: "/services/recherche-de-fuite", devis: "Réparation / fuite" },
-  { titre: "Démoussage et entretien", vue: { large: [16, 27, 2.0], etroit: [84, 20, 1.7] }, texte: "Un nettoyage et un traitement contre mousses et lichens prolongent la vie de la toiture.", lien: "/services/demoussage-toiture", devis: "Démoussage / traitement" },
+  { titre: "Couverture et tuiles", vue: [68.4, 35.9, 2.0], aussi: ["remplacement-tuiles", "faitage-rives"], texte: "Tuiles canal, romanes ou mécaniques, faîtage, rives et génoises. On répare un pan ou on refait toute la couverture.", lien: "/services/refection-toiture", devis: "Réfection de toiture" },
+  { titre: "Charpente", vue: [61.3, 33.5, 2.6], aussi: ["isolation-toiture"], texte: "Chevrons, pannes et liteaux portent vos tuiles. On les contrôle et on les renforce.", lien: "/services/charpente", devis: "Charpente" },
+  { titre: "Zinguerie", vue: [47.6, 44.2, 2.4], texte: "Gouttières, descentes et noues en zinc éloignent l'eau de vos murs et de vos façades.", lien: "/services/zinguerie-gouttieres", devis: "Zinguerie / gouttières" },
+  { titre: "Fuites et étanchéité", vue: [70.5, 37.6, 2.8], aussi: ["fenetre-de-toit", "etancheite-toit-terrasse", "bachage-urgence"], texte: "Solin de cheminée, fenêtre de toit, tuile cassée. On trouve d'où vient l'eau avant de réparer.", lien: "/services/recherche-de-fuite", devis: "Réparation / fuite" },
+  { titre: "Démoussage et entretien", vue: [22.1, 38.3, 2.4], texte: "Un nettoyage et un traitement contre mousses et lichens prolongent la vie de la toiture.", lien: "/services/demoussage-toiture", devis: "Démoussage / traitement" },
 ];
 
 {
@@ -1013,7 +1013,7 @@ const ZONES_VISITE = [
     jsonld: [ldEntreprise(), ldSite, ldFaq(FAQ_ACCUEIL)],
   };
   const fiches = ZONES_VISITE.map(
-    (z, i) => `<article class="fiche${i === 0 ? " est-active" : ""}" id="fiche-${i}" aria-labelledby="titre-zone-${i}"${i === 0 ? "" : " hidden"}>
+    (z, i) => `<article class="fiche${i === 0 ? " est-active" : ""}" id="fiche-${i}" aria-labelledby="titre-zone-${i}">
               <span class="fiche__num mono">${String(i + 1).padStart(2, "0")} / ${String(ZONES_VISITE.length).padStart(2, "0")}</span>
               <h3 id="titre-zone-${i}">${esc(z.titre)}</h3>
               <p>${fr(z.texte)}</p>
@@ -1024,12 +1024,12 @@ const ZONES_VISITE = [
               </div>
             </article>`
   ).join("\n            ");
-  const reperes = ZONES_VISITE.map((z, i) => `<li><button type="button" aria-current="${i === 0 ? "true" : "false"}" aria-controls="fiche-${i}" data-vue-large="${z.vue.large}" data-vue-etroit="${z.vue.etroit}">${esc(z.titre.split(" ")[0])}</button></li>`).join("");
-  // Avant / après : même cadrage pour les deux images ; large sur ordinateur, resserré sur téléphone.
-  const imageAA = (etat, alt) => `<picture>
-                <source media="(max-width: 699px)" srcset="/img/toiture-${etat}-etroit-500.webp 500w, /img/toiture-${etat}-etroit-740.webp 740w" sizes="calc(100vw - 32px)" width="740" height="415">
-                <img src="/img/toiture-${etat}-large-900.webp" srcset="/img/toiture-${etat}-large-900.webp 900w, /img/toiture-${etat}-large-1400.webp 1400w, /img/toiture-${etat}-large-1760.webp 1760w" sizes="(max-width: 1240px) calc(100vw - 48px), 1180px" width="1400" height="453" alt="${alt}" loading="lazy" decoding="async">
-              </picture>`;
+  const reperes = ZONES_VISITE.map((z, i) => `<li><button type="button" aria-current="${i === 0 ? "true" : "false"}" aria-controls="fiche-${i}" data-vue="${z.vue}">${esc(z.titre.split(" ")[0])}</button></li>`).join("");
+  // Avant / après : la photo entière, version vieillie et version d'origine, même cadrage.
+  const imageAA = (etat, alt) => {
+    const base = etat === "avant" ? "maison-avant" : "maison";
+    return `<img src="/img/${base}-960.webp" srcset="${[640, 800, 960, 1400, 1900].map((w) => `/img/${base}-${w}.webp ${w}w`).join(", ")}" sizes="(max-width: 859px) 100vw, 90vw" width="1900" height="1267" alt="${alt}" loading="lazy" decoding="async">`;
+  };
   const html =
     head(p) +
     `
@@ -1049,30 +1049,29 @@ const ZONES_VISITE = [
     </section>
 
     <section class="visite" data-visite id="visite" aria-labelledby="titre-visite">
-      <div class="conteneur">
-        <div class="visite__tete">
-          <h2 id="titre-visite">Du faîtage à la gouttière, on s'occupe de tout.</h2>
-          <p>Faites glisser la barre pour comparer la toiture avant et après l'entretien.</p>
-        </div>
-        <figure class="avant-apres" data-avant-apres style="--pos: 50%">
-          <div class="avant-apres__cadre">
-          ${imageAA("apres", "Après : toiture nettoyée et réparée, façade propre")}
-          <div class="avant-apres__avant">
-            ${imageAA("avant", "Avant : toiture couverte de mousses et de lichens, tuiles cassées, coulures sur la façade")}
+      <div class="visite__collant">
+        <div class="conteneur visite__grille">
+          <div class="visite__texte">
+            <h2 id="titre-visite">Du faîtage à la gouttière, on s'occupe de tout.</h2>
+            <p class="visite__aide">Faites défiler pour passer d'une intervention à l'autre, et glissez la barre pour comparer avant et après.</p>
+            <ol class="visite__reperes" aria-label="Nos interventions">${reperes}</ol>
+            <div class="visite__fiches">
+              ${fiches}
+            </div>
           </div>
-          <span class="avant-apres__etiquette avant-apres__etiquette--avant" aria-hidden="true">Avant</span>
-          <span class="avant-apres__etiquette avant-apres__etiquette--apres" aria-hidden="true">Après</span>
-          <span class="avant-apres__barre" aria-hidden="true"><span class="avant-apres__poignee">${ico("fleche")}${ico("fleche")}</span></span>
-          <input class="avant-apres__curseur" type="range" min="0" max="100" value="50" step="1" aria-label="Comparer avant et après : faites glisser vers la droite pour voir l'avant">
-          <button class="avant-apres__retour" type="button" tabindex="-1">Maison entière</button>
-          </div>
-          <figcaption>Illustration : la même toiture encrassée, puis démoussée, traitée et réparée.</figcaption>
-        </figure>
-        <div class="visite__zones">
-          <ol class="visite__reperes" aria-label="Nos interventions">${reperes}</ol>
-          <div class="visite__fiches">
-            ${fiches}
-          </div>
+          <figure class="avant-apres" data-avant-apres style="--pos: 50%">
+            <div class="avant-apres__cadre">
+              ${imageAA("apres", "Après : toiture nettoyée et réparée, façade propre")}
+              <div class="avant-apres__avant">
+                ${imageAA("avant", "Avant : toiture couverte de mousses et de lichens, tuiles cassées, coulures sur la façade")}
+              </div>
+              <span class="avant-apres__etiquette avant-apres__etiquette--avant" aria-hidden="true">Avant</span>
+              <span class="avant-apres__etiquette avant-apres__etiquette--apres" aria-hidden="true">Après</span>
+              <span class="avant-apres__barre" aria-hidden="true"><span class="avant-apres__poignee">${ico("fleche")}${ico("fleche")}</span></span>
+              <input class="avant-apres__curseur" type="range" min="0" max="100" value="50" step="1" aria-label="Comparer avant et après : faites glisser vers la droite pour voir l'avant">
+            </div>
+            <figcaption>Illustration : la même toiture encrassée, puis démoussée, traitée et réparée.</figcaption>
+          </figure>
         </div>
       </div>
     </section>

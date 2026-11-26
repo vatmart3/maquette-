@@ -111,53 +111,76 @@
     maj();
   });
 
-  /* ---------- Accueil : nos interventions (onglets) ---------- */
+  /* ---------- Accueil : visite de la maison ---------- */
+  // La section reste en place ; en faisant défiler, la caméra passe d'une intervention à l'autre
+  // (zoom et légère bascule en perspective sur la photo, avant et après ensemble).
 
   var visite = document.querySelector("[data-visite]");
   if (visite) {
     var fiches = visite.querySelectorAll(".fiche");
     var reperes = visite.querySelectorAll(".visite__reperes button");
-    var comparaison = visite.querySelector("[data-avant-apres]");
-    var images = comparaison ? comparaison.querySelectorAll(".avant-apres__cadre img") : [];
-    var etroit = window.matchMedia("(max-width: 699px)");
-    var vue = -1; // -1 : maison entière
+    var images = visite.querySelectorAll(".avant-apres__cadre img");
+    var collant = visite.querySelector(".visite__collant");
+    var n = fiches.length;
+    var zone = null;
 
-    // Caméra : zoom sur l'endroit concerné, avec une légère bascule en perspective, appliqué aux
-    // deux images (avant et après) pour que la comparaison reste alignée.
-    var cadrer = function () {
+    var cadrer = function (k) {
       var t = "none";
-      if (vue >= 0) {
-        var v = (reperes[vue].getAttribute(etroit.matches ? "data-vue-etroit" : "data-vue-large") || "").split(",").map(Number);
+      if (k >= 0) {
+        var v = (reperes[k].getAttribute("data-vue") || "").split(",").map(Number);
         var fx = v[0], fy = v[1], z = v[2] || 1;
-        var lim = (z - 1) * 50; // l'image agrandie doit toujours couvrir le cadre
+        var lim = (z - 1) * 50; // l'image agrandie couvre toujours le cadre
         var tx = Math.max(-lim, Math.min(lim, z * (50 - fx)));
         var ty = Math.max(-lim, Math.min(lim, z * (50 - fy)));
         var ry = ((fx - 50) / 50) * -5, rx = ((fy - 50) / 50) * 4;
         t = "perspective(1400px) rotateX(" + rx.toFixed(2) + "deg) rotateY(" + ry.toFixed(2) + "deg) translate(" + tx.toFixed(2) + "%, " + ty.toFixed(2) + "%) scale(" + z + ")";
       }
       images.forEach(function (img) { img.style.transform = t; });
-      if (comparaison) comparaison.classList.toggle("est-zoome", vue >= 0);
-      if (retour) retour.tabIndex = vue >= 0 ? 0 : -1;
     };
-    if (etroit.addEventListener) etroit.addEventListener("change", cadrer);
-    var retour = comparaison && comparaison.querySelector(".avant-apres__retour");
-    if (retour) retour.addEventListener("click", function () { vue = -1; cadrer(); });
+
+    var activer = function (k) {
+      if (k === zone) return;
+      zone = k;
+      var f = Math.max(0, k); // avant la première intervention : maison entière, première fiche
+      fiches.forEach(function (el, i) { el.classList.toggle("est-active", i === f); });
+      reperes.forEach(function (b, i) { b.setAttribute("aria-current", i === k ? "true" : "false"); });
+      cadrer(k);
+    };
+
+    // Mesures gardées en mémoire : rien n'est recalculé dans la page pendant le défilement.
+    var mesure = null;
+    var position = function () {
+      if (!mesure) {
+        var haut = parseFloat(getComputedStyle(collant).top) || 0;
+        mesure = { debut: visite.offsetTop - haut, course: Math.max(1, visite.offsetHeight - collant.offsetHeight) };
+      }
+      return mesure;
+    };
+    if ("ResizeObserver" in window) {
+      var ro = new ResizeObserver(function () { mesure = null; });
+      ro.observe(visite);
+      ro.observe(document.body);
+    }
+    // 1er écran de défilement : maison entière ; puis un écran par intervention.
+    var etapes = n + 1;
+    var depuisScroll = function () {
+      var q = position();
+      var p = (window.scrollY - q.debut) / q.course;
+      activer(p <= 0 ? -1 : Math.min(n - 1, Math.floor(p * etapes) - 1));
+    };
+    var attente = false;
+    window.addEventListener("scroll", function () {
+      if (attente) return;
+      attente = true;
+      requestAnimationFrame(function () { attente = false; depuisScroll(); });
+    }, { passive: true });
+    window.addEventListener("resize", function () { mesure = null; depuisScroll(); });
+    depuisScroll();
 
     reperes.forEach(function (r, k) {
       r.addEventListener("click", function () {
-        // un second clic sur l'intervention affichée revient à la maison entière
-        vue = vue === k ? -1 : k;
-        fiches.forEach(function (f, i) {
-          f.hidden = i !== k;
-          f.classList.toggle("est-active", i === k);
-        });
-        reperes.forEach(function (b, i) { b.setAttribute("aria-current", i === k ? "true" : "false"); });
-        cadrer();
-        // l'image doit être visible pour voir le déplacement
-        if (comparaison) {
-          var h = comparaison.getBoundingClientRect();
-          if (h.top < 70 || h.bottom > window.innerHeight) comparaison.scrollIntoView({ behavior: reduit ? "auto" : "smooth", block: "center" });
-        }
+        var q = position();
+        window.scrollTo({ top: q.debut + q.course * ((k + 1.5) / etapes), behavior: reduit ? "auto" : "smooth" });
       });
     });
   }
