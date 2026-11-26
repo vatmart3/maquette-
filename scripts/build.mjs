@@ -182,15 +182,22 @@ const NAV = [
   { id: "contact", href: "/contact", texte: "Contact" },
   { id: "avis", href: "/avis", texte: "Avis" },
 ];
-// Seuls les vrais avis complets sont publiés : texte exact, auteur, date et source Google.
-const AVIS = (S.avis || []).filter((a) => a.texte && a.auteur && a.source === "Google" && a.note >= 1 && a.note <= 5);
-// Données structurées (étoiles Google) : seulement si chaque avis a sa date de publication.
-const AVIS_DATES = AVIS.length > 0 && AVIS.every((a) => /^\d{4}-\d{2}(-\d{2})?$/.test(a.date || ""));
+// Seuls les vrais avis complets sont publiés, recopiés tels quels. Source « Google » (fiche Google)
+// ou « Client » (recueilli directement par l'entreprise auprès du client, publié avec son accord).
+const AVIS = (S.avis || []).filter((a) => a.texte && a.auteur && (a.source === "Google" || a.source === "Client") && a.note >= 1 && a.note <= 5);
+// Tous les avis viennent de Google : la note peut être présentée comme « note Google ».
+const AVIS_GOOGLE = AVIS.length > 0 && AVIS.every((a) => a.source === "Google");
+// Données structurées (étoiles Google) : seulement pour des avis Google tous datés.
+const AVIS_DATES = AVIS_GOOGLE && AVIS.every((a) => /^\d{4}-\d{2}(-\d{2})?$/.test(a.date || ""));
+// Mention de transparence sur la façon dont les avis sont recueillis (Code de la consommation, art. L111-7-2).
+const MENTION_AVIS = AVIS_GOOGLE
+  ? "Avis publiés par nos clients sur notre fiche Google, recopiés sans modification."
+  : `Avis recueillis directement par ${S.nom} auprès de ses clients après intervention, publiés avec leur accord et sans modification.`;
 const avecAvis = AVIS.length > 0;
 const MOYENNE = AVIS.length ? AVIS.reduce((t, a) => t + a.note, 0) / AVIS.length : 0;
 const G_LOGO = `<svg class="logo-google" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>`;
 // Note Google réelle (moyenne des avis affichés) avec lien vers la page Avis.
-const noteGoogle = (clair) => (AVIS.length ? `<a class="note-google${clair ? " note-google--clair" : ""}" href="/avis"><span class="note-google__g">${G_LOGO}</span><span class="note-google__etoiles" aria-hidden="true"><span>★★★★★</span><span style="width:${((MOYENNE / 5) * 100).toFixed(0)}%">★★★★★</span></span><strong>${MOYENNE.toFixed(1).replace(".", ",")}/5</strong><span>sur Google · ${AVIS.length} avis</span></a>` : "");
+const noteGoogle = (clair) => (AVIS.length ? `<a class="note-google${clair ? " note-google--clair" : ""}" href="/avis">${AVIS_GOOGLE ? `<span class="note-google__g">${G_LOGO}</span>` : ""}<span class="note-google__etoiles" aria-hidden="true"><span>★★★★★</span><span style="width:${((MOYENNE / 5) * 100).toFixed(0)}%">★★★★★</span></span><strong>${MOYENNE.toFixed(1).replace(".", ",")}/5</strong><span>${AVIS_GOOGLE ? `sur Google · ${AVIS.length} avis` : `${AVIS.length} avis clients`}</span></a>` : "");
 const avecRealisations = CHANTIERS.length > 0;
 
 function logo(clair = false) {
@@ -898,14 +905,14 @@ function avisHtml() {
     <section class="section section--claire" aria-labelledby="titre-avis">
       <div class="conteneur">
         <h2 id="titre-avis">Ce que disent nos clients</h2>
+        <p class="avis__mention">${MENTION_AVIS}</p>
         <ul class="avis">
           ${AVIS
-            .slice(0, 6)
             .map(
               (a) => `<li class="avis__carte">
             <p class="avis__note" role="img" aria-label="${a.note} sur 5"><span aria-hidden="true">${"★".repeat(a.note)}<span class="avis__vide">${"★".repeat(5 - a.note)}</span></span></p>
             <blockquote><p>« ${esc(a.texte)} »</p></blockquote>
-            <p class="avis__auteur">${esc(a.auteur)}${a.ville ? `, <span>${esc(a.ville)}</span>` : ""}<span class="avis__source">${a.date ? `<time datetime="${a.date}">${esc(a.date.split("-").reverse().join("/"))}</time>, ` : ""}avis Google</span></p>
+            <p class="avis__auteur">${esc(a.auteur)}${a.ville ? `, <span>${esc(a.ville)}</span>` : ""}${a.date || a.source === "Google" ? `<span class="avis__source">${a.date ? `<time datetime="${a.date}">${esc(a.date.split("-").reverse().join("/"))}</time>${a.source === "Google" ? ", " : ""}` : ""}${a.source === "Google" ? "avis Google" : ""}</span>` : ""}</p>
           </li>`
             )
             .join("\n          ")}
@@ -1625,7 +1632,9 @@ ${bandeauCta()}` +
     path: "/avis",
     noindex: !avecAvis,
     title: "Avis clients de Couvreur Proximité 34, couvreur à Frontignan",
-    description: "Les avis Google laissés par les clients de Couvreur Proximité 34, à Frontignan, après une réparation, une réfection ou un dépannage de toiture.",
+    description: AVIS_GOOGLE
+      ? "Les avis Google laissés par les clients de Couvreur Proximité 34, à Frontignan, après une réparation, une réfection ou un dépannage de toiture."
+      : "Les avis des clients de Couvreur Proximité 34, couvreur à Frontignan, après une réparation, une réfection, un entretien ou un dépannage de toiture.",
     jsonld: [ldEntreprise(), ar.ld],
   };
   const cible = lienGoogle ? `href="${esc(lienGoogle)}" target="_blank" rel="noopener"` : `href="/avis/laisser"`;
@@ -1639,10 +1648,10 @@ ${bandeauCta()}` +
     <section class="section section--claire" aria-labelledby="titre-laisser-avis">
       <div class="conteneur avis-google">
         ${AVIS.length ? `<div class="avis-google__note">
-          ${G}
+          ${AVIS_GOOGLE ? G : ""}
           <p class="avis-google__moyenne"><strong>${moyenne.toFixed(1).replace(".", ",")}</strong> sur 5</p>
           <p class="avis-google__etoiles" role="img" aria-label="Note moyenne ${moyenne.toFixed(1).replace(".", ",")} sur 5"><span class="avis-google__fond">★★★★★</span><span class="avis-google__plein" style="width:${((moyenne / 5) * 100).toFixed(0)}%">★★★★★</span></p>
-          <p class="avis-google__nombre">${AVIS.length} avis sur Google</p>
+          <p class="avis-google__nombre">${AVIS.length} avis ${AVIS_GOOGLE ? "sur Google" : "clients"}</p>
         </div>` : ""}
         <div class="avis-google__texte laisser-avis">
           <h2 id="titre-laisser-avis">Votre avis compte</h2>
@@ -1657,8 +1666,8 @@ ${bandeauCta()}` +
     pied() +
     FIN_PAGE(false);
   ecrire("avis.html", html, avecAvis ? { path: "/avis", priorite: "0.5" } : undefined);
-  if (avecAvis && !AVIS_DATES) avertissements.push("Avis : date de publication à compléter dans config.avis (AAAA-MM-JJ) pour afficher les étoiles dans les résultats Google.");
-  if (!avecAvis) avertissements.push("Page Avis : aucun avis affiché pour l'instant. Ajoutez les vrais avis Google dans config.avis (texte exact, auteur, date, source « Google »).");
+  if (AVIS_GOOGLE && !AVIS_DATES) avertissements.push("Avis : date de publication à compléter dans config.avis (AAAA-MM-JJ) pour afficher les étoiles dans les résultats Google.");
+  if (!avecAvis) avertissements.push("Page Avis : aucun avis affiché pour l'instant. Ajoutez les vrais avis dans config.avis (texte exact, auteur, note, source « Google » ou « Client »).");
 }
 
 /* --- /avis/laisser : lien court pour les cartes NFC et les QR codes --- */

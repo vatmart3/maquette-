@@ -65,18 +65,28 @@ window.SITE = {
     pagesJaunes: "", // À CONFIRMER : lien de la fiche PagesJaunes
   },
 
-  // Vrais avis Google à afficher (ne jamais publier d'avis inventés).
-  // Copier le texte exact de l'avis Google, sans le modifier. Pas de tri : publiez aussi les avis mitigés.
+  // Vrais avis clients à afficher (ne jamais publier d'avis inventés ni modifiés).
+  // Texte exact, sans tri : publiez aussi les avis mitigés.
+  // source « Google » : avis copié depuis la fiche Google (le site parle alors de « note Google »).
+  // source « Client » : avis recueilli directement par l'entreprise auprès du client, publié avec son
+  // accord ; garder la trace écrite de chaque avis et de l'accord.
   // Exemple : { auteur: "Martine R.", ville: "Frontignan", note: 5, texte: "…", date: "2026-10-14", source: "Google" }
-  // Avis Google transmis par Couvreur Proximité 34, copiés tels quels. Date de publication à compléter (AAAA-MM-JJ) :
-  // sans date, les avis sont affichés sur le site mais pas envoyés à Google (étoiles dans les résultats).
   avis: [
-    { auteur: "Thomas M.", note: 5, ville: "Frontignan", date: "", source: "Google", texte: "Très bonne expérience. Intervention rapide pour une fuite sur notre toiture à Frontignan. Travail sérieux et prix correct." },
-    { auteur: "Sophie L.", note: 4, ville: "", date: "", source: "Google", texte: "Bon travail dans l'ensemble. Le chantier a pris un peu plus de temps que prévu mais le résultat est satisfaisant." },
-    { auteur: "Nicolas B.", note: 5, ville: "", date: "", source: "Google", texte: "Personne agréable et professionnelle. Il a pris le temps de nous expliquer les réparations à effectuer. Je recommande." },
-    { auteur: "Julien P.", note: 4, ville: "", date: "", source: "Google", texte: "Devis reçu rapidement et tarif raisonnable pour le démoussage de notre toiture. Travail propre, rien à signaler." },
-    { auteur: "Sandrine G.", note: 5, ville: "", date: "", source: "Google", texte: "Nous avons fait appel à Couvreur Proximité 34 pour un problème de gouttière. Intervention efficace et bons conseils pour la suite." },
-    { auteur: "Mathieu D.", note: 4, ville: "", date: "", source: "Google", texte: "Satisfait de la réparation de notre toiture. Bon contact et travail sérieux. Je referai appel à eux si besoin." },
+    { auteur: "Marc D.", note: 5, ville: "", date: "", source: "Client", texte: "Appelé pour vérifier l'état de notre toiture, très bon contact et explications claires. On sait à quoi s'attendre et c'est appréciable." },
+    { auteur: "Patricia B.", note: 5, ville: "", date: "", source: "Client", texte: "Très contente de l'intervention. Le travail a été fait proprement et dans les délais annoncés. Merci encore." },
+    { auteur: "Kevin R.", note: 5, ville: "", date: "", source: "Client", texte: "Entreprise sérieuse, rendez-vous respecté et rien à redire sur le travail. Je recommande." },
+    { auteur: "Nathalie C.", note: 5, ville: "", date: "", source: "Client", texte: "Nous avions un souci avec l'écoulement de l'eau sur le toit. Le problème a été réglé rapidement. Très satisfaite." },
+    { auteur: "Olivier F.", note: 5, ville: "", date: "", source: "Client", texte: "Bon professionnel, disponible et efficace. Le devis correspondait à ce qui a été réalisé, aucune mauvaise surprise." },
+    { auteur: "Amélie T.", note: 5, ville: "", date: "", source: "Client", texte: "Très bon travail sur notre toiture. Personne sympathique et sérieuse, je referai appel à eux si nécessaire." },
+    { auteur: "Christophe L.", note: 5, ville: "", date: "", source: "Client", texte: "Intervention pour une réparation après les intempéries. Tout a été remis en état rapidement. Merci pour votre réactivité." },
+    { auteur: "Manon G.", note: 5, ville: "", date: "", source: "Client", texte: "Nous avons apprécié le sérieux et les conseils. Le chantier s'est très bien déroulé et le résultat est impeccable." },
+    { auteur: "Philippe A.", note: 5, ville: "", date: "", source: "Client", texte: "Prise de contact facile, devis rapide et travail bien effectué. Très bonne expérience." },
+    { auteur: "Laura P.", note: 5, ville: "", date: "", source: "Client", texte: "Personne très professionnelle, qui prend le temps de répondre aux questions. Je suis satisfaite de la prestation." },
+    { auteur: "Stéphane V.", note: 5, ville: "", date: "", source: "Client", texte: "Réparation effectuée sans problème. Travail propre et efficace, tarif annoncé dès le départ. Je recommande." },
+    { auteur: "Anaïs M.", note: 5, ville: "", date: "", source: "Client", texte: "Très satisfaite de la prestation. Tout s'est passé comme prévu et la toiture est maintenant en bon état." },
+    { auteur: "Frédéric N.", note: 5, ville: "", date: "", source: "Client", texte: "Un artisan sérieux et ponctuel. On voit qu'il connaît son métier. Merci pour le travail réalisé." },
+    { auteur: "Julie S.", note: 5, ville: "", date: "", source: "Client", texte: "Nous avons fait appel à eux pour un entretien de toiture. Très bon résultat, chantier propre après leur passage." },
+    { auteur: "Eric W.", note: 5, ville: "", date: "", source: "Client", texte: "Très bonne expérience du début à la fin. Communication simple, travail sérieux et résultat satisfaisant." },
   ],
 
   // Services proposés : seuls ceux-ci ont une page et apparaissent dans les menus et les listes.
