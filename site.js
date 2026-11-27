@@ -113,11 +113,11 @@
     maj();
   });
 
-  /* ---------- Accueil : la maison, la marche, puis les 5 interventions ---------- */
+  /* ---------- Accueil : la maison, puis les 5 interventions ---------- */
   // La section reste à l'écran. Le défilement fait avancer un parcours de 0 à 1 :
-  //   0 → 0,05 : accroche (photo en plein écran, titre) ;
-  //   0,05 → 0,38 : on avance à pied vers la maison ;
-  //   0,38 → 1 : la caméra va chercher les 5 interventions, une par portion égale.
+  //   0 → 0,07 : accroche (la maison à côté du titre) ;
+  //   0,07 → 0,93 : la caméra va chercher les 5 interventions, une par portion égale ;
+  //   0,93 → 1 : fin de la visite, la maison revient en vue d'ensemble avant de quitter l'écran.
   // Avec une puce graphique, immersion.js affiche la maison en 3D (événement arv:avance) ;
   // sinon, l'image de la maison reste affichée et seules les fiches changent.
 
@@ -129,12 +129,12 @@
     var curseurAA = visite.querySelector(".avant-apres__curseur");
     var collant = visite.querySelector(".immersion__collant");
     var n = fiches.length;
-    var DEBUT_MARCHE = 0.05, FIN_MARCHE = 0.38, DEBUT_ZONES = 0.42;
+    var DEBUT_ZONES = 0.07, FIN_ZONES = 0.93;
     var zone = null, phase = null;
 
     var zoneDe = function (p) {
-      if (p < DEBUT_ZONES) return -1;
-      return Math.min(n - 1, Math.floor(((p - DEBUT_ZONES) / (1 - DEBUT_ZONES)) * n));
+      if (p < DEBUT_ZONES || p >= FIN_ZONES) return -1;
+      return Math.min(n - 1, Math.floor(((p - DEBUT_ZONES) / (FIN_ZONES - DEBUT_ZONES)) * n));
     };
 
     var majFiches = function (k) {
@@ -178,7 +178,7 @@
     var majPhase = function (p) {
       // logo flottant masqué tant que la section occupe l'écran (il recouvrait le panneau)
       document.documentElement.classList.toggle("immersion-active", p < 0.995);
-      var ph = p < DEBUT_MARCHE ? "accroche" : p < FIN_MARCHE ? "marche" : "visite";
+      var ph = p < DEBUT_ZONES ? "accroche" : p < FIN_ZONES ? "visite" : "fin";
       if (ph === phase) return;
       phase = ph;
       visite.setAttribute("data-phase", ph);
@@ -205,7 +205,7 @@
       majPhase(p);
       var k = zoneDe(p);
       majFiches(k);
-      document.dispatchEvent(new CustomEvent("arv:avance", { detail: { p: p, zone: k, marche: Math.min(1, Math.max(0, (p - DEBUT_MARCHE) / (FIN_MARCHE - DEBUT_MARCHE))) } }));
+      document.dispatchEvent(new CustomEvent("arv:avance", { detail: { p: p, zone: k } }));
     };
     var attente = false;
     window.addEventListener("scroll", function () {
@@ -220,7 +220,7 @@
     reperes.forEach(function (r, k) {
       r.addEventListener("click", function () {
         var q = position();
-        var cible = DEBUT_ZONES + ((k + 0.5) / n) * (1 - DEBUT_ZONES);
+        var cible = DEBUT_ZONES + ((k + 0.5) / n) * (FIN_ZONES - DEBUT_ZONES);
         window.scrollTo({ top: q.debut + q.course * cible, behavior: reduit ? "auto" : "smooth" });
       });
     });

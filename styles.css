@@ -379,7 +379,7 @@ main { position: relative; z-index: 1; }
 
 /* ---------- Accueil : la maison en plein écran, puis la visite au défilement ---------- */
 
-/* La section reste à l'écran pendant tout le défilement : accroche, marche vers la maison, puis
+/* La section reste à l'écran pendant tout le défilement : accroche, puis
    les 5 interventions. Sa hauteur fixe la longueur du parcours. */
 .immersion { position: relative; height: 1000svh; background: var(--casse); }
 .immersion__collant { position: sticky; top: var(--entete); height: calc(100svh - var(--entete)); overflow: hidden; }
@@ -411,7 +411,7 @@ main { position: relative; z-index: 1; }
 .immersion-active .logo-fixe { opacity: 0; pointer-events: none; }
 .avant-apres__curseur { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; -webkit-appearance: none; appearance: none; }
 .avant-apres:has(.avant-apres__curseur:focus-visible) .avant-apres__poignee { outline: 3px solid #fff; outline-offset: 3px; }
-.immersion__scene figcaption { position: absolute; right: 14px; bottom: 12px; padding: 4px 10px; border-radius: 6px; background: rgb(31 41 51 / 0.66); color: rgb(255 255 255 / 0.9); font-size: 0.76rem; }
+.immersion__scene figcaption { position: absolute; right: 14px; top: 14px; padding: 4px 10px; border-radius: 6px; background: rgb(31 41 51 / 0.66); color: rgb(255 255 255 / 0.9); font-size: 0.76rem; }
 .immersion .avant-apres__barre, .immersion .avant-apres__etiquette, .immersion__scene figcaption { opacity: 0; transition: opacity 0.4s ease; }
 .immersion:not([data-phase="visite"]) .avant-apres__curseur { pointer-events: none; }
 .immersion[data-phase="visite"] .avant-apres__barre, .immersion[data-phase="visite"] .avant-apres__etiquette, .immersion[data-phase="visite"] figcaption { opacity: 1; }
@@ -427,6 +427,7 @@ main { position: relative; z-index: 1; }
 
 /* accroche posée sur la photo, comme une couverture de magazine ; s'efface quand on avance */
 .immersion__accroche { position: absolute; inset: 0; z-index: 1; display: flex; flex-direction: column; justify-content: center; padding-bottom: 40px; pointer-events: none; transition: opacity 0.35s ease, transform 0.35s ease; }
+.immersion__accroche::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, var(--casse) 0%, rgb(247 245 240 / 0.92) 32%, rgb(247 245 240 / 0) 52%); }
 .immersion__accroche > * { position: relative; }
 .immersion__accroche .accroche__texte { max-width: 37rem; pointer-events: auto; }
 .immersion__accroche h1 { color: var(--anthracite); }
@@ -896,6 +897,7 @@ main { position: relative; z-index: 1; }
   /* accueil : titre en haut, maison dessous ; pendant la visite, panneau compact en bas */
   .immersion { height: 760svh; }
   .immersion__accroche { justify-content: flex-start; padding: 18px 0 0; }
+  .immersion__accroche::before { background: linear-gradient(180deg, var(--casse) 0%, rgb(247 245 240 / 0.92) 28%, rgb(247 245 240 / 0) 38%); }
   .immersion__photo { top: auto; bottom: calc(var(--bandeau) + 60px); left: 6%; right: 6%; width: auto; height: 44%; }
   .immersion__accroche h1 { font-size: clamp(1.6rem, 7.4vw, 2rem); line-height: 1.12; }
   .immersion__accroche .chapeau { margin: 10px 0 16px; font-size: 0.92rem; line-height: 1.5; }

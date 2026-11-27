@@ -142,9 +142,10 @@ client (`img/logo-cp34.png`, déclinaisons WebP pour le site).
 ## Accueil : la maison en 3D et la visite au défilement
 
 L'accueil s'ouvre sur la maison en 3D (`3d/maison.glb`, compressé meshopt + textures WebP), vue
-de trois quarts à côté du titre ; l'image `img/maison-3d-*.webp` s'affiche en attendant (et reste
-seule sans puce graphique). La section reste à l'écran pendant le défilement : la caméra descend à
-hauteur d'homme et s'approche de la porte, puis va chercher les 5 interventions (points de vue
+de trois quarts à côté du titre, dans un petit jardin (pelouse, pas japonais, cyprès, oliviers,
+haie, lavandes) ; l'image `img/maison-3d-*.webp` s'affiche en attendant (et reste seule sans puce
+graphique). La section reste à l'écran pendant le défilement : la caméra va chercher les 5
+interventions, puis revient en vue d'ensemble à la fin (points de vue
 dans `immersion.js`, noms des repères dans `ZONES_VISITE`, `scripts/build.mjs`). La barre avant /
 après coupe le rendu : à gauche, la même maison avant travaux, calculée dans le rendu (tuiles
 encrassées, mousse, tuiles cassées, coulures), présentée comme une illustration.

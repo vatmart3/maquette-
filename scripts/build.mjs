@@ -1052,7 +1052,7 @@ const ZONES_VISITE = [
               ${noteGoogle(false)}
             </div>
           </div>
-          <p class="immersion__defiler" aria-hidden="true">Avancez vers la maison ${ico("fleche")}</p>
+          <p class="immersion__defiler" aria-hidden="true">Faites défiler pour la visite ${ico("fleche")}</p>
         </div>
 
         <div class="immersion__visite" aria-labelledby="titre-visite">
