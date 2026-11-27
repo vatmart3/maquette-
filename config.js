@@ -18,7 +18,7 @@ window.SITE = {
   // Adresse du site (domaine définitif, sans « / » final). Sert aux liens canoniques et au sitemap.
   siteUrl: "https://arveo.fr", // À CONFIRMER
 
-  telephone: "06 39 98 00 00", // À CONFIRMER : numéro fictif ARCEP, à remplacer par le vrai
+  telephone: "06 51 44 23 83",
   email: "contact@arveo.fr", // À CONFIRMER
 
   adresse: {
