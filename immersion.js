@@ -20,6 +20,7 @@ const curseur = fig && fig.querySelector(".avant-apres__curseur");
 const visite = document.querySelector("[data-visite]");
 const reperes = [...document.querySelectorAll(".visite__reperes button")];
 const reduit = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const telephone = window.matchMedia("(max-width: 859px)").matches;
 const V3 = (x, y, z) => new THREE.Vector3(x, y, z);
 
 /* --- Points de vue (unités du modèle : la maison fait 2,6 de large, mur de façade en z ≈ 0,9) --- */
@@ -41,7 +42,7 @@ async function demarrer() {
   const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(url);
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, telephone ? 1.5 : 1.75)); // téléphone : moins de pixels, plus de fluidité
   renderer.setClearColor(0x000000, 0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.NeutralToneMapping;
@@ -63,7 +64,7 @@ async function demarrer() {
   const soleil = new THREE.DirectionalLight(0xfff1dc, 1.7);
   soleil.position.set(-4, 12, 7);
   soleil.castShadow = true;
-  soleil.shadow.mapSize.set(2048, 2048);
+  soleil.shadow.mapSize.set(telephone ? 1024 : 2048, telephone ? 1024 : 2048);
   Object.assign(soleil.shadow.camera, { left: -4, right: 4, top: 4, bottom: -4, near: 1, far: 30 });
   soleil.shadow.bias = -0.0005;
   soleil.shadow.normalBias = 0.02;
@@ -108,21 +109,36 @@ async function demarrer() {
             // tuiles : terre cuite (couleur), sur le toit ou l'auvent de la porte
             float terre = smoothstep(1.35, 1.8, c.r / max(c.g, 0.02)) * smoothstep(1.6, 2.4, c.r / max(c.b, 0.02));
             float toit = terre * max(step(1.72, P.y), step(0.92, P.y) * step(1.05, P.z));
-            c = mix(c, c * vec3(0.6, 0.56, 0.48) + 0.008, 0.65 * toit);
-            float mousse = smoothstep(0.5, 0.66, fbm(P * 7.0 + 2.0));
-            vec3 vert = mix(vec3(0.03, 0.055, 0.01), vec3(0.085, 0.115, 0.03), bruit(P * 70.0));
-            c = mix(c, vert, mousse * 0.88 * toit);
-            c = mix(c, vec3(0.42, 0.38, 0.18), step(0.94, bruit(P * 95.0)) * 0.75 * toit);
-            float casse = smoothstep(0.83, 0.87, bruit(P * 13.0 + vec3(3.1, 7.7, 1.3)));
-            c = mix(c, vec3(0.008), casse * toit);
-            // enduit : coulures sous la gouttière, voile gris
+            // tuiles noircies et grisées, traînées sombres dans le sens de la pente
+            float trainee = smoothstep(0.45, 0.8, fbm(vec3(P.x * 9.0, P.y * 1.5, P.z * 9.0)));
+            vec3 sale = c * vec3(0.46, 0.43, 0.38) * (1.0 - 0.45 * trainee) + 0.004;
+            c = mix(c, sale, 0.85 * toit);
+            // mousse en plaques bien visibles (vert jaune), plus dense en bas des pans
+            float m = fbm(P * 6.0 + 2.0) + 0.12 * (1.0 - smoothstep(1.75, 2.3, P.y));
+            float mousse = smoothstep(0.46, 0.6, m);
+            vec3 vert = mix(vec3(0.05, 0.09, 0.012), vec3(0.17, 0.23, 0.04), bruit(P * 60.0));
+            c = mix(c, vert, mousse * 0.92 * toit);
+            // lichens : petites taches jaune pâle
+            c = mix(c, vec3(0.55, 0.5, 0.25), step(0.9, bruit(P * 90.0)) * 0.8 * toit);
+            // tuiles cassées ou manquantes : trous noirs, liteau clair
+            float n = bruit(P * 11.0 + vec3(3.1, 7.7, 1.3));
+            float casse = smoothstep(0.78, 0.81, n);
+            c = mix(c, vec3(0.006), casse * toit);
+            c = mix(c, vec3(0.2, 0.11, 0.05), smoothstep(0.765, 0.78, n) * (1.0 - casse) * toit);
+            // enduit : coulures noires sous la gouttière, voile gris, fissures
             float blanc = smoothstep(0.3, 0.45, min(c.r, min(c.g, c.b))) * (1.0 - toit) * step(0.12, P.y) * step(P.y, 1.84);
             float u = (P.x + P.z) * 26.0;
-            float trace = smoothstep(0.5, 0.85, bruit(vec3(u, 0.0, 0.0)));
-            float longueur = 0.35 + 0.9 * bruit(vec3(u, 5.0, 0.0));
+            float trace = smoothstep(0.42, 0.8, bruit(vec3(u, 0.0, 0.0)));
+            float longueur = 0.45 + 1.1 * bruit(vec3(u, 5.0, 0.0));
             float coulure = trace * clamp(1.0 - (1.86 - P.y) / longueur, 0.0, 1.0);
-            float voile = 0.28 * smoothstep(1.45, 1.86, P.y) + 0.1 * fbm(P * 3.0);
-            c = mix(c, c * vec3(0.5, 0.54, 0.44), clamp(coulure * 0.85 + voile, 0.0, 0.85) * blanc);
+            float voile = 0.38 * smoothstep(1.3, 1.86, P.y) + 0.18 * fbm(P * 3.0) + 0.25 * (1.0 - smoothstep(0.12, 0.5, P.y));
+            c = mix(c, c * vec3(0.34, 0.37, 0.29), clamp(coulure * 0.95 + voile, 0.0, 0.9) * blanc);
+            float fissure = 1.0 - smoothstep(0.0, 0.012, abs(fbm(P * vec3(4.0, 9.0, 4.0)) - 0.5));
+            c = mix(c, vec3(0.04), fissure * 0.7 * blanc);
+            // volets bleus délavés et écaillés
+            float bleu = smoothstep(1.15, 1.5, c.b / max(c.r, 0.01)) * (1.0 - toit);
+            vec3 delave = mix(vec3(0.14, 0.17, 0.2), vec3(0.32, 0.3, 0.26), step(0.7, bruit(P * 55.0)));
+            c = mix(c, delave, bleu * 0.85);
             diffuseColor.rgb = c;
           }`
         );
@@ -145,10 +161,15 @@ async function demarrer() {
   const large = () => L >= 860;
   // décalage de l'image : maison à droite du titre (ordinateur) ou sous le titre (téléphone) à
   // l'arrivée ; au-dessus du panneau des interventions pendant la visite
+  // Téléphone : à l'arrivée, la maison est mise à l'échelle de l'espace libre sous le titre ;
+  // pendant la visite, la zone se place au-dessus du panneau, à droite de la barre avant / après.
+  const tel = { k: 1.25, ox: 0, oy: 0.14, panneau: 0 };
   const decalage = (phase) =>
-    phase === "accroche" ? (large() ? [0.21, 0.03] : [0, 0.14]) : phase === "visite" ? (large() ? [0.17, 0] : [0, -0.2]) : [0, 0];
+    phase === "accroche" ? (large() ? [0.21, 0.03] : [tel.ox, tel.oy])
+    : phase === "visite" ? (large() ? [0.17, 0] : [0.13, -tel.panneau / (2 * H)])
+    : [0, 0];
   const pose = (v) => {
-    const k = large() ? 1 : 1.25; // téléphone en hauteur : un peu plus de recul
+    const k = large() ? 1 : v === ACCROCHE ? tel.k : 1.25; // téléphone en hauteur : un peu plus de recul
     return {
       cible: v.cible.clone(),
       pos: v.cible.clone().add(V3(Math.sin(v.az) * Math.cos(v.el), Math.sin(v.el), Math.cos(v.az) * Math.cos(v.el)).multiplyScalar(v.d * k)),
@@ -170,6 +191,43 @@ async function demarrer() {
     return { cible: a.cible.lerp(b.cible, t), pos: a.pos.lerp(b.pos, t) };
   }
 
+  const coins = [];
+  {
+    const b = new THREE.Box3().setFromObject(maison);
+    for (const x of [b.min.x, b.max.x]) for (const y of [b.min.y, b.max.y]) for (const z of [b.min.z, b.max.z]) coins.push(V3(x, y, z));
+  }
+  function cadrerTelephone() {
+    if (large()) return;
+    const panneau = visite && visite.querySelector(".immersion__visite");
+    tel.panneau = panneau ? panneau.offsetHeight : H * 0.4;
+    const texte = document.querySelector(".immersion__accroche .accroche__texte");
+    const rc = cadre.getBoundingClientRect();
+    const haut = texte ? texte.getBoundingClientRect().bottom - rc.top + 14 : H * 0.45;
+    // bas visible tout en haut de la page (le bandeau d'urgence pousse la section vers le bas), moins le bouton « Avancez »
+    const hautSection = visite.getBoundingClientRect().top + window.scrollY;
+    const bas = Math.min(H, window.innerHeight - hautSection) - 64;
+    if (bas - haut < 80) return;
+    const cam = camera.clone();
+    const q = V3(0, 0, 0);
+    let x0, x1, y0, y1;
+    for (let i = 0; i < 4; i++) {
+      const p = pose(ACCROCHE);
+      cam.position.copy(p.pos);
+      cam.lookAt(p.cible);
+      cam.clearViewOffset();
+      cam.updateMatrixWorld();
+      x0 = y0 = Infinity; x1 = y1 = -Infinity;
+      for (const c of coins) {
+        q.copy(c).project(cam);
+        const x = (q.x * 0.5 + 0.5) * L, y = (-q.y * 0.5 + 0.5) * H;
+        x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y);
+      }
+      tel.k *= Math.max((y1 - y0) / (bas - haut), (x1 - x0) / (L * 0.94));
+    }
+    tel.ox = (L / 2 - (x0 + x1) / 2) / L;
+    tel.oy = ((haut + bas) / 2 - (y0 + y1) / 2) / H;
+  }
+
   function redimensionner() {
     L = Math.max(1, cadre.clientWidth);
     H = Math.max(1, cadre.clientHeight);
@@ -177,6 +235,7 @@ async function demarrer() {
     camera.aspect = L / H;
     camera.fov = large() ? 32 : 40;
     camera.updateProjectionMatrix();
+    cadrerTelephone();
     relancer();
   }
 

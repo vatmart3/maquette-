@@ -144,13 +144,46 @@
       fiches.forEach(function (el, i) { el.classList.toggle("est-active", i === f); });
       reperes.forEach(function (b, i) { b.setAttribute("aria-current", i === k ? "true" : "false"); });
       document.dispatchEvent(new CustomEvent("arv:zone", { detail: { zone: k } }));
+      if (k >= 0) balayer();
     };
+    // Démonstration avant / après : à chaque intervention, la barre glisse vers la droite puis la
+    // gauche avant de revenir, tant que le visiteur ne l'a pas prise en main.
+    var touche = false, balayage = 0;
+    if (curseurAA) ["pointerdown", "keydown", "touchstart"].forEach(function (ev) {
+      curseurAA.addEventListener(ev, function () { touche = true; cancelAnimationFrame(balayage); }, { passive: true });
+    });
+    var balayer = function () {
+      if (!curseurAA || touche || reduit || !(figure && figure.classList.contains("est-3d"))) return;
+      cancelAnimationFrame(balayage);
+      var depart = Number(curseurAA.value), t0 = 0, DUREE = 2200;
+      var pas = function (t) {
+        if (!t0) t0 = t;
+        var u = Math.min(1, (t - t0) / DUREE);
+        // repos, glisse vers 88 %, puis vers 14 %, retour au point de départ
+        var v = u < 0.15 ? depart : u < 0.45 ? depart + (88 - depart) * lisse((u - 0.15) / 0.3) : u < 0.8 ? 88 + (14 - 88) * lisse((u - 0.45) / 0.35) : 14 + (depart - 14) * lisse((u - 0.8) / 0.2);
+        curseurAA.value = String(Math.round(v * 10) / 10);
+        curseurAA.dispatchEvent(new Event("input"));
+        if (u < 1) balayage = requestAnimationFrame(pas);
+      };
+      balayage = requestAnimationFrame(pas);
+    };
+    var lisse = function (x) { x = Math.min(1, Math.max(0, x)); return x * x * (3 - 2 * x); };
+
+    // hauteur du panneau des interventions (téléphone : la poignée de la barre se place au-dessus)
+    var panneau = visite.querySelector(".immersion__visite");
+    var majPanneau = function () { if (panneau) collant.style.setProperty("--panneau", panneau.offsetHeight + "px"); };
+    if (panneau && "ResizeObserver" in window) new ResizeObserver(majPanneau).observe(panneau);
+    majPanneau();
+
     var majPhase = function (p) {
+      // logo flottant masqué tant que la section occupe l'écran (il recouvrait le panneau)
+      document.documentElement.classList.toggle("immersion-active", p < 0.995);
       var ph = p < DEBUT_MARCHE ? "accroche" : p < FIN_MARCHE ? "marche" : "visite";
       if (ph === phase) return;
       phase = ph;
       visite.setAttribute("data-phase", ph);
       if (curseurAA) curseurAA.tabIndex = ph === "visite" ? 0 : -1;
+      if (ph !== "visite") cancelAnimationFrame(balayage);
     };
 
     var mesure = null;
