@@ -228,6 +228,54 @@
     }
   }
 
+  /* ---------- Accueil : la maison en 3D, sous tous les angles ---------- */
+  // La section reste à l'écran ; le défilement donne un parcours de 0 à 1 qui fait tourner la
+  // maison (maison3d.js, événement arv:maison3d) et allume les 3 étapes du texte une à une.
+  // Sans puce graphique, la photo de la maison reste affichée et seules les étapes changent.
+
+  var maison3d = document.querySelector("[data-maison3d]");
+  if (maison3d) {
+    var etapes3d = maison3d.querySelectorAll(".maison3d__etapes li");
+    var attente3d = false;
+    var parcours3d = function () {
+      var r = maison3d.getBoundingClientRect();
+      var course = Math.max(1, r.height - window.innerHeight);
+      var p = Math.min(1, Math.max(0, -r.top / course));
+      var k = Math.min(etapes3d.length - 1, Math.floor(p * etapes3d.length));
+      etapes3d.forEach(function (li, i) { li.classList.toggle("est-active", i === k); });
+      document.dispatchEvent(new CustomEvent("arv:maison3d", { detail: { parcours: p } }));
+    };
+    window.addEventListener("scroll", function () {
+      if (attente3d) return;
+      attente3d = true;
+      requestAnimationFrame(function () { attente3d = false; parcours3d(); });
+    }, { passive: true });
+    document.addEventListener("arv:maison3d-pret", parcours3d);
+    parcours3d();
+
+    var source3dMaison = maison3d.getAttribute("data-script");
+    var vraiePuce = function () {
+      try {
+        var gl = document.createElement("canvas").getContext("webgl");
+        if (!gl) return false;
+        var ext = gl.getExtension("WEBGL_debug_renderer_info");
+        var nom = String(gl.getParameter(ext ? ext.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
+        var perte = gl.getExtension("WEBGL_lose_context");
+        if (perte) perte.loseContext();
+        return !/swiftshader|llvmpipe|softpipe|software/i.test(nom);
+      } catch (e) { return false; }
+    };
+    if (source3dMaison && HTMLScriptElement.supports && HTMLScriptElement.supports("importmap") && "IntersectionObserver" in window && vraiePuce()) {
+      // chargé seulement quand la section approche : rien de plus à télécharger en haut de page
+      var guetteur = new IntersectionObserver(function (entrees) {
+        if (!entrees.some(function (e) { return e.isIntersecting; })) return;
+        guetteur.disconnect();
+        try { new Function("u", "return import(u)")(source3dMaison).catch(function () {}); } catch (e) {}
+      }, { rootMargin: "800px 0px" });
+      guetteur.observe(maison3d);
+    }
+  }
+
   /* ---------- Filtres des réalisations ---------- */
 
   var filtres = document.querySelector("[data-filtres]");

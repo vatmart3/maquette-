@@ -1232,3 +1232,30 @@ main { position: relative; z-index: 1; }
   .visite__reperes { margin-bottom: 8px; }
   .fiche p { font-size: 0.84rem; margin-bottom: 10px; }
 }
+
+/* --- Accueil : la maison en 3D, sous tous les angles (maison3d.js) --- */
+/* La section reste à l'écran pendant 2,2 hauteurs d'écran : le défilement fait tourner la maison. */
+.maison3d { position: relative; height: 320svh; background: var(--casse); }
+.maison3d__collant { position: sticky; top: var(--entete); height: calc(100svh - var(--entete)); overflow: hidden; display: grid; grid-template-rows: minmax(0, 1fr) auto; }
+.maison3d__scene { position: relative; min-height: 0; }
+.maison3d__repli { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: 50% 60%; padding: 12px; mix-blend-mode: multiply; -webkit-mask-image: radial-gradient(ellipse 62% 58% at 50% 54%, #000 62%, transparent 100%); mask-image: radial-gradient(ellipse 62% 58% at 50% 54%, #000 62%, transparent 100%); transition: opacity 0.6s ease; }
+.maison3d__toile { position: absolute; inset: 0; display: block; width: 100%; height: 100%; opacity: 0; transition: opacity 0.8s ease; }
+.maison3d.est-3d .maison3d__toile { opacity: 1; }
+.maison3d.est-3d .maison3d__repli { opacity: 0; }
+.maison3d__texte { padding-block: 8px 20px; }
+.maison3d__texte h2 { margin: 0 0 14px; font-size: clamp(1.3rem, 2.6vw, 2.35rem); line-height: 1.12; color: var(--ardoise); text-wrap: balance; }
+.maison3d__etapes { position: relative; margin: 0 0 18px; padding: 0; list-style: none; min-height: 4.6em; }
+.maison3d__etapes li { position: absolute; inset: 0 0 auto; display: grid; grid-template-columns: auto 1fr; column-gap: 12px; opacity: 0; transform: translateY(8px); transition: opacity 0.35s ease, transform 0.35s ease; }
+.maison3d__etapes li.est-active { position: relative; opacity: 1; transform: none; }
+.maison3d__etapes .mono { grid-row: span 2; color: var(--orange-action); font-size: 0.85rem; padding-top: 3px; }
+.maison3d__etapes strong { font-family: var(--titres); color: var(--ardoise); font-size: 1.02rem; }
+.maison3d__etapes li > span:last-child { color: var(--anthracite); opacity: 0.82; font-size: 0.94rem; line-height: 1.5; }
+@media (min-width: 860px) {
+  .maison3d__collant { grid-template-columns: minmax(340px, 0.8fr) 1.2fr; grid-template-rows: 1fr; }
+  .maison3d__scene { grid-column: 2; grid-row: 1; }
+  .maison3d__texte { grid-column: 1; grid-row: 1; align-self: center; width: auto; margin: 0 0 0 max(var(--marge), calc((100vw - var(--largeur)) / 2)); padding: 0; }
+  .maison3d__etapes { min-height: 0; display: grid; gap: 18px; margin-bottom: 28px; }
+  .maison3d__etapes li { position: relative; inset: auto; opacity: 0.32; transform: none; }
+  .maison3d__etapes li.est-active { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) { .maison3d__etapes li, .maison3d__toile, .maison3d__repli { transition: none; } }

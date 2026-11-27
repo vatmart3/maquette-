@@ -32,8 +32,11 @@ const avertissements = [];
 // Version de chaque fichier (empreinte du contenu) ajoutée à son adresse : à chaque modification,
 // le navigateur télécharge la nouvelle version au lieu de resservir une copie en cache.
 const VERSION = Object.fromEntries(
-  ["styles.css", "site.js", "config.js", "immersion.js"].map((f) => [f, crypto.createHash("sha1").update(fs.readFileSync(path.join(RACINE, f))).digest("hex").slice(0, 10)])
+  ["styles.css", "site.js", "config.js", "immersion.js", "maison3d.js"].map((f) => [f, crypto.createHash("sha1").update(fs.readFileSync(path.join(RACINE, f))).digest("hex").slice(0, 10)])
 );
+const VERSION_MODELE = fs.existsSync(path.join(RACINE, "3d", "maison.glb"))
+  ? crypto.createHash("sha1").update(fs.readFileSync(path.join(RACINE, "3d", "maison.glb"))).digest("hex").slice(0, 10)
+  : "0";
 
 /* ------------------------------------------------------------------ */
 /* Valeurs provisoires                                                 */
@@ -256,7 +259,7 @@ function head(p) {
   const scene = p.photoAccroche
     ? `
   <link rel="preload" as="image" href="/img/manoir-1400.webp" imagesrcset="${srcsetManoir("manoir")}" imagesizes="${SIZES_MANOIR}" fetchpriority="high">
-  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js"}}</script>`
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>`
     : "";
   return `<!doctype html>
 <html lang="fr">
@@ -1065,6 +1068,24 @@ const ZONES_VISITE = [
           <div class="visite__fiches">
             ${fiches}
           </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="maison3d" data-maison3d data-script="/maison3d.js?v=${VERSION["maison3d.js"]}" data-modele="/3d/maison.glb?v=${VERSION_MODELE}" aria-labelledby="titre-maison3d">
+      <div class="maison3d__collant">
+        <div class="maison3d__scene">
+          <img class="maison3d__repli" src="/img/maison-3d-1200.webp" srcset="/img/maison-3d-800.webp 800w, /img/maison-3d-1200.webp 1200w" sizes="(min-width: 860px) 55vw, 100vw" width="1200" height="1170" alt="Maison du Bassin de Thau couverte en tuiles canal, volets bleu ardoise, vue de trois quarts" loading="lazy" decoding="async">
+        </div>
+        <div class="conteneur maison3d__texte">
+          <p class="sur-titre sur-titre--orange">Votre maison, sous tous les angles</p>
+          <h2 id="titre-maison3d">On fait le tour de votre toit avant de vous dire quoi que ce soit.</h2>
+          <ol class="maison3d__etapes">
+            <li class="est-active"><span class="mono">01</span><strong>Le tour complet</strong><span>Tuiles canal, faîtage, rives et arêtiers : chaque pan est regardé, pas seulement celui qui fuit.</span></li>
+            <li><span class="mono">02</span><strong>Les points d'eau</strong><span>Gouttières, descentes, solins de cheminée : là où l'eau entre le plus souvent.</span></li>
+            <li><span class="mono">03</span><strong>Un avis franc, par écrit</strong><span>Photos à l'appui et devis détaillé, gratuit. Si une réparation suffit, on vous le dit.</span></li>
+          </ol>
+          <a class="bouton bouton--orange" href="/devis-toiture" data-track="devis">${ico("devis")}Demander mon diagnostic gratuit</a>
         </div>
       </div>
     </section>
