@@ -418,7 +418,7 @@ main { position: relative; z-index: 1; }
 @media (prefers-reduced-motion: reduce) { .repere-3d__point { animation: none; } .avant-apres__cadre img { transition: none; } }
 
 /* accroche posée sur la photo, comme une couverture de magazine ; s'efface quand on avance */
-.immersion__accroche { position: absolute; inset: 0; z-index: 1; display: flex; flex-direction: column; justify-content: center; pointer-events: none; transition: opacity 0.35s ease, transform 0.35s ease; }
+.immersion__accroche { position: absolute; inset: 0; z-index: 1; display: flex; flex-direction: column; justify-content: center; padding-bottom: 120px; pointer-events: none; transition: opacity 0.35s ease, transform 0.35s ease; }
 .immersion__accroche::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgb(247 245 240 / 0.94) 0%, rgb(247 245 240 / 0.78) 30%, rgb(247 245 240 / 0.15) 52%, rgb(247 245 240 / 0) 62%); }
 .immersion__accroche > * { position: relative; }
 .immersion__accroche .accroche__texte { max-width: 37rem; pointer-events: auto; }
@@ -434,6 +434,11 @@ main { position: relative; z-index: 1; }
 .immersion__defiler { position: absolute !important; left: 50%; bottom: 26px; display: flex; align-items: center; gap: 8px; margin: 0; transform: translateX(-50%); padding: 7px 14px; border-radius: 999px; background: rgb(31 41 51 / 0.7); color: #fff; font-family: var(--titres); font-size: 0.85rem; font-weight: 700; }
 .immersion__defiler .ico { width: 14px; height: 14px; transform: rotate(90deg); animation: defiler 1.6s ease-in-out infinite; }
 @keyframes defiler { 50% { transform: rotate(90deg) translateX(4px); } }
+
+@media (min-width: 860px) and (max-height: 820px) {
+  .immersion__accroche { padding-bottom: 40px; }
+  .immersion__cartes { display: none; }
+}
 
 /* panneau des interventions, pendant la visite */
 .immersion__visite { position: absolute; z-index: 1; left: max(var(--marge), calc((100% - var(--largeur)) / 2)); top: 50%; width: min(400px, 36vw); padding: 24px 26px 22px; border-radius: var(--r-l); background: rgb(31 41 51 / 0.86); color: #fff; box-shadow: 0 24px 50px -24px rgb(0 0 0 / 0.6); opacity: 0; visibility: hidden; transform: translateY(calc(-50% + 18px)); transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s; }
