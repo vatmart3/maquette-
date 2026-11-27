@@ -832,14 +832,10 @@ function cartesServices(exclure, proche) {
 }
 
 // Accueil : services regroupés en trois familles, chacune avec un petit dessin au trait.
-const PICTOS = {
-  // marteau de couvreur
-  reparer: `<svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M10 41 29.5 21.5" class="manche"/><path d="M26.1 8.4 41.6 23.9 35.9 29.6 20.4 14.1z" class="plein"/></svg>`,
-  // toiture neuve en tuiles
-  renover: `<svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M24 9 42.5 25.5h-37z" class="plein"/><path d="M15.5 17.5h17M10.5 21.7h27" class="blanc"/><path d="M11 25.5V40h26V25.5"/><path d="M21 40v-7.5h6V40"/></svg>`,
-  // bouclier et goutte : l'eau reste dehors
-  entretenir: `<svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M24 6 39 11v11c0 10-7 17-15 20-8-3-15-10-15-20V11z"/><path d="M24 15c-3.5 5-5.5 8-5.5 10.5a5.5 5.5 0 0 0 11 0C29.5 23 27.5 20 24 15z" class="plein"/></svg>`,
-};
+// Pictogrammes des familles de services (images fournies, fond transparent)
+const PICTOS = Object.fromEntries(
+  ["reparer", "renover", "entretenir"].map((k) => [k, `<img class="famille__picto" src="/img/picto-${k}-96.webp" srcset="/img/picto-${k}-96.webp 96w, /img/picto-${k}-192.webp 192w" sizes="68px" width="96" height="96" alt="" role="presentation" loading="lazy" decoding="async">`])
+);
 const FAMILLES = [
   { cle: "reparer", titre: "Réparer", texte: "Fuite, tuile cassée, coup de vent.", services: ["depannage", "recherche-de-fuite", "remplacement-tuiles", "bachage-urgence"] },
   { cle: "renover", titre: "Rénover", texte: "Refaire une couverture, reprendre la structure.", services: ["refection-toiture", "faitage-rives", "charpente", "isolation-toiture", "fenetre-de-toit"] },

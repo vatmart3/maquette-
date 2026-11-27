@@ -1180,17 +1180,14 @@ main { position: relative; z-index: 1; }
 
 /* Services de l'accueil en trois familles */
 .familles { display: grid; gap: 34px; }
-.famille__tete { display: grid; grid-template-columns: 52px 1fr auto; grid-template-areas: "picto titre plus" "picto texte plus"; column-gap: 16px; align-items: center; margin-bottom: 10px; list-style: none; }
+.famille__tete { display: grid; grid-template-columns: 68px 1fr auto; grid-template-areas: "picto titre plus" "picto texte plus"; column-gap: 16px; align-items: center; margin-bottom: 10px; list-style: none; }
 .famille__tete::-webkit-details-marker { display: none; }
-.famille__tete svg { grid-area: picto; }
+.famille__picto { grid-area: picto; }
 .famille__tete h3 { grid-area: titre; align-self: end; }
 .famille__texte { grid-area: texte; align-self: start; color: var(--texte-2); font-size: .95rem; }
 .famille__plus { grid-area: plus; display: none; }
 @media (min-width: 860px) { .famille__tete { pointer-events: none; } }
-.famille__tete svg { width: 52px; height: 52px; fill: none; stroke: var(--ardoise); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
-.famille__tete svg .plein { fill: var(--orange); stroke: var(--orange); stroke-width: 1.5; }
-.famille__tete svg .blanc { stroke: #fff; stroke-width: 1.6; }
-.famille__tete svg .manche { stroke-width: 3.6; }
+.famille__picto { display: block; width: 68px; height: 68px; object-fit: contain; }
 .famille__tete h3 { margin: 0 0 2px; }
 .famille__liste { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px; border-top: 1px solid var(--filet); }
 .famille__liste li { border-bottom: 1px solid var(--filet); }
@@ -1204,8 +1201,8 @@ main { position: relative; z-index: 1; }
 /* Téléphone : les trois familles en bandeaux bien visibles, qui se déplient d'un tap */
 @media (max-width: 859px) {
   .familles { gap: 12px; }
-  .famille__tete { grid-template-columns: 48px 1fr 28px; column-gap: 14px; margin: 0; padding: 16px 14px 16px 12px; border-radius: var(--r-s); background: var(--ardoise); cursor: pointer; -webkit-tap-highlight-color: transparent; }
-  .famille__tete svg { width: 48px; height: 48px; padding: 7px; border-radius: 50%; background: #fff; }
+  .famille__tete { grid-template-columns: 52px 1fr 28px; column-gap: 14px; margin: 0; padding: 16px 14px 16px 12px; border-radius: var(--r-s); background: var(--ardoise); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .famille__picto { width: 52px; height: 52px; padding: 3px; border-radius: 50%; background: #fff; }
   .famille__tete h3 { margin: 0; color: #fff; font-size: 1.3rem; }
   .famille__texte { color: var(--texte-clair); font-size: .88rem; line-height: 1.4; }
   .famille__plus { display: block; position: relative; width: 28px; height: 28px; border-radius: 50%; background: var(--orange-action); }
