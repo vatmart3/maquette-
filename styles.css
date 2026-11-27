@@ -444,6 +444,7 @@ main { position: relative; z-index: 1; }
 .avant-apres__3d { display: none; }
 .est-3d .avant-apres__3d { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
 .est-3d .avant-apres__cadre img, .est-3d .avant-apres__avant { display: none; }
+.est-3d .avant-apres__cadre { background: radial-gradient(120% 95% at 50% 30%, #f4f6f8 0%, #e2e8ec 55%, #c9d2d9 100%); }
 /* zone signalée : point orange pulsant et étiquette */
 .repere-3d { position: absolute; top: 0; left: 0; z-index: 1; display: none; pointer-events: none; }
 .repere-3d.est-visible { display: block; }

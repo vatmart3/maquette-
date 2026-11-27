@@ -142,7 +142,7 @@ client (`img/logo-cp34.png`, déclinaisons WebP pour le site).
 ## Accueil : photo et maison en 3D
 
 L'accroche affiche la photo de la maison (`img/maison-*.webp`, chargée en priorité). La section
-« Du faîtage à la gouttière » montre la même maison reconstituée en 3D (`maison3d.js`, Three.js
+« Du faîtage à la gouttière » montre la même maison reconstituée en 3D, seule sur fond clair avec son ombre (`maison3d.js`, Three.js
 par import map, chargé seulement quand la section approche et sur un appareil avec puce
 graphique). La section reste en place pendant le défilement : maison entière, puis la caméra
 tourne vers la couverture, la charpente (toit rendu transparent), la zinguerie, les tuiles
