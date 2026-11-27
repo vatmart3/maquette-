@@ -5,11 +5,12 @@
  * sur chaque façade, une fenêtre par pignon, cheminée, gouttières et descentes. Construite ici
  * (aucun fichier à télécharger) : légère et fluide, y compris sur téléphone.
  *
- * Au défilement, la caméra tourne autour de la maison et passe d'une vue à l'autre, comme sur la
- * planche des plans : perspective, dessus, droite, face, gauche, arrière ; puis la maison est coupée
- * à hauteur d'appui pour montrer le plan du rez-de-chaussée, et revient en perspective. Chaque vue
- * correspond à une intervention, signalée par un repère orange. La barre avant / après coupe
- * l'image : à gauche, la même maison avant travaux (mousse, lichens, tuiles cassées, coulures).
+ * Au défilement, la caméra suit le doigt et tourne autour de la maison pour aller chercher, de
+ * près, chaque intervention, comme sur la planche des plans : dessus (couverture), droite
+ * (charpente, couverture rendue transparente), face (gouttière et descente), gauche (solin de
+ * cheminée), arrière (démoussage) ; un repère orange signale la partie concernée, puis la maison
+ * revient en perspective. La barre avant / après coupe l'image : à gauche, la même maison avant
+ * travaux (mousse, lichens, tuiles cassées, coulures).
  * Three.js 0.169 par import map ; chargé par site.js seulement avec une vraie puce graphique.
  */
 import * as THREE from "three";
@@ -35,15 +36,19 @@ const CHEM = { x: -2.9, z: -0.75, c: 0.56, haut: 5.85 };
 
 /* --- Vues : az = angle autour de la maison (0 = face, π/2 = droite), el = hauteur, d = distance --- */
 const PERSPECTIVE = { nom: "Vue en perspective", cible: V3(0, 2.3, 0), az: 0.62, el: 0.24, d: 23.5 };
+// chaque intervention : vue rapprochée centrée sur la partie concernée
+const P_TOIT = V3(1.6, yToit(1.5) + 0.06, 1.5);
+const P_FAITAGE = V3(1.4, FAITAGE - 0.3, 0);
+const P_GOUTTIERE = V3(-X1 + 0.15, HM - 0.12, Z1 + DEB + 0.08);
+const P_SOLIN = V3(CHEM.x - CHEM.c / 2 - 0.05, yToit(CHEM.z) + 0.15, CHEM.z);
+const P_MOUSSE = V3(1.5, yToit(-1.6) + 0.06, -1.6);
 const ZONES = [
-  { nom: "Vue de dessus", cible: V3(0, 2.4, 0.2), az: 0, el: 1.42, d: 16, point: V3(1.6, yToit(1.5) + 0.06, 1.5) },                 // couverture
-  { nom: "Vue de droite", cible: V3(0.4, 3.0, 0), az: 1.08, el: 0.36, d: 15, point: V3(1.8, FAITAGE - 0.25, 0) },                 // charpente
-  { nom: "Vue de face", cible: V3(0, 2.2, 0), az: 0, el: 0.06, d: 14.5, point: V3(-X1 + 0.15, HM - 0.12, Z1 + DEB + 0.08) },     // zinguerie
-  { nom: "Vue de gauche", cible: V3(-2.2, 3.9, -0.5), az: -1.95, el: 0.34, d: 10.5, point: V3(CHEM.x - CHEM.c / 2 - 0.05, yToit(CHEM.z) + 0.15, CHEM.z) }, // solin de cheminée
-  { nom: "Vue arrière", cible: V3(0, 2.9, 0), az: Math.PI, el: 0.32, d: 15, point: V3(1.5, yToit(-1.6) + 0.06, -1.6) },          // démoussage
+  { nom: "Vue de dessus", cible: P_TOIT.clone().setY(P_TOIT.y - 0.2), az: 0.12, el: 1.12, d: 9.5, point: P_TOIT },         // couverture
+  { nom: "Vue de droite", cible: V3(1.0, 4.2, 0.2), az: 0.95, el: 0.32, d: 9.5, point: P_FAITAGE },                         // charpente
+  { nom: "Vue de face", cible: V3(-3.4, 2.2, Z1), az: 0.4, el: 0.12, d: 5.2, point: P_GOUTTIERE },                       // zinguerie
+  { nom: "Vue de gauche", cible: V3(CHEM.x, yToit(CHEM.z) + 0.2, CHEM.z), az: -2.05, el: 0.42, d: 5.2, point: P_SOLIN },   // solin de cheminée
+  { nom: "Vue arrière", cible: P_MOUSSE.clone().setY(P_MOUSSE.y - 0.3), az: 2.8, el: 0.5, d: 8, point: P_MOUSSE },          // démoussage
 ];
-const PLAN = { nom: "Plan du rez-de-chaussée", cible: V3(0, 0, 0.35), az: 0, el: 1.36, d: 15.5 };
-const COUPE = 1.05; // hauteur de coupe du plan
 
 if (cadre) demarrer().catch(() => {});
 
@@ -56,8 +61,7 @@ async function demarrer() {
   renderer.toneMappingExposure = 0.95;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  renderer.shadowMap.autoUpdate = false; // ombres recalculées seulement quand la maison change
-  renderer.localClippingEnabled = true;
+  renderer.shadowMap.autoUpdate = false; // maison immobile : ombres calculées une seule fois
   renderer.debug.checkShaderErrors = false; // vérification lente, inutile en production
   renderer.autoClear = false;
   const toile = renderer.domElement;
@@ -352,8 +356,7 @@ async function demarrer() {
   /* ------------------------------------------------------------------ */
   /* Matériaux                                                            */
   /* ------------------------------------------------------------------ */
-  const coupe = new THREE.Plane(V3(0, -1, 0), 100); // coupe horizontale de la maison (plan)
-  const std = (o) => new THREE.MeshStandardMaterial({ clippingPlanes: [coupe], clipShadows: true, ...o });
+  const std = (o) => new THREE.MeshStandardMaterial(o);
   const paire = (apres, avant) => ({ apres, avant: avant || apres });
   const M = {
     toit: paire(
@@ -693,7 +696,7 @@ async function demarrer() {
     touffe(x, 2.6, z, 1.8, 1.0, 1.7, 820, 0.14, "#7f8d62");
   }
   for (let x = -7.2; x <= 7.2; x += 0.8) touffe(x, 0.6, -7.0 + Math.abs(x) * 0.06, 0.55, 0.6, 0.5, 50, 0.13, "#41612f");
-  for (const [x, z, r] of [[-3.6, Z1 + 1.1, 0.55], [3.6, Z1 + 1.1, 0.55], [-1.4, Z1 + 1.0, 0.4], [1.4, Z1 + 1.0, 0.4], [-X1 - 1.1, -1.5, 0.6], [X1 + 1.1, 1.8, 0.6]])
+  for (const [x, z, r] of [[-2.2, Z1 + 1.0, 0.5], [2.2, Z1 + 1.0, 0.5], [-1.2, Z1 + 0.9, 0.36], [1.2, Z1 + 0.9, 0.36], [-X1 - 1.3, -2.2, 0.6], [X1 + 1.3, 2.0, 0.6]])
     touffe(x, r * 0.85, z, r, r * 0.85, r, 140, 0.11, "#4d6c3a");
   {
     const vegetation = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1, 0), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.9, flatShading: true, envMapIntensity: 0.6 }), feuilles.length);
@@ -704,7 +707,7 @@ async function demarrer() {
   }
 
   /* ------------------------------------------------------------------ */
-  /* Étiquettes : nom de la vue, repère orange, cotes du plan             */
+  /* Étiquettes : nom de la vue, repère orange                           */
   /* ------------------------------------------------------------------ */
   const elt = (classe, html = "") => {
     const e = document.createElement("span");
@@ -717,10 +720,6 @@ async function demarrer() {
   const nomVue = elt("vue-3d");
   const repere = elt("repere-3d", '<span class="repere-3d__anneau"></span><span class="repere-3d__point"></span><span class="repere-3d__nom"></span>');
   const repereNom = repere.querySelector(".repere-3d__nom");
-  const cotes = [
-    { e: elt("cote-3d", "8,40 m"), p: V3(0, 0.05, Z1 + 0.55) },
-    { e: elt("cote-3d", "6,20 m"), p: V3(X1 + 0.6, 0.05, 0) },
-  ];
 
   /* ------------------------------------------------------------------ */
   /* Caméra : orbite d'une vue à l'autre                                  */
@@ -729,25 +728,44 @@ async function demarrer() {
   let L = 1, H = 1;
   const large = () => L >= 860;
   const tel = { k: 1.4, ox: 0, oy: 0.14, panneau: 0 };
-  const recul = () => (large() ? 1 : Math.min(2.2, Math.max(1.25, 1.05 / (L / H)))); // téléphone en hauteur
-  const vueDe = (phase, zone) => (phase === "visite" && zone >= 0 ? ZONES[zone] : phase === "plan" ? PLAN : PERSPECTIVE);
-  const decalage = (phase) =>
-    phase === "accroche" ? (large() ? [0.21, 0.03] : [tel.ox, tel.oy])
-    : phase === "visite" ? (large() ? [0.17, 0] : [0.12, -tel.panneau / (2 * H)])
-    : [0, 0];
-  const etat = { zone: -1, phase: "accroche", cx: 0, cy: 0, cz: 0, az: 0, el: 0, d: 0, ox: 0, oy: 0, coupe: 7, transp: 0, init: false };
-  const butDe = () => {
-    const v = vueDe(etat.phase, etat.zone);
-    const k = etat.phase === "accroche" && !large() ? tel.k : recul();
-    // téléphone : la vue se recentre sur le repère (la façade entière ne tient pas en largeur)
-    const r = !large() && v.point ? 0.6 : 0;
-    return {
-      cx: v.cible.x + (r ? (v.point.x - v.cible.x) * r : 0),
-      cy: v.cible.y + (r ? (v.point.y - v.cible.y) * r * 0.5 : 0),
-      cz: v.cible.z + (r ? (v.point.z - v.cible.z) * r : 0),
-      az: v.az, el: v.el, d: v.d * k,
-    };
+  const recul = () => (large() ? 1.4 : Math.min(2.2, Math.max(1.25, 1.05 / (L / H)))); // téléphone en hauteur : plus de recul
+  const decalageAccroche = () => (large() ? [0.21, 0.03] : [tel.ox, tel.oy]);
+  const decalageVisite = () => (large() ? [0.17, 0] : [0, -tel.panneau / (2 * H)]);
+  // une « étape » = point de vue complet (cible, angles, distance, décalage dans l'image)
+  const etape = (v, k, dec) => ({ cx: v.cible.x, cy: v.cible.y, cz: v.cible.z, az: v.az, el: v.el, d: v.d * k, ox: dec[0], oy: dec[1] });
+  const etapes = () => {
+    const k = recul();
+    return [
+      etape(PERSPECTIVE, large() ? 1 : tel.k, decalageAccroche()),
+      ...ZONES.map((z) => etape(z, k, decalageVisite())),
+      etape(PERSPECTIVE, large() ? 1 : 1.35, [0, 0]),
+    ];
   };
+  // Parcours (0 → 1, donné par site.js) : accroche, 5 interventions, retour en perspective.
+  // Dans chaque portion, la caméra va de l'étape précédente à la suivante pendant les 45 premiers
+  // pourcents du défilement de la portion, puis reste en place : elle suit le doigt, sans saut.
+  const DEBUT = 0.07, FIN = 0.93;
+  const lisse = (x) => (x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x));
+  function butDe(p) {
+    const E = etapes();
+    let i, t;
+    if (p < DEBUT) { i = 0; t = 1; }
+    else if (p < FIN) {
+      const n = ZONES.length, u = ((p - DEBUT) / (FIN - DEBUT)) * n;
+      i = Math.min(n, Math.floor(u) + 1);
+      t = lisse((u - (i - 1)) / 0.45);
+    } else { i = E.length - 1; t = lisse((p - FIN) / ((1 - FIN) * 0.6)); }
+    const a = E[Math.max(0, i - 1)], b = E[i];
+    if (i === 0) return { ...b, t: 1, i };
+    let daz = b.az - a.az;
+    while (daz > Math.PI) daz -= 2 * Math.PI;
+    while (daz < -Math.PI) daz += 2 * Math.PI;
+    const m = (k) => a[k] + (b[k] - a[k]) * t;
+    // pendant le passage, la caméra prend un peu de recul (elle « tourne autour » de la maison)
+    const ecarte = Math.sin(Math.PI * t) * Math.min(1, Math.abs(daz) / 1.5) * 0.35;
+    return { cx: m("cx"), cy: m("cy"), cz: m("cz"), az: a.az + daz * t, el: m("el"), d: m("d") * (1 + ecarte), ox: m("ox"), oy: m("oy"), t, i };
+  }
+  const etat = { p: 0, zone: -1, phase: "accroche", cx: 0, cy: 0, cz: 0, az: 0, el: 0, d: 0, ox: 0, oy: 0, transp: 0, init: false };
   const poserCamera = (c) => {
     camera.position.set(
       c.cx + Math.sin(c.az) * Math.cos(c.el) * c.d,
@@ -802,6 +820,7 @@ async function demarrer() {
 
   document.addEventListener("arv:avance", (e) => {
     etat.phase = visite ? visite.getAttribute("data-phase") || "accroche" : "accroche";
+    etat.p = e.detail.p;
     if (e.detail.zone !== etat.zone) {
       etat.zone = e.detail.zone;
       const r = reperes[etat.zone];
@@ -823,13 +842,27 @@ async function demarrer() {
       m.opacity = 1 - 0.86 * t;
     }
     charpente.visible = t > 0.01;
-    for (const m of aPaire) if (m.userData.paire === M.toit) m.castShadow = t < 0.5;
   }
 
-  /* --- Rendu à la demande --- */
-  let enCours = false, derniere = 0, ombres = 2;
+  /* --- Rendu à la demande, qualité adaptative --- */
+  let enCours = false, derniere = 0, ombres = 1;
   function relancer() {
     if (!enCours) { enCours = true; derniere = 0; requestAnimationFrame(boucle); }
+  }
+  // Si l'animation descend durablement sous ~45 images par seconde, la finesse du rendu baisse d'un
+  // cran (jusqu'à 1 pixel par pixel d'écran) : la fluidité passe avant la netteté. Le changement
+  // est appliqué dès que l'image s'arrête (jamais pendant un mouvement : pas d'à-coup).
+  const qualite = { ratio: renderer.getPixelRatio(), cible: renderer.getPixelRatio(), cumul: 0, n: 0, change: 0 };
+  function surveiller(intervalle, t) {
+    if (intervalle <= 0 || intervalle > 120 || qualite.cible <= 1) return;
+    qualite.cumul += intervalle;
+    if (++qualite.n < 24) return;
+    const moyenne = qualite.cumul / qualite.n;
+    qualite.cumul = qualite.n = 0;
+    if (moyenne > 22 && t - qualite.change > 1200) {
+      qualite.cible = Math.max(1, qualite.cible - 0.25);
+      qualite.change = t;
+    }
   }
   const pt = V3(0, 0, 0);
   const placer = (e, p) => {
@@ -837,29 +870,24 @@ async function demarrer() {
     e.style.transform = `translate(${((pt.x * 0.5 + 0.5) * L).toFixed(1)}px, ${((-pt.y * 0.5 + 0.5) * H).toFixed(1)}px)`;
   };
   let nomAffiche = "";
+  const CLES = ["cx", "cy", "cz", "el", "d", "ox", "oy"];
   function boucle(t) {
-    const dt = derniere ? Math.min(0.05, (t - derniere) / 1000) : 0.016;
+    const brut = derniere ? t - derniere : 0;
+    const dt = derniere ? Math.min(0.05, brut / 1000) : 0.016;
     derniere = t;
-    const b = butDe();
+    const b = butDe(etat.p);
     if (!etat.init) { Object.assign(etat, b); etat.init = true; }
-    const a = reduit ? 1 : 1 - Math.exp(-dt * 3.4);
+    // la caméra suit le défilement de près (lissage court : pas de retard, pas d'à-coup de molette)
+    const a = reduit ? 1 : 1 - Math.exp(-dt * 9);
     let daz = b.az - etat.az;
     while (daz > Math.PI) daz -= 2 * Math.PI;
     while (daz < -Math.PI) daz += 2 * Math.PI;
     etat.az += daz * a;
-    for (const k of ["cx", "cy", "cz", "el", "d"]) etat[k] += (b[k] - etat[k]) * a;
-    const [ox, oy] = decalage(etat.phase);
-    etat.ox += (ox - etat.ox) * a;
-    etat.oy += (oy - etat.oy) * a;
-    // coupe du plan et couverture transparente (charpente)
-    const coupeBut = etat.phase === "plan" ? COUPE : 7;
-    const dc = coupeBut - etat.coupe;
-    etat.coupe += dc * a;
-    coupe.constant = etat.coupe > 6.9 ? 100 : etat.coupe;
-    const transpBut = etat.phase === "visite" && etat.zone === 1 ? 1 : 0;
+    for (const k of CLES) etat[k] += (b[k] - etat[k]) * a;
+    // couverture transparente pendant la vue de la charpente
+    const transpBut = b.i === 2 ? b.t : b.i === 3 ? 1 - b.t : 0;
     etat.transp += (transpBut - etat.transp) * a;
-    appliquerTransparence(etat.transp);
-    if (Math.abs(dc) > 0.002 || Math.abs(transpBut - etat.transp) > 0.01) ombres = 2;
+    appliquerTransparence(etat.transp < 0.005 ? 0 : etat.transp);
 
     poserCamera(etat);
     camera.setViewOffset(L, H, -etat.ox * L, -etat.oy * H, L, H);
@@ -876,24 +904,31 @@ async function demarrer() {
     if (coupeAA < L) { poser("apres"); renderer.setScissor(coupeAA, 0, L - coupeAA, H); renderer.render(scene, camera); }
     renderer.setScissorTest(false);
 
-    // étiquettes
-    const v = vueDe(etat.phase, etat.zone);
-    const nom = etat.phase === "accroche" ? "" : v.nom;
+    // étiquettes : nom de la vue et repère, une fois la caméra arrivée
+    const z = enVisite ? ZONES[etat.zone] : null;
+    const arrive = b.t >= 1;
+    const nom = z ? z.nom : etat.phase === "fin" ? PERSPECTIVE.nom : "";
     if (nom !== nomAffiche) { nomVue.textContent = nom; nomVue.classList.toggle("est-visible", !!nom); nomAffiche = nom; }
-    const ecart = Math.abs(daz) + Math.abs(b.el - etat.el) + Math.abs(b.d - etat.d) / 10 + Math.abs(b.cx - etat.cx) / 5 + Math.abs(b.cy - etat.cy) / 5 + Math.abs(b.cz - etat.cz) / 5 + Math.abs(ox - etat.ox) + Math.abs(oy - etat.oy);
-    const z = ZONES[etat.zone];
-    if (z && enVisite) {
+    let ecart = Math.abs(daz) + Math.abs(transpBut - etat.transp);
+    for (const k of CLES) ecart += Math.abs(b[k] - etat[k]) / (k === "d" ? 10 : k[0] === "c" ? 5 : 1);
+    if (z) {
       placer(repere, z.point);
-      repere.classList.toggle("est-visible", ecart < 0.03);
+      repere.classList.toggle("est-visible", arrive && ecart < 0.02);
     } else repere.classList.remove("est-visible");
-    const surPlan = etat.phase === "plan" && Math.abs(dc) < 0.15;
-    for (const c of cotes) { if (surPlan) placer(c.e, c.p); c.e.classList.toggle("est-visible", surPlan); }
 
-    const bouge = ecart > 0.0006 || Math.abs(dc) > 0.002 || Math.abs(transpBut - etat.transp) > 0.002 || ombres > 0;
-    if (bouge) requestAnimationFrame(boucle);
-    else {
+    if (ecart > 0.0004 || ombres > 0) {
+      surveiller(brut, t);
+      requestAnimationFrame(boucle);
+    } else {
       enCours = false;
-      if (z && enVisite) repere.classList.add("est-visible");
+      qualite.cumul = qualite.n = 0;
+      if (qualite.cible !== qualite.ratio) {
+        qualite.ratio = qualite.cible;
+        renderer.setPixelRatio(qualite.ratio);
+        renderer.setSize(L, H, false);
+        requestAnimationFrame(() => relancer());
+      }
+      if (z && arrive) repere.classList.add("est-visible");
     }
   }
 

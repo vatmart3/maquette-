@@ -145,10 +145,10 @@ La maison de plain-pied des plans fournis (8,40 × 6,20 m, faîtage à 5,20 m, t
 blanc) est construite en 3D dans `immersion.js` (Three.js par import map, aucun modèle à
 télécharger), dans un petit jardin. L'image `img/maison-plain-pied-*.webp` (rendu de la même
 maison) s'affiche en attendant, et reste seule sans puce graphique. La section reste à l'écran
-pendant le défilement : la caméra tourne d'une vue à l'autre, comme sur la planche des plans
-(perspective, dessus, droite, face, gauche, arrière), une intervention par vue avec un repère
-orange ; puis la maison est coupée à hauteur d'appui pour montrer le plan du rez-de-chaussée, et
+pendant le défilement : la caméra suit le doigt et va chercher de près chaque intervention
+(dessus : couverture ; droite : charpente sous la couverture rendue transparente ; face :
+gouttière ; gauche : solin de cheminée ; arrière : démoussage), avec un repère orange, puis
 revient en perspective. La barre avant / après coupe le rendu : à gauche, la même maison avant
-travaux (illustration). Fluidité : pièces fusionnées par matériau (une vingtaine d'appels de
-dessin par image), programmes et textures préparés au chargement, rendu seulement quand l'image
-change.
+travaux (illustration). Fluidité : pièces fusionnées par matériau, programmes et textures préparés
+au chargement, ombres calculées une fois, rendu seulement quand l'image change, finesse réduite
+automatiquement (à l'arrêt) sur les téléphones moins puissants.

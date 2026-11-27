@@ -116,9 +116,9 @@
   /* ---------- Accueil : la maison, puis les 5 interventions ---------- */
   // La section reste à l'écran. Le défilement fait avancer un parcours de 0 à 1 :
   //   0 → 0,07 : accroche (la maison à côté du titre) ;
-  //   0,07 → 0,78 : la caméra passe d'une vue à l'autre, une intervention par vue ;
-  //   0,78 → 0,9 : plan du rez-de-chaussée (la maison est coupée à hauteur d'appui) ;
-  //   0,9 → 1 : fin de la visite, la maison revient en perspective avant de quitter l'écran.
+  //   0,07 → 0,93 : la caméra passe d'une vue à l'autre en suivant le doigt, une intervention
+  //   par vue (déplacement sur les 45 premiers pourcents de chaque portion, puis arrêt) ;
+  //   0,93 → 1 : fin de la visite, la maison revient en perspective avant de quitter l'écran.
   // Avec une puce graphique, immersion.js affiche la maison en 3D (événement arv:avance) ;
   // sinon, l'image de la maison reste affichée et seules les fiches changent.
 
@@ -130,7 +130,7 @@
     var curseurAA = visite.querySelector(".avant-apres__curseur");
     var collant = visite.querySelector(".immersion__collant");
     var n = fiches.length;
-    var DEBUT_ZONES = 0.07, FIN_ZONES = 0.78, FIN_PLAN = 0.9;
+    var DEBUT_ZONES = 0.07, FIN_ZONES = 0.93;
     var zone = null, phase = null;
 
     var zoneDe = function (p) {
@@ -145,11 +145,10 @@
       fiches.forEach(function (el, i) { el.classList.toggle("est-active", i === f); });
       reperes.forEach(function (b, i) { b.setAttribute("aria-current", i === k ? "true" : "false"); });
       document.dispatchEvent(new CustomEvent("arv:zone", { detail: { zone: k } }));
-      if (k >= 0) balayer();
     };
     // Démonstration avant / après : à chaque intervention, la barre glisse vers la droite puis la
     // gauche avant de revenir, tant que le visiteur ne l'a pas prise en main.
-    var touche = false, balayage = 0;
+    var touche = false, balayage = 0, balayee = -1;
     if (curseurAA) ["pointerdown", "keydown", "touchstart"].forEach(function (ev) {
       curseurAA.addEventListener(ev, function () { touche = true; cancelAnimationFrame(balayage); }, { passive: true });
     });
@@ -179,7 +178,7 @@
     var majPhase = function (p) {
       // logo flottant masqué tant que la section occupe l'écran (il recouvrait le panneau)
       document.documentElement.classList.toggle("immersion-active", p < 0.995);
-      var ph = p < DEBUT_ZONES ? "accroche" : p < FIN_ZONES ? "visite" : p < FIN_PLAN ? "plan" : "fin";
+      var ph = p < DEBUT_ZONES ? "accroche" : p < FIN_ZONES ? "visite" : "fin";
       if (ph === phase) return;
       phase = ph;
       visite.setAttribute("data-phase", ph);
@@ -206,6 +205,11 @@
       majPhase(p);
       var k = zoneDe(p);
       majFiches(k);
+      // démonstration avant / après une fois la caméra arrivée sur l'intervention
+      if (k >= 0) {
+        var local = ((p - DEBUT_ZONES) / (FIN_ZONES - DEBUT_ZONES)) * n - k;
+        if (local >= 0.5 && balayee !== k) { balayee = k; balayer(); }
+      }
       document.dispatchEvent(new CustomEvent("arv:avance", { detail: { p: p, zone: k } }));
     };
     var attente = false;

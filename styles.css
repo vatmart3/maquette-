@@ -416,11 +416,9 @@ main { position: relative; z-index: 1; }
 .immersion:not([data-phase="visite"]) .avant-apres__curseur { pointer-events: none; }
 .immersion[data-phase="visite"] .avant-apres__barre, .immersion[data-phase="visite"] .avant-apres__etiquette, .immersion[data-phase="visite"] figcaption { opacity: 1; }
 
-/* nom de la vue (comme sur la planche des plans) et cotes du plan */
+/* nom de la vue (comme sur la planche des plans) */
 .vue-3d { position: absolute; z-index: 2; top: 16px; left: max(var(--marge), calc((100% - var(--largeur)) / 2)); padding: 6px 12px 6px 14px; border-left: 3px solid var(--orange-action); border-radius: 0 6px 6px 0; background: rgb(247 245 240 / 0.92); color: var(--anthracite); font-family: var(--titres); font-size: 0.8rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0; transform: translateY(-6px); transition: opacity 0.35s ease, transform 0.35s ease; pointer-events: none; }
 .vue-3d.est-visible { opacity: 1; transform: none; }
-.cote-3d { position: absolute; top: 0; left: 0; z-index: 2; margin: -13px 0 0 -30px; padding: 3px 9px; border-radius: 999px; background: var(--anthracite); color: #fff; font-family: var(--mono, monospace); font-size: 0.78rem; white-space: nowrap; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
-.cote-3d.est-visible { opacity: 1; }
 /* zone signalée : point orange pulsant et étiquette */
 .repere-3d { position: absolute; top: 0; left: 0; z-index: 2; display: none; pointer-events: none; }
 .repere-3d.est-visible { display: block; }
