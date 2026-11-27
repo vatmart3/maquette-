@@ -53,8 +53,12 @@ const ZONES = [
 if (cadre) demarrer().catch(() => {});
 
 async function demarrer() {
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, telephone ? 1.5 : 1.75));
+  // Netteté : jusqu'à 2 pixels de rendu par point d'écran. Sur les écrans très denses (téléphones),
+  // l'anticrénelage matériel est inutile (la densité suffit) et coûteux : il est coupé, ce qui
+  // permet de rendre à pleine finesse sans perdre en fluidité.
+  const dpr = window.devicePixelRatio || 1;
+  const renderer = new THREE.WebGLRenderer({ antialias: dpr < 2, alpha: true, powerPreference: "high-performance" });
+  renderer.setPixelRatio(Math.min(dpr, 2));
   renderer.setClearColor(0x000000, 0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.NeutralToneMapping;
@@ -663,7 +667,7 @@ async function demarrer() {
     scene.add(dalles);
   }
   // végétation : petites feuilles instanciées (une seule géométrie pour tout le jardin)
-  const densite = telephone ? 0.55 : 1;
+  const densite = telephone ? 0.45 : 1;
   const feuilles = [];
   const o3 = new THREE.Object3D();
   const touffe = (cx, cy, cz, rx, ry, rz, n, taille, teinte) => {
@@ -852,15 +856,16 @@ async function demarrer() {
   // Si l'animation descend durablement sous ~45 images par seconde, la finesse du rendu baisse d'un
   // cran (jusqu'à 1 pixel par pixel d'écran) : la fluidité passe avant la netteté. Le changement
   // est appliqué dès que l'image s'arrête (jamais pendant un mouvement : pas d'à-coup).
+  const PLANCHER = Math.min(dpr, 1.5); // jamais en dessous : l'image reste nette
   const qualite = { ratio: renderer.getPixelRatio(), cible: renderer.getPixelRatio(), cumul: 0, n: 0, change: 0 };
   function surveiller(intervalle, t) {
-    if (intervalle <= 0 || intervalle > 120 || qualite.cible <= 1) return;
+    if (intervalle <= 0 || intervalle > 120 || qualite.cible <= PLANCHER) return;
     qualite.cumul += intervalle;
     if (++qualite.n < 24) return;
     const moyenne = qualite.cumul / qualite.n;
     qualite.cumul = qualite.n = 0;
     if (moyenne > 22 && t - qualite.change > 1200) {
-      qualite.cible = Math.max(1, qualite.cible - 0.25);
+      qualite.cible = Math.max(PLANCHER, qualite.cible - 0.25);
       qualite.change = t;
     }
   }

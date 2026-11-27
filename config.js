@@ -15,10 +15,12 @@ window.SITE = {
   activite: "Couvreur zingueur",
   slogan: "Couverture, zinguerie et dépannage de toiture",
 
-  // Adresse du site (domaine définitif, sans « / » final). Sert aux liens canoniques et au sitemap.
-  siteUrl: "https://arveo.fr", // À CONFIRMER
+  // Adresse du site (sans « / » final). Sert aux liens canoniques, au sitemap et aux données Google.
+  // C'est l'adresse en ligne aujourd'hui. Dès qu'un nom de domaine est acheté (ex. couvreur-proximite34.fr),
+  // remplacez-la ici, relancez le build et ajoutez une redirection 301 de l'ancienne adresse vers la nouvelle.
+  siteUrl: "https://maquette-t8eb.vercel.app",
 
-  telephone: "06 51 44 23 83",
+  telephone: "06 66 61 50 17",
   email: "contact@arveo.fr", // À CONFIRMER
 
   adresse: {
@@ -60,6 +62,10 @@ window.SITE = {
     directeurPublication: "Steven Medou",
     hebergeur: "Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis",
   },
+
+  // Google Search Console : collez ici le code de la balise « google-site-verification »
+  // (méthode « Balise HTML », uniquement la valeur de content="..."), puis relancez le build.
+  googleVerification: "",
 
   // Liens externes. La fiche Google Business Profile est le levier n°1 du référencement local.
   liens: {

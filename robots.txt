@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /api/
 
-Sitemap: https://arveo.fr/sitemap.xml
+Sitemap: https://maquette-t8eb.vercel.app/sitemap.xml

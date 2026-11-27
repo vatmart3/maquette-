@@ -225,7 +225,7 @@ function imageOG(p) {
   const titre = p.og?.titre || p.title.replace(/\s*\|\s*Couvreur Proximité 34$/, "");
   if (!t || !OG_DISPO || p.noindex) return { url: `${BASE}/og.png`, alt: "Couvreur Proximité 34, couvreur à Frontignan, réparation, réfection et dépannage de toiture" };
   const nom = ogNom(p.path);
-  OG_A_GENERER.push({ nom, titre, type: p.og?.type || t[1], sousTitre: "Couvreur zingueur à Frontignan, dans tout l'Hérault", pied: new URL(BASE).host });
+  OG_A_GENERER.push({ nom, titre, type: p.og?.type || t[1], sousTitre: "Couvreur zingueur à Frontignan, dans tout l'Hérault", pied: `${S.telephone} · urgences 24 h/24` });
   return { url: `${BASE}/img/og/${nom}.png`, alt: `${titre}, Couvreur Proximité 34 couvreur zingueur à Frontignan` };
 }
 
@@ -253,8 +253,12 @@ function head(p) {
   const og = imageOG(p);
   const ld = p.jsonld.map((o) => `  <script type="application/ld+json">${JSON.stringify(o)}</script>`).join("\n");
   // Accueil : la photo de la maison est l'élément principal, chargée en priorité (taille adaptée à l'écran).
+  // Accueil : écran de chargement à la première visite de la session (très court), connexion
+  // anticipée au serveur de la 3D, image de la maison chargée en priorité.
   const scene = p.photoAccroche
     ? `
+  <script>try{if(!sessionStorage.getItem("cp34-vu")&&!matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("avec-chargement");sessionStorage.setItem("cp34-vu","1")}}catch(e){}</script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="preload" as="image" href="/img/maison-plain-pied-1200.webp" imagesrcset="${SRCSET_MAISON3D}" imagesizes="${SIZES_MAISON3D}" fetchpriority="high">
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>`
     : "";
@@ -266,7 +270,7 @@ function head(p) {
   <title>${esc(p.title)}</title>
   <meta name="description" content="${esc(p.description)}">
   ${p.noindex ? '<meta name="robots" content="noindex, follow">' : '<meta name="robots" content="index, follow, max-image-preview:large">'}
-  <link rel="canonical" href="${urlPage(p.path)}">
+  <link rel="canonical" href="${urlPage(p.path)}">${S.googleVerification ? `\n  <meta name="google-site-verification" content="${esc(S.googleVerification)}">` : ""}
   <meta name="theme-color" content="#243746">
   <meta name="geo.region" content="FR-34">
   <meta name="geo.placename" content="${esc(S.adresse.ville)}">
@@ -295,7 +299,9 @@ ${ld}
   <script src="/site.js?v=${VERSION["site.js"]}" defer></script>${statistiques()}
 </head>
 <body data-page="${p.id}"${p.sombre ? ' class="page-sombre"' : ""}>
-  <a class="evitement" href="#contenu">Aller au contenu</a>
+${p.photoAccroche ? `  <div class="chargement" aria-hidden="true"><img src="/img/logo-cp34-420.webp" width="140" height="64" alt=""><span class="chargement__barre"><span></span></span></div>
+  <script>(function(){var h=document.documentElement;if(!h.classList.contains("avec-chargement"))return;var t0=Date.now(),fini=false;function fin(){if(fini)return;fini=true;setTimeout(function(){h.classList.add("chargement-fini");setTimeout(function(){h.classList.remove("avec-chargement")},400)},Math.max(0,550-(Date.now()-t0)))}window.addEventListener("load",fin);document.addEventListener("arv:pret",fin);setTimeout(fin,1300)})();</script>
+` : ""}  <a class="evitement" href="#contenu">Aller au contenu</a>
 ${bandeauUrgence()}
 ${entete(p.id)}
   <main id="contenu">

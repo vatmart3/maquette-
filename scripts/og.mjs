@@ -14,7 +14,7 @@ const ICI = path.dirname(new URL(import.meta.url).pathname);
 const RACINE = path.resolve(ICI, "..");
 const SORTIE = path.join(RACINE, "img", "og");
 const CACHE = path.join(ICI, ".og-cache.json");
-const VERSION_GABARIT = "6";
+const VERSION_GABARIT = "8";
 
 const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
@@ -33,7 +33,7 @@ function lignes(texte, max) {
   return out;
 }
 
-function gabarit({ titre, sousTitre, type, pied = "arveo.fr" }) {
+function gabarit({ titre, sousTitre, type, pied = "06 66 61 50 17 · Frontignan, Hérault" }) {
   const marque = "data:image/png;base64," + fs.readFileSync(path.join(RACINE, "img", "logo-cp34.png")).toString("base64");
   const toit = fs.readFileSync(path.join(RACINE, "img", "toiture.svg"), "utf8").replace(/^<svg[^>]*>/, "").replace(/<\/svg>\s*$/, "");
   let taille = 66;

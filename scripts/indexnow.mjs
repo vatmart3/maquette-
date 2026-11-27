@@ -6,7 +6,7 @@
  *   node scripts/indexnow.mjs              → envoie toutes les URL du sitemap
  *   node scripts/indexnow.mjs /zone-intervention /couvreur/sete   → envoie seulement ces chemins
  *
- * À lancer APRÈS la mise en ligne sur le domaine définitif (arveo.fr), jamais sur une adresse
+ * À lancer APRÈS la mise en ligne sur le domaine définitif, jamais sur une adresse
  * *.vercel.app. La clé est le fichier <clé>.txt à la racine du site, qui doit être en ligne.
  */
 import fs from "node:fs";
