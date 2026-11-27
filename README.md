@@ -139,15 +139,13 @@ avec le blanc), blanc cassé `#F7F5F0`, gris clair `#E5E7EB`, anthracite `#1F293
 Manrope (titres), Inter (texte), DM Mono (données : téléphone, références). Logo CP 34 fourni par le
 client (`img/logo-cp34.png`, déclinaisons WebP pour le site).
 
-## Accueil : la maison en plein écran et la visite au défilement
+## Accueil : la maison en 3D et la visite au défilement
 
-L'accueil s'ouvre sur la photo de la maison en plein écran (`img/manoir-*.webp`, chargée en
-priorité), avec le titre posé dessus. La section reste à l'écran pendant le défilement :
-on avance à pied dans l'allée vers la maison, puis la vue se recadre sur les 5 interventions
-(couverture, charpente, zinguerie, fuites, démoussage), avec la fiche correspondante et un repère
-orange. Points de vue dans `ZONES_VISITE` (`scripts/build.mjs`, en pixels de la photo 2000 × 945).
-
-`immersion.js` (Three.js par import map, seulement avec une puce graphique) reconstruit la photo en
-relief : le sol est replacé en perspective à 1,60 m de hauteur, la maison à sa distance (≈ 12 m).
-La barre avant / après mélange la photo et sa version vieillie (`img/manoir-avant-*`, présentée
-comme une illustration). Sans puce graphique, la photo est simplement agrandie puis recadrée.
+L'accueil s'ouvre sur la maison en 3D (`3d/maison.glb`, compressé meshopt + textures WebP), vue
+de trois quarts à côté du titre ; l'image `img/maison-3d-*.webp` s'affiche en attendant (et reste
+seule sans puce graphique). La section reste à l'écran pendant le défilement : la caméra descend à
+hauteur d'homme et s'approche de la porte, puis va chercher les 5 interventions (points de vue
+dans `immersion.js`, noms des repères dans `ZONES_VISITE`, `scripts/build.mjs`). La barre avant /
+après coupe le rendu : à gauche, la même maison avant travaux, calculée dans le rendu (tuiles
+encrassées, mousse, tuiles cassées, coulures), présentée comme une illustration.
+Le modèle n'est texturé que de face : garder les points de vue devant ou de trois quarts.

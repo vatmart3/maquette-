@@ -118,8 +118,8 @@
   //   0 → 0,05 : accroche (photo en plein écran, titre) ;
   //   0,05 → 0,38 : on avance à pied vers la maison ;
   //   0,38 → 1 : la caméra va chercher les 5 interventions, une par portion égale.
-  // Avec une puce graphique, immersion.js rend la photo en relief (événement arv:avance) ;
-  // sinon, la photo est simplement agrandie et recadrée ici.
+  // Avec une puce graphique, immersion.js affiche la maison en 3D (événement arv:avance) ;
+  // sinon, l'image de la maison reste affichée et seules les fiches changent.
 
   var visite = document.querySelector("[data-visite]");
   if (visite) {
@@ -127,7 +127,6 @@
     var reperes = visite.querySelectorAll(".visite__reperes button");
     var figure = visite.querySelector("[data-avant-apres]");
     var curseurAA = visite.querySelector(".avant-apres__curseur");
-    var photos = visite.querySelectorAll(".avant-apres__cadre img");
     var collant = visite.querySelector(".immersion__collant");
     var n = fiches.length;
     var DEBUT_MARCHE = 0.05, FIN_MARCHE = 0.38, DEBUT_ZONES = 0.42;
@@ -136,19 +135,6 @@
     var zoneDe = function (p) {
       if (p < DEBUT_ZONES) return -1;
       return Math.min(n - 1, Math.floor(((p - DEBUT_ZONES) / (1 - DEBUT_ZONES)) * n));
-    };
-
-    // Secours sans 3D : agrandissement de la photo (marche) puis recadrage sur la zone
-    var secours = function (p, k) {
-      if (figure && figure.classList.contains("est-3d")) return;
-      var marche = Math.min(1, Math.max(0, (p - DEBUT_MARCHE) / (FIN_MARCHE - DEBUT_MARCHE)));
-      var t = "scale(" + (1 + 0.7 * marche).toFixed(3) + ")", o = "50% 64%";
-      if (k >= 0) {
-        var v = (reperes[k].getAttribute("data-vue") || "").split(",").map(Number);
-        o = ((v[0] / 2000) * 100).toFixed(1) + "% " + ((v[1] / 945) * 100).toFixed(1) + "%";
-        t = "scale(" + (1.5 * v[2]).toFixed(2) + ")";
-      }
-      photos.forEach(function (img) { img.style.transformOrigin = o; img.style.transform = t; });
     };
 
     var majFiches = function (k) {
@@ -186,7 +172,6 @@
       majPhase(p);
       var k = zoneDe(p);
       majFiches(k);
-      secours(p, k);
       document.dispatchEvent(new CustomEvent("arv:avance", { detail: { p: p, zone: k, marche: Math.min(1, Math.max(0, (p - DEBUT_MARCHE) / (FIN_MARCHE - DEBUT_MARCHE))) } }));
     };
     var attente = false;
@@ -207,7 +192,7 @@
       });
     });
 
-    // Relief 3D : seulement avec une vraie puce graphique (sans elle, rendu logiciel trop lent).
+    // Maison 3D : seulement avec une vraie puce graphique (sans elle, rendu logiciel trop lent).
     var source3d = figure && figure.getAttribute("data-immersion");
     var puce = function () {
       try {
@@ -225,54 +210,6 @@
       var ensuite = function () { (window.requestIdleCallback || setTimeout)(charger, { timeout: 800 }); };
       if (document.readyState === "complete") ensuite();
       else window.addEventListener("load", ensuite, { once: true });
-    }
-  }
-
-  /* ---------- Accueil : la maison en 3D, sous tous les angles ---------- */
-  // La section reste à l'écran ; le défilement donne un parcours de 0 à 1 qui fait tourner la
-  // maison (maison3d.js, événement arv:maison3d) et allume les 3 étapes du texte une à une.
-  // Sans puce graphique, la photo de la maison reste affichée et seules les étapes changent.
-
-  var maison3d = document.querySelector("[data-maison3d]");
-  if (maison3d) {
-    var etapes3d = maison3d.querySelectorAll(".maison3d__etapes li");
-    var attente3d = false;
-    var parcours3d = function () {
-      var r = maison3d.getBoundingClientRect();
-      var course = Math.max(1, r.height - window.innerHeight);
-      var p = Math.min(1, Math.max(0, -r.top / course));
-      var k = Math.min(etapes3d.length - 1, Math.floor(p * etapes3d.length));
-      etapes3d.forEach(function (li, i) { li.classList.toggle("est-active", i === k); });
-      document.dispatchEvent(new CustomEvent("arv:maison3d", { detail: { parcours: p } }));
-    };
-    window.addEventListener("scroll", function () {
-      if (attente3d) return;
-      attente3d = true;
-      requestAnimationFrame(function () { attente3d = false; parcours3d(); });
-    }, { passive: true });
-    document.addEventListener("arv:maison3d-pret", parcours3d);
-    parcours3d();
-
-    var source3dMaison = maison3d.getAttribute("data-script");
-    var vraiePuce = function () {
-      try {
-        var gl = document.createElement("canvas").getContext("webgl");
-        if (!gl) return false;
-        var ext = gl.getExtension("WEBGL_debug_renderer_info");
-        var nom = String(gl.getParameter(ext ? ext.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
-        var perte = gl.getExtension("WEBGL_lose_context");
-        if (perte) perte.loseContext();
-        return !/swiftshader|llvmpipe|softpipe|software/i.test(nom);
-      } catch (e) { return false; }
-    };
-    if (source3dMaison && HTMLScriptElement.supports && HTMLScriptElement.supports("importmap") && "IntersectionObserver" in window && vraiePuce()) {
-      // chargé seulement quand la section approche : rien de plus à télécharger en haut de page
-      var guetteur = new IntersectionObserver(function (entrees) {
-        if (!entrees.some(function (e) { return e.isIntersecting; })) return;
-        guetteur.disconnect();
-        try { new Function("u", "return import(u)")(source3dMaison).catch(function () {}); } catch (e) {}
-      }, { rootMargin: "800px 0px" });
-      guetteur.observe(maison3d);
     }
   }
 

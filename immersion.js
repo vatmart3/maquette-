@@ -1,15 +1,18 @@
 /*
- * Couvreur Proximité 34 — la photo de la maison en relief.
- * La photo (2000 × 945) est reconstruite en 3D : chaque pixel est replacé à sa vraie distance.
- * Sol (pelouse, allée, marches) : plan horizontal vu à 1,60 m de hauteur ; maison, arbres et ciel :
- * à la distance du pied de la maison (≈ 12 m). Au premier écran, la caméra est exactement à la
- * place du photographe : l'image est la photo. En défilant, la caméra avance dans l'allée (marche,
- * léger balancement des pas), la pelouse passe sous elle et la maison grandit. Ensuite, la vue se
- * recadre sur chaque intervention. La barre avant / après mélange la photo d'origine et sa version
- * vieillie dans le même rendu.
+ * Couvreur Proximité 34 — la maison en 3D de l'accueil (/3d/maison.glb).
+ * À l'arrivée, la maison est vue de trois quarts, à côté du titre. En défilant, la caméra descend
+ * à hauteur d'homme et s'approche de la porte, comme à pied ; puis elle va chercher les 5
+ * interventions (couverture, faîtage, gouttière, solin de cheminée, toit à démousser), signalées
+ * par un repère orange. La barre avant / après coupe l'image : à gauche, la même maison avant
+ * travaux, calculée dans le rendu (tuiles encrassées, mousse, lichens, tuiles cassées, coulures
+ * sous la gouttière) ; à droite, la maison telle qu'elle est.
+ * Le modèle n'est texturé que de face : la caméra reste devant la maison ou de trois quarts.
  * Three.js 0.169 par import map ; chargé par site.js seulement avec une vraie puce graphique.
  */
 import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 
 const fig = document.querySelector("[data-avant-apres]");
 const cadre = fig && fig.querySelector(".avant-apres__cadre");
@@ -17,149 +20,142 @@ const curseur = fig && fig.querySelector(".avant-apres__curseur");
 const visite = document.querySelector("[data-visite]");
 const reperes = [...document.querySelectorAll(".visite__reperes button")];
 const reduit = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const V3 = (x, y, z) => new THREE.Vector3(x, y, z);
 
-/* --- Géométrie de la photo --- */
-const LP = 2000, HP = 945;          // taille de la photo
-const F = 1013;                     // focale en pixels (champ vertical ≈ 50°)
-const CX = LP / 2, CY = HP / 2;     // centre optique
-const OEIL = 1.6;                   // hauteur des yeux (m)
-const PIED = 606;                   // ligne du pied de la maison sur la photo
-const D_MAISON = (OEIL * F) / (PIED - CY); // ≈ 12 m
-const MARCHE = 5.2;                 // distance parcourue à pied (m)
+/* --- Points de vue (unités du modèle : la maison fait 2,6 de large, mur de façade en z ≈ 0,9) --- */
+// az : angle autour de la maison (0 = face), el : hauteur de vue, d : distance
+const ACCROCHE = { cible: V3(0, 1.25, 0.2), az: 0.62, el: 0.3, d: 9.2 };
+const PORTE = { cible: V3(0, 1.05, 0.9), az: 0.08, el: 0.0, d: 4.6 }; // fin de la marche, à hauteur d'homme
+const ZONES = [
+  { cible: V3(0.1, 2.05, 0.45), az: 0.32, el: 0.5, d: 6.6, point: V3(0.3, 2.13, 0.5) },       // couverture
+  { cible: V3(0.55, 2.2, 0.25), az: 0.72, el: 0.42, d: 5.6, point: V3(0.66, 2.17, 0.36) },    // faîtage et arêtiers
+  { cible: V3(-0.95, 1.6, 0.95), az: -0.16, el: 0.14, d: 4.8, point: V3(-1.25, 1.86, 1.0) },   // gouttière et descente
+  { cible: V3(0.02, 2.4, 0.1), az: 0.22, el: 0.42, d: 4.4, point: V3(0.03, 2.42, 0.16) },     // solin de cheminée
+  { cible: V3(0.75, 1.98, 0.55), az: 0.5, el: 0.55, d: 5.4, point: V3(0.9, 2.02, 0.56) },     // toit à démousser
+];
 
 if (cadre) demarrer().catch(() => {});
 
 async function demarrer() {
-  const photo = cadre.querySelector(".immersion__photo");
-  // la plus grande version dès que l'écran est assez grand : l'image reste nette quand on zoome
-  const largeurSource = (window.devicePixelRatio || 1) * cadre.clientWidth > 900 ? "2000" : "1400";
-  const charger = (url) =>
-    new Promise((ok, ko) => {
-      const i = new Image();
-      i.decoding = "async";
-      i.onload = () => ok(i);
-      i.onerror = ko;
-      i.src = url;
-    });
-  const [imgApres, imgAvant] = await Promise.all([
-    charger(`/img/manoir-${largeurSource}.webp`),
-    charger(`/img/manoir-avant-${largeurSource}.webp`),
-  ]);
+  const url = fig.getAttribute("data-modele");
+  const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(url);
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
-  renderer.outputColorSpace = THREE.LinearSRGBColorSpace; // couleurs de la photo transmises telles quelles
-  const toileGL = renderer.domElement;
-  toileGL.className = "avant-apres__3d";
-  toileGL.setAttribute("aria-hidden", "true");
-  cadre.insertBefore(toileGL, cadre.firstChild);
+  renderer.setClearColor(0x000000, 0);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.NeutralToneMapping;
+  renderer.toneMappingExposure = 0.92;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.shadowMap.autoUpdate = false; // maison immobile : ombre calculée une fois
+  renderer.autoClear = false;
+  const toile = renderer.domElement;
+  toile.className = "avant-apres__3d";
+  toile.setAttribute("aria-hidden", "true");
+  cadre.insertBefore(toile, cadre.firstChild);
 
-  const texture = (img) => {
-    const t = new THREE.Texture(img);
-    t.colorSpace = THREE.NoColorSpace;
-    t.minFilter = THREE.LinearMipmapLinearFilter;
-    t.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
-    t.needsUpdate = true;
-    return t;
-  };
-
-  /* --- La photo en relief : une grille dont chaque point est replacé à sa distance --- */
-  const NX = 200, NY = 120;
-  const pos = new Float32Array((NX + 1) * (NY + 1) * 3);
-  const uv = new Float32Array((NX + 1) * (NY + 1) * 2);
-  // lignes de la grille plus serrées près du pied de la maison et en bas (là où la profondeur change vite)
-  const ligne = (j) => {
-    const t = j / NY;
-    return t < 0.6 ? (t / 0.6) * PIED : PIED + ((t - 0.6) / 0.4) ** 1.25 * (HP - PIED);
-  };
-  let k = 0;
-  for (let j = 0; j <= NY; j++) {
-    const py = ligne(j);
-    const d = py <= PIED ? D_MAISON : (OEIL * F) / (py - CY); // distance devant la caméra
-    for (let i = 0; i <= NX; i++) {
-      const px = (i / NX) * LP;
-      pos[k * 3] = ((px - CX) / F) * d;
-      pos[k * 3 + 1] = OEIL - ((py - CY) / F) * d;
-      pos[k * 3 + 2] = -d;
-      uv[k * 2] = px / LP;
-      uv[k * 2 + 1] = 1 - py / HP;
-      k++;
-    }
-  }
-  const index = [];
-  for (let j = 0; j < NY; j++)
-    for (let i = 0; i < NX; i++) {
-      const a = j * (NX + 1) + i, b = a + 1, c = a + NX + 1, e = c + 1;
-      index.push(a, c, b, b, c, e);
-    }
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-  geo.setAttribute("uv", new THREE.BufferAttribute(uv, 2));
-  geo.setIndex(index);
-
-  const uniforms = {
-    apres: { value: texture(imgApres) },
-    avant: { value: texture(imgAvant) },
-    coupe: { value: -1 }, // abscisse de la barre en pixels de l'écran (gauche = avant)
-  };
-  const mat = new THREE.ShaderMaterial({
-    uniforms,
-    side: THREE.DoubleSide,
-    vertexShader: "varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }",
-    fragmentShader:
-      "uniform sampler2D apres; uniform sampler2D avant; uniform float coupe; varying vec2 vUv; void main(){ vec4 c = gl_FragCoord.x < coupe ? texture2D(avant, vUv) : texture2D(apres, vUv); gl_FragColor = vec4(c.rgb, 1.0); }",
-  });
   const scene = new THREE.Scene();
-  scene.add(new THREE.Mesh(geo, mat));
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  scene.environmentIntensity = 0.55;
+  pmrem.dispose();
+  const soleil = new THREE.DirectionalLight(0xfff1dc, 1.7);
+  soleil.position.set(-4, 12, 7);
+  soleil.castShadow = true;
+  soleil.shadow.mapSize.set(2048, 2048);
+  Object.assign(soleil.shadow.camera, { left: -4, right: 4, top: 4, bottom: -4, near: 1, far: 30 });
+  soleil.shadow.bias = -0.0005;
+  soleil.shadow.normalBias = 0.02;
+  scene.add(soleil, new THREE.HemisphereLight(0xf7f5f0, 0xb9a58c, 0.35));
 
-  // Caméra : la projection est calculée à la main pour viser un rectangle précis de la façade
-  // (plan de la maison, à D_MAISON du point de départ). Pendant la marche, l'angle de vue reste
-  // celui de l'écran : la maison grandit à mesure qu'on approche. Pendant la visite, la caméra
-  // cadre la zone choisie (même en bord de maison), sans jamais sortir de la photo.
-  const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
-  const PRES = 0.1, LOIN = 100;
-  const enMetres = (px, py) => [((px - CX) / F) * D_MAISON, OEIL - ((py - CY) / F) * D_MAISON];
-  const BORD = { x0: enMetres(0, 0)[0], x1: enMetres(LP, 0)[0], y1: enMetres(0, 0)[1], y0: enMetres(0, HP * 0.9)[1] };
+  // Le modèle : centré, posé au sol, ramené à 4 unités dans sa plus grande dimension au sol.
+  const maison = gltf.scene;
+  const boite = new THREE.Box3().setFromObject(maison);
+  const taille = boite.getSize(V3(0, 0, 0));
+  maison.scale.setScalar(4 / Math.max(taille.x, taille.z));
+  boite.setFromObject(maison);
+  const centre = boite.getCenter(V3(0, 0, 0));
+  maison.position.sub(V3(centre.x, boite.min.y, centre.z));
+  scene.add(maison);
 
+  /* --- État « avant », calculé dans le rendu à partir de la position de chaque point --- */
+  const VIEILLIR = `
+    float h3(vec3 p){ p = fract(p * 0.3183099 + 0.1); p *= 17.0; return fract(p.x * p.y * p.z * (p.x + p.y + p.z)); }
+    float bruit(vec3 x){ vec3 i = floor(x); vec3 f = fract(x); f = f * f * (3.0 - 2.0 * f);
+      return mix(mix(mix(h3(i), h3(i + vec3(1,0,0)), f.x), mix(h3(i + vec3(0,1,0)), h3(i + vec3(1,1,0)), f.x), f.y),
+                 mix(mix(h3(i + vec3(0,0,1)), h3(i + vec3(1,0,1)), f.x), mix(h3(i + vec3(0,1,1)), h3(i + vec3(1,1,1)), f.x), f.y), f.z); }
+    float fbm(vec3 p){ return 0.5 * bruit(p) + 0.25 * bruit(p * 2.03) + 0.125 * bruit(p * 4.1) + 0.0625 * bruit(p * 8.3); }
+  `;
+  maison.traverse((o) => {
+    if (!o.isMesh) return;
+    o.castShadow = true;
+    o.receiveShadow = true;
+    const m = o.material;
+    if (m.map) m.map.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+    const v = m.clone();
+    v.onBeforeCompile = (sh) => {
+      sh.vertexShader = sh.vertexShader
+        .replace("#include <common>", "#include <common>\nvarying vec3 vPosM;")
+        .replace("#include <project_vertex>", "#include <project_vertex>\nvPosM = (modelMatrix * vec4(transformed, 1.0)).xyz;");
+      sh.fragmentShader = sh.fragmentShader
+        .replace("#include <common>", "#include <common>\nvarying vec3 vPosM;\n" + VIEILLIR)
+        .replace(
+          "#include <map_fragment>",
+          `#include <map_fragment>
+          {
+            vec3 c = diffuseColor.rgb; vec3 P = vPosM;
+            // tuiles : terre cuite (couleur), sur le toit ou l'auvent de la porte
+            float terre = smoothstep(1.35, 1.8, c.r / max(c.g, 0.02)) * smoothstep(1.6, 2.4, c.r / max(c.b, 0.02));
+            float toit = terre * max(step(1.72, P.y), step(0.92, P.y) * step(1.05, P.z));
+            c = mix(c, c * vec3(0.6, 0.56, 0.48) + 0.008, 0.65 * toit);
+            float mousse = smoothstep(0.5, 0.66, fbm(P * 7.0 + 2.0));
+            vec3 vert = mix(vec3(0.03, 0.055, 0.01), vec3(0.085, 0.115, 0.03), bruit(P * 70.0));
+            c = mix(c, vert, mousse * 0.88 * toit);
+            c = mix(c, vec3(0.42, 0.38, 0.18), step(0.94, bruit(P * 95.0)) * 0.75 * toit);
+            float casse = smoothstep(0.83, 0.87, bruit(P * 13.0 + vec3(3.1, 7.7, 1.3)));
+            c = mix(c, vec3(0.008), casse * toit);
+            // enduit : coulures sous la gouttière, voile gris
+            float blanc = smoothstep(0.3, 0.45, min(c.r, min(c.g, c.b))) * (1.0 - toit) * step(0.12, P.y) * step(P.y, 1.84);
+            float u = (P.x + P.z) * 26.0;
+            float trace = smoothstep(0.5, 0.85, bruit(vec3(u, 0.0, 0.0)));
+            float longueur = 0.35 + 0.9 * bruit(vec3(u, 5.0, 0.0));
+            float coulure = trace * clamp(1.0 - (1.86 - P.y) / longueur, 0.0, 1.0);
+            float voile = 0.28 * smoothstep(1.45, 1.86, P.y) + 0.1 * fbm(P * 3.0);
+            c = mix(c, c * vec3(0.5, 0.54, 0.44), clamp(coulure * 0.85 + voile, 0.0, 0.85) * blanc);
+            diffuseColor.rgb = c;
+          }`
+        );
+    };
+    v.customProgramCacheKey = () => "avant";
+    o.userData.apres = m;
+    o.userData.avant = v;
+  });
+  const poser = (etat) => maison.traverse((o) => { if (o.isMesh) o.material = o.userData[etat]; });
+
+  // ombre au sol (le sol lui-même est invisible)
+  const sol = new THREE.Mesh(new THREE.CircleGeometry(7, 48), new THREE.ShadowMaterial({ opacity: 0.2 }));
+  sol.rotation.x = -Math.PI / 2;
+  sol.receiveShadow = true;
+  scene.add(sol);
+
+  /* --- Caméra --- */
+  const camera = new THREE.PerspectiveCamera(32, 1, 0.05, 60);
   let L = 1, H = 1;
-  // demi-angles de vue (tangentes) au départ : plus grand cadrage au format de l'écran dans la photo
-  function anglesBase() {
-    const a = L / H;
-    let w = LP, h = LP / a;
-    if (h > HP) { h = HP; w = HP * a; }
-    w *= 0.97; h *= 0.97; // marge pour le balancement de la marche
-    const yc = Math.min(HP - h / 2, Math.max(h / 2, CY + 20));
-    return { gx: -w / 2 / F, dx: w / 2 / F, ha: (CY - (yc - h / 2)) / F, ba: (CY - (yc + h / 2)) / F };
-  }
-  // rectangle de façade vu depuis la position cam avec les angles de départ
-  function rectMarche(cam) {
-    const g = anglesBase(), dp = D_MAISON + cam.z;
-    return { x0: cam.x + g.gx * dp, x1: cam.x + g.dx * dp, y0: cam.y + g.ba * dp, y1: cam.y + g.ha * dp };
-  }
-  const FIN = new THREE.Vector3(0, OEIL, -MARCHE);
-  function rectZone(z) {
-    const r = rectMarche(FIN);
-    if (z < 0) return r;
-    const v = reperes[z].getAttribute("data-vue").split(",").map(Number);
-    const [tx, ty] = enMetres(v[0], v[1]);
-    const k = v[2] / 1.5;
-    let w = (r.x1 - r.x0) / k, h = (r.y1 - r.y0) / k;
-    w = Math.min(w, BORD.x1 - BORD.x0); h = Math.min(h, BORD.y1 - BORD.y0);
-    // la zone visée se place à droite du panneau (ordinateur) ou au-dessus du panneau (téléphone)
-    const large = L >= 860, fx = large ? 0.64 : 0.5, fy = large ? 0.5 : H < 600 ? 0.24 : 0.34;
-    const x0 = Math.min(BORD.x1 - w, Math.max(BORD.x0, tx - w * fx));
-    const y0 = Math.min(BORD.y1 - h, Math.max(BORD.y0, ty + h * fy - h));
-    return { x0, x1: x0 + w, y0, y1: y0 + h };
-  }
-  function viser(rect) {
-    const c = camera.position, dp = D_MAISON + c.z;
-    const f = PRES / dp;
-    camera.projectionMatrix.makePerspective((rect.x0 - c.x) * f, (rect.x1 - c.x) * f, (rect.y1 - c.y) * f, (rect.y0 - c.y) * f, PRES, LOIN);
-    camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
-  }
+  const large = () => L >= 860;
+  // décalage de l'image : maison à droite du titre (ordinateur) ou sous le titre (téléphone) à
+  // l'arrivée ; au-dessus du panneau des interventions pendant la visite
+  const decalage = (phase) =>
+    phase === "accroche" ? (large() ? [0.21, 0.03] : [0, 0.14]) : phase === "visite" ? (large() ? [0.17, 0] : [0, -0.2]) : [0, 0];
+  const pose = (v) => {
+    const k = large() ? 1 : 1.25; // téléphone en hauteur : un peu plus de recul
+    return {
+      cible: v.cible.clone(),
+      pos: v.cible.clone().add(V3(Math.sin(v.az) * Math.cos(v.el), Math.sin(v.el), Math.cos(v.az) * Math.cos(v.el)).multiplyScalar(v.d * k)),
+    };
+  };
+  const etat = { marche: 0, zone: -1, phase: "accroche", pos: null, cible: null, ox: 0, oy: 0 };
 
-  /* --- État --- */
-  const etat = { marche: 0, zone: -1, rect: null, cible: null };
   const repere = document.createElement("span");
   repere.className = "repere-3d";
   repere.setAttribute("aria-hidden", "true");
@@ -167,15 +163,26 @@ async function demarrer() {
   cadre.appendChild(repere);
   const repereNom = repere.querySelector(".repere-3d__nom");
 
+  function but() {
+    if (etat.zone >= 0) return pose(ZONES[etat.zone]);
+    const a = pose(ACCROCHE), b = pose(PORTE);
+    const t = etat.marche * etat.marche * (3 - 2 * etat.marche);
+    return { cible: a.cible.lerp(b.cible, t), pos: a.pos.lerp(b.pos, t) };
+  }
+
   function redimensionner() {
     L = Math.max(1, cadre.clientWidth);
     H = Math.max(1, cadre.clientHeight);
     renderer.setSize(L, H, false);
+    camera.aspect = L / H;
+    camera.fov = large() ? 32 : 40;
+    camera.updateProjectionMatrix();
     relancer();
   }
 
   document.addEventListener("arv:avance", (e) => {
     etat.marche = e.detail.marche;
+    etat.phase = visite ? visite.getAttribute("data-phase") || "accroche" : "accroche";
     if (e.detail.zone !== etat.zone) {
       etat.zone = e.detail.zone;
       const r = reperes[etat.zone];
@@ -186,54 +193,62 @@ async function demarrer() {
   });
   if (curseur) curseur.addEventListener("input", relancer);
 
-  /* --- Boucle de rendu (seulement quand quelque chose bouge) --- */
-  let enCours = false, derniere = 0, lisse = 0;
+  /* --- Rendu à la demande --- */
+  let enCours = false, derniere = 0, ombre = false;
   function relancer() {
     if (!enCours) { enCours = true; derniere = 0; requestAnimationFrame(boucle); }
   }
-  const pt = new THREE.Vector3();
+  const pt = V3(0, 0, 0);
   function boucle(t) {
     const dt = derniere ? Math.min(0.05, (t - derniere) / 1000) : 0.016;
     derniere = t;
-    const a = reduit ? 1 : 1 - Math.exp(-dt * 5);
-    // marche : la caméra suit le défilement, avec le balancement des pas
-    lisse += (etat.marche - lisse) * (reduit ? 1 : 1 - Math.exp(-dt * 9));
-    const pas = lisse * 7; // 7 pas sur le parcours
-    const bal = Math.sin(lisse * Math.PI); // balancement nul à l'arrêt, au départ et à l'arrivée
-    camera.position.set(Math.sin(pas * Math.PI) * 0.035 * bal, OEIL + Math.abs(Math.sin(pas * Math.PI)) * 0.03 * bal, -lisse * MARCHE);
+    const b = but();
+    if (!etat.pos) { etat.pos = b.pos.clone(); etat.cible = b.cible.clone(); }
+    // marche : suit le défilement de près ; visite : glisse en douceur d'un point à l'autre
+    const vit = reduit ? 1 : 1 - Math.exp(-dt * (etat.zone < 0 ? 8 : 3.2));
+    etat.pos.lerp(b.pos, vit);
+    etat.cible.lerp(b.cible, vit);
+    const [ox, oy] = decalage(etat.phase);
+    etat.ox += (ox - etat.ox) * vit;
+    etat.oy += (oy - etat.oy) * vit;
+    camera.position.copy(etat.pos);
+    // balancement des pas pendant la marche
+    if (etat.zone < 0 && !reduit) camera.position.y += Math.abs(Math.sin(etat.marche * 8 * Math.PI)) * 0.02 * Math.sin(etat.marche * Math.PI);
+    camera.lookAt(etat.cible);
+    camera.setViewOffset(L, H, -etat.ox * L, -etat.oy * H, L, H);
     camera.updateMatrixWorld();
-    // cadrage : pendant la marche, il suit la caméra ; pendant la visite, il glisse vers la zone
-    const b = etat.zone < 0 ? rectMarche(camera.position) : rectZone(etat.zone);
-    if (!etat.rect) etat.rect = { ...b };
-    const c = etat.rect;
-    const ac = etat.zone < 0 && !reduit ? 1 - Math.exp(-dt * 14) : a; // marche : suit de près ; visite : glisse
-    for (const k of ["x0", "x1", "y0", "y1"]) c[k] += (b[k] - c[k]) * ac;
-    viser(c);
-    // avant / après : seulement pendant la visite
-    const enVisite = visite && visite.getAttribute("data-phase") === "visite";
-    uniforms.coupe.value = enVisite ? (L * renderer.getPixelRatio() * Number(curseur ? curseur.value : 50)) / 100 : -1;
-    renderer.render(scene, camera);
 
-    // étiquette sur la zone, une fois le cadrage presque arrivé
-    const ecart = (Math.abs(b.x0 - c.x0) + Math.abs(b.x1 - c.x1) + Math.abs(b.y0 - c.y0) + Math.abs(b.y1 - c.y1)) * 40;
-    const r = reperes[etat.zone];
-    if (r && enVisite) {
-      const p = r.getAttribute("data-point").split(",").map(Number);
-      pt.set(((p[0] - CX) / F) * D_MAISON, OEIL - ((p[1] - CY) / F) * D_MAISON, -D_MAISON).project(camera);
+    if (!ombre) { renderer.shadowMap.needsUpdate = true; ombre = true; }
+    renderer.setViewport(0, 0, L, H);
+    renderer.setScissorTest(false);
+    renderer.clear();
+    const enVisite = etat.phase === "visite";
+    const coupe = enVisite ? Math.round((L * Number(curseur ? curseur.value : 50)) / 100) : 0;
+    renderer.setScissorTest(true);
+    if (coupe > 0) { poser("avant"); renderer.setScissor(0, 0, coupe, H); renderer.render(scene, camera); }
+    if (coupe < L) { poser("apres"); renderer.setScissor(coupe, 0, L - coupe, H); renderer.render(scene, camera); }
+    renderer.setScissorTest(false);
+
+    const ecart = etat.pos.distanceTo(b.pos) + etat.cible.distanceTo(b.cible) + Math.abs(ox - etat.ox) + Math.abs(oy - etat.oy);
+    const z = ZONES[etat.zone];
+    if (z && enVisite) {
+      pt.copy(z.point).project(camera);
       repere.style.transform = `translate(${((pt.x * 0.5 + 0.5) * L).toFixed(1)}px, ${((-pt.y * 0.5 + 0.5) * H).toFixed(1)}px)`;
-      repere.classList.toggle("est-visible", ecart < 40);
+      repere.classList.toggle("est-visible", ecart < 0.08);
     } else repere.classList.remove("est-visible");
 
-    const bouge = ecart > 0.3 || Math.abs(etat.marche - lisse) > 0.0005;
-    if (bouge) requestAnimationFrame(boucle);
-    else { enCours = false; if (r && enVisite) repere.classList.add("est-visible"); }
+    if (ecart > 0.0008) requestAnimationFrame(boucle);
+    else { enCours = false; if (z && enVisite) repere.classList.add("est-visible"); }
   }
 
   if ("ResizeObserver" in window) new ResizeObserver(redimensionner).observe(cadre);
   window.addEventListener("resize", redimensionner);
   redimensionner();
+  // les shaders (dont celui de l'état « avant ») sont compilés avant la première image
+  poser("avant");
+  await renderer.compileAsync(scene, camera).catch(() => {});
+  poser("apres");
   fig.classList.add("est-3d");
-  // la photo d'origine s'efface : on enlève l'agrandissement de secours qu'elle a pu recevoir
-  cadre.querySelectorAll("img").forEach((img) => { img.style.transform = ""; });
   document.dispatchEvent(new CustomEvent("arv:pret"));
+  relancer();
 }

@@ -381,16 +381,19 @@ main { position: relative; z-index: 1; }
 
 /* La section reste à l'écran pendant tout le défilement : accroche, marche vers la maison, puis
    les 5 interventions. Sa hauteur fixe la longueur du parcours. */
-.immersion { position: relative; height: 1000svh; background: #c9d6e2; }
+.immersion { position: relative; height: 1000svh; background: var(--casse); }
 .immersion__collant { position: sticky; top: var(--entete); height: calc(100svh - var(--entete)); overflow: hidden; }
 
 .immersion__scene { position: absolute; inset: 0; margin: 0; }
-.immersion__scene .avant-apres__cadre { position: absolute; inset: 0; overflow: hidden; background: #c9d6e2; touch-action: pan-y; }
-.avant-apres__cadre img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; transform-origin: 50% 64%; will-change: transform; }
-.avant-apres__avant { position: absolute; inset: 0; clip-path: inset(0 calc(100% - var(--pos)) 0 0); }
+.immersion__scene .avant-apres__cadre { position: absolute; inset: 0; overflow: hidden; touch-action: pan-y; }
+/* image de la maison (affichée tout de suite, puis remplacée par la 3D) : à droite du titre */
+.immersion__photo { position: absolute; top: 6%; right: max(var(--marge), calc((100% - var(--largeur)) / 2)); width: min(54%, 760px); height: 88%; object-fit: contain; object-position: 50% 50%; mix-blend-mode: multiply; transition: opacity 0.6s ease; }
 .avant-apres__3d { display: none; }
-.est-3d .avant-apres__3d { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
-.est-3d .avant-apres__cadre img, .est-3d .avant-apres__avant { visibility: hidden; }
+.est-3d .avant-apres__3d { position: absolute; inset: 0; display: block; width: 100%; height: 100%; animation: apparition-3d 0.7s ease; }
+@keyframes apparition-3d { from { opacity: 0; } }
+.est-3d .immersion__photo { opacity: 0; }
+/* sans 3D, pas de comparaison avant / après */
+.avant-apres:not(.est-3d) .avant-apres__barre, .avant-apres:not(.est-3d) .avant-apres__etiquette, .avant-apres:not(.est-3d) .avant-apres__curseur, .avant-apres:not(.est-3d) figcaption { display: none; }
 
 /* comparaison avant / après : seulement pendant la visite */
 .avant-apres__barre { position: absolute; top: 0; bottom: 0; left: var(--pos); width: 3px; margin-left: -1.5px; background: #fff; box-shadow: 0 0 12px rgb(0 0 0 / 0.35); pointer-events: none; }
@@ -405,7 +408,6 @@ main { position: relative; z-index: 1; }
 .immersion__scene figcaption { position: absolute; right: 14px; bottom: 12px; padding: 4px 10px; border-radius: 6px; background: rgb(31 41 51 / 0.66); color: rgb(255 255 255 / 0.9); font-size: 0.76rem; }
 .immersion .avant-apres__barre, .immersion .avant-apres__etiquette, .immersion__scene figcaption { opacity: 0; transition: opacity 0.4s ease; }
 .immersion:not([data-phase="visite"]) .avant-apres__curseur { pointer-events: none; }
-.immersion:not([data-phase="visite"]) .avant-apres__avant { clip-path: inset(0 100% 0 0); }
 .immersion[data-phase="visite"] .avant-apres__barre, .immersion[data-phase="visite"] .avant-apres__etiquette, .immersion[data-phase="visite"] figcaption { opacity: 1; }
 
 /* zone signalée : point orange pulsant et étiquette */
@@ -418,8 +420,7 @@ main { position: relative; z-index: 1; }
 @media (prefers-reduced-motion: reduce) { .repere-3d__point { animation: none; } .avant-apres__cadre img { transition: none; } }
 
 /* accroche posée sur la photo, comme une couverture de magazine ; s'efface quand on avance */
-.immersion__accroche { position: absolute; inset: 0; z-index: 1; display: flex; flex-direction: column; justify-content: center; padding-bottom: 120px; pointer-events: none; transition: opacity 0.35s ease, transform 0.35s ease; }
-.immersion__accroche::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgb(247 245 240 / 0.94) 0%, rgb(247 245 240 / 0.78) 30%, rgb(247 245 240 / 0.15) 52%, rgb(247 245 240 / 0) 62%); }
+.immersion__accroche { position: absolute; inset: 0; z-index: 1; display: flex; flex-direction: column; justify-content: center; padding-bottom: 40px; pointer-events: none; transition: opacity 0.35s ease, transform 0.35s ease; }
 .immersion__accroche > * { position: relative; }
 .immersion__accroche .accroche__texte { max-width: 37rem; pointer-events: auto; }
 .immersion__accroche h1 { color: var(--anthracite); }
@@ -427,17 +428,12 @@ main { position: relative; z-index: 1; }
 .immersion__accroche .chapeau { margin: 20px 0 28px; color: var(--texte); max-width: 33em; }
 .immersion[data-phase]:not([data-phase="accroche"]) .immersion__accroche { opacity: 0; transform: translateY(-24px); }
 .immersion[data-phase]:not([data-phase="accroche"]) .immersion__accroche * { pointer-events: none !important; }
-.immersion__cartes { position: absolute !important; left: 0; right: 0; bottom: 22px; display: flex; justify-content: space-between; gap: 20px; margin-inline: auto; }
-.immersion__carte { display: grid; gap: 2px; max-width: 290px; margin: 0; padding: 14px 18px; border-radius: var(--r-m); background: rgb(31 41 51 / 0.78); color: #fff; font-size: 0.88rem; line-height: 1.45; }
-.immersion__carte strong { font-family: var(--titres); font-size: 1rem; }
-.immersion__carte span { color: var(--texte-clair); }
 .immersion__defiler { position: absolute !important; left: 50%; bottom: 26px; display: flex; align-items: center; gap: 8px; margin: 0; transform: translateX(-50%); padding: 7px 14px; border-radius: 999px; background: rgb(31 41 51 / 0.7); color: #fff; font-family: var(--titres); font-size: 0.85rem; font-weight: 700; }
 .immersion__defiler .ico { width: 14px; height: 14px; transform: rotate(90deg); animation: defiler 1.6s ease-in-out infinite; }
 @keyframes defiler { 50% { transform: rotate(90deg) translateX(4px); } }
 
 @media (min-width: 860px) and (max-height: 820px) {
   .immersion__accroche { padding-bottom: 40px; }
-  .immersion__cartes { display: none; }
 }
 
 /* panneau des interventions, pendant la visite */
@@ -894,9 +890,8 @@ main { position: relative; z-index: 1; }
   /* accueil : titre en haut sur le ciel, panneau des interventions en bas */
   .immersion { height: 900svh; }
   .immersion__accroche { justify-content: flex-start; padding-top: 22px; }
-  .immersion__accroche::before { background: linear-gradient(180deg, rgb(247 245 240 / 0.95) 0%, rgb(247 245 240 / 0.82) 40%, rgb(247 245 240 / 0) 62%); }
+  .immersion__photo { top: auto; bottom: 4%; left: 4%; right: 4%; width: auto; height: 50%; }
   .immersion__accroche .chapeau { margin: 12px 0 18px; font-size: 0.98rem; }
-  .immersion__cartes { display: none; }
   .immersion__accroche .actions .bouton:not(.bouton--orange), .immersion__accroche .note-google { display: none; }
   .immersion__defiler { white-space: nowrap; bottom: 18px; }
   .immersion__visite { left: 0; right: 0; top: auto; bottom: 0; width: auto; padding: 16px var(--marge) 16px; border-radius: var(--r-l) var(--r-l) 0 0; transform: translateY(18px); }
@@ -1145,7 +1140,8 @@ main { position: relative; z-index: 1; }
 .note-google__etoiles { position: relative; display: inline-block; letter-spacing: 2px; font-size: 1.05rem; line-height: 1; }
 .note-google__etoiles span:first-child { color: rgb(255 255 255 / .25); }
 .note-google__etoiles span:last-child { position: absolute; inset: 0 auto 0 0; overflow: hidden; white-space: nowrap; color: #f4b400; }
-.note-google strong { color: #fff; font-family: var(--titres); }
+.note-google strong { color: var(--texte); font-family: var(--titres); }
+.note-google--clair strong { color: #fff; }
 .note-google:hover span:last-of-type { text-decoration: underline; }
 .accroche .garanties { margin-top: 14px; }
 
@@ -1229,7 +1225,6 @@ main { position: relative; z-index: 1; }
 
 /* Téléphones peu hauts (iPhone SE…) : accroche et panneau plus compacts */
 @media (max-width: 859px) and (max-height: 700px) {
-  .immersion__accroche::before { background: linear-gradient(180deg, rgb(247 245 240 / 0.96) 0%, rgb(247 245 240 / 0.9) 58%, rgb(247 245 240 / 0) 80%); }
   .immersion__accroche h1 { font-size: 1.75rem; }
   .immersion__accroche .chapeau { font-size: 0.9rem; line-height: 1.5; }
   .immersion__scene figcaption { display: none; }
@@ -1238,29 +1233,4 @@ main { position: relative; z-index: 1; }
   .fiche p { font-size: 0.84rem; margin-bottom: 10px; }
 }
 
-/* --- Accueil : la maison en 3D, sous tous les angles (maison3d.js) --- */
-/* La section reste à l'écran pendant 2,2 hauteurs d'écran : le défilement fait tourner la maison. */
-.maison3d { position: relative; height: 320svh; background: var(--casse); }
-.maison3d__collant { position: sticky; top: var(--entete); height: calc(100svh - var(--entete)); overflow: hidden; display: grid; grid-template-rows: minmax(0, 1fr) auto; }
-.maison3d__scene { position: relative; min-height: 0; }
-.maison3d__repli { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: 50% 60%; padding: 12px; mix-blend-mode: multiply; -webkit-mask-image: radial-gradient(ellipse 62% 58% at 50% 54%, #000 62%, transparent 100%); mask-image: radial-gradient(ellipse 62% 58% at 50% 54%, #000 62%, transparent 100%); transition: opacity 0.6s ease; }
-.maison3d__toile { position: absolute; inset: 0; display: block; width: 100%; height: 100%; opacity: 0; transition: opacity 0.8s ease; }
-.maison3d.est-3d .maison3d__toile { opacity: 1; }
-.maison3d.est-3d .maison3d__repli { opacity: 0; }
-.maison3d__texte { padding-block: 8px 20px; }
-.maison3d__texte h2 { margin: 0 0 14px; font-size: clamp(1.3rem, 2.6vw, 2.35rem); line-height: 1.12; color: var(--ardoise); text-wrap: balance; }
-.maison3d__etapes { position: relative; margin: 0 0 18px; padding: 0; list-style: none; min-height: 4.6em; }
-.maison3d__etapes li { position: absolute; inset: 0 0 auto; display: grid; grid-template-columns: auto 1fr; column-gap: 12px; opacity: 0; transform: translateY(8px); transition: opacity 0.35s ease, transform 0.35s ease; }
-.maison3d__etapes li.est-active { position: relative; opacity: 1; transform: none; }
-.maison3d__etapes .mono { grid-row: span 2; color: var(--orange-action); font-size: 0.85rem; padding-top: 3px; }
-.maison3d__etapes strong { font-family: var(--titres); color: var(--ardoise); font-size: 1.02rem; }
-.maison3d__etapes li > span:last-child { color: var(--anthracite); opacity: 0.82; font-size: 0.94rem; line-height: 1.5; }
-@media (min-width: 860px) {
-  .maison3d__collant { grid-template-columns: minmax(340px, 0.8fr) 1.2fr; grid-template-rows: 1fr; }
-  .maison3d__scene { grid-column: 2; grid-row: 1; }
-  .maison3d__texte { grid-column: 1; grid-row: 1; align-self: center; width: auto; margin: 0 0 0 max(var(--marge), calc((100vw - var(--largeur)) / 2)); padding: 0; }
-  .maison3d__etapes { min-height: 0; display: grid; gap: 18px; margin-bottom: 28px; }
-  .maison3d__etapes li { position: relative; inset: auto; opacity: 0.32; transform: none; }
-  .maison3d__etapes li.est-active { opacity: 1; }
-}
-@media (prefers-reduced-motion: reduce) { .maison3d__etapes li, .maison3d__toile, .maison3d__repli { transition: none; } }
+

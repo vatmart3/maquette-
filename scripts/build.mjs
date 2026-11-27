@@ -32,7 +32,7 @@ const avertissements = [];
 // Version de chaque fichier (empreinte du contenu) ajoutée à son adresse : à chaque modification,
 // le navigateur télécharge la nouvelle version au lieu de resservir une copie en cache.
 const VERSION = Object.fromEntries(
-  ["styles.css", "site.js", "config.js", "immersion.js", "maison3d.js"].map((f) => [f, crypto.createHash("sha1").update(fs.readFileSync(path.join(RACINE, f))).digest("hex").slice(0, 10)])
+  ["styles.css", "site.js", "config.js", "immersion.js"].map((f) => [f, crypto.createHash("sha1").update(fs.readFileSync(path.join(RACINE, f))).digest("hex").slice(0, 10)])
 );
 const VERSION_MODELE = fs.existsSync(path.join(RACINE, "3d", "maison.glb"))
   ? crypto.createHash("sha1").update(fs.readFileSync(path.join(RACINE, "3d", "maison.glb"))).digest("hex").slice(0, 10)
@@ -205,8 +205,8 @@ const avecRealisations = CHANTIERS.length > 0;
 // Photo de l'accueil : tailles disponibles et largeur affichée (moitié droite sur ordinateur, pleine largeur sur téléphone).
 // Photo de l'accueil (2000 × 945), en plein écran : sur un téléphone en hauteur, elle est affichée
 // à la hauteur de l'écran (donc plus large que lui).
-const srcsetManoir = (base) => [1000, 1400, 2000].map((w) => `/img/${base}-${w}.webp ${w}w`).join(", ");
-const SIZES_MANOIR = "max(100vw, calc(212svh - 150px))";
+const SRCSET_MAISON3D = "/img/maison-3d-800.webp 800w, /img/maison-3d-1200.webp 1200w";
+const SIZES_MAISON3D = "(min-width: 860px) 52vw, 92vw";
 
 function logo(clair = false) {
   return `<a class="logo${clair ? " logo--clair" : ""}" href="/">
@@ -258,7 +258,7 @@ function head(p) {
   // Accueil : la photo de la maison est l'élément principal, chargée en priorité (taille adaptée à l'écran).
   const scene = p.photoAccroche
     ? `
-  <link rel="preload" as="image" href="/img/manoir-1400.webp" imagesrcset="${srcsetManoir("manoir")}" imagesizes="${SIZES_MANOIR}" fetchpriority="high">
+  <link rel="preload" as="image" href="/img/maison-3d-1200.webp" imagesrcset="${SRCSET_MAISON3D}" imagesizes="${SIZES_MAISON3D}" fetchpriority="high">
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>`
     : "";
   return `<!doctype html>
@@ -997,11 +997,11 @@ const ecrire = (fichier, html, meta) => {
 /* --- Accueil --- */
 
 const ZONES_VISITE = [
-  { titre: "Couverture et tuiles", vue: [1000, 318, 1.5], point: [985, 288], nom: "Couverture", aussi: ["remplacement-tuiles", "faitage-rives"], texte: "Tuiles canal, romanes ou mécaniques, faîtage, rives et génoises. On répare un pan ou on refait toute la couverture.", lien: "/services/refection-toiture", devis: "Réfection de toiture" },
-  { titre: "Charpente", vue: [1000, 282, 2.2], point: [1000, 262], nom: "Faîtage et charpente", aussi: ["isolation-toiture"], texte: "Chevrons, pannes et liteaux portent vos tuiles. On les contrôle et on les renforce.", lien: "/services/charpente", devis: "Charpente" },
-  { titre: "Zinguerie", vue: [900, 420, 2.3], point: [897, 372], nom: "Gouttière et descente", texte: "Gouttières, descentes et noues en zinc éloignent l'eau de vos murs et de vos façades.", lien: "/services/zinguerie-gouttieres", devis: "Zinguerie / gouttières" },
-  { titre: "Fuites et étanchéité", vue: [1112, 290, 2.6], point: [1117, 300], nom: "Solin de cheminée", aussi: ["fenetre-de-toit", "etancheite-toit-terrasse", "bachage-urgence"], texte: "Solin de cheminée, fenêtre de toit, tuile cassée. On trouve d'où vient l'eau avant de réparer.", lien: "/services/recherche-de-fuite", devis: "Réparation / fuite" },
-  { titre: "Démoussage et entretien", vue: [1630, 330, 2.0], point: [1660, 328], nom: "Toit à démousser", texte: "Un nettoyage et un traitement contre mousses et lichens prolongent la vie de la toiture.", lien: "/services/demoussage-toiture", devis: "Démoussage / traitement" },
+  { titre: "Couverture et tuiles", nom: "Couverture", aussi: ["remplacement-tuiles", "faitage-rives"], texte: "Tuiles canal, romanes ou mécaniques, faîtage, rives et génoises. On répare un pan ou on refait toute la couverture.", lien: "/services/refection-toiture", devis: "Réfection de toiture" },
+  { titre: "Charpente", nom: "Faîtage et arêtiers", aussi: ["isolation-toiture"], texte: "Chevrons, pannes et liteaux portent vos tuiles. On les contrôle et on les renforce.", lien: "/services/charpente", devis: "Charpente" },
+  { titre: "Zinguerie", nom: "Gouttière et descente", texte: "Gouttières, descentes et noues en zinc éloignent l'eau de vos murs et de vos façades.", lien: "/services/zinguerie-gouttieres", devis: "Zinguerie / gouttières" },
+  { titre: "Fuites et étanchéité", nom: "Solin de cheminée", aussi: ["fenetre-de-toit", "etancheite-toit-terrasse", "bachage-urgence"], texte: "Solin de cheminée, fenêtre de toit, tuile cassée. On trouve d'où vient l'eau avant de réparer.", lien: "/services/recherche-de-fuite", devis: "Réparation / fuite" },
+  { titre: "Démoussage et entretien", nom: "Toit à démousser", texte: "Un nettoyage et un traitement contre mousses et lichens prolongent la vie de la toiture.", lien: "/services/demoussage-toiture", devis: "Démoussage / traitement" },
 ];
 
 {
@@ -1026,18 +1026,15 @@ const ZONES_VISITE = [
               </div>
             </article>`
   ).join("\n            ");
-  const reperes = ZONES_VISITE.map((z, i) => `<li><button type="button" aria-current="${i === 0 ? "true" : "false"}" aria-controls="fiche-${i}" data-vue="${z.vue}" data-point="${z.point}" data-nom="${esc(z.nom)}">${esc(z.titre.split(" ")[0])}</button></li>`).join("");
+  const reperes = ZONES_VISITE.map((z, i) => `<li><button type="button" aria-current="${i === 0 ? "true" : "false"}" aria-controls="fiche-${i}" data-nom="${esc(z.nom)}">${esc(z.titre.split(" ")[0])}</button></li>`).join("");
   const html =
     head(p) +
     `
     <section class="immersion" data-visite id="visite" aria-labelledby="titre-page">
       <div class="immersion__collant">
-        <figure class="immersion__scene avant-apres" data-avant-apres data-immersion="/immersion.js?v=${VERSION["immersion.js"]}" style="--pos: 50%">
+        <figure class="immersion__scene avant-apres" data-avant-apres data-immersion="/immersion.js?v=${VERSION["immersion.js"]}" data-modele="/3d/maison.glb?v=${VERSION_MODELE}" style="--pos: 50%">
           <div class="avant-apres__cadre">
-            <img class="immersion__photo" src="/img/manoir-1400.webp" srcset="${srcsetManoir("manoir")}" sizes="${SIZES_MANOIR}" width="2000" height="945" alt="Grande maison en briques et toiture en tuiles grises, vue depuis le jardin" fetchpriority="high" decoding="async">
-            <div class="avant-apres__avant">
-              <img src="/img/manoir-avant-1400.webp" srcset="${srcsetManoir("manoir-avant")}" sizes="${SIZES_MANOIR}" width="2000" height="945" alt="Avant travaux : tuiles couvertes de mousse et de lichens, tuiles cassées, coulures sous les corniches" loading="lazy" decoding="async">
-            </div>
+            <img class="immersion__photo" src="/img/maison-3d-1200.webp" srcset="${SRCSET_MAISON3D}" sizes="${SIZES_MAISON3D}" width="1200" height="1170" alt="Maison à étage du Bassin de Thau, toiture en tuiles canal, volets bleu ardoise, vue de trois quarts" fetchpriority="high" decoding="async">
             <span class="avant-apres__etiquette avant-apres__etiquette--avant" aria-hidden="true">Avant</span>
             <span class="avant-apres__etiquette avant-apres__etiquette--apres" aria-hidden="true">Après</span>
             <span class="avant-apres__barre" aria-hidden="true"><span class="avant-apres__poignee">${ico("fleche")}${ico("fleche")}</span></span>
@@ -1055,10 +1052,6 @@ const ZONES_VISITE = [
               ${noteGoogle(false)}
             </div>
           </div>
-          <div class="immersion__cartes conteneur" aria-hidden="true">
-            <p class="immersion__carte"><strong>Devis gratuit et détaillé</strong><span>Rappel dans la journée, partout autour de l'étang de Thau.</span></p>
-            <p class="immersion__carte immersion__carte--droite"><strong>Urgences 24 h/24 et 7 j/7</strong><span>Fuite, tuiles envolées, dégâts d'orage.</span></p>
-          </div>
           <p class="immersion__defiler" aria-hidden="true">Avancez vers la maison ${ico("fleche")}</p>
         </div>
 
@@ -1068,24 +1061,6 @@ const ZONES_VISITE = [
           <div class="visite__fiches">
             ${fiches}
           </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="maison3d" data-maison3d data-script="/maison3d.js?v=${VERSION["maison3d.js"]}" data-modele="/3d/maison.glb?v=${VERSION_MODELE}" aria-labelledby="titre-maison3d">
-      <div class="maison3d__collant">
-        <div class="maison3d__scene">
-          <img class="maison3d__repli" src="/img/maison-3d-1200.webp" srcset="/img/maison-3d-800.webp 800w, /img/maison-3d-1200.webp 1200w" sizes="(min-width: 860px) 55vw, 100vw" width="1200" height="1170" alt="Maison du Bassin de Thau couverte en tuiles canal, volets bleu ardoise, vue de trois quarts" loading="lazy" decoding="async">
-        </div>
-        <div class="conteneur maison3d__texte">
-          <p class="sur-titre sur-titre--orange">Votre maison, sous tous les angles</p>
-          <h2 id="titre-maison3d">On fait le tour de votre toit avant de vous dire quoi que ce soit.</h2>
-          <ol class="maison3d__etapes">
-            <li class="est-active"><span class="mono">01</span><strong>Le tour complet</strong><span>Tuiles canal, faîtage, rives et arêtiers : chaque pan est regardé, pas seulement celui qui fuit.</span></li>
-            <li><span class="mono">02</span><strong>Les points d'eau</strong><span>Gouttières, descentes, solins de cheminée : là où l'eau entre le plus souvent.</span></li>
-            <li><span class="mono">03</span><strong>Un avis franc, par écrit</strong><span>Photos à l'appui et devis détaillé, gratuit. Si une réparation suffit, on vous le dit.</span></li>
-          </ol>
-          <a class="bouton bouton--orange" href="/devis-toiture" data-track="devis">${ico("devis")}Demander mon diagnostic gratuit</a>
         </div>
       </div>
     </section>
