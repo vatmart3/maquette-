@@ -139,13 +139,15 @@ avec le blanc), blanc cassé `#F7F5F0`, gris clair `#E5E7EB`, anthracite `#1F293
 Manrope (titres), Inter (texte), DM Mono (données : téléphone, références). Logo CP 34 fourni par le
 client (`img/logo-cp34.png`, déclinaisons WebP pour le site).
 
-## Accueil : photo et maison en 3D
+## Accueil : la maison en plein écran et la visite au défilement
 
-L'accroche affiche la photo de la maison (`img/maison-*.webp`, chargée en priorité). La section
-« Du faîtage à la gouttière » montre la même maison reconstituée en 3D dans son jardin (`maison3d.js`, Three.js
-par import map, chargé seulement quand la section approche et sur un appareil avec puce
-graphique). La section reste en place pendant le défilement : maison entière, puis la caméra
-tourne vers la couverture, la charpente (tuiles du grand toit rendues transparentes, mousses et trous retirés, plancher des combles dessous), la zinguerie, les tuiles
-cassées et le démoussage ; la zone est signalée en orange avec une étiquette. La barre avant /
-après coupe le rendu : à gauche la maison avant travaux, à droite après (illustration).
-Sans puce graphique, les photos `img/maison-avant-*` et `img/maison-*` servent de secours.
+L'accueil s'ouvre sur la photo de la maison en plein écran (`img/manoir-*.webp`, chargée en
+priorité), avec le titre posé dessus. La section reste à l'écran pendant le défilement :
+on avance à pied dans l'allée vers la maison, puis la vue se recadre sur les 5 interventions
+(couverture, charpente, zinguerie, fuites, démoussage), avec la fiche correspondante et un repère
+orange. Points de vue dans `ZONES_VISITE` (`scripts/build.mjs`, en pixels de la photo 2000 × 945).
+
+`immersion.js` (Three.js par import map, seulement avec une puce graphique) reconstruit la photo en
+relief : le sol est replacé en perspective à 1,60 m de hauteur, la maison à sa distance (≈ 12 m).
+La barre avant / après mélange la photo et sa version vieillie (`img/manoir-avant-*`, présentée
+comme une illustration). Sans puce graphique, la photo est simplement agrandie puis recadrée.

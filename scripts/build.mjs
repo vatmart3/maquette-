@@ -32,7 +32,7 @@ const avertissements = [];
 // Version de chaque fichier (empreinte du contenu) ajoutée à son adresse : à chaque modification,
 // le navigateur télécharge la nouvelle version au lieu de resservir une copie en cache.
 const VERSION = Object.fromEntries(
-  ["styles.css", "site.js", "config.js", "maison3d.js"].map((f) => [f, crypto.createHash("sha1").update(fs.readFileSync(path.join(RACINE, f))).digest("hex").slice(0, 10)])
+  ["styles.css", "site.js", "config.js", "immersion.js"].map((f) => [f, crypto.createHash("sha1").update(fs.readFileSync(path.join(RACINE, f))).digest("hex").slice(0, 10)])
 );
 
 /* ------------------------------------------------------------------ */
@@ -200,8 +200,10 @@ const G_LOGO = `<svg class="logo-google" viewBox="0 0 48 48" aria-hidden="true" 
 const noteGoogle = (clair) => (AVIS.length ? `<a class="note-google${clair ? " note-google--clair" : ""}" href="/avis">${AVIS_GOOGLE ? `<span class="note-google__g">${G_LOGO}</span>` : ""}<span class="note-google__etoiles" aria-hidden="true"><span>★★★★★</span><span style="width:${((MOYENNE / 5) * 100).toFixed(0)}%">★★★★★</span></span><strong>${MOYENNE.toFixed(1).replace(".", ",")}/5</strong><span>${AVIS_GOOGLE ? `sur Google · ${AVIS.length} avis` : `${AVIS.length} avis clients`}</span></a>` : "");
 const avecRealisations = CHANTIERS.length > 0;
 // Photo de l'accueil : tailles disponibles et largeur affichée (moitié droite sur ordinateur, pleine largeur sur téléphone).
-const SRCSET_MAISON = [640, 800, 960, 1400, 1900].map((w) => `/img/maison-${w}.webp ${w}w`).join(", ");
-const SIZES_MAISON = "(max-width: 859px) 100vw, 62vw";
+// Photo de l'accueil (2000 × 945), en plein écran : sur un téléphone en hauteur, elle est affichée
+// à la hauteur de l'écran (donc plus large que lui).
+const srcsetManoir = (base) => [1000, 1400, 2000].map((w) => `/img/${base}-${w}.webp ${w}w`).join(", ");
+const SIZES_MANOIR = "max(100vw, calc(212svh - 150px))";
 
 function logo(clair = false) {
   return `<a class="logo${clair ? " logo--clair" : ""}" href="/">
@@ -253,7 +255,7 @@ function head(p) {
   // Accueil : la photo de la maison est l'élément principal, chargée en priorité (taille adaptée à l'écran).
   const scene = p.photoAccroche
     ? `
-  <link rel="preload" as="image" href="/img/maison-960.webp" imagesrcset="${SRCSET_MAISON}" imagesizes="${SIZES_MAISON}" fetchpriority="high">
+  <link rel="preload" as="image" href="/img/manoir-1400.webp" imagesrcset="${srcsetManoir("manoir")}" imagesizes="${SIZES_MANOIR}" fetchpriority="high">
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js"}}</script>`
     : "";
   return `<!doctype html>
@@ -992,11 +994,11 @@ const ecrire = (fichier, html, meta) => {
 /* --- Accueil --- */
 
 const ZONES_VISITE = [
-  { titre: "Couverture et tuiles", vue: [68.4, 35.9, 2.0], aussi: ["remplacement-tuiles", "faitage-rives"], texte: "Tuiles canal, romanes ou mécaniques, faîtage, rives et génoises. On répare un pan ou on refait toute la couverture.", lien: "/services/refection-toiture", devis: "Réfection de toiture" },
-  { titre: "Charpente", vue: [61.3, 33.5, 2.6], aussi: ["isolation-toiture"], texte: "Chevrons, pannes et liteaux portent vos tuiles. On les contrôle et on les renforce.", lien: "/services/charpente", devis: "Charpente" },
-  { titre: "Zinguerie", vue: [47.6, 44.2, 2.4], texte: "Gouttières, descentes et noues en zinc éloignent l'eau de vos murs et de vos façades.", lien: "/services/zinguerie-gouttieres", devis: "Zinguerie / gouttières" },
-  { titre: "Fuites et étanchéité", vue: [70.5, 37.6, 2.8], aussi: ["fenetre-de-toit", "etancheite-toit-terrasse", "bachage-urgence"], texte: "Solin de cheminée, fenêtre de toit, tuile cassée. On trouve d'où vient l'eau avant de réparer.", lien: "/services/recherche-de-fuite", devis: "Réparation / fuite" },
-  { titre: "Démoussage et entretien", vue: [22.1, 38.3, 2.4], texte: "Un nettoyage et un traitement contre mousses et lichens prolongent la vie de la toiture.", lien: "/services/demoussage-toiture", devis: "Démoussage / traitement" },
+  { titre: "Couverture et tuiles", vue: [1000, 318, 1.5], point: [985, 288], nom: "Couverture", aussi: ["remplacement-tuiles", "faitage-rives"], texte: "Tuiles canal, romanes ou mécaniques, faîtage, rives et génoises. On répare un pan ou on refait toute la couverture.", lien: "/services/refection-toiture", devis: "Réfection de toiture" },
+  { titre: "Charpente", vue: [1000, 282, 2.2], point: [1000, 262], nom: "Faîtage et charpente", aussi: ["isolation-toiture"], texte: "Chevrons, pannes et liteaux portent vos tuiles. On les contrôle et on les renforce.", lien: "/services/charpente", devis: "Charpente" },
+  { titre: "Zinguerie", vue: [900, 420, 2.3], point: [897, 372], nom: "Gouttière et descente", texte: "Gouttières, descentes et noues en zinc éloignent l'eau de vos murs et de vos façades.", lien: "/services/zinguerie-gouttieres", devis: "Zinguerie / gouttières" },
+  { titre: "Fuites et étanchéité", vue: [1112, 290, 2.6], point: [1117, 300], nom: "Solin de cheminée", aussi: ["fenetre-de-toit", "etancheite-toit-terrasse", "bachage-urgence"], texte: "Solin de cheminée, fenêtre de toit, tuile cassée. On trouve d'où vient l'eau avant de réparer.", lien: "/services/recherche-de-fuite", devis: "Réparation / fuite" },
+  { titre: "Démoussage et entretien", vue: [1630, 330, 2.0], point: [1660, 328], nom: "Toit à démousser", texte: "Un nettoyage et un traitement contre mousses et lichens prolongent la vie de la toiture.", lien: "/services/demoussage-toiture", devis: "Démoussage / traitement" },
 ];
 
 {
@@ -1021,54 +1023,48 @@ const ZONES_VISITE = [
               </div>
             </article>`
   ).join("\n            ");
-  const reperes = ZONES_VISITE.map((z, i) => `<li><button type="button" aria-current="${i === 0 ? "true" : "false"}" aria-controls="fiche-${i}" data-vue="${z.vue}">${esc(z.titre.split(" ")[0])}</button></li>`).join("");
-  // Avant / après : la photo entière, version vieillie et version d'origine, même cadrage.
-  const imageAA = (etat, alt) => {
-    const base = etat === "avant" ? "maison-avant" : "maison";
-    return `<img src="/img/${base}-960.webp" srcset="${[640, 800, 960, 1400, 1900].map((w) => `/img/${base}-${w}.webp ${w}w`).join(", ")}" sizes="(max-width: 859px) 100vw, 90vw" width="1900" height="1267" alt="${alt}" loading="lazy" decoding="async">`;
-  };
+  const reperes = ZONES_VISITE.map((z, i) => `<li><button type="button" aria-current="${i === 0 ? "true" : "false"}" aria-controls="fiche-${i}" data-vue="${z.vue}" data-point="${z.point}" data-nom="${esc(z.nom)}">${esc(z.titre.split(" ")[0])}</button></li>`).join("");
   const html =
     head(p) +
     `
-    <section class="accroche" aria-labelledby="titre-page">
-      <div class="accroche__photo">
-        <img src="/img/maison-960.webp" srcset="${SRCSET_MAISON}" sizes="${SIZES_MAISON}" width="1900" height="1267" alt="Maison de plain-pied aux murs blancs, toiture en tuiles grises" fetchpriority="high" decoding="async">
-      </div>
-      <div class="conteneur accroche__grille">
-        <div class="accroche__texte">
-          <h1 id="titre-page">Couvreur à Frontignan, <span>votre toiture entre de bonnes mains.</span></h1>
-          <p class="chapeau">Couvreur Proximité 34 répare, refait et entretient les toitures de Frontignan, de Sète et de tout le secteur de l'étang de Thau. Devis gratuit et dépannage rapide.</p>
-          ${actions({ clair: true })}
-          ${noteGoogle(true)}
-          ${coches(CONFIANCE, true)}
-        </div>
-      </div>
-    </section>
+    <section class="immersion" data-visite id="visite" aria-labelledby="titre-page">
+      <div class="immersion__collant">
+        <figure class="immersion__scene avant-apres" data-avant-apres data-immersion="/immersion.js?v=${VERSION["immersion.js"]}" style="--pos: 50%">
+          <div class="avant-apres__cadre">
+            <img class="immersion__photo" src="/img/manoir-1400.webp" srcset="${srcsetManoir("manoir")}" sizes="${SIZES_MANOIR}" width="2000" height="945" alt="Grande maison en briques et toiture en tuiles grises, vue depuis le jardin" fetchpriority="high" decoding="async">
+            <div class="avant-apres__avant">
+              <img src="/img/manoir-avant-1400.webp" srcset="${srcsetManoir("manoir-avant")}" sizes="${SIZES_MANOIR}" width="2000" height="945" alt="Avant travaux : tuiles couvertes de mousse et de lichens, tuiles cassées, coulures sous les corniches" loading="lazy" decoding="async">
+            </div>
+            <span class="avant-apres__etiquette avant-apres__etiquette--avant" aria-hidden="true">Avant</span>
+            <span class="avant-apres__etiquette avant-apres__etiquette--apres" aria-hidden="true">Après</span>
+            <span class="avant-apres__barre" aria-hidden="true"><span class="avant-apres__poignee">${ico("fleche")}${ico("fleche")}</span></span>
+            <input class="avant-apres__curseur" type="range" min="0" max="100" value="50" step="1" tabindex="-1" aria-label="Comparer avant et après : faites glisser vers la droite pour voir l'avant">
+          </div>
+          <figcaption>Illustration : la même toiture avant et après entretien.</figcaption>
+        </figure>
 
-    <section class="visite" data-visite id="visite" aria-labelledby="titre-visite">
-      <div class="visite__collant">
-        <div class="conteneur visite__grille">
-          <div class="visite__texte">
-            <h2 id="titre-visite">Du faîtage à la gouttière, on s'occupe de tout.</h2>
-            <p class="visite__aide">Faites défiler pour passer d'une intervention à l'autre, et glissez la barre pour comparer avant et après.</p>
-            <ol class="visite__reperes" aria-label="Nos interventions">${reperes}</ol>
-            <div class="visite__fiches">
-              ${fiches}
+        <div class="immersion__accroche">
+          <div class="conteneur">
+            <div class="accroche__texte">
+              <h1 id="titre-page">Couvreur à Frontignan, <span>votre toiture entre de bonnes mains.</span></h1>
+              <p class="chapeau">Couvreur Proximité 34 répare, refait et entretient les toitures de Frontignan, de Sète et de tout le secteur de l'étang de Thau. Devis gratuit et dépannage rapide.</p>
+              ${actions({})}
+              ${noteGoogle(false)}
             </div>
           </div>
-          <figure class="avant-apres" data-avant-apres data-maison3d="/maison3d.js?v=${VERSION["maison3d.js"]}" style="--pos: 50%">
-            <div class="avant-apres__cadre">
-              ${imageAA("apres", "Après : toiture nettoyée et réparée, façade propre")}
-              <div class="avant-apres__avant">
-                ${imageAA("avant", "Avant : toiture couverte de mousses et de lichens, tuiles cassées, coulures sur la façade")}
-              </div>
-              <span class="avant-apres__etiquette avant-apres__etiquette--avant" aria-hidden="true">Avant</span>
-              <span class="avant-apres__etiquette avant-apres__etiquette--apres" aria-hidden="true">Après</span>
-              <span class="avant-apres__barre" aria-hidden="true"><span class="avant-apres__poignee">${ico("fleche")}${ico("fleche")}</span></span>
-              <input class="avant-apres__curseur" type="range" min="0" max="100" value="50" step="1" aria-label="Comparer avant et après : faites glisser vers la droite pour voir l'avant">
-            </div>
-            <figcaption>Illustration : la même toiture encrassée, puis démoussée, traitée et réparée.</figcaption>
-          </figure>
+          <div class="immersion__cartes conteneur" aria-hidden="true">
+            <p class="immersion__carte"><strong>Devis gratuit et détaillé</strong><span>Rappel dans la journée, partout autour de l'étang de Thau.</span></p>
+            <p class="immersion__carte immersion__carte--droite"><strong>Urgences 24 h/24 et 7 j/7</strong><span>Fuite, tuiles envolées, dégâts d'orage.</span></p>
+          </div>
+          <p class="immersion__defiler" aria-hidden="true">Avancez vers la maison ${ico("fleche")}</p>
+        </div>
+
+        <div class="immersion__visite" aria-labelledby="titre-visite">
+          <h2 id="titre-visite">Du faîtage à la gouttière, on s'occupe de tout.</h2>
+          <ol class="visite__reperes" aria-label="Nos interventions">${reperes}</ol>
+          <div class="visite__fiches">
+            ${fiches}
+          </div>
         </div>
       </div>
     </section>

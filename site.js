@@ -106,52 +106,67 @@
   document.querySelectorAll("[data-avant-apres]").forEach(function (fig) {
     var curseur = fig.querySelector(".avant-apres__curseur");
     if (!curseur) return;
+    // ordinateur : la barre démarre à droite du panneau des interventions, sur la zone visée
+    if (fig.closest(".immersion") && window.matchMedia("(min-width: 860px)").matches) curseur.value = 64;
     var maj = function () { fig.style.setProperty("--pos", curseur.value + "%"); };
     curseur.addEventListener("input", maj);
     maj();
   });
 
-  /* ---------- Accueil : visite de la maison ---------- */
-  // La section reste en place ; en faisant défiler, la caméra passe d'une intervention à l'autre
-  // (zoom et légère bascule en perspective sur la photo, avant et après ensemble).
+  /* ---------- Accueil : la maison, la marche, puis les 5 interventions ---------- */
+  // La section reste à l'écran. Le défilement fait avancer un parcours de 0 à 1 :
+  //   0 → 0,05 : accroche (photo en plein écran, titre) ;
+  //   0,05 → 0,38 : on avance à pied vers la maison ;
+  //   0,38 → 1 : la caméra va chercher les 5 interventions, une par portion égale.
+  // Avec une puce graphique, immersion.js rend la photo en relief (événement arv:avance) ;
+  // sinon, la photo est simplement agrandie et recadrée ici.
 
   var visite = document.querySelector("[data-visite]");
   if (visite) {
     var fiches = visite.querySelectorAll(".fiche");
     var reperes = visite.querySelectorAll(".visite__reperes button");
-    var images = visite.querySelectorAll(".avant-apres__cadre img");
-    var collant = visite.querySelector(".visite__collant");
-    var n = fiches.length;
-    var zone = null;
-
     var figure = visite.querySelector("[data-avant-apres]");
-    var cadrer = function (k) {
-      // maison en 3D chargée : c'est elle qui change de point de vue (événement arv:zone)
+    var curseurAA = visite.querySelector(".avant-apres__curseur");
+    var photos = visite.querySelectorAll(".avant-apres__cadre img");
+    var collant = visite.querySelector(".immersion__collant");
+    var n = fiches.length;
+    var DEBUT_MARCHE = 0.05, FIN_MARCHE = 0.38, DEBUT_ZONES = 0.42;
+    var zone = null, phase = null;
+
+    var zoneDe = function (p) {
+      if (p < DEBUT_ZONES) return -1;
+      return Math.min(n - 1, Math.floor(((p - DEBUT_ZONES) / (1 - DEBUT_ZONES)) * n));
+    };
+
+    // Secours sans 3D : agrandissement de la photo (marche) puis recadrage sur la zone
+    var secours = function (p, k) {
       if (figure && figure.classList.contains("est-3d")) return;
-      var t = "none";
+      var marche = Math.min(1, Math.max(0, (p - DEBUT_MARCHE) / (FIN_MARCHE - DEBUT_MARCHE)));
+      var t = "scale(" + (1 + 0.7 * marche).toFixed(3) + ")", o = "50% 64%";
       if (k >= 0) {
         var v = (reperes[k].getAttribute("data-vue") || "").split(",").map(Number);
-        var fx = v[0], fy = v[1], z = v[2] || 1;
-        var lim = (z - 1) * 50; // l'image agrandie couvre toujours le cadre
-        var tx = Math.max(-lim, Math.min(lim, z * (50 - fx)));
-        var ty = Math.max(-lim, Math.min(lim, z * (50 - fy)));
-        var ry = ((fx - 50) / 50) * -5, rx = ((fy - 50) / 50) * 4;
-        t = "perspective(1400px) rotateX(" + rx.toFixed(2) + "deg) rotateY(" + ry.toFixed(2) + "deg) translate(" + tx.toFixed(2) + "%, " + ty.toFixed(2) + "%) scale(" + z + ")";
+        o = ((v[0] / 2000) * 100).toFixed(1) + "% " + ((v[1] / 945) * 100).toFixed(1) + "%";
+        t = "scale(" + (1.5 * v[2]).toFixed(2) + ")";
       }
-      images.forEach(function (img) { img.style.transform = t; });
+      photos.forEach(function (img) { img.style.transformOrigin = o; img.style.transform = t; });
     };
 
-    var activer = function (k) {
+    var majFiches = function (k) {
       if (k === zone) return;
       zone = k;
-      var f = Math.max(0, k); // avant la première intervention : maison entière, première fiche
+      var f = Math.max(0, k);
       fiches.forEach(function (el, i) { el.classList.toggle("est-active", i === f); });
       reperes.forEach(function (b, i) { b.setAttribute("aria-current", i === k ? "true" : "false"); });
-      cadrer(k);
       document.dispatchEvent(new CustomEvent("arv:zone", { detail: { zone: k } }));
     };
+    var majPhase = function (p) {
+      var ph = p < DEBUT_MARCHE ? "accroche" : p < FIN_MARCHE ? "marche" : "visite";
+      if (ph === phase) return;
+      phase = ph;
+      visite.setAttribute("data-phase", ph);
+      if (curseurAA) curseurAA.tabIndex = ph === "visite" ? 0 : -1;
+    };
 
-    // Mesures gardées en mémoire : rien n'est recalculé dans la page pendant le défilement.
     var mesure = null;
     var position = function () {
       if (!mesure) {
@@ -165,12 +180,14 @@
       ro.observe(visite);
       ro.observe(document.body);
     }
-    // 1er écran de défilement : maison entière ; puis un écran par intervention.
-    var etapes = n + 1;
     var depuisScroll = function () {
       var q = position();
-      var p = (window.scrollY - q.debut) / q.course;
-      activer(p <= 0 ? -1 : Math.min(n - 1, Math.floor(p * etapes) - 1));
+      var p = Math.min(1, Math.max(0, (window.scrollY - q.debut) / q.course));
+      majPhase(p);
+      var k = zoneDe(p);
+      majFiches(k);
+      secours(p, k);
+      document.dispatchEvent(new CustomEvent("arv:avance", { detail: { p: p, zone: k, marche: Math.min(1, Math.max(0, (p - DEBUT_MARCHE) / (FIN_MARCHE - DEBUT_MARCHE))) } }));
     };
     var attente = false;
     window.addEventListener("scroll", function () {
@@ -179,11 +196,19 @@
       requestAnimationFrame(function () { attente = false; depuisScroll(); });
     }, { passive: true });
     window.addEventListener("resize", function () { mesure = null; depuisScroll(); });
+    document.addEventListener("arv:pret", depuisScroll);
     depuisScroll();
 
-    // Maison 3D : chargée quand la section approche, seulement avec une vraie puce graphique
-    // (sans elle, rendu logiciel trop lent : la photo reste affichée).
-    var source3d = figure && figure.getAttribute("data-maison3d");
+    reperes.forEach(function (r, k) {
+      r.addEventListener("click", function () {
+        var q = position();
+        var cible = DEBUT_ZONES + ((k + 0.5) / n) * (1 - DEBUT_ZONES);
+        window.scrollTo({ top: q.debut + q.course * cible, behavior: reduit ? "auto" : "smooth" });
+      });
+    });
+
+    // Relief 3D : seulement avec une vraie puce graphique (sans elle, rendu logiciel trop lent).
+    var source3d = figure && figure.getAttribute("data-immersion");
     var puce = function () {
       try {
         var gl = document.createElement("canvas").getContext("webgl");
@@ -195,21 +220,12 @@
         return !/swiftshader|llvmpipe|softpipe|software/i.test(nom);
       } catch (e) { return false; }
     };
-    if (source3d && "IntersectionObserver" in window && HTMLScriptElement.supports && HTMLScriptElement.supports("importmap") && puce()) {
-      var obs = new IntersectionObserver(function (entrees) {
-        if (!entrees.some(function (e) { return e.isIntersecting; })) return;
-        obs.disconnect();
-        try { new Function("u", "return import(u)")(source3d).catch(function () {}); } catch (e) {}
-      }, { rootMargin: "700px 0px" });
-      obs.observe(visite);
+    if (source3d && HTMLScriptElement.supports && HTMLScriptElement.supports("importmap") && puce()) {
+      var charger = function () { try { new Function("u", "return import(u)")(source3d).catch(function () {}); } catch (e) {} };
+      var ensuite = function () { (window.requestIdleCallback || setTimeout)(charger, { timeout: 800 }); };
+      if (document.readyState === "complete") ensuite();
+      else window.addEventListener("load", ensuite, { once: true });
     }
-
-    reperes.forEach(function (r, k) {
-      r.addEventListener("click", function () {
-        var q = position();
-        window.scrollTo({ top: q.debut + q.course * ((k + 1.5) / etapes), behavior: reduit ? "auto" : "smooth" });
-      });
-    });
   }
 
   /* ---------- Filtres des réalisations ---------- */
