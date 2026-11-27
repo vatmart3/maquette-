@@ -21,7 +21,7 @@ window.SITE = {
   siteUrl: "https://maquette-t8eb.vercel.app",
 
   telephone: "06 66 61 50 17",
-  email: "contact@arveo.fr", // À CONFIRMER
+  email: "couvreurproximite34@gmail.com",
 
   adresse: {
     rue: "", // À CONFIRMER : numéro et rue (laisser vide pour ne pas l'afficher)

@@ -1,14 +1,22 @@
 /*
  * Couvreur Proximité 34 — réception des formulaires du site (fonction Vercel, Node 18+).
- * Envoie chaque demande par e-mail au client via l'API Resend (https://resend.com).
+ * Envoie chaque demande par e-mail via l'API Resend (https://resend.com), avec la fiche
+ * de la demande en PDF (et les photos du client) en pièces jointes.
  *
  * Variables d'environnement à définir dans Vercel (Settings → Environment Variables) :
  *   RESEND_API_KEY   clé API Resend (obligatoire)
- *   ARVEO_EMAIL_TO   adresse qui reçoit les demandes, ex. contact@arveo.fr (obligatoire)
+ *   ARVEO_EMAIL_TO   adresse(s) qui reçoivent les demandes, séparées par des virgules
+ *                    (facultatif : par défaut couvreurproximite34@gmail.com)
  *   ARVEO_EMAIL_FROM expéditeur sur un domaine vérifié chez Resend,
- *                    ex. "Site Couvreur Proximité 34 <site@arveo.fr>" (par défaut : onboarding@resend.dev, pour tester)
+ *                    ex. "Site Couvreur Proximité 34 <site@mondomaine.fr>" (par défaut : onboarding@resend.dev,
+ *                    qui n'envoie qu'à l'adresse du compte Resend)
  *   ARVEO_ACCUSE     "1" pour envoyer aussi un accusé de réception au client qui a laissé son e-mail
  */
+
+const { creerPDF } = require("./_pdf.js");
+
+const DESTINATAIRE = "couvreurproximite34@gmail.com";
+const TELEPHONE_ENTREPRISE = "06 66 61 50 17";
 
 const TYPES = {
   depannage: { titre: "Demande de dépannage", code: "DEP", urgent: true },
@@ -130,7 +138,7 @@ function construireEmail(t, ref, corps) {
         </table>
       </td></tr>
       <tr><td style="padding:16px 24px;background:#1F2933;border-radius:0 0 14px 14px;font:12px Arial,sans-serif;color:#D3DCE3">
-        Envoyé depuis le site Couvreur Proximité 34 (page ${esc(court(corps.page, 120))}). ${corps.photos && corps.photos.length ? corps.photos.length + " photo(s) en pièce jointe." : "Pas de photo jointe."}<br>
+        Envoyé depuis le site Couvreur Proximité 34 (page ${esc(court(corps.page, 120))}). Fiche de la demande en PDF jointe. ${corps.photos && corps.photos.length ? corps.photos.length + " photo(s) en pièce jointe." : "Pas de photo jointe."}<br>
         Le demandeur a accepté d'être recontacté au sujet de cette demande.
       </td></tr>
     </table>
@@ -141,7 +149,7 @@ function construireEmail(t, ref, corps) {
     rubriques.map((r) => `== ${r.nom || "Informations"} ==\n` + r.lignes.map((l) => `${l.label} : ${l.valeur || "—"}`).join("\n")).join("\n\n") +
     `\n\nPage : ${court(corps.page, 120)}`;
 
-  return { html: htmlMail, texte, urgent };
+  return { html: htmlMail, texte, urgent, rubriques };
 }
 
 module.exports = async function handler(req, res) {
@@ -176,9 +184,9 @@ module.exports = async function handler(req, res) {
   }
 
   const cle = process.env.RESEND_API_KEY;
-  const destinataire = process.env.ARVEO_EMAIL_TO;
-  if (!cle || !destinataire) {
-    console.error("[demande] RESEND_API_KEY ou ARVEO_EMAIL_TO manquant");
+  const destinataire = process.env.ARVEO_EMAIL_TO || DESTINATAIRE;
+  if (!cle) {
+    console.error("[demande] RESEND_API_KEY manquant");
     return res.status(503).json({ ok: false, erreur: "Envoi non configuré" });
   }
 
@@ -191,6 +199,24 @@ module.exports = async function handler(req, res) {
     .slice(0, 4)
     .filter((p) => p && typeof p.contenu === "string" && /^[A-Za-z0-9+/=]+$/.test(p.contenu.slice(0, 200)))
     .map((p, i) => ({ filename: court(p.nom, 80).replace(/[^\w.\-]+/g, "_") || `photo-${i + 1}.jpg`, content: p.contenu }));
+
+  // Fiche PDF de la demande (en cas d'échec, l'e-mail part quand même, sans le PDF).
+  try {
+    const pdf = creerPDF({
+      titre: t.titre,
+      reference: ref,
+      date: new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris", dateStyle: "long", timeStyle: "short" }),
+      urgent: mail.urgent,
+      client: { nom: court(d.nom, 120), telephone: court(d.telephone, 40), email: court(d.email, 200), ville: court(d.ville, 80) },
+      rubriques: mail.rubriques,
+      photos: pieces.map((p) => Buffer.from(p.content, "base64")),
+      page: court(corps.page, 120),
+      telephoneEntreprise: TELEPHONE_ENTREPRISE,
+    });
+    pieces.unshift({ filename: `${ref}.pdf`, content: pdf.toString("base64") });
+  } catch (e) {
+    console.error("[demande] PDF", e);
+  }
 
   const envoyer = (payload) =>
     fetch("https://api.resend.com/emails", {
