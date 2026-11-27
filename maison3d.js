@@ -322,6 +322,7 @@ function demarrer() {
   /* Matériaux (chaque surface « avant / après » a sa paire)            */
   /* ------------------------------------------------------------------ */
   const ORANGE = new THREE.Color("#f0915a");
+  const traitMat = new THREE.MeshBasicMaterial({ color: "#f28a4a" });
   const std = (o) => new THREE.MeshStandardMaterial(o);
   const paire = (apres, avant) => ({ apres, avant: avant || apres });
   const tuile = () =>
@@ -336,7 +337,7 @@ function demarrer() {
     mur: paire(std({ map: T.enduit, bumpMap: T.grain, bumpScale: 0.6, roughness: 0.95 }), std({ map: T.enduitAvant, bumpMap: T.grain, bumpScale: 0.6, roughness: 0.97 })),
     murSombre: paire(std({ map: T.sombre, bumpMap: T.grain, bumpScale: 0.6, roughness: 0.9 })),
     zinc: paire(std({ color: "#3a3e44", roughness: 0.38, metalness: 0.65, side: THREE.DoubleSide })),
-    bois: paire(std({ color: "#b98149", roughness: 0.75 })),
+    bois: paire(std({ color: "#c08a52", roughness: 0.75 }), std({ color: "#7d6650", roughness: 0.9 })),
   };
   const noir = std({ color: "#1c1e21", roughness: 0.45, metalness: 0.3 });
   const verre = std({ color: "#6f8796", roughness: 0.06, metalness: 0.55, envMapIntensity: 1.6 });
@@ -451,7 +452,7 @@ function demarrer() {
     // sous-face du débord (entre le mur et le bord du toit)
     const sf = [];
     const anneau = [[c00, c10, V3(w.x1, ye, w.z0), V3(w.x0, ye, w.z0)], [c10, c11, V3(w.x1, ye, w.z1), V3(w.x1, ye, w.z0)], [c11, c01, V3(w.x0, ye, w.z1), V3(w.x1, ye, w.z1)], [c01, c00, V3(w.x0, ye, w.z0), V3(w.x0, ye, w.z1)]];
-    for (const [q0, q1, q2, q3] of anneau) for (const q of [q0, q2, q1, q0, q3, q2]) sf.push(q.x, q.y - 0.01, q.z);
+    for (const [q0, q1, q2, q3] of anneau) for (const q of [q0, q2, q1, q0, q3, q2]) sf.push(q.x, q.y - 0.16, q.z); // sous la rive : jamais visible au-dessus d'un toit voisin
     const gsf = new THREE.BufferGeometry();
     gsf.setAttribute("position", new THREE.Float32BufferAttribute(sf, 3));
     gsf.computeVertexNormals();
@@ -500,7 +501,21 @@ function demarrer() {
       }
     }
     instances(new THREE.CylinderGeometry(0.1, 0.115, 0.42, 14), p, fai);
-    return { x0, x1, z0, z1, ye, r0, r1 };
+    const contour = new THREE.Group();
+    contour.visible = false;
+    for (const [u0, v0] of [[c00, c10], [c10, c11], [c11, c01], [c01, c00], ...arretes]) {
+      const u = u0.clone(), v = v0.clone();
+      u.y += u.y > ye + 0.01 ? 0.13 : 0.14;
+      v.y += v.y > ye + 0.01 ? 0.13 : 0.14;
+      const d = u.distanceTo(v);
+      if (d < 0.05) continue;
+      const tube = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, d, 8), traitMat);
+      tube.position.copy(u).add(v).multiplyScalar(0.5);
+      tube.quaternion.setFromUnitVectors(HAUT, v.clone().sub(u).normalize());
+      contour.add(tube);
+    }
+    scene.add(contour);
+    return { x0, x1, z0, z1, ye, r0, r1, contour };
   }
 
   // garage (G), entrée en retrait, bloc central (C), corps principal (R)
@@ -532,7 +547,7 @@ function demarrer() {
   linteau.position.set((G.x1 + R.x0) / 2, HM - 0.1, 0.02);
 
   const toitG = toit(G.x0, G.x1, G.z0, G.z1, M.toitG);
-  toit(C.x0, C.x1, C.z0, C.z1, M.toitC);
+  const toitC = toit(C.x0, C.x1, C.z0, -0.4, M.toitC); // s'avance jusqu'à la façade : couvre l'entrée en retrait
   const toitR = toit(R.x0, R.x1, R.z0, R.z1, M.toitR);
   const yPanR = (z) => toitR.ye + PENTE * (toitR.z1 - z);
   const yPanGav = (z) => toitG.ye + PENTE * (toitG.z1 - z);
@@ -602,15 +617,169 @@ function demarrer() {
     pied.rotation.x = -0.5;
   }
 
-  // ombre portée au sol (le sol lui-même est invisible) et ombre de contact sous la maison
-  const solOmbre = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.ShadowMaterial({ opacity: 0.28 }));
-  solOmbre.rotation.x = -Math.PI / 2;
-  solOmbre.receiveShadow = true;
-  scene.add(solOmbre);
-  const contact = new THREE.Mesh(new THREE.PlaneGeometry(23, 16), new THREE.MeshBasicMaterial({ alphaMap: T.ombreSol, color: 0x000000, transparent: true, opacity: 0.38, depthWrite: false }));
-  contact.rotation.x = -Math.PI / 2;
-  contact.position.set(1.9, 0.005, -4.6);
-  scene.add(contact);
+  /* ------------------------------------------------------------------ */
+  /* Jardin : ciel, pelouse, allée, plantations, arbres                   */
+  /* ------------------------------------------------------------------ */
+  const HORIZON = new THREE.Color("#dfe9f1");
+  scene.fog = new THREE.Fog(HORIZON, 40, 130);
+  scene.add(
+    new THREE.Mesh(
+      new THREE.SphereGeometry(200, 32, 16),
+      new THREE.ShaderMaterial({
+        side: THREE.BackSide,
+        depthWrite: false,
+        uniforms: { haut: { value: new THREE.Color("#4f8fd8") }, bas: { value: HORIZON } },
+        vertexShader: "varying vec3 p; void main(){ p = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }",
+        fragmentShader: "uniform vec3 haut; uniform vec3 bas; varying vec3 p; void main(){ gl_FragColor = vec4(mix(bas, haut, smoothstep(0.0, 0.5, p.y)), 1.0); }",
+      })
+    )
+  );
+  // pelouse : brins fins sur un fond nuancé, répétée tous les 3 m
+  const pelouse = toile(512, 512, (g, L, H) => {
+    g.fillStyle = "#668f45";
+    g.fillRect(0, 0, L, H);
+    for (let i = 0; i < 40; i++) {
+      const x = alea() * L, y = alea() * H, r = 30 + alea() * 70;
+      partout(L, H, x, y, r, (px, py) => {
+        const gr = g.createRadialGradient(px, py, 0, px, py, r);
+        const clair = alea() < 0.5;
+        gr.addColorStop(0, clair ? "rgba(140,170,80,0.28)" : "rgba(50,80,35,0.28)");
+        gr.addColorStop(1, "rgba(0,0,0,0)");
+        g.fillStyle = gr;
+        g.fillRect(px - r, py - r, r * 2, r * 2);
+      });
+    }
+    for (let i = 0; i < 26000; i++) {
+      const x = alea() * L, y = alea() * H, h = 3 + alea() * 5;
+      g.strokeStyle = `hsla(${84 + alea() * 22}, ${35 + alea() * 25}%, ${26 + alea() * 26}%, 0.8)`;
+      g.lineWidth = 1;
+      g.beginPath();
+      g.moveTo(x, y);
+      g.lineTo(x + (alea() - 0.5) * 2, y - h);
+      g.stroke();
+    }
+  });
+  pelouse.repeat.set(80, 80);
+  const sol = new THREE.Mesh(new THREE.CircleGeometry(120, 64), std({ map: pelouse, roughness: 1, envMapIntensity: 0.5 }));
+  sol.rotation.x = -Math.PI / 2;
+  sol.receiveShadow = true;
+  scene.add(sol);
+
+  const gravierTex = toile(256, 256, (g, L, H) => {
+    g.fillStyle = "#cbbd9c";
+    g.fillRect(0, 0, L, H);
+    for (let i = 0; i < 9000; i++) {
+      g.fillStyle = ["#b5a785", "#e1d5b8", "#9c917a", "#d6c9a9", "#c2b391"][Math.floor(alea() * 5)];
+      rond(g, alea() * L, alea() * H, 0.7 + alea() * 1.6);
+    }
+  });
+  const dalle = (x0, x1, z0, z1, mat, y, rep = 1) => {
+    const g = new THREE.PlaneGeometry(x1 - x0, z1 - z0);
+    const uv = g.attributes.uv;
+    for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * (x1 - x0) * rep, uv.getY(i) * (z1 - z0) * rep);
+    const m = new THREE.Mesh(g, mat);
+    m.rotation.x = -Math.PI / 2;
+    m.position.set((x0 + x1) / 2, y, (z0 + z1) / 2);
+    m.receiveShadow = true;
+    scene.add(m);
+  };
+  dalle(-8.1, -1.6, 0, 18, std({ map: gravierTex, roughness: 1 }), 0.012, 0.8);                       // allée du garage
+  dalle(-0.2, 11.3, 0.05, 0.8, std({ map: gravierTex, color: "#9a9b9a", roughness: 1 }), 0.014, 1.6);  // bande de galets
+  const bordure = std({ color: "#c9c6bf", roughness: 0.9 });
+  for (const x of [-8.15, -1.55]) piece(0.08, 0.08, 18, bordure, x, 0.04, 9);
+  piece(11.6, 0.08, 0.08, bordure, 5.55, 0.04, 0.84);
+
+  // ombre douce au pied de la maison et sous les arbres
+  const ombreDouce = new THREE.MeshBasicMaterial({ alphaMap: T.ombreSol, color: 0x000000, transparent: true, opacity: 0.35, depthWrite: false });
+  const tache = (x, z, l, p, o = 0.35) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(l, p), o === 0.35 ? ombreDouce : ombreDouce.clone());
+    if (o !== 0.35) m.material.opacity = o;
+    m.rotation.x = -Math.PI / 2;
+    m.position.set(x, 0.02, z);
+    scene.add(m);
+  };
+  tache(1.9, -4.6, 23, 16);
+
+  // feuillages : nuages de petites boules (une seule géométrie instanciée pour tout le jardin)
+  const feuilles = [];
+  const o = new THREE.Object3D();
+  const touffe = (cx, cy, cz, rx, ry, rz, n, taille, teinte) => {
+    for (let i = 0; i < n; i++) {
+      const a = alea() * Math.PI * 2, b = Math.acos(2 * alea() - 1), r = Math.cbrt(alea());
+      o.position.set(cx + Math.sin(b) * Math.cos(a) * rx * r, cy + Math.cos(b) * ry * r, cz + Math.sin(b) * Math.sin(a) * rz * r);
+      const t = taille * (0.7 + alea() * 0.6);
+      o.scale.set(t * (0.8 + alea() * 0.4), t * (0.6 + alea() * 0.4), t * (0.8 + alea() * 0.4));
+      o.rotation.set(alea() * 3, alea() * 3, 0);
+      o.updateMatrix();
+      // plus clair en haut, plus sombre dessous et au cœur
+      const l = 0.75 + 0.35 * ((o.position.y - (cy - ry)) / (2 * ry)) + 0.15 * r;
+      feuilles.push([o.matrix.clone(), new THREE.Color(teinte).multiplyScalar(l)]);
+    }
+  };
+  const tronc = std({ color: "#5d4a38", roughness: 0.95 });
+  const arbre = (x, z, s, teinte) => {
+    const t = new THREE.Mesh(new THREE.CylinderGeometry(0.14 * s, 0.24 * s, 3.4 * s, 8), tronc);
+    t.position.set(x, 1.7 * s, z);
+    t.castShadow = true;
+    scene.add(t);
+    for (const [dx, dz, dy] of [[0.6, 0.2, 0.4], [-0.5, -0.3, 0.6], [0.1, 0.4, 1.2]]) {
+      const br = new THREE.Mesh(new THREE.CylinderGeometry(0.05 * s, 0.09 * s, 1.6 * s, 6), tronc);
+      br.position.set(x + dx * 0.6 * s, (3 + dy) * s, z + dz * 0.6 * s);
+      br.rotation.set(dz * 0.8, 0, -dx * 0.8);
+      scene.add(br);
+    }
+    touffe(x, 4.9 * s, z, 2.4 * s, 2 * s, 2.4 * s, 480, 0.3 * s, teinte);
+    touffe(x + 1.2 * s, 4.1 * s, z + 0.5 * s, 1.4 * s, 1.15 * s, 1.4 * s, 160, 0.28 * s, teinte);
+    touffe(x - 1.3 * s, 4.3 * s, z - 0.3 * s, 1.4 * s, 1.15 * s, 1.4 * s, 160, 0.28 * s, teinte);
+    tache(x + 1.5 * s, z + 1.2 * s, 6.5 * s, 5.5 * s, 0.3);
+  };
+  [[-13, -18, 1.15, "#3f6c2f"], [-5.5, -21, 1.35, "#4a7a35"], [3, -23, 1.45, "#3c682c"], [11, -20, 1.3, "#457533"], [18, -15, 1.05, "#3f6c2f"], [-19, -9, 0.95, "#4a7a35"], [24, -6, 0.9, "#3c682c"]].forEach((a) => arbre(...a));
+  // haie taillée à droite, arbustes à gauche du garage
+  for (let x = 13; x < 23; x += 0.45) touffe(x, 0.6, 1.8 + (x - 13) * 0.18, 0.5, 0.55, 0.5, 18, 0.26, "#44703a");
+  for (const [x, z, r] of [[-9.6, 1.6, 0.75], [-10.3, -0.5, 0.9], [-9.7, -2.8, 0.7], [-9.9, -5, 0.8]]) touffe(x, r * 0.85, z, r, r * 0.85, r, 60, 0.3, "#4b7a3b");
+  {
+    const geo = new THREE.IcosahedronGeometry(1, 0);
+    const inst = new THREE.InstancedMesh(geo, std({ color: "#ffffff", roughness: 0.95, envMapIntensity: 0.6 }), feuilles.length);
+    feuilles.forEach(([m, c], i) => { inst.setMatrixAt(i, m); inst.setColorAt(i, c); });
+    inst.castShadow = true;
+    inst.receiveShadow = true;
+    scene.add(inst);
+  }
+
+  // pots anthracite avec cycas devant la façade, fleurs près de l'entrée
+  const potMat = std({ color: "#2a2c30", roughness: 0.55, metalness: 0.15 });
+  const palme = std({ color: "#3f6c2c", roughness: 0.8, side: THREE.DoubleSide });
+  for (const x of [4.7, 6.5]) {
+    const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.18, 0.64, 4, 1), potMat);
+    pot.position.set(x, 0.32, 0.45);
+    pot.rotation.y = Math.PI / 4;
+    pot.castShadow = true;
+    scene.add(pot);
+    for (let k = 0; k < 16; k++) {
+      const a = (k / 16) * Math.PI * 2 + alea() * 0.2, inc = 0.7 + alea() * 0.5, lg = 0.55 + alea() * 0.25;
+      const f = new THREE.Mesh(new THREE.PlaneGeometry(0.07, lg), palme);
+      f.position.set(x + Math.cos(a) * (lg / 2) * Math.sin(inc), 0.66 + (lg / 2) * Math.cos(inc), 0.45 + Math.sin(a) * (lg / 2) * Math.sin(inc));
+      f.rotation.set(0, -a + Math.PI / 2, 0);
+      f.rotateX(-inc);
+      f.castShadow = true;
+      scene.add(f);
+    }
+  }
+  const fleurs = (x, z, couleur) => {
+    const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.12, 0.26, 12), std({ color: "#8f4a2c", roughness: 0.8 }));
+    pot.position.set(x, 0.13, z);
+    pot.castShadow = true;
+    scene.add(pot);
+    touffe(x, 0.38, z, 0.2, 0.14, 0.2, 22, 0.07, "#3f6c2c");
+    const p = std({ color: couleur, roughness: 0.6 });
+    for (let k = 0; k < 9; k++) {
+      const f = new THREE.Mesh(new THREE.IcosahedronGeometry(0.045, 0), p);
+      f.position.set(x + (alea() - 0.5) * 0.3, 0.46 + alea() * 0.08, z + (alea() - 0.5) * 0.3);
+      scene.add(f);
+    }
+  };
+  fleurs(-0.55, 0.5, "#d2383a");
+  fleurs(10.7, 0.55, "#d2383a");
 
   // charpente du corps principal (visible quand la couverture devient transparente)
   const charpente = new THREE.Group();
@@ -620,10 +789,17 @@ function demarrer() {
     const m = new THREE.Mesh(new THREE.BoxGeometry(ep, u.distanceTo(v), h), M.bois.apres);
     m.position.copy(u).add(v).multiplyScalar(0.5);
     m.quaternion.setFromUnitVectors(HAUT, v.clone().sub(u).normalize());
+    m.userData.paire = M.bois;
+    aPaire.push(m);
     charpente.add(m);
   };
   {
     const t = toitR, demi = (t.z1 - t.z0) / 2, zm = (t.z0 + t.z1) / 2, bas = 0.2;
+    // plancher des combles : on ne voit jamais l'intérieur vide de la maison
+    const plancher = new THREE.Mesh(new THREE.BoxGeometry(R.x1 - R.x0, 0.04, R.z1 - R.z0), std({ color: "#cdb68c", map: T.grain, roughness: 0.95 }));
+    plancher.position.set((R.x0 + R.x1) / 2, t.ye - bas - 0.03, (R.z0 + R.z1) / 2);
+    plancher.receiveShadow = true;
+    charpente.add(plancher);
     for (let x = t.x0 + 0.4; x <= t.x1 - 0.35; x += 0.6) {
       const s = Math.min(x - t.x0, t.x1 - x, demi);
       for (const sens of [1, -1]) {
@@ -645,13 +821,16 @@ function demarrer() {
   const normaleAv = V3(0, 1, PENTE).normalize();
   const trouMat = new THREE.MeshStandardMaterial({ map: T.trou, transparent: true, roughness: 0.9, polygonOffset: true, polygonOffsetFactor: -4 });
   const TROUS = [[7.2, -1.1], [8.1, -1.7], [7.6, -2.35], [8.9, -1.0], [3.1, -2.0], [5.2, -3.0], [9.8, -0.8]];
-  const poserSurPan = (m, x, z, y) => {
+  // décors posés sur le grand toit : cachés quand ses tuiles deviennent transparentes (vue charpente)
+  const decorsToitR = new THREE.Group();
+  avantSeul.add(decorsToitR);
+  const poserSurPan = (m, x, z, y, parent) => {
     m.position.set(x, y + 0.03, z);
     m.quaternion.setFromUnitVectors(V3(0, 0, 1), normaleAv);
-    avantSeul.add(m);
+    parent.add(m);
   };
-  for (const [x, z] of TROUS) poserSurPan(new THREE.Mesh(new THREE.PlaneGeometry(0.5, 0.3), trouMat), x, z, yPanR(z));
-  for (const [x, z] of [[-5.1, -0.9], [-4.1, -1.8]]) poserSurPan(new THREE.Mesh(new THREE.PlaneGeometry(0.45, 0.28), trouMat), x, z, yPanGav(z));
+  for (const [x, z] of TROUS) poserSurPan(new THREE.Mesh(new THREE.PlaneGeometry(0.5, 0.3), trouMat), x, z, yPanR(z), decorsToitR);
+  for (const [x, z] of [[-5.1, -0.9], [-4.1, -1.8]]) poserSurPan(new THREE.Mesh(new THREE.PlaneGeometry(0.45, 0.28), trouMat), x, z, yPanGav(z), avantSeul);
   {
     // éclats de tuiles autour des trous
     const mats = [];
@@ -667,11 +846,12 @@ function demarrer() {
       }
     const eclats = new THREE.InstancedMesh(new THREE.BoxGeometry(0.11, 0.02, 0.07), std({ color: "#4a4e54", roughness: 0.8 }), mats.length);
     mats.forEach((m, i) => eclats.setMatrixAt(i, m));
-    avantSeul.add(eclats);
+    decorsToitR.add(eclats);
   }
   {
     // touffes de mousse en relief : en plaques sur les pans, et dans les gouttières
-    const mats = [];
+    let mats = [];
+    const surToitR = [];
     const o = new THREE.Object3D();
     const plaque = (cx, cz, yPan, n, r) => {
       for (let i = 0; i < n; i++) {
@@ -689,6 +869,8 @@ function demarrer() {
     plaque(6.2, -0.7, yPanR, 90, 0.7);
     plaque(9.3, -1.9, yPanR, 110, 0.8);
     plaque(4.6, -2.6, yPanR, 70, 0.6);
+    surToitR.push(...mats);
+    mats = [];
     plaque(-4.7, -1.2, yPanGav, 170, 1.0);
     o.quaternion.identity();
     for (const [xa, xb, z] of [[R.x0 - 0.3, R.x1 + 0.3, toitR.z1 + 0.1], [G.x0 - 0.3, G.x1 + 0.3, toitG.z1 + 0.1]])
@@ -699,17 +881,20 @@ function demarrer() {
         o.updateMatrix();
         mats.push(o.matrix.clone());
       }
-    const mousse = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(0.06, 1), std({ color: "#ffffff", roughness: 1 }), mats.length);
     const teintes = ["#3f5a22", "#4f6a28", "#5d742c", "#384f1f"].map((c) => new THREE.Color(c));
-    mats.forEach((m, i) => { mousse.setMatrixAt(i, m); mousse.setColorAt(i, teintes[i % 4]); });
-    avantSeul.add(mousse);
+    const geoMousse = new THREE.IcosahedronGeometry(0.06, 1), matMousse = std({ color: "#ffffff", roughness: 1 });
+    for (const [liste, parent] of [[surToitR, decorsToitR], [mats, avantSeul]]) {
+      const mousse = new THREE.InstancedMesh(geoMousse, matMousse, liste.length);
+      liste.forEach((m, i) => { mousse.setMatrixAt(i, m); mousse.setColorAt(i, teintes[i % 4]); });
+      parent.add(mousse);
+    }
   }
 
   /* ------------------------------------------------------------------ */
   /* Points de vue et zones signalées                                     */
   /* ------------------------------------------------------------------ */
   const VUES = [
-    { nom: "Maison entière", cible: V3(1.8, 1.5, -4.2), pos: V3(-6.4, 6.6, 18) },
+    { nom: "Maison entière", cible: V3(1.8, 1.8, -4.2), pos: V3(-7, 6.2, 19.5) },
     { nom: "Couverture", cible: V3(5.5, 3.4, -4), pos: V3(12.5, 13.5, 9.5), point: V3(5.5, yPanR(-2.6) + 0.06, -2.6) },
     { nom: "Charpente", cible: V3(5.5, 3.5, -4.5), pos: V3(16.5, 9, 4), point: V3(8.2, 3.75, -3.2) },
     { nom: "Zinguerie", cible: V3(0.1, 2.2, 0), pos: V3(-4.6, 3.3, 7.2), point: V3(0.16, HM - 0.07, toitR.z1 + 0.1) },
@@ -729,23 +914,29 @@ function demarrer() {
   cadre.appendChild(etiquette);
   const etiquetteNom = etiquette.querySelector(".repere-3d__nom");
 
-  const tousToits = [M.toitR, M.toitG, M.toitC];
   const lesDeux = (p) => new Set([p.apres, p.avant]);
   function signaler(z) {
-    for (const p of [...tousToits, M.zinc, M.bois]) for (const m of lesDeux(p)) { m.emissive.set(0); m.emissiveIntensity = 1; }
+    for (const p of [M.zinc, M.bois]) for (const m of lesDeux(p)) { m.emissive.set(0); m.emissiveIntensity = 1; }
+    for (const t of [toitR, toitG, toitC]) t.contour.visible = false;
+    decorsToitR.visible = z !== 1;
     for (const m of lesDeux(M.toitR)) { m.transparent = false; m.opacity = 1; m.depthWrite = true; m.needsUpdate = true; }
+    for (const m of aPaire) if (m.userData.paire === M.toitR) {
+      m.castShadow = z !== 1;
+      if (m.isInstancedMesh) m.visible = z !== 1; // faîtières et tuiles d'égout déposées pour montrer la charpente
+    }
+    renderer.shadowMap.needsUpdate = true;
     charpente.visible = false;
     anneau.visible = false;
     const allumer = (p, f) => { for (const m of lesDeux(p)) { m.emissive.copy(ORANGE); m.emissiveIntensity = f; } };
-    if (z === 0) tousToits.forEach((p) => allumer(p, 0.12));
+    if (z === 0) for (const t of [toitR, toitG, toitC]) t.contour.visible = true;
     if (z === 1) {
       for (const m of lesDeux(M.toitR)) { m.transparent = true; m.opacity = 0.14; m.depthWrite = false; m.needsUpdate = true; }
       charpente.visible = true;
-      allumer(M.bois, 0.35);
+      allumer(M.bois, 0.16);
     }
     if (z === 2) allumer(M.zinc, 0.55);
     if (z === 3) anneau.visible = true;
-    if (z === 4) allumer(M.toitG, 0.14);
+    if (z === 4) toitG.contour.visible = true;
     etiquetteNom.textContent = VUES[z + 1].nom;
     etiquette.classList.toggle("est-visible", z >= 0);
   }
