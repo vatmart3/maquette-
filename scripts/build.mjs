@@ -34,9 +34,6 @@ const avertissements = [];
 const VERSION = Object.fromEntries(
   ["styles.css", "site.js", "config.js", "immersion.js"].map((f) => [f, crypto.createHash("sha1").update(fs.readFileSync(path.join(RACINE, f))).digest("hex").slice(0, 10)])
 );
-const VERSION_MODELE = fs.existsSync(path.join(RACINE, "3d", "maison.glb"))
-  ? crypto.createHash("sha1").update(fs.readFileSync(path.join(RACINE, "3d", "maison.glb"))).digest("hex").slice(0, 10)
-  : "0";
 
 /* ------------------------------------------------------------------ */
 /* Valeurs provisoires                                                 */
@@ -205,7 +202,7 @@ const avecRealisations = CHANTIERS.length > 0;
 // Photo de l'accueil : tailles disponibles et largeur affichée (moitié droite sur ordinateur, pleine largeur sur téléphone).
 // Photo de l'accueil (2000 × 945), en plein écran : sur un téléphone en hauteur, elle est affichée
 // à la hauteur de l'écran (donc plus large que lui).
-const SRCSET_MAISON3D = "/img/maison-3d-800.webp 800w, /img/maison-3d-1200.webp 1200w";
+const SRCSET_MAISON3D = "/img/maison-plain-pied-800.webp 800w, /img/maison-plain-pied-1200.webp 1200w";
 const SIZES_MAISON3D = "(min-width: 860px) 52vw, 92vw";
 
 function logo(clair = false) {
@@ -258,7 +255,7 @@ function head(p) {
   // Accueil : la photo de la maison est l'élément principal, chargée en priorité (taille adaptée à l'écran).
   const scene = p.photoAccroche
     ? `
-  <link rel="preload" as="image" href="/img/maison-3d-1200.webp" imagesrcset="${SRCSET_MAISON3D}" imagesizes="${SIZES_MAISON3D}" fetchpriority="high">
+  <link rel="preload" as="image" href="/img/maison-plain-pied-1200.webp" imagesrcset="${SRCSET_MAISON3D}" imagesizes="${SIZES_MAISON3D}" fetchpriority="high">
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>`
     : "";
   return `<!doctype html>
@@ -998,7 +995,7 @@ const ecrire = (fichier, html, meta) => {
 
 const ZONES_VISITE = [
   { titre: "Couverture et tuiles", nom: "Couverture", aussi: ["remplacement-tuiles", "faitage-rives"], texte: "Tuiles canal, romanes ou mécaniques, faîtage, rives et génoises. On répare un pan ou on refait toute la couverture.", lien: "/services/refection-toiture", devis: "Réfection de toiture" },
-  { titre: "Charpente", nom: "Faîtage et arêtiers", aussi: ["isolation-toiture"], texte: "Chevrons, pannes et liteaux portent vos tuiles. On les contrôle et on les renforce.", lien: "/services/charpente", devis: "Charpente" },
+  { titre: "Charpente", nom: "Charpente et faîtage", aussi: ["isolation-toiture"], texte: "Chevrons, pannes et liteaux portent vos tuiles. On les contrôle et on les renforce.", lien: "/services/charpente", devis: "Charpente" },
   { titre: "Zinguerie", nom: "Gouttière et descente", texte: "Gouttières, descentes et noues en zinc éloignent l'eau de vos murs et de vos façades.", lien: "/services/zinguerie-gouttieres", devis: "Zinguerie / gouttières" },
   { titre: "Fuites et étanchéité", nom: "Solin de cheminée", aussi: ["fenetre-de-toit", "etancheite-toit-terrasse", "bachage-urgence"], texte: "Solin de cheminée, fenêtre de toit, tuile cassée. On trouve d'où vient l'eau avant de réparer.", lien: "/services/recherche-de-fuite", devis: "Réparation / fuite" },
   { titre: "Démoussage et entretien", nom: "Toit à démousser", texte: "Un nettoyage et un traitement contre mousses et lichens prolongent la vie de la toiture.", lien: "/services/demoussage-toiture", devis: "Démoussage / traitement" },
@@ -1032,9 +1029,9 @@ const ZONES_VISITE = [
     `
     <section class="immersion" data-visite id="visite" aria-labelledby="titre-page">
       <div class="immersion__collant">
-        <figure class="immersion__scene avant-apres" data-avant-apres data-immersion="/immersion.js?v=${VERSION["immersion.js"]}" data-modele="/3d/maison.glb?v=${VERSION_MODELE}" style="--pos: 50%">
+        <figure class="immersion__scene avant-apres" data-avant-apres data-immersion="/immersion.js?v=${VERSION["immersion.js"]}" style="--pos: 50%">
           <div class="avant-apres__cadre">
-            <img class="immersion__photo" src="/img/maison-3d-1200.webp" srcset="${SRCSET_MAISON3D}" sizes="${SIZES_MAISON3D}" width="1200" height="1170" alt="Maison à étage du Bassin de Thau, toiture en tuiles canal, volets bleu ardoise, vue de trois quarts" fetchpriority="high" decoding="async">
+            <img class="immersion__photo" src="/img/maison-plain-pied-1200.webp" srcset="${SRCSET_MAISON3D}" sizes="${SIZES_MAISON3D}" width="1200" height="949" alt="Maison de plain-pied aux murs blancs, toiture à deux pans en tuiles noires, vue en perspective" fetchpriority="high" decoding="async">
             <span class="avant-apres__etiquette avant-apres__etiquette--avant" aria-hidden="true">Avant</span>
             <span class="avant-apres__etiquette avant-apres__etiquette--apres" aria-hidden="true">Après</span>
             <span class="avant-apres__barre" aria-hidden="true"><span class="avant-apres__poignee">${ico("fleche")}${ico("fleche")}</span></span>

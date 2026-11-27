@@ -116,8 +116,9 @@
   /* ---------- Accueil : la maison, puis les 5 interventions ---------- */
   // La section reste à l'écran. Le défilement fait avancer un parcours de 0 à 1 :
   //   0 → 0,07 : accroche (la maison à côté du titre) ;
-  //   0,07 → 0,93 : la caméra va chercher les 5 interventions, une par portion égale ;
-  //   0,93 → 1 : fin de la visite, la maison revient en vue d'ensemble avant de quitter l'écran.
+  //   0,07 → 0,78 : la caméra passe d'une vue à l'autre, une intervention par vue ;
+  //   0,78 → 0,9 : plan du rez-de-chaussée (la maison est coupée à hauteur d'appui) ;
+  //   0,9 → 1 : fin de la visite, la maison revient en perspective avant de quitter l'écran.
   // Avec une puce graphique, immersion.js affiche la maison en 3D (événement arv:avance) ;
   // sinon, l'image de la maison reste affichée et seules les fiches changent.
 
@@ -129,7 +130,7 @@
     var curseurAA = visite.querySelector(".avant-apres__curseur");
     var collant = visite.querySelector(".immersion__collant");
     var n = fiches.length;
-    var DEBUT_ZONES = 0.07, FIN_ZONES = 0.93;
+    var DEBUT_ZONES = 0.07, FIN_ZONES = 0.78, FIN_PLAN = 0.9;
     var zone = null, phase = null;
 
     var zoneDe = function (p) {
@@ -178,7 +179,7 @@
     var majPhase = function (p) {
       // logo flottant masqué tant que la section occupe l'écran (il recouvrait le panneau)
       document.documentElement.classList.toggle("immersion-active", p < 0.995);
-      var ph = p < DEBUT_ZONES ? "accroche" : p < FIN_ZONES ? "visite" : "fin";
+      var ph = p < DEBUT_ZONES ? "accroche" : p < FIN_ZONES ? "visite" : p < FIN_PLAN ? "plan" : "fin";
       if (ph === phase) return;
       phase = ph;
       visite.setAttribute("data-phase", ph);

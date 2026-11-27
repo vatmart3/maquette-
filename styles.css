@@ -381,13 +381,13 @@ main { position: relative; z-index: 1; }
 
 /* La section reste à l'écran pendant tout le défilement : accroche, puis
    les 5 interventions. Sa hauteur fixe la longueur du parcours. */
-.immersion { position: relative; height: 1000svh; background: var(--casse); }
+.immersion { position: relative; height: 1100svh; background: var(--casse); }
 .immersion__collant { position: sticky; top: var(--entete); height: calc(100svh - var(--entete)); overflow: hidden; }
 
 .immersion__scene { position: absolute; inset: 0; margin: 0; }
 .immersion__scene .avant-apres__cadre { position: absolute; inset: 0; overflow: hidden; touch-action: pan-y; }
 /* image de la maison (affichée tout de suite, puis remplacée par la 3D) : à droite du titre */
-.immersion__photo { position: absolute; top: 6%; right: max(var(--marge), calc((100% - var(--largeur)) / 2)); width: min(54%, 760px); height: 88%; object-fit: contain; object-position: 50% 50%; mix-blend-mode: multiply; transition: opacity 0.6s ease; }
+.immersion__photo { position: absolute; top: 6%; right: max(var(--marge), calc((100% - var(--largeur)) / 2)); width: min(54%, 760px); height: 88%; object-fit: contain; object-position: 50% 50%; mix-blend-mode: multiply; -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%); mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%); transition: opacity 0.6s ease; }
 .avant-apres__3d { display: none; }
 .est-3d .avant-apres__3d { position: absolute; inset: 0; display: block; width: 100%; height: 100%; animation: apparition-3d 0.7s ease; }
 @keyframes apparition-3d { from { opacity: 0; } }
@@ -416,6 +416,11 @@ main { position: relative; z-index: 1; }
 .immersion:not([data-phase="visite"]) .avant-apres__curseur { pointer-events: none; }
 .immersion[data-phase="visite"] .avant-apres__barre, .immersion[data-phase="visite"] .avant-apres__etiquette, .immersion[data-phase="visite"] figcaption { opacity: 1; }
 
+/* nom de la vue (comme sur la planche des plans) et cotes du plan */
+.vue-3d { position: absolute; z-index: 2; top: 16px; left: max(var(--marge), calc((100% - var(--largeur)) / 2)); padding: 6px 12px 6px 14px; border-left: 3px solid var(--orange-action); border-radius: 0 6px 6px 0; background: rgb(247 245 240 / 0.92); color: var(--anthracite); font-family: var(--titres); font-size: 0.8rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0; transform: translateY(-6px); transition: opacity 0.35s ease, transform 0.35s ease; pointer-events: none; }
+.vue-3d.est-visible { opacity: 1; transform: none; }
+.cote-3d { position: absolute; top: 0; left: 0; z-index: 2; margin: -13px 0 0 -30px; padding: 3px 9px; border-radius: 999px; background: var(--anthracite); color: #fff; font-family: var(--mono, monospace); font-size: 0.78rem; white-space: nowrap; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+.cote-3d.est-visible { opacity: 1; }
 /* zone signalée : point orange pulsant et étiquette */
 .repere-3d { position: absolute; top: 0; left: 0; z-index: 2; display: none; pointer-events: none; }
 .repere-3d.est-visible { display: block; }
@@ -895,7 +900,7 @@ main { position: relative; z-index: 1; }
   .garanties span:not(:last-child)::after { display: none; }
 
   /* accueil : titre en haut, maison dessous ; pendant la visite, panneau compact en bas */
-  .immersion { height: 760svh; }
+  .immersion { height: 860svh; }
   .immersion__accroche { justify-content: flex-start; padding: 18px 0 0; }
   .immersion__accroche::before { background: linear-gradient(180deg, var(--casse) 0%, rgb(247 245 240 / 0.92) 28%, rgb(247 245 240 / 0) 38%); }
   .immersion__photo { top: auto; bottom: calc(var(--bandeau) + 60px); left: 6%; right: 6%; width: auto; height: 44%; }
@@ -918,7 +923,8 @@ main { position: relative; z-index: 1; }
   .fiche .bouton--petit { min-height: 40px; }
   .immersion .avant-apres__poignee { width: 40px; height: 40px; bottom: calc(var(--panneau, 40%) + 12px); }
   .immersion .avant-apres__etiquette { bottom: calc(var(--panneau, 40%) + 20px); padding: 3px 9px; font-size: 0.72rem; }
-  .immersion__scene figcaption { top: 10px; bottom: auto; left: 50%; right: auto; transform: translateX(-50%); white-space: nowrap; font-size: 0.64rem; }
+  .immersion__scene figcaption { display: none; }
+  .vue-3d { top: 10px; left: var(--marge); font-size: 0.7rem; }
 
   /* grilles en une colonne */
   .urgence-bloc__grille, .zone, .cta-final__grille, .tete-page__grille, .services-bloc { grid-template-columns: minmax(0, 1fr); gap: 28px; }

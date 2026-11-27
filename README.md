@@ -141,12 +141,14 @@ client (`img/logo-cp34.png`, déclinaisons WebP pour le site).
 
 ## Accueil : la maison en 3D et la visite au défilement
 
-L'accueil s'ouvre sur la maison en 3D (`3d/maison.glb`, compressé meshopt + textures WebP), vue
-de trois quarts à côté du titre, dans un petit jardin (pelouse, pas japonais, cyprès, oliviers,
-haie, lavandes) ; l'image `img/maison-3d-*.webp` s'affiche en attendant (et reste seule sans puce
-graphique). La section reste à l'écran pendant le défilement : la caméra va chercher les 5
-interventions, puis revient en vue d'ensemble à la fin (points de vue
-dans `immersion.js`, noms des repères dans `ZONES_VISITE`, `scripts/build.mjs`). La barre avant /
-après coupe le rendu : à gauche, la même maison avant travaux, calculée dans le rendu (tuiles
-encrassées, mousse, tuiles cassées, coulures), présentée comme une illustration.
-Le modèle n'est texturé que de face : garder les points de vue devant ou de trois quarts.
+La maison de plain-pied des plans fournis (8,40 × 6,20 m, faîtage à 5,20 m, tuiles noires, enduit
+blanc) est construite en 3D dans `immersion.js` (Three.js par import map, aucun modèle à
+télécharger), dans un petit jardin. L'image `img/maison-plain-pied-*.webp` (rendu de la même
+maison) s'affiche en attendant, et reste seule sans puce graphique. La section reste à l'écran
+pendant le défilement : la caméra tourne d'une vue à l'autre, comme sur la planche des plans
+(perspective, dessus, droite, face, gauche, arrière), une intervention par vue avec un repère
+orange ; puis la maison est coupée à hauteur d'appui pour montrer le plan du rez-de-chaussée, et
+revient en perspective. La barre avant / après coupe le rendu : à gauche, la même maison avant
+travaux (illustration). Fluidité : pièces fusionnées par matériau (une vingtaine d'appels de
+dessin par image), programmes et textures préparés au chargement, rendu seulement quand l'image
+change.
