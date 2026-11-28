@@ -71,7 +71,7 @@ window.SITE = {
 
   // Google Search Console : collez ici le code de la balise « google-site-verification »
   // (méthode « Balise HTML », uniquement la valeur de content="..."), puis relancez le build.
-  googleVerification: "",
+  googleVerification: "htWFrCjpoINBtfyZHEUjAMRBHEz81QPzRfjCtUFpkiE",
 
   // Liens externes. La fiche Google Business Profile est le levier n°1 du référencement local.
   liens: {
