@@ -4,6 +4,9 @@
   "description": "Outils de génération du site Couvreur Proximité 34 (non déployés : le dossier scripts est exclu par .vercelignore).",
   "scripts": {
     "build": "node build.mjs",
+    "check-links": "node check-links.mjs",
+    "verifier": "node build.mjs && node check-links.mjs",
+    "images": "node images.mjs",
     "photos": "node photos.mjs",
     "indexnow": "node indexnow.mjs"
   },

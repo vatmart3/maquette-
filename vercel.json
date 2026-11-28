@@ -158,6 +158,5 @@
         }
       ]
     }
-  ],
-  "buildCommand": "echo 'Site déjà généré par npm run build (fichiers HTML versionnés)'"
+  ]
 }
