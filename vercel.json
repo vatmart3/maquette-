@@ -3,6 +3,39 @@
   "trailingSlash": false,
   "redirects": [
     {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.couvreurproximite34.fr"
+        }
+      ],
+      "destination": "https://couvreurproximite34.fr/",
+      "permanent": true
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "maquette-t8eb\\.vercel\\.app"
+        }
+      ],
+      "destination": "https://couvreurproximite34.fr/",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "maquette-t8eb\\.vercel\\.app"
+        }
+      ],
+      "destination": "https://couvreurproximite34.fr/:path*",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [
         {
@@ -71,6 +104,21 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "(?<hote>.*)\\.vercel\\.app"
+        }
+      ],
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
         }
       ]
     },
