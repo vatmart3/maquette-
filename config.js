@@ -28,12 +28,12 @@ window.SITE = {
     region: "Occitanie",
     pays: "FR",
     // Coordonnées GPS de l'entreprise (par défaut : centre de Frontignan).
-    latitude: 43.4483, // À CONFIRMER
-    longitude: 3.7546, // À CONFIRMER
+    latitude: 43.4483,
+    longitude: 3.7546,
   },
 
   horaires: {
-    texte: "Du lundi au samedi, de 8 h à 19 h", // À CONFIRMER
+    texte: "Du lundi au samedi, de 8 h à 19 h",
     urgences: "Urgences 24 h/24 et 7 j/7",
     jours: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
     ouverture: "08:00",
@@ -141,7 +141,7 @@ window.SITE = {
 
   // Informations complémentaires pour Google (omises tant qu'elles sont vides ou à confirmer).
   fondation: "", // À CONFIRMER : année de création, ex. "2021"
-  gammePrix: "", // À CONFIRMER : ex. "€€"
+  gammePrix: "€€",
   paiements: [], // À CONFIRMER : ex. ["Chèque", "Virement bancaire", "Carte bancaire", "Espèces"]
 
   agence: { nom: "MJAGENCY", url: "https://mjagency.eu" },

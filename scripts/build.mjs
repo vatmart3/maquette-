@@ -34,6 +34,24 @@ const CONTACT_EMAIL = "couvreurproximite34@gmail.com";
 S.siteUrl = SITE_URL;
 S.email = CONTACT_EMAIL;
 const BASE = SITE_URL;
+// Profils officiels de l'entreprise. « TODO » tant que l'adresse n'est pas connue : rien n'est
+// alors affiché (ni lien, ni sameAs). À renseigner dans config.js (liens.googleBusiness, facebook, instagram).
+const SOCIAL_LINKS = {
+  google: S.liens?.googleBusiness || "TODO",
+  facebook: S.liens?.facebook || "TODO",
+  instagram: S.liens?.instagram || "TODO",
+};
+const SOCIAUX_ACTIFS = Object.entries(SOCIAL_LINKS).filter(([, u]) => /^https:\/\//.test(u));
+const ICONES_SOCIAUX = {
+  google: { nom: "Google", d: "M21.35 11.1H12v2.9h5.35c-.5 2.4-2.6 3.9-5.35 3.9a5.9 5.9 0 1 1 0-11.8c1.5 0 2.8.5 3.8 1.4l2.1-2.1A8.9 8.9 0 1 0 12 20.9c4.6 0 8.6-3.3 8.6-8.9 0-.3 0-.6-.05-.9Z" },
+  facebook: { nom: "Facebook", d: "M14 8.5V6.8c0-.8.2-1.3 1.4-1.3H17V2.6c-.3 0-1.3-.1-2.5-.1-2.5 0-4.1 1.5-4.1 4.2v1.8H7.7v3.1h2.7v8h3.6v-8h2.6l.4-3.1h-3Z" },
+  instagram: { nom: "Instagram", d: "M12 7.4a4.6 4.6 0 1 0 0 9.2 4.6 4.6 0 0 0 0-9.2Zm0 7.6a3 3 0 1 1 0-6 3 3 0 0 1 0 6Zm4.8-8.9a1.1 1.1 0 1 0 0 2.2 1.1 1.1 0 0 0 0-2.2ZM12 4.6c2.4 0 2.7 0 3.6.1 2.4.1 3.6 1.3 3.7 3.7.1.9.1 1.2.1 3.6s0 2.7-.1 3.6c-.1 2.4-1.3 3.6-3.7 3.7-.9.1-1.2.1-3.6.1s-2.7 0-3.6-.1c-2.4-.1-3.6-1.3-3.7-3.7-.1-.9-.1-1.2-.1-3.6s0-2.7.1-3.6C4.7 6 5.9 4.8 8.4 4.7c.9-.1 1.2-.1 3.6-.1ZM12 3c-2.4 0-2.8 0-3.7.1-3.3.1-5.1 1.9-5.2 5.2C3 9.2 3 9.6 3 12s0 2.8.1 3.7c.1 3.3 1.9 5.1 5.2 5.2.9.1 1.3.1 3.7.1s2.8 0 3.7-.1c3.3-.1 5.1-1.9 5.2-5.2.1-.9.1-1.3.1-3.7s0-2.8-.1-3.7c-.1-3.3-1.9-5.1-5.2-5.2C14.8 3 14.4 3 12 3Z" },
+};
+// Icônes des réseaux sociaux (seulement celles dont l'adresse est renseignée).
+const liensSociaux = (cls) =>
+  SOCIAUX_ACTIFS.length
+    ? `<ul class="sociaux ${cls}">${SOCIAUX_ACTIFS.map(([k, u]) => `<li><a href="${esc(u)}" target="_blank" rel="noopener" aria-label="${esc(S.nom)} sur ${ICONES_SOCIAUX[k].nom} (nouvel onglet)"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="currentColor" d="${ICONES_SOCIAUX[k].d}"/></svg></a></li>`).join("")}</ul>`
+    : "";
 const AUJOURDHUI = new Date().toISOString().slice(0, 10);
 // sharp (npm install --prefix scripts) sert aux images de partage ; sans lui, og.png commun.
 const OG_DISPO = await import("sharp").then(() => true, () => false);
@@ -279,6 +297,7 @@ function head(p) {
     p.description = META[p.path].d;
   }
   p.title = titrePage(p.title);
+  if (!p.jsonld.some((o) => o["@type"] === "RoofingContractor")) p.jsonld.unshift(ldEntreprise());
   const og = imageOG(p);
   const ld = p.jsonld.map((o) => `  <script type="application/ld+json">${JSON.stringify(o)}</script>`).join("\n");
   // Accueil : la photo de la maison est l'élément principal, chargée en priorité (taille adaptée à l'écran).
@@ -355,6 +374,7 @@ function entete(id) {
     <div class="conteneur entete__ligne">
       ${logo()}
       <nav class="nav" aria-label="Navigation principale"><ul>${liens}</ul></nav>
+      ${liensSociaux("sociaux--entete")}
       <a class="entete__tel" href="${TEL}" data-track="call">${ico("tel")}<span class="mono">${esc(S.telephone)}</span></a>
       <a class="bouton bouton--orange entete__devis" href="/devis-toiture" data-track="devis">Devis gratuit</a>
       <button class="entete__menu" type="button" aria-expanded="false" aria-controls="menu"><span class="entete__burger" aria-hidden="true"></span>Menu</button>
@@ -431,6 +451,7 @@ function pied() {
       <div class="pied__marque">
         ${logo(true)}
         <p>${esc(S.activite)} à ${esc(a.ville)}, intervention dans tout l'Hérault. ${esc(S.slogan)} pour les particuliers, les syndics et les professionnels.</p>
+        ${liensSociaux("sociaux--pied")}
       </div>
       <div>
         <h2>Nous joindre</h2>
@@ -502,7 +523,7 @@ function ldEntreprise() {
     ...(fiable("legal.siret") ? { identifier: { "@type": "PropertyValue", propertyID: "SIRET", value: S.legal.siret.replace(/\s/g, "") } } : {}),
     ...(S.legal.tva ? { vatID: S.legal.tva } : {}),
     image: BASE + "/og.png",
-    telephone: fiable("telephone") && TEL_INTERNATIONAL,
+    telephone: fiable("telephone") && tel,
     email: CONTACT_EMAIL,
     address: {
       "@type": "PostalAddress",
@@ -519,7 +540,7 @@ function ldEntreprise() {
       : undefined,
     slogan: S.slogan,
     foundingDate: fiable("fondation"),
-    priceRange: fiable("gammePrix"),
+    priceRange: fiable("gammePrix") || "€€",
     paymentAccepted: fiable("paiements") && S.paiements.join(", "),
     knowsAbout: ["Couverture", "Zinguerie", "Charpente", "Tuiles canal", "Gouttières en zinc", ...SERVICES_PAGES.map((s) => s.nom)],
     knowsLanguage: "fr",
@@ -533,9 +554,11 @@ function ldEntreprise() {
       ],
     },
   };
-  const sameAs = ["googleBusiness", "facebook", "instagram", "pagesJaunes"].map((k) => fiable("liens." + k)).filter(Boolean);
+  const sameAs = [...SOCIAUX_ACTIFS.map(([, u]) => u), fiable("liens.pagesJaunes")].filter(Boolean);
   if (sameAs.length) o.sameAs = sameAs;
-  if (AVIS_DATES) {
+  // Pas de note moyenne (AggregateRating) ni d'avis balisés : les avis affichés sont recueillis
+  // par l'entreprise elle-même, ce que Google n'accepte pas pour les résultats enrichis.
+  if (false) {
     const moy = AVIS.reduce((t, a) => t + a.note, 0) / AVIS.length;
     o.aggregateRating = { "@type": "AggregateRating", ratingValue: moy.toFixed(1), reviewCount: AVIS.length, bestRating: 5, worstRating: 1 };
     o.review = AVIS.slice(0, 10).map((a) => ({

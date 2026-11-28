@@ -1272,3 +1272,11 @@ main { position: relative; z-index: 1; }
 .liens-404 a { color: var(--casse); text-decoration: underline; text-underline-offset: 3px; }
 .liens-404 a:hover, .liens-404 a:focus-visible { color: var(--orange-clair); }
 
+/* ---------- Réseaux sociaux (affichés seulement si les liens sont renseignés) ---------- */
+.sociaux { display: flex; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.sociaux a { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; color: inherit; }
+.sociaux a:hover, .sociaux a:focus-visible { color: var(--orange); }
+.sociaux--entete { display: none; }
+@media (min-width: 1100px) { .sociaux--entete { display: flex; } }
+.sociaux--pied { margin-top: 16px; color: var(--casse); }
+
