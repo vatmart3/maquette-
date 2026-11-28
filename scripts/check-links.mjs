@@ -18,7 +18,7 @@ import { fileURLToPath } from "node:url";
 const RACINE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SITE_URL = "https://couvreurproximite34.fr";
 const EXCLUS = new Set([".git", "node_modules", "scripts", "docs", "api"]);
-const INTERDITS = [/arveo/i, /vercel\.app/i, /maquette-t8eb/i];
+const INTERDITS = [/arv[eé]o/i, /vercel\.app/i, /maquette-t8eb/i];
 
 const erreurs = [];
 const err = (fichier, msg) => erreurs.push(`${fichier} : ${msg}`);

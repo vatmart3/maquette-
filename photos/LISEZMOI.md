@@ -1,6 +1,6 @@
 # Photos de chantier (originaux)
 
-Déposez ici les photos **réelles** des chantiers ARVÉO (JPEG, PNG, HEIC converti, WebP).
+Déposez ici les photos **réelles** des chantiers Couvreur Proximité 34 (JPEG, PNG, HEIC converti, WebP).
 Nommez chaque fichier ainsi :
 
     commune__service__description-courte.jpg

@@ -36,6 +36,9 @@ const BASE = SITE_URL;
 const AUJOURDHUI = new Date().toISOString().slice(0, 10);
 // sharp (npm install --prefix scripts) sert aux images de partage ; sans lui, og.png commun.
 const OG_DISPO = await import("sharp").then(() => true, () => false);
+// Outils d'optimisation (npm install --prefix scripts) : minification JS/CSS et CSS critique.
+const ESBUILD = await import("esbuild").then((m) => m.default || m, () => null);
+const BEASTIES = await import("beasties").then((m) => m.default, () => null);
 const OG_A_GENERER = [];
 const avertissements = [];
 // Version de chaque fichier (empreinte du contenu) ajoutée à son adresse : à chaque modification,
@@ -211,12 +214,23 @@ const avecRealisations = CHANTIERS.length > 0;
 // Photo de l'accueil : tailles disponibles et largeur affichée (moitié droite sur ordinateur, pleine largeur sur téléphone).
 // Photo de l'accueil (2000 × 945), en plein écran : sur un téléphone en hauteur, elle est affichée
 // à la hauteur de l'écran (donc plus large que lui).
-const SRCSET_MAISON3D = "/img/maison-plain-pied-800.webp 800w, /img/maison-plain-pied-1200.webp 1200w";
+const MAISON = "maison-toiture-tuiles-couvreur-frontignan";
+const LOGO = "logo-couvreur-proximite-34-frontignan";
+const srcset = (nom, largeurs, ext) => largeurs.map((w) => `/img/${nom}-${w}.${ext} ${w}w`).join(", ");
+const SRCSET_MAISON3D = srcset(MAISON, [800, 1200], "webp");
+const SRCSET_MAISON3D_AVIF = srcset(MAISON, [800, 1200], "avif");
+const ALT_LOGO = "Couvreur Proximité 34 – couvreur à Frontignan";
+
+// Image déclinée en AVIF et WebP par scripts/images.mjs : <picture> avec repli WebP,
+// largeur et hauteur explicites (pas de décalage de mise en page).
+function picture(nom, largeurs, { sizes, alt = "", l, h, cls = "", attrs = "", defaut = largeurs[largeurs.length - 1] }) {
+  return `<picture><source type="image/avif" srcset="${srcset(nom, largeurs, "avif")}" sizes="${sizes}"><img${cls ? ` class="${cls}"` : ""} src="/img/${nom}-${defaut}.webp" srcset="${srcset(nom, largeurs, "webp")}" sizes="${sizes}" width="${l}" height="${h}" alt="${esc(alt)}"${attrs}></picture>`;
+}
 const SIZES_MAISON3D = "(min-width: 860px) 52vw, 92vw";
 
 function logo(clair = false) {
   return `<a class="logo${clair ? " logo--clair" : ""}" href="/">
-        <img class="logo__marque" src="/img/logo-cp34-140.webp" srcset="/img/logo-cp34-140.webp 140w, /img/logo-cp34.webp 240w" sizes="66px" alt="" role="presentation" width="68" height="31">
+        ${picture(LOGO, [140, 280], { sizes: "66px", alt: ALT_LOGO, l: 68, h: 31, cls: "logo__marque", defaut: 140, attrs: clair ? ' loading="lazy" decoding="async"' : "" })}
         <span class="logo__texte"><span class="logo__nom">${esc(S.nom)}</span><span class="logo__activite">Couvreur à ${esc(S.adresse.ville)} <span class="logo__suite">&amp; ses alentours</span></span></span>
       </a>`;
 }
@@ -268,7 +282,7 @@ function head(p) {
     ? `
   <script>try{if(!sessionStorage.getItem("cp34-vu")&&!matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("avec-chargement");sessionStorage.setItem("cp34-vu","1")}}catch(e){}</script>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="preload" as="image" href="/img/maison-plain-pied-1200.webp" imagesrcset="${SRCSET_MAISON3D}" imagesizes="${SIZES_MAISON3D}" fetchpriority="high">
+  <link rel="preload" as="image" type="image/avif" href="/img/${MAISON}-1200.avif" imagesrcset="${SRCSET_MAISON3D_AVIF}" imagesizes="${SIZES_MAISON3D}" fetchpriority="high">
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>`
     : "";
   return `<!doctype html>
@@ -290,7 +304,6 @@ function head(p) {
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" sizes="180x180">
   <link rel="manifest" href="/site.webmanifest">
   <link rel="preload" href="/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/styles.min.css?v=${VERSION["styles.css"]}">
   <meta property="og:type" content="${p.article ? "article" : "website"}">
   <meta property="og:locale" content="fr_FR">
@@ -306,11 +319,11 @@ function head(p) {
   <meta property="article:modified_time" content="${p.article.maj || p.article.publie}">` : ""}
   <meta name="twitter:card" content="summary_large_image">${scene}
 ${ld}
-  <script src="/config.js?v=${VERSION["config.js"]}" defer></script>
-  <script src="/site.js?v=${VERSION["site.js"]}" defer></script>${statistiques()}
+  <script src="/config.min.js?v=${VERSION["config.js"]}" defer></script>
+  <script src="/site.min.js?v=${VERSION["site.js"]}" defer></script>${statistiques()}
 </head>
 <body data-page="${p.id}"${p.sombre ? ' class="page-sombre"' : ""}>
-${p.photoAccroche ? `  <div class="chargement" aria-hidden="true"><img src="/img/logo-cp34-420.webp" width="140" height="64" alt=""><span class="chargement__barre"><span></span></span></div>
+${p.photoAccroche ? `  <div class="chargement" aria-hidden="true">${picture(LOGO, [140, 280, 420], { sizes: "140px", l: 140, h: 64 })}<span class="chargement__barre"><span></span></span></div>
   <script>(function(){var h=document.documentElement;if(!h.classList.contains("avec-chargement"))return;var t0=Date.now(),fini=false;function fin(){if(fini)return;fini=true;setTimeout(function(){h.classList.add("chargement-fini");setTimeout(function(){h.classList.remove("avec-chargement")},400)},Math.max(0,550-(Date.now()-t0)))}window.addEventListener("load",fin);document.addEventListener("arv:pret",fin);setTimeout(fin,1300)})();</script>
 ` : ""}  <a class="evitement" href="#contenu">Aller au contenu</a>
 ${bandeauUrgence()}
@@ -454,7 +467,7 @@ function pied() {
     </div>
   </footer>
 
-  <a class="logo-fixe" href="/" aria-label="${esc(S.nom)}, retour à l'accueil"><img src="/img/logo-cp34-140.webp" srcset="/img/logo-cp34-140.webp 140w, /img/logo-cp34.webp 240w" sizes="64px" alt="" role="presentation" width="64" height="29"></a>
+  <a class="logo-fixe" href="/" aria-label="${esc(S.nom)}, retour à l'accueil">${picture(LOGO, [140, 280], { sizes: "64px", alt: ALT_LOGO, l: 64, h: 29, defaut: 140, attrs: ' loading="lazy" decoding="async"' })}</a>
 
 `;
 }
@@ -853,7 +866,11 @@ function cartesServices(exclure, proche) {
 // Accueil : services regroupés en trois familles, chacune avec un petit dessin au trait.
 // Pictogrammes des familles de services (images fournies, fond transparent)
 const PICTOS = Object.fromEntries(
-  ["reparer", "renover", "entretenir"].map((k) => [k, `<img class="famille__picto" src="/img/picto-${k}-96.webp" srcset="/img/picto-${k}-96.webp 96w, /img/picto-${k}-192.webp 192w" sizes="68px" width="96" height="96" alt="" role="presentation" loading="lazy" decoding="async">`])
+  [
+    ["reparer", "picto-reparation-toiture"],
+    ["renover", "picto-renovation-toiture"],
+    ["entretenir", "picto-entretien-toiture"],
+  ].map(([k, nom]) => [k, picture(nom, [96, 192], { sizes: "68px", l: 96, h: 96, cls: "famille__picto", defaut: 96, attrs: ' role="presentation" loading="lazy" decoding="async"' })])
 );
 const FAMILLES = [
   { cle: "reparer", titre: "Réparer", texte: "Fuite, tuile cassée, coup de vent.", services: ["depannage", "recherche-de-fuite", "remplacement-tuiles", "bachage-urgence"] },
@@ -1046,9 +1063,9 @@ const ZONES_VISITE = [
     `
     <section class="immersion" data-visite id="visite" aria-labelledby="titre-page">
       <div class="immersion__collant">
-        <figure class="immersion__scene avant-apres" data-avant-apres data-immersion="/immersion.js?v=${VERSION["immersion.js"]}" style="--pos: 50%">
+        <figure class="immersion__scene avant-apres" data-avant-apres data-immersion="/immersion.min.js?v=${VERSION["immersion.js"]}" style="--pos: 50%">
           <div class="avant-apres__cadre">
-            <img class="immersion__photo" src="/img/maison-plain-pied-1200.webp" srcset="${SRCSET_MAISON3D}" sizes="${SIZES_MAISON3D}" width="1200" height="949" alt="Maison de plain-pied aux murs blancs, toiture à deux pans en tuiles noires, vue en perspective" fetchpriority="high" decoding="async">
+            ${picture(MAISON, [800, 1200], { sizes: SIZES_MAISON3D, l: 1200, h: 949, cls: "immersion__photo", alt: "Maison de plain-pied aux murs blancs, toiture à deux pans en tuiles noires, vue en perspective", attrs: ' fetchpriority="high" decoding="async"' })}
             <span class="avant-apres__etiquette avant-apres__etiquette--avant" aria-hidden="true">Avant</span>
             <span class="avant-apres__etiquette avant-apres__etiquette--apres" aria-hidden="true">Après</span>
             <span class="avant-apres__barre" aria-hidden="true"><span class="avant-apres__poignee">${ico("fleche")}${ico("fleche")}</span></span>
@@ -2045,7 +2062,9 @@ ${bandeauCta()}` +
 /* --- Feuille de style compressée (styles.css reste la source à modifier) --- */
 
 {
-  const css = fs
+  const css = ESBUILD
+    ? ESBUILD.transformSync(fs.readFileSync(path.join(RACINE, "styles.css"), "utf8"), { loader: "css", minify: true, target: ["chrome100", "safari15", "firefox100"] }).code
+    : fs
     .readFileSync(path.join(RACINE, "styles.css"), "utf8")
     .replace(/\/\*[\s\S]*?\*\//g, "")
     .replace(/\s+/g, " ")
@@ -2104,6 +2123,62 @@ const QA = (() => {
   return controler(GENERES, { base: BASE, sitemap: pages.map((p) => p.path), existe });
 })();
 
+
+/* --- Optimisation finale : JS minifié, CSS critique dans la page, HTML compacté --- */
+
+{
+  // Scripts minifiés (les sources lisibles restent site.js, config.js et immersion.js).
+  for (const [src, min] of [["site.js", "site.min.js"], ["config.js", "config.min.js"], ["immersion.js", "immersion.min.js"]]) {
+    const code = fs.readFileSync(path.join(RACINE, src), "utf8");
+    const sortie = ESBUILD ? ESBUILD.transformSync(code, { loader: "js", minify: true, format: src === "immersion.js" ? "esm" : undefined, target: "es2019", legalComments: "none" }).code : code;
+    fs.writeFileSync(path.join(RACINE, min), sortie);
+  }
+
+  // CSS critique : les règles utiles au premier affichage sont copiées dans la page, la feuille
+  // complète est chargée sans bloquer le rendu. Les classes posées par JavaScript au chargement
+  // (écran de chargement, 3D) sont toujours gardées.
+  const critique = BEASTIES
+    ? new BEASTIES({
+        path: RACINE,
+        publicPath: "/",
+        preload: false,
+        pruneSource: false,
+        reduceInlineStyles: false,
+        mergeStylesheets: true,
+        inlineFonts: false,
+        preloadFonts: false,
+        fonts: false,
+        compress: true,
+        logLevel: "silent",
+        allowRules: [/avec-chargement/, /chargement/, /immersion-active/, /est-3d/, /picture/],
+      })
+    : null;
+  const compacter = (html) => {
+    // Retire l'indentation (un retour à la ligne reste un espace : le texte ne change pas),
+    // sauf dans <pre> et <textarea>.
+    const blocs = [];
+    const garde = html.replace(/<(pre|textarea)\b[\s\S]*?<\/\1>/g, (m) => `\u0000${blocs.push(m) - 1}\u0000`);
+    return garde.replace(/\n[ \t]+/g, "\n").replace(/\n{2,}/g, "\n").replace(/\u0000(\d+)\u0000/g, (_, i) => blocs[i]);
+  };
+  for (const g of GENERES) {
+    const f = path.join(RACINE, g.fichier);
+    let html = fs.readFileSync(f, "utf8");
+    if (critique) {
+      // beasties lit la feuille sur le disque : on retire le paramètre de version le temps du calcul.
+      const lien = html.match(/<link rel="stylesheet" href="(\/styles\.min\.css)\?v=([\w]+)">/);
+      if (lien) {
+        html = await critique.process(html.replace(lien[0], `<link rel="stylesheet" href="${lien[1]}">`));
+        const url = `${lien[1]}?v=${lien[2]}`;
+        html = html.replace(
+          `<link rel="stylesheet" href="${lien[1]}">`,
+          `<link rel="preload" href="${url}" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="${url}"></noscript>`
+        );
+      }
+    }
+    fs.writeFileSync(f, compacter(html));
+  }
+  if (!ESBUILD || !BEASTIES) avertissements.push("Optimisation partielle : lancez « npm install --prefix scripts » (esbuild, beasties) puis relancez le build.");
+}
 
 /* --- Bilan --- */
 

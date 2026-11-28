@@ -1,5 +1,5 @@
 /* ==========================================================================
-   ARVÉO — couvreur zingueur à Frontignan
+   Couvreur Proximité 34 — couvreur zingueur à Frontignan
    Charte : bleu ardoise, orange, blanc cassé, gris clair, anthracite.
    Manrope (titres), Inter (texte), DM Mono (données).
    ========================================================================== */
@@ -8,6 +8,10 @@
 @font-face { font-family: "Inter"; src: url("/fonts/inter.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
 @font-face { font-family: "DM Mono"; src: url("/fonts/dmmono-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
 @font-face { font-family: "DM Mono"; src: url("/fonts/dmmono-500.woff2") format("woff2"); font-weight: 500; font-display: swap; }
+
+/* Les <picture> (AVIF + repli WebP) ne créent pas de boîte : l'image garde sa place dans la grille. */
+picture { display: contents; }
+picture > source { display: none; }
 
 :root {
   /* Charte */
