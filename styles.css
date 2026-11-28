@@ -1260,3 +1260,11 @@ main { position: relative; z-index: 1; }
 @keyframes chargement-barre { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @keyframes chargement-logo { from { opacity: 0; transform: scale(0.92); } }
 @keyframes chargement-sortie { to { opacity: 0; visibility: hidden; } }
+
+/* ---------- Page 404 : liens utiles ---------- */
+.liens-404 { margin-top: 28px; }
+.liens-404 p { margin: 0 0 10px; font-weight: 700; color: var(--casse); }
+.liens-404 ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px 24px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.liens-404 a { color: var(--casse); text-decoration: underline; text-underline-offset: 3px; }
+.liens-404 a:hover, .liens-404 a:focus-visible { color: var(--orange-clair); }
+

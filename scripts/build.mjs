@@ -285,8 +285,10 @@ function head(p) {
   <meta name="geo.placename" content="${esc(S.adresse.ville)}">
   <meta name="geo.position" content="${S.adresse.latitude};${S.adresse.longitude}">
   <meta name="ICBM" content="${S.adresse.latitude}, ${S.adresse.longitude}">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" sizes="180x180">
+  <link rel="manifest" href="/site.webmanifest">
   <link rel="preload" href="/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/styles.min.css?v=${VERSION["styles.css"]}">
@@ -2023,6 +2025,15 @@ ${bandeauCta()}` +
           <p class="chapeau">Elle n'existe pas ou a été déplacée. Votre toiture, elle, peut compter sur nous.</p>
           ${actions({ clair: true })}
           <p><a class="lien-fleche lien-fleche--clair" href="/">Retour à l'accueil ${ico("fleche")}</a></p>
+          <nav class="liens-404" aria-label="Pages utiles">
+            <p>Vous cherchiez peut-être</p>
+            <ul>
+              <li><a href="/devis-toiture">Demander un devis gratuit de toiture</a></li>
+              <li><a href="/depannage-toiture">Dépannage de toiture en urgence</a></li>
+              ${SERVICES_PAGES.map((s) => `<li><a href="${s.path}">${esc(s.nom)}</a></li>`).join("\n              ")}
+              <li><a href="/zone-intervention">Communes où nous intervenons</a></li>
+            </ul>
+          </nav>
         </div>
       </div>
     </section>` +
