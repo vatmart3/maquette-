@@ -101,155 +101,33 @@
     el.min = aujourdhuiIso;
   });
 
-  /* ---------- Accueil : comparaison avant / après ---------- */
+  /* ---------- Accueil : comparateurs avant / après ---------- */
+  // Le curseur se déplace au doigt ou à la souris sur toute l'image, et au clavier
+  // (flèches) grâce au champ de type range, gardé pour l'accessibilité.
 
-  document.querySelectorAll("[data-avant-apres]").forEach(function (fig) {
-    var curseur = fig.querySelector(".avant-apres__curseur");
-    if (!curseur) return;
-    // ordinateur : la barre démarre à droite du panneau des interventions, sur la zone visée
-    if (fig.closest(".immersion") && window.matchMedia("(min-width: 860px)").matches) curseur.value = 64;
+  document.querySelectorAll(".comparateur").forEach(function (fig) {
+    var cadre = fig.querySelector(".comparateur__cadre");
+    var curseur = fig.querySelector(".comparateur__curseur");
+    if (!cadre || !curseur) return;
     var maj = function () { fig.style.setProperty("--pos", curseur.value + "%"); };
+    var depuis = function (e) {
+      var b = cadre.getBoundingClientRect();
+      curseur.value = Math.round(Math.max(0, Math.min(100, ((e.clientX - b.left) / b.width) * 100)));
+      maj();
+    };
+    var actif = false;
+    cadre.addEventListener("pointerdown", function (e) {
+      actif = true;
+      if (cadre.setPointerCapture) cadre.setPointerCapture(e.pointerId);
+      depuis(e);
+    });
+    cadre.addEventListener("pointermove", function (e) { if (actif) depuis(e); });
+    ["pointerup", "pointercancel", "lostpointercapture"].forEach(function (t) {
+      cadre.addEventListener(t, function () { actif = false; });
+    });
     curseur.addEventListener("input", maj);
     maj();
   });
-
-  /* ---------- Accueil : la maison, puis les 5 interventions ---------- */
-  // La section reste à l'écran. Le défilement fait avancer un parcours de 0 à 1 :
-  //   0 → 0,07 : accroche (la maison à côté du titre) ;
-  //   0,07 → 0,93 : la caméra passe d'une vue à l'autre en suivant le doigt, une intervention
-  //   par vue (déplacement sur les 45 premiers pourcents de chaque portion, puis arrêt) ;
-  //   0,93 → 1 : fin de la visite, la maison revient en perspective avant de quitter l'écran.
-  // Avec une puce graphique, immersion.js affiche la maison en 3D (événement arv:avance) ;
-  // sinon, l'image de la maison reste affichée et seules les fiches changent.
-
-  var visite = document.querySelector("[data-visite]");
-  if (visite) {
-    var fiches = visite.querySelectorAll(".fiche");
-    var reperes = visite.querySelectorAll(".visite__reperes button");
-    var figure = visite.querySelector("[data-avant-apres]");
-    var curseurAA = visite.querySelector(".avant-apres__curseur");
-    var collant = visite.querySelector(".immersion__collant");
-    var n = fiches.length;
-    var DEBUT_ZONES = 0.07, FIN_ZONES = 0.93;
-    var zone = null, phase = null;
-
-    var zoneDe = function (p) {
-      if (p < DEBUT_ZONES || p >= FIN_ZONES) return -1;
-      return Math.min(n - 1, Math.floor(((p - DEBUT_ZONES) / (FIN_ZONES - DEBUT_ZONES)) * n));
-    };
-
-    var majFiches = function (k) {
-      if (k === zone) return;
-      zone = k;
-      var f = Math.max(0, k);
-      fiches.forEach(function (el, i) { el.classList.toggle("est-active", i === f); });
-      reperes.forEach(function (b, i) { b.setAttribute("aria-current", i === k ? "true" : "false"); });
-      document.dispatchEvent(new CustomEvent("arv:zone", { detail: { zone: k } }));
-    };
-    // Démonstration avant / après : à chaque intervention, la barre glisse vers la droite puis la
-    // gauche avant de revenir, tant que le visiteur ne l'a pas prise en main.
-    var touche = false, balayage = 0, balayee = -1;
-    if (curseurAA) ["pointerdown", "keydown", "touchstart"].forEach(function (ev) {
-      curseurAA.addEventListener(ev, function () { touche = true; cancelAnimationFrame(balayage); }, { passive: true });
-    });
-    var balayer = function () {
-      if (!curseurAA || touche || reduit || !(figure && figure.classList.contains("est-3d"))) return;
-      cancelAnimationFrame(balayage);
-      var depart = Number(curseurAA.value), t0 = 0, DUREE = 2200;
-      var pas = function (t) {
-        if (!t0) t0 = t;
-        var u = Math.min(1, (t - t0) / DUREE);
-        // repos, glisse vers 88 %, puis vers 14 %, retour au point de départ
-        var v = u < 0.15 ? depart : u < 0.45 ? depart + (88 - depart) * lisse((u - 0.15) / 0.3) : u < 0.8 ? 88 + (14 - 88) * lisse((u - 0.45) / 0.35) : 14 + (depart - 14) * lisse((u - 0.8) / 0.2);
-        curseurAA.value = String(Math.round(v * 10) / 10);
-        curseurAA.dispatchEvent(new Event("input"));
-        if (u < 1) balayage = requestAnimationFrame(pas);
-      };
-      balayage = requestAnimationFrame(pas);
-    };
-    var lisse = function (x) { x = Math.min(1, Math.max(0, x)); return x * x * (3 - 2 * x); };
-
-    // hauteur du panneau des interventions (téléphone : la poignée de la barre se place au-dessus)
-    var panneau = visite.querySelector(".immersion__visite");
-    var majPanneau = function () { if (panneau) collant.style.setProperty("--panneau", panneau.offsetHeight + "px"); };
-    if (panneau && "ResizeObserver" in window) new ResizeObserver(majPanneau).observe(panneau);
-    majPanneau();
-
-    var majPhase = function (p) {
-      // logo flottant masqué tant que la section occupe l'écran (il recouvrait le panneau)
-      document.documentElement.classList.toggle("immersion-active", p < 0.995);
-      var ph = p < DEBUT_ZONES ? "accroche" : p < FIN_ZONES ? "visite" : "fin";
-      if (ph === phase) return;
-      phase = ph;
-      visite.setAttribute("data-phase", ph);
-      if (curseurAA) curseurAA.tabIndex = ph === "visite" ? 0 : -1;
-      if (ph !== "visite") cancelAnimationFrame(balayage);
-    };
-
-    var mesure = null;
-    var position = function () {
-      if (!mesure) {
-        var haut = parseFloat(getComputedStyle(collant).top) || 0;
-        mesure = { debut: visite.offsetTop - haut, course: Math.max(1, visite.offsetHeight - collant.offsetHeight) };
-      }
-      return mesure;
-    };
-    if ("ResizeObserver" in window) {
-      var ro = new ResizeObserver(function () { mesure = null; });
-      ro.observe(visite);
-      ro.observe(document.body);
-    }
-    var depuisScroll = function () {
-      var q = position();
-      var p = Math.min(1, Math.max(0, (window.scrollY - q.debut) / q.course));
-      majPhase(p);
-      var k = zoneDe(p);
-      majFiches(k);
-      // démonstration avant / après une fois la caméra arrivée sur l'intervention
-      if (k >= 0) {
-        var local = ((p - DEBUT_ZONES) / (FIN_ZONES - DEBUT_ZONES)) * n - k;
-        if (local >= 0.5 && balayee !== k) { balayee = k; balayer(); }
-      }
-      document.dispatchEvent(new CustomEvent("arv:avance", { detail: { p: p, zone: k } }));
-    };
-    var attente = false;
-    window.addEventListener("scroll", function () {
-      if (attente) return;
-      attente = true;
-      requestAnimationFrame(function () { attente = false; depuisScroll(); });
-    }, { passive: true });
-    window.addEventListener("resize", function () { mesure = null; depuisScroll(); });
-    document.addEventListener("arv:pret", depuisScroll);
-    depuisScroll();
-
-    reperes.forEach(function (r, k) {
-      r.addEventListener("click", function () {
-        var q = position();
-        var cible = DEBUT_ZONES + ((k + 0.5) / n) * (FIN_ZONES - DEBUT_ZONES);
-        window.scrollTo({ top: q.debut + q.course * cible, behavior: reduit ? "auto" : "smooth" });
-      });
-    });
-
-    // Maison 3D : seulement avec une vraie puce graphique (sans elle, rendu logiciel trop lent).
-    var source3d = figure && figure.getAttribute("data-immersion");
-    var puce = function () {
-      try {
-        var gl = document.createElement("canvas").getContext("webgl");
-        if (!gl) return false;
-        var ext = gl.getExtension("WEBGL_debug_renderer_info");
-        var nom = String(gl.getParameter(ext ? ext.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
-        var perte = gl.getExtension("WEBGL_lose_context");
-        if (perte) perte.loseContext();
-        return !/swiftshader|llvmpipe|softpipe|software/i.test(nom);
-      } catch (e) { return false; }
-    };
-    if (source3d && HTMLScriptElement.supports && HTMLScriptElement.supports("importmap") && puce()) {
-      var charger = function () { try { new Function("u", "return import(u)")(source3d).catch(function () {}); } catch (e) {} };
-      var ensuite = function () { (window.requestIdleCallback || setTimeout)(charger, { timeout: 800 }); };
-      if (document.readyState === "complete") ensuite();
-      else window.addEventListener("load", ensuite, { once: true });
-    }
-  }
 
   /* ---------- Filtres des réalisations ---------- */
 

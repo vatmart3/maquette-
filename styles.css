@@ -381,94 +381,58 @@ main { position: relative; z-index: 1; }
 .menu a[aria-current="page"] { color: var(--orange-texte); }
 .menu__horaires { margin: 0; color: var(--texte-2); font-size: 0.9rem; }
 
-/* ---------- Accueil : la maison en plein écran, puis la visite au défilement ---------- */
+/* ---------- Accueil ---------- */
 
-/* La section reste à l'écran pendant tout le défilement : accroche, puis
-   les 5 interventions. Sa hauteur fixe la longueur du parcours. */
-.immersion { position: relative; height: 1100svh; background: var(--casse); }
-.immersion__collant { position: sticky; top: var(--entete); height: calc(100svh - var(--entete)); overflow: hidden; }
-
-.immersion__scene { position: absolute; inset: 0; margin: 0; }
-.immersion__scene .avant-apres__cadre { position: absolute; inset: 0; overflow: hidden; touch-action: pan-y; }
-/* image de la maison (affichée tout de suite, puis remplacée par la 3D) : à droite du titre */
-.immersion__photo { position: absolute; top: 6%; right: max(var(--marge), calc((100% - var(--largeur)) / 2)); width: min(54%, 760px); height: 88%; object-fit: contain; object-position: 50% 50%; mix-blend-mode: multiply; -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%); mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%); transition: opacity 0.6s ease; }
-.avant-apres__3d { display: none; }
-.est-3d .avant-apres__3d { position: absolute; inset: 0; display: block; width: 100%; height: 100%; animation: apparition-3d 0.7s ease; }
-@keyframes apparition-3d { from { opacity: 0; } }
-.est-3d .immersion__photo { opacity: 0; }
-/* sans 3D, pas de comparaison avant / après */
-.avant-apres:not(.est-3d) .avant-apres__barre, .avant-apres:not(.est-3d) .avant-apres__etiquette, .avant-apres:not(.est-3d) .avant-apres__curseur, .avant-apres:not(.est-3d) figcaption { display: none; }
-
-/* comparaison avant / après : seulement pendant la visite */
-.avant-apres__barre { position: absolute; top: 0; bottom: 0; left: var(--pos); width: 3px; margin-left: -1.5px; background: #fff; box-shadow: 0 0 12px rgb(0 0 0 / 0.35); pointer-events: none; }
-.avant-apres__poignee { position: absolute; top: 50%; left: 50%; display: flex; align-items: center; justify-content: center; gap: 2px; width: 46px; height: 46px; border-radius: 50%; background: var(--orange-action); color: #fff; transform: translate(-50%, -50%); box-shadow: 0 6px 18px -6px rgb(0 0 0 / 0.6); }
-.avant-apres__poignee .ico { width: 15px; height: 15px; }
-.avant-apres__poignee .ico:first-child { transform: scaleX(-1); }
-.avant-apres__etiquette { position: absolute; top: 14px; padding: 5px 11px; border-radius: 999px; background: rgb(31 41 51 / 0.72); color: #fff; font-family: var(--titres); font-size: 0.82rem; font-weight: 700; pointer-events: none; }
-.avant-apres__etiquette--avant { left: 14px; }
-.avant-apres__etiquette--apres { right: 14px; }
-/* accueil : poignée en bas de l'image (la maison reste dégagée), étiquettes de part et d'autre */
-.immersion .avant-apres__poignee { top: auto; bottom: 26px; transform: translateX(-50%); }
-.immersion .avant-apres__etiquette { top: auto; bottom: 34px; left: var(--pos); right: auto; z-index: 1; }
-.immersion .avant-apres__etiquette--avant { transform: translateX(calc(-100% - 32px)); }
-.immersion .avant-apres__etiquette--apres { transform: translateX(32px); }
-.immersion-active .logo-fixe { opacity: 0; pointer-events: none; }
-.avant-apres__curseur { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; -webkit-appearance: none; appearance: none; }
-.avant-apres:has(.avant-apres__curseur:focus-visible) .avant-apres__poignee { outline: 3px solid #fff; outline-offset: 3px; }
-.immersion__scene figcaption { position: absolute; right: 14px; top: 14px; padding: 4px 10px; border-radius: 6px; background: rgb(31 41 51 / 0.66); color: rgb(255 255 255 / 0.9); font-size: 0.76rem; }
-.immersion .avant-apres__barre, .immersion .avant-apres__etiquette, .immersion__scene figcaption { opacity: 0; transition: opacity 0.4s ease; }
-.immersion:not([data-phase="visite"]) .avant-apres__curseur { pointer-events: none; }
-.immersion[data-phase="visite"] .avant-apres__barre, .immersion[data-phase="visite"] .avant-apres__etiquette, .immersion[data-phase="visite"] figcaption { opacity: 1; }
-
-/* nom de la vue (comme sur la planche des plans) */
-.vue-3d { position: absolute; z-index: 2; top: 16px; left: max(var(--marge), calc((100% - var(--largeur)) / 2)); padding: 6px 12px 6px 14px; border-left: 3px solid var(--orange-action); border-radius: 0 6px 6px 0; background: rgb(247 245 240 / 0.92); color: var(--anthracite); font-family: var(--titres); font-size: 0.8rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0; transform: translateY(-6px); transition: opacity 0.35s ease, transform 0.35s ease; pointer-events: none; }
-.vue-3d.est-visible { opacity: 1; transform: none; }
-/* zone signalée : point orange pulsant et étiquette */
-.repere-3d { position: absolute; top: 0; left: 0; z-index: 2; display: none; pointer-events: none; }
-.repere-3d.est-visible { display: block; }
-.repere-3d__point { position: absolute; left: -9px; top: -9px; width: 18px; height: 18px; border: 3px solid #fff; border-radius: 50%; background: var(--orange-action); animation: repere-pulse 1.6s ease-out infinite; }
-.repere-3d__anneau { position: absolute; left: -46px; top: -46px; width: 92px; height: 92px; border: 3px solid #f28a4a; border-radius: 50%; box-shadow: 0 0 0 2px rgb(0 0 0 / 0.15); }
-.repere-3d__nom { position: absolute; left: 0; bottom: 54px; transform: translateX(-50%); padding: 5px 11px; border-radius: 999px; background: var(--orange-action); color: #fff; font-family: var(--titres); font-size: 0.82rem; font-weight: 700; white-space: nowrap; box-shadow: 0 6px 16px -6px rgb(0 0 0 / 0.5); }
-@keyframes repere-pulse { 0% { box-shadow: 0 0 0 0 rgb(240 145 90 / 0.75); } 100% { box-shadow: 0 0 0 18px rgb(240 145 90 / 0); } }
-@media (prefers-reduced-motion: reduce) { .repere-3d__point { animation: none; } .avant-apres__cadre img { transition: none; } }
-
-/* accroche posée sur la photo, comme une couverture de magazine ; s'efface quand on avance */
-.immersion__accroche { position: absolute; inset: 0; z-index: 1; display: flex; flex-direction: column; justify-content: center; padding-bottom: 40px; pointer-events: none; transition: opacity 0.35s ease, transform 0.35s ease; }
-.immersion__accroche::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, var(--casse) 0%, rgb(247 245 240 / 0.92) 32%, rgb(247 245 240 / 0) 52%); }
-.immersion__accroche > * { position: relative; }
-.immersion__accroche .accroche__texte { max-width: 37rem; pointer-events: auto; }
-.immersion__accroche h1 { color: var(--anthracite); }
-.immersion__accroche h1 span { display: block; color: var(--orange-texte); }
-.immersion__accroche .chapeau { margin: 20px 0 28px; color: var(--texte); max-width: 33em; }
-.immersion[data-phase]:not([data-phase="accroche"]) .immersion__accroche { opacity: 0; transform: translateY(-24px); }
-.immersion[data-phase]:not([data-phase="accroche"]) .immersion__accroche * { pointer-events: none !important; }
-.immersion__defiler { position: absolute !important; left: 50%; bottom: 26px; display: flex; align-items: center; gap: 8px; margin: 0; transform: translateX(-50%); padding: 7px 14px; border-radius: 999px; background: rgb(31 41 51 / 0.7); color: #fff; font-family: var(--titres); font-size: 0.85rem; font-weight: 700; }
-.immersion__defiler .ico { width: 14px; height: 14px; transform: rotate(90deg); animation: defiler 1.6s ease-in-out infinite; }
-@keyframes defiler { 50% { transform: rotate(90deg) translateX(4px); } }
-
-@media (min-width: 860px) and (max-height: 820px) {
-  .immersion__accroche { padding-bottom: 40px; }
+/* Bandeau d'accueil : la maison en photo, le texte sur fond ardoise à gauche */
+.une { position: relative; isolation: isolate; overflow: hidden; background: var(--ardoise-fonce); color: #fff; }
+.une__photo img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: 62% 50%; }
+.une::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgb(27 43 55 / 0.95) 0%, rgb(27 43 55 / 0.84) 32%, rgb(27 43 55 / 0.3) 60%, rgb(27 43 55 / 0) 78%), linear-gradient(0deg, rgb(27 43 55 / 0.35), rgb(27 43 55 / 0) 30%); }
+.une__contenu { display: flex; align-items: center; min-height: clamp(520px, 76svh, 780px); padding-block: clamp(48px, 7vw, 96px); }
+.une__texte { max-width: 36rem; }
+.une__surtitre { margin: 0 0 14px; color: var(--orange-clair); font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.une h1 { color: #fff; font-size: clamp(2.3rem, 1.3rem + 2.7vw, 3.6rem); }
+.une h1 span { display: block; color: var(--orange-clair); }
+.une .chapeau { margin: 18px 0 28px; max-width: 32rem; color: var(--texte-clair); }
+.une .note-google { margin-top: 22px; }
+@media (max-width: 859px) {
+  .une::before { display: none; }
+  .une__photo { position: relative; }
+  .une__photo img { position: relative; z-index: auto; height: auto; aspect-ratio: 16 / 10; object-position: 70% 50%; }
+  .une__photo::after { content: ""; position: absolute; inset: auto 0 0 0; height: 45%; background: linear-gradient(0deg, var(--ardoise-fonce), rgb(27 43 55 / 0)); }
+  .une__contenu { position: relative; min-height: 0; margin-top: -36px; padding-block: 0 40px; }
+  .une h1 { font-size: clamp(1.75rem, 7.6vw, 2.3rem); line-height: 1.1; }
+  .une .chapeau { margin: 12px 0 22px; font-size: 1rem; }
+  .une .actions .bouton { width: 100%; }
 }
 
-/* panneau des interventions, pendant la visite */
-.immersion__visite { position: absolute; z-index: 1; left: max(var(--marge), calc((100% - var(--largeur)) / 2)); top: 50%; width: min(400px, 36vw); padding: 24px 26px 22px; border-radius: var(--r-l); background: rgb(31 41 51 / 0.86); color: #fff; box-shadow: 0 24px 50px -24px rgb(0 0 0 / 0.6); opacity: 0; visibility: hidden; transform: translateY(calc(-50% + 18px)); transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s; }
-.immersion[data-phase="visite"] .immersion__visite { opacity: 1; visibility: visible; transform: translateY(-50%); }
-.immersion__visite h2 { margin: 0 0 14px; font-size: clamp(1.3rem, 1.1rem + 0.7vw, 1.7rem); color: #fff; }
+/* Prestations en photo */
+.services-bloc.services-bloc--photos { grid-template-columns: minmax(0, 1fr); }
+.cartes-presta { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 16px; margin: 0; padding: 0; list-style: none; }
+.carte-presta a { position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden; border-radius: var(--r-l); color: #fff; text-decoration: none; box-shadow: var(--ombre); }
+.carte-presta__photo { width: 100%; height: 100%; object-fit: cover; transition: transform 0.45s ease; }
+.carte-presta a:hover .carte-presta__photo, .carte-presta a:focus-visible .carte-presta__photo { transform: scale(1.04); }
+.carte-presta__nom { position: absolute; inset: auto 0 0 0; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 32px 16px 14px; background: linear-gradient(0deg, rgb(27 43 55 / 0.94), rgb(27 43 55 / 0)); font-family: var(--titres); font-size: 1.05rem; font-weight: 700; line-height: 1.2; }
+.carte-presta__nom .ico { flex: none; width: 18px; height: 18px; color: var(--orange-clair); }
+@media (prefers-reduced-motion: reduce) { .carte-presta__photo { transition: none; } }
 
-.visite__reperes { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; margin: 0 0 18px; padding: 0; }
-.visite__reperes button { min-height: 36px; padding: 5px 13px; border: 1px solid rgb(255 255 255 / 0.28); border-radius: 999px; background: none; color: var(--texte-clair); font: inherit; font-family: var(--titres); font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
-.visite__reperes button:hover { border-color: #fff; color: #fff; }
-.visite__reperes button[aria-current="true"] { border-color: var(--orange-action); background: var(--orange-action); color: #fff; }
-.visite__fiches { display: grid; }
-.fiche { grid-area: 1 / 1; color: #fff; opacity: 0; visibility: hidden; transform: translateY(8px); transition: opacity 0.35s ease, transform 0.35s ease, visibility 0.35s; }
-.fiche.est-active { opacity: 1; visibility: inherit; transform: none; }
-.fiche__num { display: block; margin-bottom: 8px; color: var(--orange-clair); font-size: 0.8rem; letter-spacing: 0.04em; }
-.fiche h3 { font-size: clamp(1.3rem, 1.1rem + 0.8vw, 1.7rem); line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 8px; color: #fff; }
-.fiche p { margin: 0 0 16px; color: var(--texte-clair); font-size: 0.95rem; }
-.fiche__aussi a { color: #fff; }
-.fiche__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; }
-.fiche .lien-fleche { color: #fff; }
-.fiche .lien-fleche:hover { color: var(--orange-clair); }
+/* Avant / après : comparateurs à curseur */
+.comparateurs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 24px; margin-top: 28px; }
+.comparateur { margin: 0; }
+.comparateur__cadre { position: relative; aspect-ratio: 4 / 3; overflow: hidden; border-radius: var(--r-l); box-shadow: var(--ombre); cursor: ew-resize; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+.comparateur__cadre img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; -webkit-user-drag: none; }
+.comparateur__avant { clip-path: inset(0 calc(100% - var(--pos, 50%)) 0 0); }
+.comparateur__barre { position: absolute; top: 0; bottom: 0; left: var(--pos, 50%); width: 3px; margin-left: -1.5px; background: #fff; box-shadow: 0 0 8px rgb(0 0 0 / 0.35); pointer-events: none; }
+.comparateur__poignee { position: absolute; top: 50%; left: 50%; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: var(--orange-action); color: #fff; box-shadow: var(--ombre-forte); transform: translate(-50%, -50%); }
+.comparateur__poignee .ico { width: 14px; height: 14px; }
+.comparateur__poignee .ico:first-child { transform: rotate(180deg); }
+.comparateur__etiquette { position: absolute; top: 12px; padding: 4px 10px; border-radius: 999px; background: rgb(27 43 55 / 0.86); color: #fff; font-size: 0.78rem; font-weight: 700; pointer-events: none; }
+.comparateur__etiquette--avant { left: 12px; }
+.comparateur__etiquette--apres { right: 12px; background: var(--orange-action); }
+.comparateur__curseur { position: absolute; width: 1px; height: 1px; margin: 0; opacity: 0; pointer-events: none; }
+.comparateur__cadre:has(.comparateur__curseur:focus-visible) { outline: 3px solid var(--orange); outline-offset: 3px; }
+.comparateur figcaption { margin-top: 12px; color: var(--texte-2); font-size: 0.95rem; }
+.comparateur figcaption strong { color: var(--texte); }
+.comparateur figcaption .lien-fleche { display: inline-flex; margin-left: 4px; }
 
 /* Carte « être rappelé » */
 .formulaire--rappel {
@@ -901,32 +865,6 @@ main { position: relative; z-index: 1; }
   .garanties--clair span::before { background: var(--orange-clair); }
   .garanties span:not(:last-child)::after { display: none; }
 
-  /* accueil : titre en haut, maison dessous ; pendant la visite, panneau compact en bas */
-  .immersion { height: 860svh; }
-  .immersion__accroche { justify-content: flex-start; padding: 18px 0 0; }
-  .immersion__accroche::before { background: linear-gradient(180deg, var(--casse) 0%, rgb(247 245 240 / 0.92) 28%, rgb(247 245 240 / 0) 38%); }
-  .immersion__photo { top: auto; bottom: calc(var(--bandeau) + 60px); left: 6%; right: 6%; width: auto; height: 44%; }
-  .immersion__accroche h1 { font-size: clamp(1.6rem, 7.4vw, 2rem); line-height: 1.12; }
-  .immersion__accroche .chapeau { margin: 10px 0 16px; font-size: 0.92rem; line-height: 1.5; }
-  .immersion__accroche .actions .bouton:not(.bouton--orange), .immersion__accroche .note-google { display: none; }
-  .immersion__accroche .actions .bouton--orange { width: 100%; }
-  .immersion__defiler { white-space: nowrap; bottom: calc(var(--bandeau) + 14px); }
-  .immersion__visite { left: 0; right: 0; top: auto; bottom: 0; width: auto; padding: 12px var(--marge) 14px; border-radius: var(--r-l) var(--r-l) 0 0; background: rgb(31 41 51 / 0.96); transform: translateY(18px); }
-  .immersion[data-phase="visite"] .immersion__visite { transform: none; }
-  .immersion__visite h2 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-  .visite__reperes { flex-wrap: nowrap; overflow-x: auto; margin: 0 calc(-1 * var(--marge)) 10px; padding: 0 var(--marge) 2px; scrollbar-width: none; }
-  .visite__reperes::-webkit-scrollbar { display: none; }
-  .visite__reperes button { flex: none; min-height: 34px; padding: 4px 12px; font-size: 0.8rem; }
-  .fiche__num { display: none; }
-  .fiche h3 { font-size: 1.15rem; margin-bottom: 4px; }
-  .fiche p { margin-bottom: 10px; font-size: 0.86rem; line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .fiche .fiche__aussi { display: none; }
-  .fiche__actions { gap: 8px 18px; }
-  .fiche .bouton--petit { min-height: 40px; }
-  .immersion .avant-apres__poignee { width: 40px; height: 40px; bottom: calc(var(--panneau, 40%) + 12px); }
-  .immersion .avant-apres__etiquette { bottom: calc(var(--panneau, 40%) + 20px); padding: 3px 9px; font-size: 0.72rem; }
-  .immersion__scene figcaption { display: none; }
-  .vue-3d { top: 10px; left: var(--marge); font-size: 0.7rem; }
 
   /* grilles en une colonne */
   .urgence-bloc__grille, .zone, .cta-final__grille, .tete-page__grille, .services-bloc { grid-template-columns: minmax(0, 1fr); gap: 28px; }
@@ -1051,10 +989,6 @@ main { position: relative; z-index: 1; }
 .temoignage figcaption { margin-top: 8px; color: var(--texte-2); }
 @media (max-width: 639px) { .bon__infos { grid-template-columns: 1fr; } }
 
-.fiche p.fiche__aussi { margin: -14px 0 20px; font-size: .95rem; }
-.fiche__aussi a { color: var(--orange-clair); text-underline-offset: 3px; }
-.fiche__aussi a:hover { color: var(--blanc); }
-@media (max-width: 859px) { .fiche p.fiche__aussi { margin: -8px 0 14px; font-size: .88rem; } }
 
 /* Hub Hérault */
 .hub { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 48px; align-items: start; }
@@ -1242,15 +1176,6 @@ main { position: relative; z-index: 1; }
   .accroche .garanties { display: none; }
 }
 
-/* Téléphones peu hauts (iPhone SE…) : accroche et panneau plus compacts */
-@media (max-width: 859px) and (max-height: 700px) {
-  .immersion__accroche h1 { font-size: 1.5rem; }
-  .immersion__accroche .chapeau { display: none; }
-  .immersion__accroche .actions { margin-top: 14px; }
-  .immersion__scene figcaption { display: none; }
-  .fiche h3 { font-size: 1.05rem; }
-  .fiche p { font-size: 0.82rem; }
-}
 
 /* ---------- Écran de chargement (accueil, première visite de la session) ---------- */
 /* Très court : il disparaît dès que la page est chargée (au plus 1,3 s), et de lui-même au bout

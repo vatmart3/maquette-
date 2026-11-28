@@ -128,7 +128,7 @@
       ]
     },
     {
-      "source": "/(styles.min.css|styles.css|site.js|site.min.js|config.js|immersion.js|immersion.min.js)",
+      "source": "/(styles.min.css|styles.css|site.js|site.min.js|config.js)",
       "headers": [
         {
           "key": "Cache-Control",

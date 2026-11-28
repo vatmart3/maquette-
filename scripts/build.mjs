@@ -63,7 +63,7 @@ const avertissements = [];
 // Version de chaque fichier (empreinte du contenu) ajoutée à son adresse : à chaque modification,
 // le navigateur télécharge la nouvelle version au lieu de resservir une copie en cache.
 const VERSION = Object.fromEntries(
-  ["styles.css", "site.js", "config.js", "immersion.js"].map((f) => [f, crypto.createHash("sha1").update(fs.readFileSync(path.join(RACINE, f))).digest("hex").slice(0, 10)])
+  ["styles.css", "site.js", "config.js"].map((f) => [f, crypto.createHash("sha1").update(fs.readFileSync(path.join(RACINE, f))).digest("hex").slice(0, 10)])
 );
 
 /* ------------------------------------------------------------------ */
@@ -233,11 +233,11 @@ const avecRealisations = CHANTIERS.length > 0;
 // Photo de l'accueil : tailles disponibles et largeur affichée (moitié droite sur ordinateur, pleine largeur sur téléphone).
 // Photo de l'accueil (2000 × 945), en plein écran : sur un téléphone en hauteur, elle est affichée
 // à la hauteur de l'écran (donc plus large que lui).
-const MAISON = "maison-toiture-tuiles-couvreur-frontignan";
+const MAISON = "maison-pierre-tuiles-canal-couvreur-herault";
 const LOGO = "logo-couvreur-proximite-34-frontignan";
 const srcset = (nom, largeurs, ext) => largeurs.map((w) => `/img/${nom}-${w}.${ext} ${w}w`).join(", ");
-const SRCSET_MAISON3D = srcset(MAISON, [800, 1200], "webp");
-const SRCSET_MAISON3D_AVIF = srcset(MAISON, [800, 1200], "avif");
+const LARGEURS_MAISON = [640, 1024, 1672];
+const SRCSET_MAISON_AVIF = srcset(MAISON, LARGEURS_MAISON, "avif");
 const ALT_LOGO = "Couvreur Proximité 34 – couvreur à Frontignan";
 
 // Image déclinée en AVIF et WebP par scripts/images.mjs : <picture> avec repli WebP,
@@ -245,7 +245,7 @@ const ALT_LOGO = "Couvreur Proximité 34 – couvreur à Frontignan";
 function picture(nom, largeurs, { sizes, alt = "", l, h, cls = "", attrs = "", defaut = largeurs[largeurs.length - 1] }) {
   return `<picture><source type="image/avif" srcset="${srcset(nom, largeurs, "avif")}" sizes="${sizes}"><img${cls ? ` class="${cls}"` : ""} src="/img/${nom}-${defaut}.webp" srcset="${srcset(nom, largeurs, "webp")}" sizes="${sizes}" width="${l}" height="${h}" alt="${esc(alt)}"${attrs}></picture>`;
 }
-const SIZES_MAISON3D = "(min-width: 860px) 52vw, 92vw";
+const SIZES_MAISON = "100vw";
 
 function logo(clair = false) {
   return `<a class="logo${clair ? " logo--clair" : ""}" href="/">
@@ -306,9 +306,7 @@ function head(p) {
   const scene = p.photoAccroche
     ? `
   <script>try{if(!sessionStorage.getItem("cp34-vu")&&!matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("avec-chargement");sessionStorage.setItem("cp34-vu","1")}}catch(e){}</script>
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="preload" as="image" type="image/avif" href="/img/${MAISON}-1200.avif" imagesrcset="${SRCSET_MAISON3D_AVIF}" imagesizes="${SIZES_MAISON3D}" fetchpriority="high">
-  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>`
+  <link rel="preload" as="image" type="image/avif" href="/img/${MAISON}-1024.avif" imagesrcset="${SRCSET_MAISON_AVIF}" imagesizes="${SIZES_MAISON}" fetchpriority="high">`
     : "";
   return `<!doctype html>
 <html lang="fr">
@@ -906,6 +904,67 @@ const FAMILLES = [
   { cle: "renover", titre: "Rénover", texte: "Refaire une couverture, reprendre la structure.", services: ["refection-toiture", "faitage-rives", "charpente", "isolation-toiture", "fenetre-de-toit"] },
   { cle: "entretenir", titre: "Protéger et entretenir", texte: "Garder la toiture saine et l'eau loin des murs.", services: ["demoussage-toiture", "zinguerie-gouttieres", "etancheite-toit-terrasse"] },
 ];
+// Photos des prestations : scripts/sources-images/prestation-<k>.(webp|png|jpg), déclinées par
+// scripts/images.mjs. Une carte n'apparaît que si sa photo existe.
+const PRESTATIONS = [
+  { k: "reparation-toiture", titre: "Réparation de toiture", lien: "/services/remplacement-tuiles", alt: "Toiture en tuiles canal orangées neuves et alignées" },
+  { k: "charpente", titre: "Charpente", lien: "/services/charpente", alt: "Charpente traditionnelle en bois neuf" },
+  { k: "demoussage", titre: "Nettoyage et démoussage", lien: "/services/demoussage-toiture", alt: "Toiture en tuiles canal couverte de mousse avant démoussage" },
+  { k: "zinguerie", titre: "Zinguerie et gouttières", lien: "/services/zinguerie-gouttieres", alt: "Gouttière et descente en zinc neuves" },
+  { k: "isolation", titre: "Isolation de toiture", lien: "/services/isolation-toiture", alt: "Combles isolés sous la charpente" },
+  { k: "fenetre-de-toit", titre: "Fenêtres de toit", lien: "/services/fenetre-de-toit", alt: "Fenêtre de toit posée dans une toiture en tuiles" },
+  { k: "bachage", titre: "Bâchage d'urgence", lien: "/services/bachage-urgence", alt: "Bâche bleue de protection posée sur un toit en tuiles" },
+].filter((x) => fs.existsSync(path.join(RACINE, "img", `prestation-${x.k}-480.webp`)));
+
+function cartesPrestations() {
+  return `<ul class="cartes-presta">
+          ${PRESTATIONS.map(
+            (x) => `<li class="carte-presta">
+            <a href="${x.lien}">
+              ${picture(`prestation-${x.k}`, [480, 800], { sizes: "(min-width: 1100px) 300px, (min-width: 640px) 45vw, 92vw", l: 800, h: 600, defaut: 480, cls: "carte-presta__photo", alt: x.alt, attrs: ' loading="lazy" decoding="async"' })}
+              <span class="carte-presta__nom">${esc(x.titre)} ${ico("fleche")}</span>
+            </a>
+          </li>`
+          ).join("\n          ")}
+        </ul>`;
+}
+
+// Avant / après : paires scripts/sources-images/avant-apres-<n>-avant et -apres (même cadrage).
+// Ce sont des images d'illustration : le site le dit clairement, ce ne sont pas des chantiers réels.
+const AVANT_APRES = [
+  { n: 1, titre: "Démoussage", texte: "Mousses et lichens retirés, tuiles nettoyées puis protégées par un hydrofuge.", lien: "/services/demoussage-toiture" },
+  { n: 2, titre: "Remplacement de tuiles", texte: "Tuiles cassées remplacées, pan révisé et faîtage contrôlé.", lien: "/services/remplacement-tuiles" },
+  { n: 3, titre: "Gouttière", texte: "Gouttière rouillée et affaissée remplacée par une gouttière en zinc.", lien: "/services/zinguerie-gouttieres" },
+].filter((x) => ["avant", "apres"].every((c) => fs.existsSync(path.join(RACINE, "img", `avant-apres-${x.n}-${c}-640.webp`))));
+
+function avantApresHtml() {
+  if (!AVANT_APRES.length) return "";
+  const tailles = "(min-width: 1100px) 400px, (min-width: 700px) 46vw, 92vw";
+  return `
+    <section class="section section--claire" aria-labelledby="titre-avant-apres">
+      <div class="conteneur">
+        <p class="petit-titre">Avant / après</p>
+        <h2 id="titre-avant-apres">Ce que change une intervention sur votre toiture</h2>
+        <p class="texte">Faites glisser le curseur pour comparer. Images d'illustration, pour montrer le résultat attendu de chaque type de travaux.</p>
+        <div class="comparateurs">
+          ${AVANT_APRES.map(
+            (x) => `<figure class="comparateur" style="--pos: 50%">
+            <div class="comparateur__cadre">
+              ${picture(`avant-apres-${x.n}-apres`, [640, 1024], { sizes: tailles, l: 1024, h: 768, defaut: 640, cls: "comparateur__apres", alt: `${x.titre}, après l'intervention`, attrs: ' loading="lazy" decoding="async"' })}
+              ${picture(`avant-apres-${x.n}-avant`, [640, 1024], { sizes: tailles, l: 1024, h: 768, defaut: 640, cls: "comparateur__avant", alt: `${x.titre}, avant l'intervention`, attrs: ' loading="lazy" decoding="async"' })}
+              <span class="comparateur__etiquette comparateur__etiquette--avant" aria-hidden="true">Avant</span>
+              <span class="comparateur__etiquette comparateur__etiquette--apres" aria-hidden="true">Après</span>
+              <span class="comparateur__barre" aria-hidden="true"><span class="comparateur__poignee">${ico("fleche")}${ico("fleche")}</span></span>
+              <input class="comparateur__curseur" type="range" min="0" max="100" value="50" step="1" aria-label="${esc(x.titre)} : comparer avant et après">
+            </div>
+            <figcaption><strong>${esc(x.titre)}.</strong> ${esc(x.texte)} <a class="lien-fleche" href="${x.lien}">En savoir plus ${ico("fleche")}</a></figcaption>
+          </figure>`
+          ).join("\n          ")}
+        </div>
+      </div>
+    </section>`;
+}
+
 function famillesServices() {
   const lien = (k) => {
     if (k === "depannage") return { path: "/depannage-toiture", nom: "Dépannage de toiture", resume: RESUMES.depannage };
@@ -1059,13 +1118,6 @@ const ecrire = (fichier, html, meta) => {
 
 /* --- Accueil --- */
 
-const ZONES_VISITE = [
-  { titre: "Couverture et tuiles", nom: "Couverture", aussi: ["remplacement-tuiles", "faitage-rives"], texte: "Tuiles canal, romanes ou mécaniques, faîtage, rives et génoises. On répare un pan ou on refait toute la couverture.", lien: "/services/refection-toiture", devis: "Réfection de toiture" },
-  { titre: "Charpente", nom: "Charpente et faîtage", aussi: ["isolation-toiture"], texte: "Chevrons, pannes et liteaux portent vos tuiles. On les contrôle et on les renforce.", lien: "/services/charpente", devis: "Charpente" },
-  { titre: "Zinguerie", nom: "Gouttière et descente", texte: "Gouttières, descentes et noues en zinc éloignent l'eau de vos murs et de vos façades.", lien: "/services/zinguerie-gouttieres", devis: "Zinguerie / gouttières" },
-  { titre: "Fuites et étanchéité", nom: "Solin de cheminée", aussi: ["fenetre-de-toit", "etancheite-toit-terrasse", "bachage-urgence"], texte: "Solin de cheminée, fenêtre de toit, tuile cassée. On trouve d'où vient l'eau avant de réparer.", lien: "/services/recherche-de-fuite", devis: "Réparation / fuite" },
-  { titre: "Démoussage et entretien", nom: "Toit à démousser", texte: "Un nettoyage et un traitement contre mousses et lichens prolongent la vie de la toiture.", lien: "/services/demoussage-toiture", devis: "Démoussage / traitement" },
-];
 
 {
   const p = {
@@ -1077,68 +1129,36 @@ const ZONES_VISITE = [
     description: `Couvreur zingueur à Frontignan pour fuites, tuiles cassées, réfection de toiture, démoussage, gouttières. Dépannage rapide à Sète et Balaruc. Devis gratuit.`,
     jsonld: [ldEntreprise(), ldSite, ldFaq(FAQ_ACCUEIL)],
   };
-  const fiches = ZONES_VISITE.map(
-    (z, i) => `<article class="fiche${i === 0 ? " est-active" : ""}" id="fiche-${i}" aria-labelledby="titre-zone-${i}">
-              <span class="fiche__num mono">${String(i + 1).padStart(2, "0")} / ${String(ZONES_VISITE.length).padStart(2, "0")}</span>
-              <h3 id="titre-zone-${i}">${esc(z.titre)}</h3>
-              <p>${fr(z.texte)}</p>
-              ${(z.aussi || []).filter(serviceActif).length ? `<p class="fiche__aussi">Voir aussi ${enumerer(z.aussi.filter(serviceActif).map((k) => { const x = SERVICES_PAGES.find((y) => y.slug === k); return `<a href="${x.path}">${esc(x.court.toLowerCase())}</a>`; }))}</p>` : ""}
-              <div class="fiche__actions">
-                <a class="bouton bouton--orange bouton--petit" href="/devis-toiture?travaux=${encodeURIComponent(z.devis)}" data-track="devis">Devis pour ça</a>
-                <a class="lien-fleche" href="${z.lien}">En savoir plus ${ico("fleche")}</a>
-              </div>
-            </article>`
-  ).join("\n            ");
-  const reperes = ZONES_VISITE.map((z, i) => `<li><button type="button" aria-current="${i === 0 ? "true" : "false"}" aria-controls="fiche-${i}" data-nom="${esc(z.nom)}">${esc(z.titre.split(" ")[0])}</button></li>`).join("");
   const html =
     head(p) +
     `
-    <section class="immersion" data-visite id="visite" aria-labelledby="titre-page">
-      <div class="immersion__collant">
-        <figure class="immersion__scene avant-apres" data-avant-apres data-immersion="/immersion.min.js?v=${VERSION["immersion.js"]}" style="--pos: 50%">
-          <div class="avant-apres__cadre">
-            ${picture(MAISON, [800, 1200], { sizes: SIZES_MAISON3D, l: 1200, h: 949, cls: "immersion__photo", alt: "Maison de plain-pied aux murs blancs, toiture à deux pans en tuiles noires, vue en perspective", attrs: ' fetchpriority="high" decoding="async"' })}
-            <span class="avant-apres__etiquette avant-apres__etiquette--avant" aria-hidden="true">Avant</span>
-            <span class="avant-apres__etiquette avant-apres__etiquette--apres" aria-hidden="true">Après</span>
-            <span class="avant-apres__barre" aria-hidden="true"><span class="avant-apres__poignee">${ico("fleche")}${ico("fleche")}</span></span>
-            <input class="avant-apres__curseur" type="range" min="0" max="100" value="50" step="1" tabindex="-1" aria-label="Comparer avant et après : faites glisser vers la droite pour voir l'avant">
-          </div>
-          <figcaption>Illustration : la même toiture avant et après entretien.</figcaption>
-        </figure>
-
-        <div class="immersion__accroche">
-          <div class="conteneur">
-            <div class="accroche__texte">
-              <h1 id="titre-page">Couvreur à Frontignan, <span>votre toiture entre de bonnes mains.</span></h1>
-              <p class="chapeau">Couvreur Proximité 34 répare, refait et entretient les toitures de Frontignan, de Sète et de tout le secteur de l'étang de Thau. Devis gratuit et dépannage rapide.</p>
-              ${actions({})}
-              ${noteGoogle(false)}
-            </div>
-          </div>
-          <p class="immersion__defiler" aria-hidden="true">Faites défiler pour la visite ${ico("fleche")}</p>
-        </div>
-
-        <div class="immersion__visite" aria-labelledby="titre-visite">
-          <h2 id="titre-visite">Du faîtage à la gouttière, on s'occupe de tout.</h2>
-          <ol class="visite__reperes" aria-label="Nos interventions">${reperes}</ol>
-          <div class="visite__fiches">
-            ${fiches}
-          </div>
+    <section class="une" aria-labelledby="titre-page">
+      <div class="une__photo">
+        ${picture(MAISON, LARGEURS_MAISON, { sizes: SIZES_MAISON, l: 1672, h: 941, defaut: 1024, alt: "Maison de plain-pied en pierre claire, toiture en tuiles canal orangées, terrasse et jardin méditerranéen", attrs: ' fetchpriority="high" decoding="async"' })}
+      </div>
+      <div class="conteneur une__contenu">
+        <div class="une__texte">
+          <p class="une__surtitre mono">Couvreur zingueur · Hérault (34)</p>
+          <h1 id="titre-page">Couvreur à Frontignan, <span>votre toiture entre de bonnes mains.</span></h1>
+          <p class="chapeau">Réparation, rénovation et entretien de toiture à Frontignan, Sète et dans tout l'Hérault. Devis gratuit et dépannage rapide.</p>
+          ${actions({ clair: true, secondaire: { href: "/devis-toiture", texte: "Demander un devis gratuit", icone: "devis", track: "devis" } })}
+          ${noteGoogle(true)}
         </div>
       </div>
     </section>
 
     <section class="section" id="services" aria-labelledby="titre-services">
-      <div class="conteneur services-bloc">
+      <div class="conteneur services-bloc${PRESTATIONS.length >= 4 ? " services-bloc--photos" : ""}">
         <div class="services-bloc__intro">
           <p class="petit-titre">Nos services</p>
           <h2 id="titre-services">Tous les travaux de toiture, à Frontignan et alentours</h2>
           <p class="texte">De la tuile cassée à la couverture refaite à neuf, un seul artisan suit votre toiture du diagnostic au nettoyage du chantier.</p>
           <a class="bouton bouton--orange" href="/devis-toiture" data-track="devis">${ico("devis")}Demander un devis gratuit</a>
         </div>
-        ${famillesServices()}
+        ${PRESTATIONS.length >= 4 ? cartesPrestations() : famillesServices()}
       </div>
     </section>
+${avantApresHtml()}
 
     <hr class="separateur" aria-hidden="true">
     <section class="section section--claire" aria-labelledby="titre-zone">
@@ -2183,10 +2203,10 @@ const QA = (() => {
 /* --- Optimisation finale : JS minifié, CSS critique dans la page, HTML compacté --- */
 
 {
-  // Scripts minifiés (les sources lisibles restent site.js, config.js et immersion.js).
-  for (const [src, min] of [["site.js", "site.min.js"], ["config.js", "config.min.js"], ["immersion.js", "immersion.min.js"]]) {
+  // Scripts minifiés (les sources lisibles restent site.js et config.js).
+  for (const [src, min] of [["site.js", "site.min.js"], ["config.js", "config.min.js"]]) {
     const code = fs.readFileSync(path.join(RACINE, src), "utf8");
-    const sortie = ESBUILD ? ESBUILD.transformSync(code, { loader: "js", minify: true, format: src === "immersion.js" ? "esm" : undefined, target: "es2019", legalComments: "none" }).code : code;
+    const sortie = ESBUILD ? ESBUILD.transformSync(code, { loader: "js", minify: true, target: "es2019", legalComments: "none" }).code : code;
     fs.writeFileSync(path.join(RACINE, min), sortie);
   }
 
@@ -2206,7 +2226,7 @@ const QA = (() => {
         fonts: false,
         compress: true,
         logLevel: "silent",
-        allowRules: [/avec-chargement/, /chargement/, /immersion-active/, /est-3d/, /picture/],
+        allowRules: [/avec-chargement/, /chargement/, /picture/],
       })
     : null;
   const compacter = (html) => {
