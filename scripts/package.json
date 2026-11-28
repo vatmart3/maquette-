@@ -1,5 +1,5 @@
 {
-  "name": "arveo-outils",
+  "name": "cp34-outils",
   "private": true,
   "description": "Outils de génération du site ARVÉO (non déployés : le dossier scripts est exclu par .vercelignore).",
   "scripts": {

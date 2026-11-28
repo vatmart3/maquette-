@@ -62,10 +62,10 @@ function gabarit({ titre, sousTitre, type, pied = "06 66 61 50 17 · Frontignan,
  */
 export async function genererOG(images) {
   // fontconfig doit connaître les polices avant le chargement de sharp.
-  const conf = path.join(os.tmpdir(), "arveo-og-fonts.conf");
+  const conf = path.join(os.tmpdir(), "cp34-og-fonts.conf");
   fs.writeFileSync(
     conf,
-    `<?xml version="1.0"?><!DOCTYPE fontconfig SYSTEM "fonts.dtd"><fontconfig><dir>${path.join(ICI, "og-polices")}</dir><cachedir>${path.join(os.tmpdir(), "arveo-og-cache")}</cachedir></fontconfig>`
+    `<?xml version="1.0"?><!DOCTYPE fontconfig SYSTEM "fonts.dtd"><fontconfig><dir>${path.join(ICI, "og-polices")}</dir><cachedir>${path.join(os.tmpdir(), "cp34-og-cache")}</cachedir></fontconfig>`
   );
   process.env.FONTCONFIG_FILE = conf;
   let sharp;

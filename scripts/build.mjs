@@ -22,8 +22,17 @@ const RACINE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const ctx = { window: {} };
 vm.runInNewContext(fs.readFileSync(path.join(RACINE, "config.js"), "utf8"), ctx);
 const S = ctx.window.SITE;
-if (process.env.ARVEO_PRODUCTION === "1") S.production = true; // test du mode production sans modifier config.js
-const BASE = S.siteUrl.replace(/\/$/, "");
+if (process.env.CP34_PRODUCTION === "1") S.production = true; // test du mode production sans modifier config.js
+
+// Domaine officiel unique du site : toutes les adresses absolues (canonical, og:url, sitemap,
+// robots.txt, données structurées) sont construites à partir de cette constante.
+const SITE_URL = "https://couvreurproximite34.fr";
+// Adresse e-mail publique (pied de page, contact, mentions légales, données structurées).
+// TODO : passer à contact@couvreurproximite34.fr dès que la boîte existe chez l'hébergeur du domaine.
+const CONTACT_EMAIL = "couvreurproximite34@gmail.com";
+S.siteUrl = SITE_URL;
+S.email = CONTACT_EMAIL;
+const BASE = SITE_URL;
 const AUJOURDHUI = new Date().toISOString().slice(0, 10);
 // sharp (npm install --prefix scripts) sert aux images de partage ; sans lui, og.png commun.
 const OG_DISPO = await import("sharp").then(() => true, () => false);
@@ -406,7 +415,7 @@ function pied() {
         <h2>Nous joindre</h2>
         <address>
           <a class="pied__tel mono" href="${TEL}" data-track="call">${esc(S.telephone)}</a><br>
-          <a href="mailto:${esc(S.email)}">${esc(S.email)}</a><br>
+          <a href="mailto:${esc(CONTACT_EMAIL)}">${esc(CONTACT_EMAIL)}</a><br>
           ${adresse}<br>
           ${esc(HORAIRES)}
         </address>
@@ -473,7 +482,7 @@ function ldEntreprise() {
     ...(S.legal.tva ? { vatID: S.legal.tva } : {}),
     image: BASE + "/og.png",
     telephone: fiable("telephone") && TEL_INTERNATIONAL,
-    email: fiable("email"),
+    email: CONTACT_EMAIL,
     address: {
       "@type": "PostalAddress",
       streetAddress: fiable("adresse.rue"),
@@ -1552,7 +1561,7 @@ ${bandeauCta()}` +
           <aside class="formulaire-page__cote">
             <div class="cote-carte">
               <h2>Couvreur Proximité 34</h2>
-              <address>${[confirme(a.rue), `${a.codePostal} ${a.ville}`].filter(Boolean).join("<br>")}<br><a href="mailto:${esc(S.email)}">${esc(S.email)}</a></address>
+              <address>${[confirme(a.rue), `${a.codePostal} ${a.ville}`].filter(Boolean).join("<br>")}<br><a href="mailto:${esc(CONTACT_EMAIL)}">${esc(CONTACT_EMAIL)}</a></address>
               <p>${esc(HORAIRES)}</p>
             </div>
           </aside>
@@ -1969,7 +1978,7 @@ ${bandeauCta()}` +
       "/mentions-legales",
       "Mentions légales",
       `<h2>Éditeur du site</h2>
-        <p>${esc(fiable("legal.raisonSociale") || L.raisonSociale)}${S.nom && !String(L.raisonSociale).includes(S.nom) ? `, nom commercial ${esc(S.nom)}` : ""}<br>${L.siege ? `Siège : ${esc(L.siege)}` : [esc(fiable("adresse.rue")), `${esc(a.codePostal)} ${esc(a.ville)}`].filter(Boolean).join("<br>")}<br>SIRET ${esc(fiable("legal.siret") || "en cours de renseignement")}${L.tva ? `<br>N° de TVA intracommunautaire ${esc(L.tva)}` : ""}${L.ape ? `<br>Code APE ${esc(L.ape)}` : ""}<br>Téléphone ${esc(S.telephone)}<br>E-mail ${esc(S.email)}<br>Directeur de la publication ${esc(fiable("legal.directeurPublication") || "en cours de renseignement")}</p>
+        <p>${esc(fiable("legal.raisonSociale") || L.raisonSociale)}${S.nom && !String(L.raisonSociale).includes(S.nom) ? `, nom commercial ${esc(S.nom)}` : ""}<br>${L.siege ? `Siège : ${esc(L.siege)}` : [esc(fiable("adresse.rue")), `${esc(a.codePostal)} ${esc(a.ville)}`].filter(Boolean).join("<br>")}<br>SIRET ${esc(fiable("legal.siret") || "en cours de renseignement")}${L.tva ? `<br>N° de TVA intracommunautaire ${esc(L.tva)}` : ""}${L.ape ? `<br>Code APE ${esc(L.ape)}` : ""}<br>Téléphone ${esc(S.telephone)}<br>E-mail ${esc(CONTACT_EMAIL)}<br>Directeur de la publication ${esc(fiable("legal.directeurPublication") || "en cours de renseignement")}</p>
         <h2>Hébergement</h2>
         <p>${esc(L.hebergeur)}</p>
         <h2>Conception</h2>
@@ -1992,7 +2001,7 @@ ${bandeauCta()}` +
         <h2>Durée de conservation</h2>
         <p>Les demandes sont conservées le temps de les traiter, puis au maximum trois ans après le dernier contact, sauf obligation légale (devis et factures).</p>
         <h2>Vos droits</h2>
-        <p>Vous pouvez accéder à vos données, les rectifier ou demander leur suppression en écrivant à <a href="mailto:${esc(S.email)}">${esc(S.email)}</a>. Vous pouvez aussi saisir la CNIL (cnil.fr).</p>
+        <p>Vous pouvez accéder à vos données, les rectifier ou demander leur suppression en écrivant à <a href="mailto:${esc(CONTACT_EMAIL)}">${esc(CONTACT_EMAIL)}</a>. Vous pouvez aussi saisir la CNIL (cnil.fr).</p>
         <h2>Cookies</h2>
         <p>${S.statistiques?.fournisseur ? `Ce site n'utilise aucun cookie. La fréquentation est mesurée de façon anonyme avec ${S.statistiques.fournisseur === "plausible" ? "Plausible" : "Umami"}, un outil sans cookie qui ne suit pas les visiteurs d'un site à l'autre.` : "Ce site n'utilise ni cookie ni mesure d'audience."} Le stockage local du navigateur sert seulement à ne pas rejouer l'animation d'accueil.</p>`
     ),

@@ -15,10 +15,8 @@ window.SITE = {
   activite: "Couvreur zingueur",
   slogan: "Couverture, zinguerie et dépannage de toiture",
 
-  // Adresse du site (sans « / » final). Sert aux liens canoniques, au sitemap et aux données Google.
-  // C'est l'adresse en ligne aujourd'hui. Dès qu'un nom de domaine est acheté (ex. couvreur-proximite34.fr),
-  // remplacez-la ici, relancez le build et ajoutez une redirection 301 de l'ancienne adresse vers la nouvelle.
-  siteUrl: "https://maquette-t8eb.vercel.app",
+  // Domaine officiel du site. La valeur qui fait foi est la constante SITE_URL de scripts/build.mjs.
+  siteUrl: "https://couvreurproximite34.fr",
 
   telephone: "06 66 61 50 17",
   email: "couvreurproximite34@gmail.com",
@@ -129,7 +127,7 @@ window.SITE = {
   ],
 
   // Mesure d'audience sans cookie (pas de bandeau nécessaire). Laisser vide pour ne rien mesurer.
-  // Plausible : { fournisseur: "plausible", domaine: "arveo.fr" }
+  // Plausible : { fournisseur: "plausible", domaine: "couvreurproximite34.fr" }
   // Umami     : { fournisseur: "umami", id: "identifiant-du-site" }
   statistiques: { fournisseur: "", domaine: "", id: "" }, // À CONFIRMER
 

@@ -19,8 +19,8 @@ comme dans `config.js` (« Couvreur Proximité 34 », « 34110 Frontignan », «
 3. Adresse. Si l'entreprise ne reçoit pas de clients à son local, masquer l'adresse et déclarer
    une **zone desservie** (communes et secteurs de `config.secteurs`, 20 zones maximum, en
    commençant par Frontignan, Sète, le Bassin de Thau et Montpellier).
-4. Horaires identiques à ceux du site, lien vers `https://arveo.fr/`, lien de prise de rendez-vous
-   vers `https://arveo.fr/rendez-vous`.
+4. Horaires identiques à ceux du site, lien vers `https://couvreurproximite34.fr/`, lien de prise de rendez-vous
+   vers `https://couvreurproximite34.fr/rendez-vous`.
 5. Services. Reprendre la liste exacte des pages services du site (même intitulés), avec une phrase
    chacun.
 6. Photos. Logo, photo de couverture, photos de l'équipe et du véhicule, et surtout des photos
@@ -57,12 +57,12 @@ du numéro entre guillemets).
   « review gating ») : on demande un avis à **tous** les clients, satisfaits ou non.
 - Demander l'avis **le jour de la fin du chantier**, en face à face, puis par SMS le soir même.
 - Outil sur place, une **carte ou un autocollant NFC + QR code** au nom de Couvreur Proximité 34 qui ouvre
-  `https://arveo.fr/avis/laisser`. Cette adresse redirige vers la page Google « Laisser un avis »
+  `https://couvreurproximite34.fr/avis/laisser`. Cette adresse redirige vers la page Google « Laisser un avis »
   dès que `config.liens.avisGoogle` est rempli. Si le lien Google change, il suffit de modifier
   la config, les cartes déjà distribuées restent valables.
 - Modèle de SMS, à personnaliser :
   « Bonjour, merci pour votre confiance. Si vous avez deux minutes, votre avis aide beaucoup un
-  artisan local comme nous. https://arveo.fr/avis/laisser Couvreur Proximité 34 »
+  artisan local comme nous. https://couvreurproximite34.fr/avis/laisser Couvreur Proximité 34 »
 - Répondre à **chaque** avis sous 48 h, positif ou négatif, en citant le type de travaux et la
   commune (« Merci pour votre confiance pour la réfection de votre toiture à Mèze »).
 - Les vrais avis peuvent ensuite être copiés dans `config.avis` (texte exact, prénom ou initiale,
@@ -83,8 +83,8 @@ Viser la qualité et la proximité, jamais l'achat de liens.
 
 ## 5. Mesure et suivi
 
-1. **Google Search Console** : ajouter le domaine `arveo.fr` (vérification DNS), soumettre
-   `https://arveo.fr/sitemap.xml`. Suivre chaque mois les requêtes « couvreur + commune »
+1. **Google Search Console** : ajouter le domaine `couvreurproximite34.fr` (vérification DNS), soumettre
+   `https://couvreurproximite34.fr/sitemap.xml`. Suivre chaque mois les requêtes « couvreur + commune »
    et les pages qui montent.
 2. **Bing Webmaster Tools** : importer depuis la Search Console, puis lancer
    `node scripts/indexnow.mjs` après chaque mise en ligne importante (voir README).

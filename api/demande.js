@@ -5,12 +5,12 @@
  *
  * Variables d'environnement à définir dans Vercel (Settings → Environment Variables) :
  *   RESEND_API_KEY   clé API Resend (obligatoire)
- *   ARVEO_EMAIL_TO   adresse(s) qui reçoivent les demandes, séparées par des virgules
+ *   EMAIL_TO   adresse(s) qui reçoivent les demandes, séparées par des virgules
  *                    (facultatif : par défaut couvreurproximite34@gmail.com)
- *   ARVEO_EMAIL_FROM expéditeur sur un domaine vérifié chez Resend,
+ *   EMAIL_FROM expéditeur sur un domaine vérifié chez Resend,
  *                    ex. "Site Couvreur Proximité 34 <site@mondomaine.fr>" (par défaut : onboarding@resend.dev,
  *                    qui n'envoie qu'à l'adresse du compte Resend)
- *   ARVEO_ACCUSE     "1" pour envoyer aussi un accusé de réception au client qui a laissé son e-mail
+ *   ACCUSE_RECEPTION     "1" pour envoyer aussi un accusé de réception au client qui a laissé son e-mail
  */
 
 const { creerPDF } = require("./_pdf.js");
@@ -184,7 +184,7 @@ module.exports = async function handler(req, res) {
   }
 
   const cle = process.env.RESEND_API_KEY;
-  const destinataire = process.env.ARVEO_EMAIL_TO || DESTINATAIRE;
+  const destinataire = process.env.EMAIL_TO || DESTINATAIRE;
   if (!cle) {
     console.error("[demande] RESEND_API_KEY manquant");
     return res.status(503).json({ ok: false, erreur: "Envoi non configuré" });
@@ -225,7 +225,7 @@ module.exports = async function handler(req, res) {
       body: JSON.stringify(payload),
     });
 
-  const expediteur = process.env.ARVEO_EMAIL_FROM || "Site Couvreur Proximité 34 <onboarding@resend.dev>";
+  const expediteur = process.env.EMAIL_FROM || "Site Couvreur Proximité 34 <onboarding@resend.dev>";
   const email = court(d.email, 200);
   const emailValide = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
 
@@ -249,7 +249,7 @@ module.exports = async function handler(req, res) {
   }
 
   // Accusé de réception facultatif au demandeur.
-  if (process.env.ARVEO_ACCUSE === "1" && emailValide) {
+  if (process.env.ACCUSE_RECEPTION === "1" && emailValide) {
     envoyer({
       from: expediteur,
       to: [email],

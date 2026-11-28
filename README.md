@@ -55,12 +55,12 @@ transmet un e-mail mis en page comme le bon « Demande de dépannage » (photos 
 bouton « Rappeler », objet marqué URGENT si besoin, adresse du client en « répondre à »).
 
 1. Créer un compte gratuit sur [resend.com](https://resend.com) (3 000 e-mails/mois offerts).
-2. Y vérifier le domaine `arveo.fr` (3 enregistrements DNS à ajouter chez le registrar).
+2. Y vérifier le domaine `couvreurproximite34.fr` (3 enregistrements DNS à ajouter chez le registrar).
 3. Dans Vercel → Project → Settings → Environment Variables :
    - `RESEND_API_KEY` : la clé API Resend
-   - `ARVEO_EMAIL_TO` : l'adresse qui reçoit les demandes (plusieurs possibles, séparées par des virgules)
-   - `ARVEO_EMAIL_FROM` : `Site Couvreur Proximité 34 <site@arveo.fr>`
-   - `ARVEO_ACCUSE` : `1` pour envoyer un accusé de réception au demandeur (facultatif)
+   - `EMAIL_TO` : l'adresse qui reçoit les demandes (plusieurs possibles, séparées par des virgules)
+   - `EMAIL_FROM` : `Site Couvreur Proximité 34 <site@couvreurproximite34.fr>`
+   - `ACCUSE_RECEPTION` : `1` pour envoyer un accusé de réception au demandeur (facultatif)
 4. Redéployer, puis faire une demande de test depuis le site.
 
 Sans ces variables, le formulaire affiche un message d'erreur avec le téléphone et un lien
@@ -87,7 +87,7 @@ Fait dans le site :
    C'est le facteur n°1 du « pack local » Google Maps. Mettre son lien dans `config.liens.googleBusiness`.
 2. **Avis Google** : demander un avis après chaque chantier. Les ajouter dans `config.avis` : la page
    Avis et la note moyenne (données structurées) s'activent automatiquement. Ne jamais inventer d'avis.
-3. **Google Search Console** : ajouter le domaine et soumettre `https://arveo.fr/sitemap.xml`.
+3. **Google Search Console** : ajouter le domaine et soumettre `https://couvreurproximite34.fr/sitemap.xml`.
 4. **Annuaires locaux** avec le même NAP : PagesJaunes, Bing Places, Apple Plans, Houzz, annuaire
    de la mairie de Frontignan, CMA Hérault.
 5. **Photos réelles** de chantiers (avant/après) à ajouter sur les pages services et communes.
@@ -111,7 +111,7 @@ Le dossier `photos/` n'est jamais mis en ligne (exclu par `.vercelignore`).
 ## IndexNow (Bing et moteurs compatibles)
 
 Le fichier `298d470ed7091f950d7e4da02b1d32ee.txt` à la racine est la clé IndexNow : il doit rester
-en ligne. Après une mise en ligne sur `https://arveo.fr` (jamais sur l'adresse `*.vercel.app`) :
+en ligne. Après une mise en ligne sur `https://couvreurproximite34.fr` (jamais sur l'adresse l'adresse provisoire de Vercel) :
 
 ```bash
 node scripts/indexnow.mjs
@@ -124,7 +124,7 @@ Search Console.
 ## Statistiques de visite (sans cookie)
 
 Renseignez `config.statistiques` :
-- Plausible : `{ fournisseur: "plausible", domaine: "arveo.fr" }`
+- Plausible : `{ fournisseur: "plausible", domaine: "couvreurproximite34.fr" }`
 - Umami : `{ fournisseur: "umami", id: "identifiant-du-site" }`
 
 Le script est ajouté à toutes les pages. Les clics « Appeler », « Dépannage », « Devis »,
