@@ -53,7 +53,7 @@ const liensSociaux = (cls) =>
     ? `<ul class="sociaux ${cls}">${SOCIAUX_ACTIFS.map(([k, u]) => `<li><a href="${esc(u)}" target="_blank" rel="noopener" aria-label="${esc(S.nom)} sur ${ICONES_SOCIAUX[k].nom} (nouvel onglet)"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="currentColor" d="${ICONES_SOCIAUX[k].d}"/></svg></a></li>`).join("")}</ul>`
     : "";
 const AUJOURDHUI = new Date().toISOString().slice(0, 10);
-// sharp (npm install --prefix scripts) sert aux images de partage ; sans lui, og.png commun.
+// sharp (npm install --prefix scripts) sert aux images de partage ; sans lui, og.jpg commun.
 const OG_DISPO = await import("sharp").then(() => true, () => false);
 // Outils d'optimisation (npm install --prefix scripts) : minification JS/CSS et CSS critique.
 const ESBUILD = await import("esbuild").then((m) => m.default || m, () => null);
@@ -143,7 +143,7 @@ S.telephone = TEL_NATIONAL;
 const TEL = `tel:${tel}`;
 const urlPage = (p) => BASE + (p === "/" ? "/" : p);
 // Premier titre de la liste qui tient dans les 60 caractères recommandés.
-// Nom de l'image de partage d'une page (img/og/<nom>.png).
+// Nom de l'image de partage d'une page (img/og/<nom>.jpg).
 const ogNom = (p) => (p === "/" ? "accueil" : p.slice(1).replace(/\//g, "-"));
 const titreCourt = (variantes) => variantes.find((t) => [...t].length <= 60) || variantes[variantes.length - 1];
 
@@ -257,6 +257,7 @@ function logo(clair = false) {
 // Image de partage propre à la page (services, communes, secteurs, conseils, hub).
 function imageOG(p) {
   const types = [
+    [/^\/$/, "Couvreur zingueur · Hérault (34)"],
     [/^\/services\//, "Service"],
     [/^\/couvreur\//, "Couvreur dans l'Hérault"],
     [/^\/secteur\//, "Secteur d'intervention"],
@@ -265,10 +266,10 @@ function imageOG(p) {
   ];
   const t = types.find(([re]) => re.test(p.path));
   const titre = p.og?.titre || p.title.replace(/\s*\|\s*Couvreur Proximité 34$/, "");
-  if (!t || !OG_DISPO || p.noindex) return { url: `${BASE}/og.png`, alt: "Couvreur Proximité 34, couvreur à Frontignan, réparation, réfection et dépannage de toiture" };
+  if (!t || !OG_DISPO || p.noindex) return { url: `${BASE}/og.jpg`, alt: "Couvreur Proximité 34, couvreur à Frontignan, réparation, réfection et dépannage de toiture" };
   const nom = ogNom(p.path);
   OG_A_GENERER.push({ nom, titre, type: p.og?.type || t[1], sousTitre: "Couvreur zingueur à Frontignan, dans tout l'Hérault", pied: `${S.telephone} · urgences 24 h/24` });
-  return { url: `${BASE}/img/og/${nom}.png`, alt: `${titre}, Couvreur Proximité 34 couvreur zingueur à Frontignan` };
+  return { url: `${BASE}/img/og/${nom}.jpg`, alt: `${titre}, Couvreur Proximité 34 couvreur zingueur à Frontignan` };
 }
 
 // Mesure d'audience sans cookie (config.statistiques), injectée seulement si elle est renseignée.
@@ -520,7 +521,7 @@ function ldEntreprise() {
     logo: BASE + "/img/logo.png",
     ...(fiable("legal.siret") ? { identifier: { "@type": "PropertyValue", propertyID: "SIRET", value: S.legal.siret.replace(/\s/g, "") } } : {}),
     ...(S.legal.tva ? { vatID: S.legal.tva } : {}),
-    image: BASE + "/og.png",
+    image: BASE + "/og.jpg",
     telephone: fiable("telephone") && tel,
     email: CONTACT_EMAIL,
     address: {
@@ -1018,7 +1019,7 @@ function avisHtml() {
 function enTetePage({ h1, chapo, ariane, rappel, illustration = true, ancre = "", apres = "", sansActions = false }) {
   return `
     <section class="tete-page">
-      ${illustration ? '<img class="tete-page__dessin" src="/img/toiture.svg" alt="" width="1440" height="900" aria-hidden="true">' : ""}
+      ${illustration ? `<div class="tete-page__photo" aria-hidden="true">${picture(MAISON, LARGEURS_MAISON, { sizes: SIZES_MAISON, l: 1672, h: 941, defaut: 1024, attrs: ' fetchpriority="high" decoding="async"' })}</div>` : ""}
       <div class="conteneur tete-page__grille${rappel ? "" : " tete-page__grille--seule"}">
         <div class="tete-page__texte">
           ${ariane}
@@ -1109,6 +1110,8 @@ const ecrire = (fichier, html, meta) => {
   // H1 imposé par scripts/meta-seo.mjs (service + ville).
   const h1 = META[meta?.path]?.h1;
   if (h1) html = html.replace(/<h1>[\s\S]*?<\/h1>/, `<h1>${fr(h1)}</h1>`);
+  if (html.includes('class="tete-page__photo"') && !html.includes('rel="preload" as="image"'))
+    html = html.replace("</head>", `  <link rel="preload" as="image" type="image/avif" href="/img/${MAISON}-1024.avif" imagesrcset="${SRCSET_MAISON_AVIF}" imagesizes="${SIZES_MAISON}" fetchpriority="high">\n</head>`);
   const f = path.join(RACINE, fichier);
   fs.mkdirSync(path.dirname(f), { recursive: true });
   fs.writeFileSync(f, html);
@@ -1123,6 +1126,7 @@ const ecrire = (fichier, html, meta) => {
   const p = {
     id: "accueil",
     path: "/",
+    og: { titre: "Couvreur à Frontignan, votre toiture entre de bonnes mains" },
     photoAccroche: true,
     title: "Couvreur à Frontignan, réparation de toiture | Couvreur Proximité 34",
     ogTitle: "Couvreur Proximité 34, couvreur à Frontignan",
@@ -1948,7 +1952,7 @@ const ldArticle = (a) =>
     dateModified: a.maj || a.publie,
     inLanguage: "fr-FR",
     mainEntityOfPage: urlPage(a.path),
-    image: `${BASE}/img/og/${ogNom(a.path)}.png`,
+    image: `${BASE}/img/og/${ogNom(a.path)}.jpg`,
     author: { "@id": ENTREPRISE_ID, "@type": "Organization", name: S.nom, url: BASE + "/" },
     publisher: { "@id": ENTREPRISE_ID, "@type": "Organization", name: S.nom, logo: { "@type": "ImageObject", url: BASE + "/img/logo.png" } },
     about: (a.services || []).map((k) => SERVICES_PAGES.find((x) => x.slug === k)).filter(Boolean).map((x) => ({ "@type": "Service", name: x.nom, url: urlPage(x.path) })),
@@ -2184,7 +2188,11 @@ fs.writeFileSync(path.join(RACINE, "robots.txt"), `User-agent: *\nAllow: /\nDisa
 
 /* --- Images de partage --- */
 
-if (OG_DISPO) await genererOG(OG_A_GENERER);
+if (OG_DISPO) {
+  await genererOG(OG_A_GENERER);
+  // Image de partage commune (pages sans image propre) : celle de l'accueil.
+  fs.copyFileSync(path.join(RACINE, "img", "og", "accueil.jpg"), path.join(RACINE, "og.jpg"));
+}
 else avertissements.push("Images de partage par page non générées : lancez npm install --prefix scripts (sharp).");
 
 /* --- Contrôle qualité SEO --- */

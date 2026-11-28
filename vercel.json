@@ -111,7 +111,7 @@
       ]
     },
     {
-      "source": "/(favicon.ico|favicon.svg|og.png|site.webmanifest)",
+      "source": "/(favicon.ico|favicon.svg|og.jpg|site.webmanifest)",
       "headers": [
         {
           "key": "Cache-Control",
