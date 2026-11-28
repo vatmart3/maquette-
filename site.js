@@ -489,7 +489,7 @@
           form.classList.remove("est-envoi");
           form.classList.add("est-envoye");
           retour.className = "formulaire__retour est-ok";
-          var tel = collecte.donnees.telephone ? " au " + esc(collecte.donnees.telephone) : "";
+          var tel = collecte.donnees.telephone ? ", au numéro que vous nous avez indiqué : <strong class=\"mono\">" + esc(collecte.donnees.telephone) + "</strong>" : "";
           retour.innerHTML =
             "<strong>" + (type === "rappel" ? "C'est noté, on vous rappelle." : "Votre " + TYPES[type] + " est bien envoyée.") + "</strong>" +
             (j.reference ? '<p>Référence <span class="mono">' + esc(j.reference) + "</span></p>" : "") +
