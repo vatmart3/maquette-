@@ -61,6 +61,14 @@ window.SITE = {
     hebergeur: "Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis",
   },
 
+  // Assurance décennale (obligatoire pour les travaux de couverture). Une fois renseignée,
+  // un bloc « Garanties » s'affiche sur les pages services.
+  assuranceDecennale: {
+    assureur: "", // À CONFIRMER : nom de l'assureur
+    numeroContrat: "", // À CONFIRMER
+    zone: "France",
+  },
+
   // Google Search Console : collez ici le code de la balise « google-site-verification »
   // (méthode « Balise HTML », uniquement la valeur de content="..."), puis relancez le build.
   googleVerification: "",

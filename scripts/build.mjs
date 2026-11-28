@@ -16,6 +16,7 @@ import { SECTEURS } from "./secteurs.mjs";
 import { VILLES_HERAULT } from "./communes-herault.mjs";
 import { ARTICLES } from "./articles.mjs";
 import { genererOG } from "./og.mjs";
+import { META, verifierMeta } from "./meta-seo.mjs";
 import crypto from "node:crypto";
 
 const RACINE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -272,6 +273,11 @@ const titrePage = (t) => {
 };
 
 function head(p) {
+  // Titre et description rédigés page par page (scripts/meta-seo.mjs).
+  if (META[p.path] && !p.noindex) {
+    p.title = META[p.path].t;
+    p.description = META[p.path].d;
+  }
   p.title = titrePage(p.title);
   const og = imageOG(p);
   const ld = p.jsonld.map((o) => `  <script type="application/ld+json">${JSON.stringify(o)}</script>`).join("\n");
@@ -1018,6 +1024,9 @@ function listeRealisations(liste, titre, idTitre = "titre-realisations") {
 const pages = [];
 const GENERES = []; // toutes les pages écrites, pour le contrôle qualité
 const ecrire = (fichier, html, meta) => {
+  // H1 imposé par scripts/meta-seo.mjs (service + ville).
+  const h1 = META[meta?.path]?.h1;
+  if (h1) html = html.replace(/<h1>[\s\S]*?<\/h1>/, `<h1>${fr(h1)}</h1>`);
   const f = path.join(RACINE, fichier);
   fs.mkdirSync(path.dirname(f), { recursive: true });
   fs.writeFileSync(f, html);
@@ -1129,6 +1138,20 @@ ${bandeauCta()}` +
 
 /* --- Pages services --- */
 
+// Bloc « Garanties » : affiché seulement quand l'assurance décennale est renseignée dans config.js
+// (jamais d'affirmation non vérifiée sur le site).
+function garantiesHtml() {
+  const d = S.assuranceDecennale || {};
+  if (!fiable("assuranceDecennale.assureur")) return "";
+  return `
+    <section class="section section--claire" aria-labelledby="titre-garanties">
+      <div class="conteneur">
+        <h2 id="titre-garanties">Garanties</h2>
+        <p class="texte">Nos travaux de couverture et de charpente sont couverts par une assurance responsabilité civile décennale${d.assureur ? ` souscrite auprès de ${esc(d.assureur)}` : ""}${d.numeroContrat ? ` (contrat n° ${esc(d.numeroContrat)})` : ""}${d.zone ? `, valable en ${esc(d.zone)}` : ""}. L'attestation est jointe à chaque devis.</p>
+      </div>
+    </section>`;
+}
+
 for (const s of SERVICES_PAGES) {
   const ar = filAriane([{ nom: s.court, path: s.path }]);
   const photosS = photosDe({ service: s.slug });
@@ -1165,6 +1188,14 @@ for (const s of SERVICES_PAGES) {
     </section>
 ${galerie(photosS, `${s.court}, photos de nos chantiers`)}
 ${listeRealisations(REALISATIONS.filter((c) => c.service === s.slug), `${s.court}, nos réalisations`)}
+${garantiesHtml()}
+    <section class="section" aria-labelledby="titre-communes-service">
+      <div class="conteneur">
+        <h2 id="titre-communes-service">${esc(s.court)} près de chez vous</h2>
+        <p class="texte">Basés à Frontignan, nous réalisons ces travaux dans tout l'Hérault. Retrouvez votre commune.</p>
+        <ul class="villes villes--compact">${VILLES_PAGES.map((v) => `<li><a href="${v.path}">Couvreur à ${esc(v.nom)}</a></li>`).join("")}</ul>
+      </div>
+    </section>
 ${faqHtml(s.faq, `Vos questions sur ${s.court.toLowerCase() === "charpente" ? "la charpente" : "ce service"}`)}
     <section class="section section--claire" aria-labelledby="titre-autres" data-commun>
       <div class="conteneur">
@@ -2120,7 +2151,9 @@ const QA = (() => {
   const redirections = JSON.parse(fs.readFileSync(path.join(RACINE, "vercel.json"), "utf8")).redirects.map((r) => r.source);
   const existe = (c) =>
     c === "/" || chemins.has(c) || redirections.includes(c) || (fs.existsSync(path.join(RACINE, c)) && fs.statSync(path.join(RACINE, c)).isFile());
-  return controler(GENERES, { base: BASE, sitemap: pages.map((p) => p.path), existe });
+  const qa = controler(GENERES, { base: BASE, sitemap: pages.map((p) => p.path), existe });
+  qa.erreurs.push(...verifierMeta(pages.map((p) => p.path)));
+  return qa;
 })();
 
 
